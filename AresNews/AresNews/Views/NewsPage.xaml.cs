@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
-namespace AresNews
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+
+namespace AresNews.Views
 {
-    public partial class MainPage : ContentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class NewsPage : ContentPage
     {
-        public MainPage()
+        public NewsPage()
         {
             InitializeComponent();
         }
