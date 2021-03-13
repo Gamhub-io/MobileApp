@@ -1,9 +1,11 @@
-﻿using HtmlAgilityPack;
+﻿using AresNews.Models;
+using HtmlAgilityPack;
 using MvvmHelpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Syndication;
 using System.Xml;
@@ -12,11 +14,11 @@ namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
-        private ObservableCollection<SyndicationItem> _articles;
+        private ObservableCollection<Article> _articles;
 
-        public ObservableCollection<SyndicationItem> Articles
+        public ObservableCollection<Article> Articles
         {
-            get { return _articles; }
+            get { return new ObservableCollection<Article>(_articles.OrderByDescending(a => a.PublishDate)); }
             set 
             { 
                 _articles = value;
@@ -26,11 +28,9 @@ namespace AresNews.ViewModels
 
         public NewsViewModel()
         {
-            _articles = new ObservableCollection<SyndicationItem>();
+            _articles = new ObservableCollection<Article>();
 
             FetchArticles();
-
-
 
         }
         private void FetchArticles()
@@ -49,31 +49,77 @@ namespace AresNews.ViewModels
                 // Add the news article of this feed one by one
                 foreach (SyndicationItem item in feed.Items)
                 {
-                    Articles.Add(item);
+                    // Get the main image
+                    var image = GetImagesFromHTML(item)[0];
+
+                    // include the article only if we can get an image
+                    if (!string.IsNullOrEmpty(image))
+                        _articles.Add(new Article
+                        {
+                            Title = item.Title.Text,
+                            PublishDate = item.PublishDate.DateTime,
+                            SourceName = source.Name,
+                            Image = GetImagesFromHTML(item)[0],
+                            Url = item.Links[0]?.Uri.OriginalString,
+
+                        }) ;
                 }
             }
         }
-        private static List<string> GetImagesFromHTML(string html)
+        /// <summary>
+        /// Fetch an image from a url
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        private static List<string> GetImagesFromHTML(SyndicationItem item/*string url*/)
         {
-            // 
+
+            // Instanciate the list
             List<string> images = new List<string>();
 
             // Load the Html
             HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(html);
 
-            // Now, using LINQ to get all Images
-            List<HtmlNode> imageNodes = null;
-            imageNodes = (from HtmlNode node in doc.DocumentNode.SelectNodes("//img")
-                          where node.Name == "img"
-                          && node.Attributes["class"] != null
-                          && node.Attributes["class"].Value.StartsWith("img_")
-                          select node).ToList();
+            doc.LoadHtml(item.Summary.Text);
 
-            foreach (HtmlNode node in imageNodes)
+            HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
+
+            if (imageNodes != null && imageNodes.Count != 0)
             {
-                images.Add(node.Attributes["src"].Value);
+                foreach (HtmlNode node in imageNodes)
+                {
+                    images.Add(node.Attributes["src"].Value);
+                }
             }
+            else
+            {
+                // Load the webpage html
+                using (WebClient client = new WebClient())
+                {
+                    doc.LoadHtml(client.DownloadString(item.Links[0].Uri.OriginalString));
+
+                }
+
+                // Now, using LINQ to get all Images
+                //List<HtmlNode> imageNodes = null;
+                imageNodes = doc.DocumentNode.SelectNodes("//img");
+                //imageNodes = (from HtmlNode node in doc.DocumentNode.SelectNodes("//img")
+                //              where node.Name == "img"
+                //              && node.Attributes["class"] != null
+                //              && node.Attributes["class"].Value.StartsWith("img_")
+                //              select node).ToList();
+
+                foreach (HtmlNode node in imageNodes)
+                {
+                    var src = node.Attributes["src"].Value;
+                    if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
+                        images.Add(src);
+
+                }
+                images.Add(string.Empty);
+            }
+
+            
 
             return images;
         }
