@@ -1,4 +1,5 @@
 ﻿using AresNews.Models;
+using AresNews.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace AresNews.Views
         {
             InitializeComponent();
 
-            
+            BindingContext = new NewsViewModel ();
         }
     }
 }

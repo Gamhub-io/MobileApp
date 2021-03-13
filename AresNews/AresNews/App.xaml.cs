@@ -13,7 +13,7 @@ namespace AresNews
 {
     public partial class App : Application
     {
-        public Collection<Source> Sources { get; private set; }
+        public static Collection<Source> Sources { get; private set; }
 
         public App()
         {
