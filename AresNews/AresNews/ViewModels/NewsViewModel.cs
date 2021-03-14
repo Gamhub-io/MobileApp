@@ -52,15 +52,17 @@ namespace AresNews.ViewModels
                     // Get the main image
                     var image = GetImagesFromHTML(item)[0];
 
-                    // include the article only if we can get an image
-                    if (!string.IsNullOrEmpty(image))
+                    // include the article only if the link is not an ad and if we can get an image
+                    string articleUrl = item.Links[0].Uri.OriginalString;
+
+                    if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
                         _articles.Add(new Article
                         {
                             Title = item.Title.Text,
                             PublishDate = item.PublishDate.DateTime,
                             SourceName = source.Name,
                             Image = GetImagesFromHTML(item)[0],
-                            Url = item.Links[0]?.Uri.OriginalString,
+                            Url = articleUrl,
 
                         }) ;
                 }
