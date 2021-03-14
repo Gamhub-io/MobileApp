@@ -14,6 +14,10 @@
     <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
     <None Remove="Resources\FontAwesome5Brands-Regular-400.otf" />
     <None Remove="Resources\FontAwesome5Free-Solid-900.otf" />
+    <None Remove="Resources\Fonts\public-sans-SemiBold.otf" />
+    <None Remove="Resources\Fonts\public-sans.bold.otf" />
+    <None Remove="Resources\Fonts\public-sans.extrabold.otf" />
+    <None Remove="Resources\Fonts\public-sans.regular.otf" />
     <None Remove="Resources\Sources.json" />
   </ItemGroup>
 
@@ -21,6 +25,10 @@
     <EmbeddedResource Include="Resources\Fonts\FontAwesome5Brands-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome5Free-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome5Free-Solid-900.otf" />
+    <EmbeddedResource Include="Resources\Fonts\public-sans.bold.otf" />
+    <EmbeddedResource Include="Resources\Fonts\public-sans.extrabold.otf" />
+    <EmbeddedResource Include="Resources\Fonts\public-sans.regular.otf" />
+    <EmbeddedResource Include="Resources\Fonts\public-sans-SemiBold.otf" />
     <EmbeddedResource Include="Resources\Sources.json" />
   </ItemGroup>
 
