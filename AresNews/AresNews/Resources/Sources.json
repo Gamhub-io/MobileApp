@@ -1,7 +1,7 @@
 [
   {
-    "Name": "Kotaku",
-    "Domain": "kotaku.com",
+    "name": "Kotaku",
+    "domain": "kotaku.com",
     "url": "https://kotaku.com/rss"
   }
 ]

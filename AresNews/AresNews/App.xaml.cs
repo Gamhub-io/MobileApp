@@ -27,7 +27,7 @@ namespace AresNews
 
             FetchSources();
 
-            MainPage = new NewsPage();
+            MainPage = new AppShell();
         }
 
         protected override void OnStart()

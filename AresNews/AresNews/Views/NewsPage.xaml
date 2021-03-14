@@ -2,11 +2,25 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.Views.NewsPage"
-             BackgroundColor="{StaticResource Dark}">
+             BackgroundColor="{StaticResource Dark}"
+             >
+    <Shell.TitleView>
+        <Grid>
+            <Label Text="News"
+               HorizontalOptions="Center"
+               FontSize="30"
+               TextColor="{StaticResource FontColor}"
+               FontFamily="P-Bold"/>
+        </Grid>
+        
+    </Shell.TitleView>
     <ContentPage.Content>
         <CollectionView ItemsSource="{Binding Articles}" Margin="10,0">
+            <CollectionView.Header>
+                <BoxView HeightRequest="0"/>
+            </CollectionView.Header>
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
@@ -55,16 +69,17 @@
                                            HorizontalOptions="Start"
                                            VerticalOptions="Start"
                                            CornerRadius="8"
-                                           Margin="20,20,0,0"
-                                           HeightRequest="20"
+                                           Margin="10,10,0,0"
+                                           HeightRequest="25"
                                            WidthRequest="60"
                                            Padding="0"
                                            BackgroundColor="{StaticResource LightDark}">
                                         <Label  
-                                               FontSize="13"
+                                               FontSize="14"
                                                HorizontalOptions="Center"
+                                                VerticalOptions="Center"
                                                Text="{Binding SourceName}"
-                                                FontFamily="P-SemiBold"
+                                                FontFamily="P-Bold"
                                                TextColor="{StaticResource FontColor}"
                                                />
                                     </Frame>
