@@ -33,19 +33,20 @@
                         <Grid>
                             
                             <!-- Backgournd -->
-                            <Grid BackgroundColor="Black">
+                            <Grid BackgroundColor="{StaticResource Dark}">
                                 <!-- Image -->
-                                <Image Source="{Binding Image}" />
+                                <Image Source="{Binding Image}" Opacity="0.60" />
                                 <!-- filter -->
-                                <Grid Opacity="0.18">
+                                <Grid Opacity="0.15">
                                     <Grid.Background>
                                         <LinearGradientBrush EndPoint="0,1">
-                                            <GradientStop Color="{StaticResource Primary}"
+
+                                            <GradientStop Color="{StaticResource Light}"
                                                           Offset="0.1" />
-                                            <GradientStop Color="{StaticResource LightDark}"
-                                                          Offset="1" />
+                                            <GradientStop Color="{StaticResource Light}"
+                                                          Offset="0.0" />
                                             <GradientStop Color="{StaticResource Dark}"
-                                                          Offset="1" />
+                                                          Offset="1.0" />
                                         </LinearGradientBrush>
                                     </Grid.Background>
                                 </Grid>
@@ -123,7 +124,7 @@
                                 <!-- Banner -->
                                 <BoxView Grid.Row="1" 
                                          BackgroundColor="{StaticResource Dark}" 
-                                         Opacity="0.80"/>
+                                         Opacity="0.24"/>
                                 <!-- Title -->
                                 <Grid Grid.Row="1" >
                                     <Grid.RowDefinitions>
@@ -136,7 +137,7 @@
                                        TextColor="{StaticResource FontColor}"
                                        Margin="10,0"
                                        FontFamily="P-Bold"
-                                       FontSize="16"/>
+                                       FontSize="17"/>
 
                                     <!-- Time ago -->
                                     <Label Grid.Row="1" 
