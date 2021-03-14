@@ -21,7 +21,7 @@
                             <!-- Backgournd -->
                             <Grid BackgroundColor="Black">
                                 <!-- Image -->
-                                <Image Source="{Binding Image}" Opacity="0.68"/>
+                                <Image Source="{Binding Image}" />
                                 <!-- filter -->
                                 <Grid Opacity="0.18">
                                     <Grid.Background>
@@ -79,10 +79,14 @@
                                                 CornerRadius="100"
                                                HorizontalOptions="End"
                                                VerticalOptions="Center"
+                                                Text="&#xf1e0;"
+                                                FontFamily="FaSolid"
+                                                FontSize="20"
                                                Padding="0"
                                                Margin="0,10,10,0"
                                                HeightRequest="40"
                                                WidthRequest="40"
+                                                TextColor="{StaticResource Primary}"
                                                BackgroundColor="{StaticResource LightDark}"/>
                                         <Button  Grid.Row="1"
                                                 CornerRadius="100"
@@ -92,11 +96,18 @@
                                                Margin="0,0,10,0"
                                                HeightRequest="40"
                                                WidthRequest="40"
+                                                 FontSize="20"
+                                                 Text="&#xf02e;"
+                                                 FontFamily="FaRegular"
+                                                 TextColor="{StaticResource Primary}"
                                                BackgroundColor="{StaticResource LightDark}"/>
                                     </Grid>
                                     
                                 </Grid>
-                                
+                                <!-- Banner -->
+                                <BoxView Grid.Row="1" 
+                                         BackgroundColor="{StaticResource Dark}" 
+                                         Opacity="0.80"/>
                                 <!-- Title -->
                                 <Grid Grid.Row="1" >
                                     <Grid.RowDefinitions>

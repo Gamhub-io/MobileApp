@@ -3,6 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.App">
     <Application.Resources>
+        <!-- Font Awesome -->
+        <OnPlatform x:TypeArguments="x:String" x:Key="FA-Regular">
+            <On Platform="Android" Value="FontAwesome5Free-Regular-400.otf#Font Awesome 5 Free" />
+            <On Platform="iOS" Value="Font Awesome 5 Free" />
+        </OnPlatform>
+        <OnPlatform x:TypeArguments="x:String" x:Key="FA-Brands">
+            <On Platform="Android" Value="FontAwesome5Brands-Regular-400.otf#Font Awesome 5 Brands Regular" />
+        </OnPlatform>
+        <OnPlatform x:TypeArguments="x:String" x:Key="FA-Solid">
+            <On Platform="Android" Value="FontAwesome5Free-Solid-900.otf#Font Awesome 5 Free Solid" />
+            <On Platform="iOS" Value="Font Awesome 5 Free Solid" />
+        </OnPlatform>
         <ResourceDictionary>
             <Color x:Key="Primary" >#77CCA3</Color>
             <Color x:Key="Secondary" >#666666</Color>

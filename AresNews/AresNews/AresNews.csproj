@@ -11,11 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\Sources.json" />
+    <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
+    <None Remove="Resources\FontAwesome5Brands-Regular-400.otf" />
+    <None Remove="Resources\FontAwesome5Free-Solid-900.otf" />
+    <None Remove="Resources\Sources.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Sources.json" />
+    <EmbeddedResource Include="Resources\Fonts\FontAwesome5Brands-Regular-400.otf" />
+    <EmbeddedResource Include="Resources\Fonts\FontAwesome5Free-Regular-400.otf" />
+    <EmbeddedResource Include="Resources\Fonts\FontAwesome5Free-Solid-900.otf" />
+    <EmbeddedResource Include="Resources\Sources.json" />
   </ItemGroup>
 
   <ItemGroup>

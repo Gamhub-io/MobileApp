@@ -8,7 +8,8 @@ using System.Linq;
 using System.Reflection;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-
+[assembly: ExportFont("FontAwesome5Free-Regular-400.otf", Alias = "FaRegular")]
+[assembly: ExportFont("FontAwesome5Free-Solid-900.otf", Alias = "FaSolid")]
 namespace AresNews
 {
     public partial class App : Application
@@ -44,7 +45,7 @@ namespace AresNews
         {
             var assembly = typeof(App).GetTypeInfo().Assembly;
 
-            var res = assembly.GetManifestResourceNames().FirstOrDefault(r => r == "AresNews.Assets.Sources.json");
+            var res = assembly.GetManifestResourceNames().FirstOrDefault(r => r == "AresNews.Resources.Sources.json");
 
             var stream = assembly.GetManifestResourceStream(res);
 

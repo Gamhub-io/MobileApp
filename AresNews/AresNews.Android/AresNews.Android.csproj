@@ -63,9 +63,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\Font Awesome 5 Brands-Regular-400.otf" />
-    <AndroidAsset Include="Assets\Font Awesome 5 Free-Regular-400.otf" />
-    <AndroidAsset Include="Assets\Font Awesome 5 Free-Solid-900.otf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
