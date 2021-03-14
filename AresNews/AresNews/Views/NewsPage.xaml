@@ -145,8 +145,8 @@
                                            TextColor="{StaticResource FontColor}"
                                            Margin="10,0"
                                            HorizontalOptions="End"
-                                           FontFamily="P-SemiBold"
-                                           FontSize="16"/>
+                                           FontFamily="P-Bold"
+                                           FontSize="14"/>
                                 </Grid>
                                 
                             </Grid>
