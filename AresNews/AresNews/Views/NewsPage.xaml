@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.Views.NewsPage"
              xmlns:helpers="clr-namespace:AresNews.Helpers"
+             xmlns:controls="clr-namespace:AresNews.Controls"
              xmlns:vm="clr-namespace:AresNews.ViewModels"
              BackgroundColor="{StaticResource Dark}"
              >
@@ -31,141 +32,15 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame CornerRadius="15" 
-                           HeightRequest="221"
-                           WidthRequest="330"
-                           Padding="0"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center">
-                        <!--<Frame.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding AddBookmark}"
-                                                  CommandParameter="{Binding Id}"/>
-                        </Frame.GestureRecognizers>-->
-                        <Grid>
-                            
-                            <!-- Backgournd -->
-                            <Grid BackgroundColor="{StaticResource Dark}">
-                                <!-- Image -->
-                                <Image Source="{Binding Image}" Opacity="0.60" />
-                                <!-- filter -->
-                                <Grid Opacity="0.15">
-                                    <Grid.Background>
-                                        <LinearGradientBrush EndPoint="0,1">
-
-                                            <GradientStop Color="{StaticResource Light}"
-                                                          Offset="0.1" />
-                                            <GradientStop Color="{StaticResource Light}"
-                                                          Offset="0.0" />
-                                            <GradientStop Color="{StaticResource Dark}"
-                                                          Offset="1.0" />
-                                        </LinearGradientBrush>
-                                    </Grid.Background>
-                                </Grid>
-                            </Grid>
-                            <!-- Foreground -->
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="73"/>
-                                </Grid.RowDefinitions>
-                                
-                                <!-- Extra -->
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    
-                                    <!-- Mentionning the source -->
-                                    <Frame Grid.Column="0"
-                                           HorizontalOptions="Start"
-                                           VerticalOptions="Start"
-                                           CornerRadius="8"
-                                           Margin="10,10,0,0"
-                                           HeightRequest="25"
-                                           WidthRequest="60"
-                                           Padding="0"
-                                           BackgroundColor="{StaticResource LightDark}">
-                                        <Label  
-                                               FontSize="14"
-                                               HorizontalOptions="Center"
-                                                VerticalOptions="Center"
-                                               Text="{Binding SourceName}"
-                                                FontFamily="P-Bold"
-                                               TextColor="{StaticResource FontColor}"
-                                               />
-                                    </Frame>
-                                    
-                                    <!-- Share and save-->
-                                    <Grid Grid.Column="1">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="auto"/>
-                                            <RowDefinition Height="auto"/>
-                                        </Grid.RowDefinitions>
-                                        <!-- Share button-->
-                                        <Button Grid.Row="0"
-                                                CornerRadius="100"
-                                               HorizontalOptions="End"
-                                               VerticalOptions="Center"
-                                                Text="&#xf1e0;"
-                                                FontFamily="FaSolid"
-                                                FontSize="20"
-                                               Padding="0"
-                                               Margin="0,10,10,0"
-                                               HeightRequest="40"
-                                               WidthRequest="40"
-                                                TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"/>
-                                        <!-- Bookmark button-->
-                                        <Button  Grid.Row="1"
-                                                CornerRadius="100"
-                                               HorizontalOptions="End"
-                                               VerticalOptions="Center"
-                                               Padding="0"
-                                               Margin="0,0,10,0"
-                                               HeightRequest="40"
-                                               WidthRequest="40"
-                                                 FontSize="20"
-                                                 Text="&#xf02e;"
-                                                 FontFamily="{Binding IsSaved, Converter={StaticResource BoolToBookmarkConveter}}"
-                                                 TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"
-                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark}"
-                                                  CommandParameter="{Binding Id}"/>
-                                    </Grid>
-                                    
-                                </Grid>
-                                <!-- Banner -->
-                                <BoxView Grid.Row="1" 
-                                         BackgroundColor="{StaticResource Dark}" 
-                                         Opacity="0.24"/>
-                                <!-- Title -->
-                                <Grid Grid.Row="1" >
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="1.5*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-                                    <!-- Headline -->
-                                    <Label Grid.Row="0" 
-                                       Text="{Binding Title}"
-                                       TextColor="{StaticResource FontColor}"
-                                       Margin="10,0"
-                                       FontFamily="P-Bold"
-                                       FontSize="17"/>
-
-                                    <!-- Time ago -->
-                                    <Label Grid.Row="1" 
-                                           Text="{Binding TimeAgo}"
-                                           TextColor="{StaticResource FontColor}"
-                                           Margin="10,0"
-                                           HorizontalOptions="End"
-                                           FontFamily="P-Bold"
-                                           FontSize="14"/>
-                                </Grid>
-                                
-                            </Grid>
-                        </Grid>
-                    </Frame>
+                    <controls:ArticlePreview Headline="{Binding Title}"
+                                             ArticleId="{Binding Id}"
+                                             ArticleIsSaved="{Binding IsSaved}"
+                                             ArticleTime="{Binding TimeAgo}"
+                                             ArticleSource="{Binding SourceName}"
+                                             Thumnail="{Binding Image}"
+                                             BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark}"
+                                             ControlTemplate="{StaticResource ArticleTemplate}"
+                                             />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

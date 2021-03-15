@@ -1,12 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AresNews.Views.BookmarkPage">
+             xmlns:controls="clr-namespace:AresNews.Controls"
+             xmlns:vm="clr-namespace:AresNews.ViewModels"
+             x:Class="AresNews.Views.BookmarkPage"
+             BackgroundColor="{StaticResource Dark}">
+    <Shell.TitleView>
+        <Grid>
+            <Label Text="Bookmarks"
+               HorizontalOptions="Center"
+               FontSize="30"
+               TextColor="{StaticResource FontColor}"
+               FontFamily="P-Bold"/>
+        </Grid>
+
+    </Shell.TitleView>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <CollectionView ItemsSource="{Binding Bookmarks}" Margin="10,0" >
+            <CollectionView.Header>
+                <BoxView HeightRequest="0"/>
+            </CollectionView.Header>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <controls:ArticlePreview Headline="{Binding Title}"
+                                             ArticleId="{Binding Id}"
+                                             ArticleIsSaved="{Binding IsSaved}"
+                                             ArticleTime="{Binding TimeAgo}"
+                                             ArticleSource="{Binding SourceName}"
+                                             Thumnail="{Binding Image}"
+                                             BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=AddBookmark}"
+                                             ControlTemplate="{StaticResource ArticleTemplate}"
+                                             />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
     </ContentPage.Content>
 </ContentPage>

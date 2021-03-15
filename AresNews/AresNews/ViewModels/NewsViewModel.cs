@@ -47,15 +47,21 @@ namespace AresNews.ViewModels
                    // Get the article
                    var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
 
+
+
                    // If the article is already in bookmarks
-                   if (article.IsSaved)
+                   bool isSaved = article.IsSaved;
+
+                   // Marked the article as saved
+                   article.IsSaved = !article.IsSaved;
+
+                   if (isSaved)
                        App.SqLiteConn.Delete(article);
                    else
                        // Insert it in database
                        App.SqLiteConn.Insert(article);
 
-                   // Marked the article as saved
-                   article.IsSaved = !article.IsSaved;
+
                    Articles[_articles.IndexOf(article)] = article;
 
                    

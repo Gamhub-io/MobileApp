@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:AresNews.Helpers"
+             x:Class="AresNews.Controls.ArticlePreview"
+             x:Name="preview">
+
+    <ContentView.Resources>
+        <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
+        
+    </ContentView.Resources>
+    <ContentView.Content>
+       
+    </ContentView.Content>
+</ContentView>
