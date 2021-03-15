@@ -9,11 +9,13 @@ using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Syndication;
 using System.Xml;
+using Xamarin.Forms;
 
 namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
+        // Property list of articles
         private ObservableCollection<Article> _articles;
 
         public ObservableCollection<Article> Articles
@@ -25,11 +27,38 @@ namespace AresNews.ViewModels
                 OnPropertyChanged();
             }
         }
+        // Command to add a Bookmark
+        private Command _addBookmark;
+
+        public Command AddBookmark
+        {
+            get { return _addBookmark; }
+        }
+
 
         public NewsViewModel()
         {
             _articles = new ObservableCollection<Article>();
 
+            _addBookmark = new Command((id) =>
+               {
+                   //App.StartDb();
+
+                   // Get the article
+                   var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
+
+                   // If the article is already in bookmarks
+                   if (article.IsSaved)
+                       App.SqLiteConn.Delete(article);
+                   else
+                       // Insert it in database
+                       App.SqLiteConn.Insert(article);
+
+
+
+
+                   App.CloseDb();
+               });
             FetchArticles();
 
         }
@@ -58,6 +87,7 @@ namespace AresNews.ViewModels
                     if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
                         _articles.Add(new Article
                         {
+                            Id = item.Id,
                             Title = item.Title.Text,
                             PublishDate = item.PublishDate.DateTime,
                             SourceName = source.Name,

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -6,6 +7,8 @@ namespace AresNews.Models
 {
     public class Article
     {
+        [PrimaryKey, Column("_id")]
+        public string Id { get; set; }
         public string SourceName { get; set; }
         public string Title { get; set; }
         public string Image { get; set; }
@@ -18,5 +21,14 @@ namespace AresNews.Models
                 return DateTime.Now - PublishDate;
             }
         }
+        public bool IsSaved { get 
+            {
+
+                //App.StartDb();
+                var article = App.SqLiteConn.Find<Article>(Id);
+                //App.CloseDb();
+
+                return article != null;
+            } }
     }
 }

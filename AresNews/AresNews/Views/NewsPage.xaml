@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.Views.NewsPage"
+             xmlns:helpers="clr-namespace:AresNews.Helpers"
+             xmlns:vm="clr-namespace:AresNews.ViewModels"
              BackgroundColor="{StaticResource Dark}"
              >
     <Shell.TitleView>
@@ -14,6 +16,11 @@
         </Grid>
         
     </Shell.TitleView>
+
+    <ContentPage.Resources>
+        <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
+
+    </ContentPage.Resources>
     <ContentPage.Content>
         <CollectionView ItemsSource="{Binding Articles}" Margin="10,0">
             <CollectionView.Header>
@@ -30,6 +37,10 @@
                            Padding="0"
                            HorizontalOptions="Center"
                            VerticalOptions="Center">
+                        <!--<Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding AddBookmark}"
+                                                  CommandParameter="{Binding Id}"/>
+                        </Frame.GestureRecognizers>-->
                         <Grid>
                             
                             <!-- Backgournd -->
@@ -91,7 +102,7 @@
                                             <RowDefinition Height="auto"/>
                                             <RowDefinition Height="auto"/>
                                         </Grid.RowDefinitions>
-
+                                        <!-- Share button-->
                                         <Button Grid.Row="0"
                                                 CornerRadius="100"
                                                HorizontalOptions="End"
@@ -105,6 +116,7 @@
                                                WidthRequest="40"
                                                 TextColor="{StaticResource Primary}"
                                                BackgroundColor="{StaticResource LightDark}"/>
+                                        <!-- Bookmark button-->
                                         <Button  Grid.Row="1"
                                                 CornerRadius="100"
                                                HorizontalOptions="End"
@@ -115,9 +127,11 @@
                                                WidthRequest="40"
                                                  FontSize="20"
                                                  Text="&#xf02e;"
-                                                 FontFamily="FaRegular"
+                                                 FontFamily="{Binding IsSaved, Converter={StaticResource BoolToBookmarkConveter}}"
                                                  TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"/>
+                                               BackgroundColor="{StaticResource LightDark}"
+                                                  Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark}"
+                                                  CommandParameter="{Binding Id}"/>
                                     </Grid>
                                     
                                 </Grid>

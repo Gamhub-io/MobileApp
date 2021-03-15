@@ -1,6 +1,7 @@
 ﻿using AresNews.Models;
 using AresNews.Views;
 using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -18,6 +19,8 @@ namespace AresNews
     public partial class App : Application
     {
         public static Collection<Source> Sources { get; private set; }
+        // Property SqlLite Connection
+        public static SQLiteConnection SqLiteConn { get; set; }
 
         public App()
         {
@@ -27,7 +30,44 @@ namespace AresNews
 
             FetchSources();
 
+            
+
+            // Start the db
+            StartDb();
+
+            SqLiteConn.CreateTable<Article>();
+
+            // Close the db
+            //CloseDb();
+
             MainPage = new AppShell();
+        }
+        /// <summary>
+        ///  Function to close the database 
+        /// </summary>
+        public static void CloseDb()
+        {
+            SqLiteConn.Dispose();
+            //SqLiteConn.Close();
+        }
+        /// <summary>
+        /// Function to start the data base
+        /// </summary>
+        public static void StartDb()
+        {
+            // Just use whatever directory SpecialFolder.Personal returns
+            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+
+            var path = Path.Combine(libraryPath, "ares.db3");
+
+            // Verify if a data base already exist
+            if (!File.Exists(path))
+                // Create the folder path.
+                File.Create(path);
+            
+            // Sqlite connection
+            SqLiteConn = new SQLiteConnection(path);
+
         }
 
         protected override void OnStart()
@@ -36,10 +76,12 @@ namespace AresNews
 
         protected override void OnSleep()
         {
+            SqLiteConn.Dispose();
         }
 
         protected override void OnResume()
         {
+            StartDb();
         }
         /// <summary>
         /// Fetch all the sources
