@@ -21,14 +21,19 @@ namespace AresNews.Models
                 return DateTime.Now - PublishDate;
             }
         }
-        public bool IsSaved { get 
-            {
+        //public bool IsSaved
+        //{
+        //    get
+        //    {
 
-                //App.StartDb();
-                var article = App.SqLiteConn.Find<Article>(Id);
-                //App.CloseDb();
+        //        App.StartDb();
+        //        var article = App.SqLiteConn.Find<Article>(Id);
+        //        App.CloseDb();
 
-                return article != null;
-            } }
+        //        return article != null || _isSaved;
+        //    }
+        //    set { _isSaved = value; }
+        //}
+        public bool IsSaved { get; set; }
     }
 }

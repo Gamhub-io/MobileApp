@@ -20,7 +20,7 @@ namespace AresNews.ViewModels
 
         public ObservableCollection<Article> Articles
         {
-            get { return new ObservableCollection<Article>(_articles.OrderByDescending(a => a.PublishDate)); }
+            get { return _articles; }
             set 
             { 
                 _articles = value;
@@ -54,10 +54,11 @@ namespace AresNews.ViewModels
                        // Insert it in database
                        App.SqLiteConn.Insert(article);
 
+                   // Marked the article as saved
+                   article.IsSaved = !article.IsSaved;
+                   Articles[_articles.IndexOf(article)] = article;
 
-
-
-                   App.CloseDb();
+                   
                });
             FetchArticles();
 
@@ -85,17 +86,24 @@ namespace AresNews.ViewModels
                     string articleUrl = item.Links[0].Uri.OriginalString;
 
                     if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
+                    {
+                        string id = item.Id;
                         _articles.Add(new Article
                         {
-                            Id = item.Id,
+                            Id = id,
                             Title = item.Title.Text,
                             PublishDate = item.PublishDate.DateTime,
                             SourceName = source.Name,
                             Image = GetImagesFromHTML(item)[0],
                             Url = articleUrl,
+                            IsSaved = App.SqLiteConn.Find<Article>(id) != null
 
-                        }) ;
+                        });
+                    }
                 }
+
+                // Reorder articles
+                Articles = new ObservableCollection<Article>(_articles.OrderByDescending(a => a.PublishDate));
             }
         }
         /// <summary>
