@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Syndication;
+using System.Threading.Tasks;
 using System.Xml;
 using Xamarin.Forms;
 
@@ -34,6 +35,26 @@ namespace AresNews.ViewModels
         {
             get { return _addBookmark; }
         }
+        // Command to add a Bookmark
+        private Command _refreshFeed;
+
+        public Command RefreshFeed
+        {
+            get { return _refreshFeed; }
+        }
+
+        private bool _isRefreshing;
+
+        public bool IsRefreshing
+        {
+            get { return _isRefreshing; }
+            set 
+            { 
+                _isRefreshing = value;
+                OnPropertyChanged();
+            }
+        }
+
 
 
         public NewsViewModel()
@@ -66,11 +87,22 @@ namespace AresNews.ViewModels
 
                    
                });
-            FetchArticles();
+            _refreshFeed = new Command( () =>
+               {
+
+                   Task.Run(async () => await FetchArticles());
+
+
+               });
+            Task.Run(async () => await FetchArticles());
 
         }
-        private void FetchArticles()
+        private async Task FetchArticles()
         {
+            IsRefreshing = true;
+
+            var articles = new Collection<Article>();
+            
             // move throu all the sources
             foreach (var source in App.Sources)
             {
@@ -81,6 +113,7 @@ namespace AresNews.ViewModels
 
                 
                 reader.Close();
+                
 
                 // Add the news article of this feed one by one
                 foreach (SyndicationItem item in feed.Items)
@@ -94,7 +127,7 @@ namespace AresNews.ViewModels
                     if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
                     {
                         string id = item.Id;
-                        _articles.Add(new Article
+                        articles.Add(new Article
                         {
                             Id = id,
                             Title = item.Title.Text,
@@ -106,11 +139,16 @@ namespace AresNews.ViewModels
 
                         });
                     }
+
                 }
 
+
                 // Reorder articles
-                Articles = new ObservableCollection<Article>(_articles.OrderByDescending(a => a.PublishDate));
+                Articles = new ObservableCollection<Article>(articles.OrderByDescending(a => a.PublishDate));
+
             }
+            IsRefreshing = false;
+
         }
         /// <summary>
         /// Fetch an image from a url

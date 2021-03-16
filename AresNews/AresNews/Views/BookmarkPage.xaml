@@ -15,6 +15,7 @@
         </Grid>
 
     </Shell.TitleView>
+
     <ContentPage.Content>
         <CollectionView ItemsSource="{Binding Bookmarks}" Margin="10,0" >
             <CollectionView.Header>
@@ -49,7 +50,7 @@
                            />
                     </StackLayout>
                 </ContentView>
-                
+
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
