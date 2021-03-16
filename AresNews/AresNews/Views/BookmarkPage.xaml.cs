@@ -19,5 +19,11 @@ namespace AresNews.Views
 
             BindingContext = new BookmarkViewModel();
         }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            BindingContext = new BookmarkViewModel();
+        }
     }
 }

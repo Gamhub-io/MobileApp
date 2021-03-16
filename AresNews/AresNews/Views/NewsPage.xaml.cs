@@ -24,5 +24,11 @@ namespace AresNews.Views
 
             BindingContext = new NewsViewModel ();
         }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            BindingContext = new NewsViewModel();
+        }
     }
 }

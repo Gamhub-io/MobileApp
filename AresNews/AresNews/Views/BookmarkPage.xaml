@@ -42,8 +42,8 @@
                            TextColor="{StaticResource FontColor}"
                            />
                         <Label Text="Tap on the bookmark icon on the articles you want to save."
-                           FontFamily="P-Regular"
-                           HorizontalTextAlignment="Center"
+                               FontFamily="P-Regular"
+                               HorizontalTextAlignment="Center"
                                FontSize="Subtitle"
                            TextColor="{StaticResource FontColor}"
                            />
