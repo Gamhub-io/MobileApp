@@ -23,6 +23,34 @@
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
             </CollectionView.ItemsLayout>
+            <CollectionView.EmptyView>
+
+                <ContentView>
+                    <StackLayout 
+                                 VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="CenterAndExpand">
+                        <Label Text="&#xf02e;"
+                           FontFamily="FaRegular"
+                           TextColor="{StaticResource Primary}"
+                               FontSize="Header"
+                               HorizontalOptions="Center"
+                           />
+                        <Label Text="No article saved"
+                           FontFamily="P-Bold"
+                           HorizontalOptions="Center"
+                               FontSize="Title"
+                           TextColor="{StaticResource FontColor}"
+                           />
+                        <Label Text="Tap on the bookmark icon on the articles you want to save."
+                           FontFamily="P-Regular"
+                           HorizontalTextAlignment="Center"
+                               FontSize="Subtitle"
+                           TextColor="{StaticResource FontColor}"
+                           />
+                    </StackLayout>
+                </ContentView>
+                
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <controls:ArticlePreview Headline="{Binding Title}"
