@@ -61,11 +61,11 @@
                                            CornerRadius="8"
                                            Margin="10,10,0,0"
                                            HeightRequest="25"
-                                           WidthRequest="60"
+                                           WidthRequest="75"
                                            Padding="0"
                                            BackgroundColor="{StaticResource LightDark}">
                                     <Label  
-                                               FontSize="14"
+                                               FontSize="13"
                                                HorizontalOptions="Center"
                                                 VerticalOptions="Center"
                                                Text="{TemplateBinding ArticleSource}"

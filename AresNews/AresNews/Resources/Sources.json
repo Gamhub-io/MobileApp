@@ -3,5 +3,10 @@
     "name": "Kotaku",
     "domain": "kotaku.com",
     "url": "https://kotaku.com/rss"
+  },
+  {
+    "name": "Eurogamer",
+    "domain": "eurogamer.net",
+    "url": "https://www.eurogamer.net/?format=rss"
   }
 ]
