@@ -92,11 +92,11 @@ namespace AresNews.Controls
                                                          defaultValue: false,
                                                          defaultBindingMode: BindingMode.TwoWay
                                                          /*propertyChanged: ArticleIsSavedPropertyChanged*/);
-        public TimeSpan ArticleTime
+        public string ArticleTime
         {
             get
             {
-                return (TimeSpan)GetValue(ArticleTimeProperty);
+                return (string)GetValue(ArticleTimeProperty);
             }
 
             set
@@ -106,7 +106,7 @@ namespace AresNews.Controls
         }
         public static readonly BindableProperty ArticleTimeProperty = BindableProperty.Create(
                                                          propertyName: "ArticleTime",
-                                                         returnType: typeof(TimeSpan),
+                                                         returnType: typeof(string),
                                                          declaringType: typeof(ArticlePreview),
                                                          defaultBindingMode: BindingMode.TwoWay
                                                          /*propertyChanged: ArticleTimePropertyChanged*/);
