@@ -163,11 +163,12 @@ namespace AresNews.ViewModels
 
                 }
 
+            }
 
-                // Reorder articles
+            // Reorder articles
+            if (articles.Count != _articles.Count)
                 Articles = new ObservableCollection<Article>(articles.OrderByDescending(a => a.PublishDate));
 
-            }
             IsRefreshing = false;
 
         }
@@ -208,11 +209,6 @@ namespace AresNews.ViewModels
                 // Now, using LINQ to get all Images
                 //List<HtmlNode> imageNodes = null;
                 imageNodes = doc.DocumentNode.SelectNodes("//img");
-                //imageNodes = (from HtmlNode node in doc.DocumentNode.SelectNodes("//img")
-                //              where node.Name == "img"
-                //              && node.Attributes["class"] != null
-                //              && node.Attributes["class"].Value.StartsWith("img_")
-                //              select node).ToList();
 
                 foreach (HtmlNode node in imageNodes)
                 {
