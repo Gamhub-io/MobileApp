@@ -1,4 +1,5 @@
 ﻿using AresNews.Models;
+using AresNews.Views;
 using HtmlAgilityPack;
 using MvvmHelpers;
 using System;
@@ -41,6 +42,13 @@ namespace AresNews.ViewModels
         public Command RefreshFeed
         {
             get { return _refreshFeed; }
+        }
+        // Command to add a Bookmark
+        private Command _goToDetail;
+
+        public Command GoToDetail
+        {
+            get { return _goToDetail; }
         }
 
         private bool _isRefreshing;
@@ -87,6 +95,7 @@ namespace AresNews.ViewModels
 
                    
                });
+
             _refreshFeed = new Command( () =>
                {
 
@@ -94,6 +103,15 @@ namespace AresNews.ViewModels
 
 
                });
+
+            _goToDetail = new Command(async (id) =>
+           {
+               var articlePage = new ArticlePage(_articles.FirstOrDefault(art => art.Id == id.ToString()));
+
+               /*Task.Run(async () =>*/
+               await App.Current.MainPage.Navigation.PushAsync(articlePage);/*);*/
+           });
+
             Task.Run(async () => await FetchArticles());
 
         }

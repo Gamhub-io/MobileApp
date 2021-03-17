@@ -45,7 +45,12 @@
                                              Thumnail="{Binding Image}"
                                              BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark}"
                                              ControlTemplate="{StaticResource ArticleTemplate}"
-                                             />
+                                             >
+                            <controls:ArticlePreview.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}" 
+                                                      CommandParameter="{Binding Id}" />
+                            </controls:ArticlePreview.GestureRecognizers>
+                        </controls:ArticlePreview>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
