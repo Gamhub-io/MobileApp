@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.Views.ArticlePage"
-             BackgroundColor="{StaticResource   Dark}"
+             xmlns:helpers="clr-namespace:AresNews.Helpers"
+             BackgroundColor="{StaticResource Dark}"
              Shell.TabBarIsVisible="False">
     <Shell.TitleView>
         <Grid>
@@ -14,7 +15,77 @@
         </Grid>
 
     </Shell.TitleView>
+    <ContentPage.Resources>
+        <helpers:EmptyToBoolConverter x:Key="EmptyToBoolConverter"/>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        
+        <ScrollView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+            
+                <!-- Thumbnail -->
+                <Image Grid.Row="0" 
+                       Source="{Binding SelectedArticle.Image}" 
+                       Aspect="AspectFill" />
+                
+                <!-- Headline -->
+                <Label Grid.Row="1"
+                       HorizontalOptions="Center"
+                       Text="{Binding SelectedArticle.Title}"
+                       TextColor="{StaticResource FontColor}"
+                       Margin="25,5"
+                       FontFamily="P-Bold"
+                       FontSize="18"
+                       />
+                <!-- Publishing info-->
+                <Grid Grid.Row="2" Padding="25,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Publish date time -->
+                    <StackLayout Grid.Column="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" 
+                                   Text="{Binding SelectedArticle.PublishDate, StringFormat='Published {0}'}"
+                                   FontFamily="P-SemiBold"
+                                   FontSize="13"
+                                   TextColor="{StaticResource FontColor}"
+                                   />
+                            <Label Grid.Column="1" 
+                                   Text="{Binding SelectedArticle.PublishTime, StringFormat=' at {0}'}"
+                                   FontFamily="P-SemiBold"
+                                   FontSize="13"
+                                   TextColor="{StaticResource FontColor}"/>
+
+                        </Grid>
+                        <Label Text="{Binding SelectedArticle.Author, StringFormat='by {0}'}"
+                               IsVisible="{Binding SelectedArticle.Author, Converter={StaticResource EmptyToBoolConverter}}"
+                               FontFamily="P-SemiBold"
+                               FontSize="13"
+                               TextColor="{StaticResource FontColor}"/>
+                    </StackLayout>
+                </Grid>
+                <!-- content -->
+                <Label Grid.Row="3"
+                       HorizontalOptions="Center"
+                       Text="{Binding SelectedArticle.Content}"
+                       TextColor="{StaticResource FontColor}"
+                       Margin="25,5"
+                       FontFamily="P-Regular"
+                       FontSize="15"
+                       />
+
+            </Grid>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

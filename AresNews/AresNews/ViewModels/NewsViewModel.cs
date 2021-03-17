@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Syndication;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using Xamarin.Forms;
@@ -149,7 +150,9 @@ namespace AresNews.ViewModels
                         {
                             Id = id,
                             Title = item.Title.Text,
-                            PublishDate = item.PublishDate.DateTime,
+                            Content = Regex.Replace(item.Summary.Text, "<.*?>", string.Empty),
+                            Author = item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty,
+                            FullPublishDate = item.PublishDate.DateTime,
                             SourceName = source.Name,
                             Image = GetImagesFromHTML(item)[0],
                             Url = articleUrl,
