@@ -3,6 +3,8 @@ using MvvmHelpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace AresNews.ViewModels
 {
@@ -17,6 +19,17 @@ namespace AresNews.ViewModels
             { 
                 _selectedArticle = value;
                 OnPropertyChanged();
+            }
+        }
+        public Command Browse 
+        { 
+            get 
+            {
+                return new Command(async () => await Browser.OpenAsync(_selectedArticle.Url, new BrowserLaunchOptions
+                {
+                    LaunchMode = BrowserLaunchMode.External,
+                    TitleMode = BrowserTitleMode.Default,
+                }));
             }
         }
 

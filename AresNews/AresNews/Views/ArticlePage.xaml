@@ -7,11 +7,27 @@
              Shell.TabBarIsVisible="False">
     <Shell.TitleView>
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="80" />
+            </Grid.ColumnDefinitions>
             <Label Text="{Binding SelectedArticle.SourceName}"
-               HorizontalOptions="Center"
-               FontSize="30"
-               TextColor="{StaticResource FontColor}"
-               FontFamily="P-Bold"/>
+                   HorizontalOptions="Center"
+                   FontSize="30"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"
+                   Grid.Column="0"/>
+            
+            <!-- Browser button -->
+            <Button Text="&#xf0ac;" 
+                    FontFamily="FaSolid"
+                    TextColor="{StaticResource Primary}"
+                    BackgroundColor="{StaticResource LightDark}"
+                    Grid.Column="1"
+                    FontSize="30"
+                    Padding="0"
+                    Command="{Binding Browse}"
+                    />
         </Grid>
 
     </Shell.TitleView>
