@@ -28,26 +28,29 @@ namespace AresNews.Models
             }
         }
         public string Url { get; set; }
+        public TimeSpan Time { get 
+            {
+                return DateTime.Now - this.FullPublishDate;
+            } }
         public string TimeAgo
         {
             get
             {
                 string span = string.Empty;
-                TimeSpan timeSpan = DateTime.Now - this.FullPublishDate;
 
                 // If it's more than a year
-                if (timeSpan.Days > 365)
+                if (this.Time.Days > 365)
                 {
                     // get the number of years
-                    int nbYears = timeSpan.Days / 365;
+                    int nbYears = Time.Days / 365;
 
                     span = $"{nbYears} years ago";
                 }
                 // It's more than a month
-                else if (timeSpan.Days > 30)
+                else if (Time.Days > 30)
                 {
                     // Number of months
-                    int nbMonth = timeSpan.Days / 30;
+                    int nbMonth = Time.Days / 30;
 
                     if (nbMonth == 1)
                         span = "1 month ago";
@@ -55,10 +58,10 @@ namespace AresNews.Models
                         span = $"{nbMonth} months ago";
                 }
                 // It's more than a week
-                else if (timeSpan.Days > 7)
+                else if (Time.Days > 7)
                 {
                     // Number of weeks
-                    int nbWeeks = timeSpan.Days / 7;
+                    int nbWeeks = Time.Days / 7;
 
                     if (nbWeeks == 1)
                         span = "1 week ago";
@@ -67,9 +70,9 @@ namespace AresNews.Models
 
                 }
                 // It's more than a day
-                else if (timeSpan.Days > 0)
+                else if (Time.Days > 0)
                 {
-                    int days = timeSpan.Days;
+                    int days = Time.Days;
 
                     if (days == 1)
                         span = "1 day ago";
@@ -77,27 +80,27 @@ namespace AresNews.Models
                         span = $"{days} days ago";
                 }
                 // it's more than an hour
-                else if (timeSpan.Hours > 0)
+                else if (Time.Hours > 0)
                 {
-                    int hours = timeSpan.Hours;
+                    int hours = Time.Hours;
 
                     if (hours == 1)
                         span = "1 hour ago";
                     else
                         span = $"{hours} hours ago";
                 }
-                else if (timeSpan.Minutes > 0)
+                else if (Time.Minutes > 0)
                 {
-                    int minutes = timeSpan.Minutes;
+                    int minutes = Time.Minutes;
 
                     if (minutes == 1)
                         span = "1 minute ago";
                     else
                         span = $"{minutes} minutes ago";
                 }
-                else if (timeSpan.Seconds > 0)
+                else if (Time.Seconds > 0)
                 {
-                    int seconds = timeSpan.Seconds;
+                    int seconds = Time.Seconds;
                     if (seconds == 1)
                         span = "1 second ago";
                     else

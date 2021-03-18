@@ -12,6 +12,7 @@ using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Linq;
 using Xamarin.Forms;
 
 namespace AresNews.ViewModels
@@ -137,6 +138,7 @@ namespace AresNews.ViewModels
                 // Add the news article of this feed one by one
                 foreach (SyndicationItem item in feed.Items)
                 {
+                    
                     // Get the main image
                     var image = GetImagesFromHTML(item)[0];
 
@@ -154,7 +156,7 @@ namespace AresNews.ViewModels
                             Author = item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty,
                             FullPublishDate = item.PublishDate.DateTime,
                             SourceName = source.Name,
-                            Image = GetImagesFromHTML(item)[0],
+                            Image = image,
                             Url = articleUrl,
                             IsSaved = App.SqLiteConn.Find<Article>(id) != null
 
@@ -162,14 +164,15 @@ namespace AresNews.ViewModels
                     }
 
                 }
-
+                
             }
 
             // Reorder articles
             if (articles.Count != _articles.Count)
-                Articles = new ObservableCollection<Article>(articles.OrderByDescending(a => a.PublishDate));
+                Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
 
             IsRefreshing = false;
+            
 
         }
         /// <summary>
@@ -208,7 +211,7 @@ namespace AresNews.ViewModels
 
                 // Now, using LINQ to get all Images
                 //List<HtmlNode> imageNodes = null;
-                imageNodes = doc.DocumentNode.SelectNodes("//img");
+                imageNodes = doc.DocumentNode.SelectSingleNode("//body").SelectNodes("//img");
 
                 foreach (HtmlNode node in imageNodes)
                 {

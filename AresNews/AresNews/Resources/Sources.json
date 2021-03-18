@@ -8,5 +8,10 @@
     "name": "Eurogamer",
     "domain": "eurogamer.net",
     "url": "https://www.eurogamer.net/?format=rss"
+  },
+  {
+    "name": "GameSpot",
+    "domain": "gamespot.com",
+    "url": "https://www.gamespot.com/feeds/game-news"
   }
 ]
