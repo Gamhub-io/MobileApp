@@ -1,4 +1,5 @@
 ﻿using AresNews.Models;
+using AresNews.Views;
 using MvvmHelpers;
 using System;
 using System.Collections.Generic;
@@ -30,10 +31,24 @@ namespace AresNews.ViewModels
         {
             get { return _addBookmark; }
         }
+
+        public Command GoToDetail
+        {
+            get
+            {
+                return new Command(async (id) =>
+                {
+                    var articlePage = new ArticlePage(_bookmarks.FirstOrDefault(art => art.Id == id.ToString()));
+
+                    /*Task.Run(async () =>*/
+                    await App.Current.MainPage.Navigation.PushAsync(articlePage);/*);*/
+                }); ;
+            }
+        }
         public BookmarkViewModel()
         {
 
-            Bookmarks = new ObservableCollection<Article>(App.SqLiteConn.Table<Article>().ToList());
+            Bookmarks = new ObservableCollection<Article>(App.SqLiteConn.Table<Article>().Reverse());
 
 
             _addBookmark = new Command((id) =>
