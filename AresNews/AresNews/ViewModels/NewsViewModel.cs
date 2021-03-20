@@ -132,37 +132,42 @@ namespace AresNews.ViewModels
 
                 
                 reader.Close();
-                
 
-                // Add the news article of this feed one by one
-                foreach (SyndicationItem item in feed.Items)
+                await Task.Run(() =>
                 {
-                    
-                    // Get the main image
-                    var image = GetImagesFromHTML(item)[0];
-
-                    // include the article only if the link is not an ad and if we can get an image
-                    string articleUrl = item.Links[0].Uri.OriginalString;
-
-                    if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
+                   // Add the news article of this feed one by one
+                   foreach (SyndicationItem item in feed.Items)
                     {
-                        string id = item.Id;
-                        articles.Add(new Article
-                        {
-                            Id = id,
-                            Title = item.Title.Text,
-                            Content = Regex.Replace(item.Summary.Text, "<.*?>", string.Empty),
-                            Author = item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty,
-                            FullPublishDate = item.PublishDate.DateTime,
-                            SourceName = source.Name,
-                            Image = image,
-                            Url = articleUrl,
-                            IsSaved = App.SqLiteConn.Find<Article>(id) != null
 
-                        });
+                       // Get the main image
+                       var image = GetImagesFromRssItem(item)[0];
+
+                       // include the article only if the link is not an ad and if we can get an image
+                       string articleUrl = item.Links[0].Uri.OriginalString;
+
+                        if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
+                        {
+                            string id = item.Id;
+                            articles.Add(new Article
+                            {
+                                Id = id,
+                                Title = item.Title.Text,
+                                Content = Regex.Replace(item.Summary.Text, "<.*?>", string.Empty),
+                                Author = item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty,
+                                FullPublishDate = item.PublishDate.DateTime,
+                                SourceName = source.Name,
+                                Image = image,
+                                Url = articleUrl,
+                                IsSaved = App.SqLiteConn.Find<Article>(id) != null
+
+                            });
+                        }
+
                     }
 
-                }
+                });
+                
+
                 
             }
 
@@ -179,50 +184,69 @@ namespace AresNews.ViewModels
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static List<string> GetImagesFromHTML(SyndicationItem item/*string url*/)
+        private static List<string> GetImagesFromRssItem(SyndicationItem item )
         {
-
             // Instanciate the list
             List<string> images = new List<string>();
 
-            // Load the Html
-            HtmlDocument doc = new HtmlDocument();
 
-            doc.LoadHtml(item.Summary.Text);
-            
-            HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
+            var syndicationElementExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "content");
 
-            if (imageNodes != null && imageNodes.Count != 0)
+            // Search if the image is clearly geven
+            if (syndicationElementExtension != null)
             {
-                foreach (HtmlNode node in imageNodes)
-                {
-                    images.Add(node.Attributes["src"].Value);
-                }
+                XElement ele = syndicationElementExtension.GetObject<XElement>();
+
+                string value = ele.Attribute(XName.Get("url")).Value;
+
+                if (value != string.Empty)
+                    images.Add(value);
             }
             else
             {
-                // Load the webpage html
-                using (WebClient client = new WebClient())
+                if (images.Count == 0)
                 {
-                    doc.LoadHtml(client.DownloadString(item.Links[0].Uri.OriginalString));
+                    // Load the Html
+                    HtmlDocument doc = new HtmlDocument();
 
+                    doc.LoadHtml(item.Summary.Text);
+
+                    HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
+
+                    if (imageNodes != null && imageNodes.Count != 0)
+                    {
+                        foreach (HtmlNode node in imageNodes)
+                        {
+                            images.Add(node.Attributes["src"].Value);
+                        }
+                    }
+                    else
+                    {
+                        // Load the webpage html
+                        using (WebClient client = new WebClient())
+                        {
+                            doc.LoadHtml(client.DownloadString(item.Links[0].Uri.OriginalString));
+
+                        }
+
+                        // Now, using LINQ to get all Images
+                        //List<HtmlNode> imageNodes = null;
+                        imageNodes = doc.DocumentNode.SelectNodes("//img");
+
+                        foreach (HtmlNode node in imageNodes)
+                        {
+                            var src = node.Attributes["src"].Value;
+                            if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
+                                images.Add(src);
+
+                        }
+                        images.Add(string.Empty);
+                    }
                 }
-
-                // Now, using LINQ to get all Images
-                //List<HtmlNode> imageNodes = null;
-                imageNodes = doc.DocumentNode.SelectSingleNode("//body").SelectNodes("//img");
-
-                foreach (HtmlNode node in imageNodes)
-                {
-                    var src = node.Attributes["src"].Value;
-                    if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
-                        images.Add(src);
-
-                }
-                images.Add(string.Empty);
             }
 
-            
+
+           
 
             return images;
         }
