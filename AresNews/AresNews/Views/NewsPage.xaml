@@ -12,6 +12,7 @@
             <Label Text="News"
                HorizontalOptions="Center"
                FontSize="30"
+                   Margin="-10,0,0,0"
                TextColor="{StaticResource FontColor}"
                FontFamily="P-Bold"/>
         </Grid>

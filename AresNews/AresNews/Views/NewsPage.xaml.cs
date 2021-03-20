@@ -18,17 +18,18 @@ namespace AresNews.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NewsPage : ContentPage
     {
+        private NewsViewModel _vm;
         public NewsPage()
         {
             InitializeComponent();
 
-            BindingContext = new NewsViewModel ();
+            BindingContext = _vm = new NewsViewModel ();
         }
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            BindingContext = new NewsViewModel();
+            Task.Run(() => _vm.FetchArticles(true));
         }
     }
 }

@@ -108,15 +108,20 @@ namespace AresNews.ViewModels
             _refreshFeed = new Command( () =>
                {
 
-                   Task.Run(async () => await FetchArticles());
+                   Task.Run( () => FetchArticles());
 
 
                });
 
-            Task.Run(async () => await FetchArticles());
+            Task.Run( () =>  FetchArticles());
 
         }
-        private async Task FetchArticles()
+        /// <summary>
+        /// Fetch all the articles
+        /// </summary>
+        /// <param name="forceUpdate">force the update of the article list</param>
+        /// <returns></returns>
+        public void FetchArticles(bool forceUpdate = false)
         {
             IsRefreshing = true;
 
@@ -169,7 +174,7 @@ namespace AresNews.ViewModels
             }
 
             // Reorder articles
-            if (articles.Count != _articles.Count)
+            if (articles.Count != _articles.Count || forceUpdate)
                 Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
 
             IsRefreshing = false;
