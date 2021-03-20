@@ -13,26 +13,6 @@ namespace AresNews.Controls
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ArticlePreview : ContentView
     {
-        //public Article Article
-        //{
-        //    get
-        //    {
-        //        return (Article)GetValue(ArticleProperty);
-        //    }
-
-        //    set
-        //    {
-        //        SetValue(ArticleProperty, value);
-        //    }
-        //}
-
-        //public static readonly BindableProperty ArticleProperty = BindableProperty.Create(
-        //                                                 propertyName: "Article",
-        //                                                 returnType: typeof(string),
-        //                                                 declaringType: typeof(ArticlePreview),
-        //                                                 defaultValue: "",
-        //                                                 defaultBindingMode: BindingMode.TwoWay
-        //                                                 /*propertyChanged: ArticlePropertyChanged*/);
 
         public string ArticleId
         {
@@ -190,17 +170,7 @@ namespace AresNews.Controls
                                                          defaultBindingMode: BindingMode.TwoWay
                                                          /*propertyChanged: ShareCommandChanged*/);
 
-        private static void ShareCommandChanged(BindableObject bindable, object oldValue, object newValue)
-        {
-            var control = (ArticlePreview)bindable;
-            control.ShareCommand = (Command)newValue;
-        }
-
-        private static void BookmarkCommandChanged(BindableObject bindable, object oldValue, object newValue)
-        {
-            var control = (ArticlePreview)bindable;
-            control.BookmarkCommand = (Command)newValue;
-        }
+        
 
         public ArticlePreview()
         {

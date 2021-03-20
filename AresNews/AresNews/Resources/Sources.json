@@ -8,10 +8,15 @@
     "name": "Eurogamer",
     "domain": "eurogamer.net",
     "url": "https://www.eurogamer.net/?format=rss"
-  },
-  {
-    "name": "GameSpot",
-    "domain": "gamespot.com",
-    "url": "https://www.gamespot.com/feeds/game-news"
-  }
+  }//,
+  //{
+  //  "name": "IGN",
+  //  "domain": "ign.com",
+  //  "url": "http://feeds.ign.com/ign/games-all"
+  //}
+  //{
+  //  "name": "GameSpot",
+  //  "domain": "gamespot.com",
+  //  "url": "https://www.gamespot.com/feeds/game-news"
+  //}
 ]

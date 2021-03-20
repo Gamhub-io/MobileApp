@@ -36,7 +36,7 @@ namespace AresNews.Models
         {
             get
             {
-                string span = string.Empty;
+                string span;
 
                 // If it's more than a year
                 if (this.Time.Days > 365)

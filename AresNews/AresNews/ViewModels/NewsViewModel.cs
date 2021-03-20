@@ -36,7 +36,10 @@ namespace AresNews.ViewModels
 
         public Command AddBookmark
         {
-            get { return _addBookmark; }
+            get 
+            { 
+                return _addBookmark;
+            }
         }
         // Command to add a Bookmark
         private Command _refreshFeed;
@@ -46,16 +49,14 @@ namespace AresNews.ViewModels
             get { return _refreshFeed; }
         }
         // See detail of the article
-        private Command _goToDetail;
-
         public Command GoToDetail
         {
             get { return new Command(async (id) =>
             {
                 var articlePage = new ArticlePage(_articles.FirstOrDefault(art => art.Id == id.ToString()));
 
-                /*Task.Run(async () =>*/
-                await App.Current.MainPage.Navigation.PushAsync(articlePage);/*);*/
+                
+                await App.Current.MainPage.Navigation.PushAsync(articlePage);
             }); ; }
         }
 
@@ -188,7 +189,7 @@ namespace AresNews.ViewModels
             HtmlDocument doc = new HtmlDocument();
 
             doc.LoadHtml(item.Summary.Text);
-
+            
             HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
 
             if (imageNodes != null && imageNodes.Count != 0)
