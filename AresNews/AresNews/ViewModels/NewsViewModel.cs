@@ -153,7 +153,7 @@ namespace AresNews.ViewModels
                                 Title = item.Title.Text,
                                 Content = Regex.Replace(item.Summary.Text, "<.*?>", string.Empty),
                                 Author = item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty,
-                                FullPublishDate = item.PublishDate.DateTime,
+                                FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
                                 SourceName = source.Name,
                                 Image = image,
                                 Url = articleUrl,
