@@ -13,7 +13,8 @@
             </Grid.ColumnDefinitions>
             <Label Text="{Binding SelectedArticle.SourceName}"
                    HorizontalOptions="Center"
-                   FontSize="30"
+                   VerticalOptions="Center"
+                   FontSize="20"
                    Margin="-10,0,0,0"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-Bold"

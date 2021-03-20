@@ -44,6 +44,12 @@
     "domain": "majornelson.com",
     "url": "https://majornelson.com/feed/"
   }
+  ,
+  {
+    "name": "Guardian Of Gamers",
+    "domain": "guardianofgamers.com",
+    "url": "https://www.guardianofgamers.com/category/game-news/feed/"
+  }
 
   // ToDo: fix this one
   //{
@@ -52,10 +58,10 @@
   //  "url": "https://www.pcgamer.com/rss/"
   //}
 
-    //{
-    //  "name": "Reddit",
-    //  "domain": "reddit.com",
-    //  "url": "https://www.reddit.com/r/gamers/.rss"
-    //}
+  //{
+  //  "name": "Reddit",
+  //  "domain": "reddit.com",
+  //  "url": "https://www.reddit.com/r/gamers/.rss"
+  //}
 
 ]
