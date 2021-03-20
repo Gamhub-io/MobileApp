@@ -133,8 +133,7 @@ namespace AresNews.ViewModels
                 
                 reader.Close();
 
-                await Task.Run(() =>
-                {
+                
                    // Add the news article of this feed one by one
                    foreach (SyndicationItem item in feed.Items)
                     {
@@ -164,8 +163,6 @@ namespace AresNews.ViewModels
                         }
 
                     }
-
-                });
                 
 
                 
