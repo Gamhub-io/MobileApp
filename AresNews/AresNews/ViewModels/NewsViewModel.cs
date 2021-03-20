@@ -189,8 +189,7 @@ namespace AresNews.ViewModels
             // Instanciate the list
             List<string> images = new List<string>();
 
-
-            var syndicationElementExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "content");
+            var syndicationElementExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "content" || e.OuterName == "thumbnail");
 
             // Search if the image is clearly geven
             if (syndicationElementExtension != null)

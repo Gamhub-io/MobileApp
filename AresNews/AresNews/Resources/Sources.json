@@ -18,5 +18,44 @@
     "name": "GameSpot",
     "domain": "gamespot.com",
     "url": "https://www.gamespot.com/feeds/game-news"
+  },
+  {
+    "name": "Xbox Wire",
+    "domain": "xbox.com",
+    "url": "https://news.xbox.com/en-us/feed/"
+  },
+  {
+    "name": "my nintendo news",
+    "domain": "mynintendonews.com",
+    "url": "https://mynintendonews.com/feed/"
+  },
+  {
+    "name": "PCGamesN",
+    "domain": "pcgamesn.com",
+    "url": "https://www.pcgamesn.com/mainrss.xml"
+  },
+  {
+    "name": "Nintendo Life",
+    "domain": "nintendolife.com",
+    "url": "https://www.nintendolife.com/feeds/latest"
+  },
+  {
+    "name": "Major Nelson",
+    "domain": "majornelson.com",
+    "url": "https://majornelson.com/feed/"
   }
+
+  // ToDo: fix this one
+  //{
+  //  "name": "PC Gamer",
+  //  "domain": "pcgamer.com",
+  //  "url": "https://www.pcgamer.com/rss/"
+  //}
+
+    //{
+    //  "name": "Reddit",
+    //  "domain": "reddit.com",
+    //  "url": "https://www.reddit.com/r/gamers/.rss"
+    //}
+
 ]
