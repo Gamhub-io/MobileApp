@@ -16,15 +16,18 @@
         <ResourceDictionary>
             <ControlTemplate x:Key="ArticleTemplate">
                 <Frame CornerRadius="15" 
-               HeightRequest="221"
-               WidthRequest="330"
-               Padding="0">
+                       BorderColor="{StaticResource Light}"
+                       HeightRequest="221"
+                       WidthRequest="330"
+                       Padding="0">
                     <Grid>
 
                         <!-- Backgournd -->
                         <Grid BackgroundColor="{StaticResource Dark}">
                             <!-- Image -->
-                            <Image Source="{TemplateBinding Thumnail}" Opacity="0.60" />
+                            <Image Source="{TemplateBinding Thumnail}" 
+                                   Opacity="0.60" 
+                                   Aspect="AspectFill"/>
                             <!-- filter -->
                             <Grid Opacity="0.15">
                                 <Grid.Background>
@@ -61,8 +64,7 @@
                                            CornerRadius="8"
                                            Margin="10,10,0,0"
                                            HeightRequest="25"
-                                           WidthRequest="75"
-                                           Padding="0"
+                                           Padding="5,0"
                                            BackgroundColor="{StaticResource LightDark}">
                                     <Label  
                                                FontSize="13"
