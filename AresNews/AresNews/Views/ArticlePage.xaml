@@ -92,6 +92,56 @@
                                FontSize="13"
                                TextColor="{StaticResource FontColor}"/>
                     </StackLayout>
+                    <!-- Buttons -->
+                    <!-- Share and save-->
+                    <Grid Grid.Column="1" ColumnSpacing="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <!-- Share button-->
+                        <Button Grid.Column="0"
+                                                CornerRadius="100"
+                                               HorizontalOptions="End"
+                                               VerticalOptions="CenterAndExpand"
+                                                Text="&#xf1e0;"
+                                                FontFamily="FaSolid"
+                                                FontSize="20"
+                                               Padding="0"
+                                               HeightRequest="40"
+                                               WidthRequest="40"
+                                                TextColor="{StaticResource Primary}"
+                                               BackgroundColor="{StaticResource LightDark}"
+                                            Command="{Binding ShareArticle}"
+                                            CommandParameter="{Binding SelectedArticle.Url}"/>
+                        <!-- Bookmark button-->
+                        <Button  Grid.Column="1"
+                                                CornerRadius="100"
+                                               HorizontalOptions="End"
+                                               VerticalOptions="CenterAndExpand"
+                                               Padding="0"
+                                               HeightRequest="40"
+                                               WidthRequest="40"
+                                                 FontSize="20"
+                                                 Text="&#xf02e;"
+                                                 TextColor="{StaticResource Primary}"
+                                               BackgroundColor="{StaticResource LightDark}"
+                                                  Command="{Binding AddBookmark}"
+                                                  CommandParameter="{Binding SelectedArticle.Id}">
+                            <Button.Triggers>
+                                <DataTrigger TargetType="Button"
+                                             Binding="{Binding SelectedArticle.IsSaved}"
+                                             Value="true">
+                                    <Setter Property="FontFamily" Value="FaSolid"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Button"
+                                             Binding="{Binding SelectedArticle.IsSaved}"
+                                             Value="false">
+                                    <Setter Property="FontFamily" Value="FaRegular"/>
+                                </DataTrigger>
+                            </Button.Triggers>
+                        </Button>
+                    </Grid>
                 </Grid>
                 <!-- content -->
                 <Label Grid.Row="3"
