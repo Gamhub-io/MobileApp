@@ -47,7 +47,7 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
-                                <RowDefinition Height="73"/>
+                                <RowDefinition Height="75"/>
                             </Grid.RowDefinitions>
 
                             <!-- Extra -->
@@ -136,7 +136,7 @@
                             <!-- Title -->
                             <Grid Grid.Row="1" >
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="1.5*"/>
+                                    <RowDefinition Height="2*"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
                                 <!-- Headline -->
@@ -152,6 +152,7 @@
                                        Text="{TemplateBinding  ArticleTime}"
                                        TextColor="{StaticResource FontColor}"
                                        Margin="10,0"
+                                       VerticalOptions="Center"
                                        HorizontalOptions="End"
                                        FontFamily="P-Bold"
                                        FontSize="14"/>
