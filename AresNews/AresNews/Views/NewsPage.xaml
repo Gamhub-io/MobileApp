@@ -10,11 +10,12 @@
     <Shell.TitleView>
         <Grid>
             <Label Text="News"
-               HorizontalOptions="Center"
-               FontSize="30"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontSize="30"
                    Margin="-10,0,0,0"
-               TextColor="{StaticResource FontColor}"
-               FontFamily="P-Bold"/>
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"/>
         </Grid>
         
     </Shell.TitleView>
@@ -39,13 +40,15 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <controls:ArticlePreview Headline="{Binding Title}"
-                                             ArticleId="{Binding Id}"
-                                             ArticleIsSaved="{Binding IsSaved}"
-                                             ArticleTime="{Binding TimeAgo}"
-                                             ArticleSource="{Binding SourceName}"
-                                             Thumnail="{Binding Image}"
-                                             BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark}"
-                                             ControlTemplate="{StaticResource ArticleTemplate}"
+                                                 ArticleId="{Binding Id}"
+                                                 ArticleIsSaved="{Binding IsSaved}"
+                                                 ArticleTime="{Binding TimeAgo}"
+                                                 ArticleSource="{Binding SourceName}"
+                                                 Thumnail="{Binding Image}"
+                                                 ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle}"
+                                                 ShareCommandParameter="{Binding Url}"
+                                                 BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark}"
+                                                 ControlTemplate="{StaticResource ArticleTemplate}"
                                              >
                             <controls:ArticlePreview.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}" 

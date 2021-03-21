@@ -8,11 +8,12 @@
     <Shell.TitleView>
         <Grid>
             <Label Text="Bookmarks"
-               HorizontalOptions="Center"
-               FontSize="30"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontSize="30"
                    Margin="-10,0,0,0"
-               TextColor="{StaticResource FontColor}"
-               FontFamily="P-Bold"/>
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"/>
         </Grid>
 
     </Shell.TitleView>
@@ -61,6 +62,8 @@
                                              ArticleTime="{Binding TimeAgo}"
                                              ArticleSource="{Binding SourceName}"
                                              Thumnail="{Binding Image}"
+                                             ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=ShareArticle}"
+                                                 ShareCommandParameter="{Binding Url}"
                                              BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=AddBookmark}"
                                              ControlTemplate="{StaticResource ArticleTemplate}"
                                              >

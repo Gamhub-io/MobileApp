@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace AresNews.ViewModels
@@ -41,12 +42,19 @@ namespace AresNews.ViewModels
                 return _addBookmark;
             }
         }
-        // Command to add a Bookmark
+        // Command to refresh the news feed
         private Command _refreshFeed;
 
         public Command RefreshFeed
         {
             get { return _refreshFeed; }
+        }
+        // Command to add a Bookmark
+        private Command _shareArticle;
+
+        public Command ShareArticle
+        {
+            get { return _shareArticle; }
         }
         // See detail of the article
         public Command GoToDetail
@@ -112,6 +120,16 @@ namespace AresNews.ViewModels
 
 
                });
+
+            // Set command to share an article
+            _shareArticle = new Command(async (url) =>
+           {
+               await Share.RequestAsync(new ShareTextRequest
+               {
+                   Uri = url.ToString(),
+                   Title = "Share this article"
+               });
+           });
 
             Task.Run( () =>  FetchArticles());
 

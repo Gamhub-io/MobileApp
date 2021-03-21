@@ -154,12 +154,12 @@ namespace AresNews.Controls
         {
             get
             {
-                return (Command)GetValue(BookmarkCommandProperty);
+                return (Command)GetValue(ShareCommandProperty);
             }
 
             set
             {
-                SetValue(BookmarkCommandProperty, value);
+                SetValue(ShareCommandProperty, value);
             }
         }
 
@@ -169,8 +169,32 @@ namespace AresNews.Controls
                                                          declaringType: typeof(ArticlePreview),
                                                          defaultBindingMode: BindingMode.TwoWay
                                                          /*propertyChanged: ShareCommandChanged*/);
+        public object ShareCommandParameter
+        {
+            get
+            {
+                return (object)GetValue(ShareCommandParameterProperty);
+            }
+
+            set
+            {
+                SetValue(ShareCommandParameterProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty ShareCommandParameterProperty = BindableProperty.Create(
+                                                         propertyName: "ShareCommandParameter",
+                                                         returnType: typeof(object),
+                                                         declaringType: typeof(ArticlePreview),
+                                                         defaultBindingMode: BindingMode.TwoWay
+                                                         /*propertyChanged: ShareCommandChanged*/);
+
 
         
+
+
+
+
 
         public ArticlePreview()
         {

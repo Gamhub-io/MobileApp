@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace AresNews.ViewModels
@@ -45,6 +46,13 @@ namespace AresNews.ViewModels
                 }); ;
             }
         }
+        // Command to add a Bookmark
+        private Command _shareArticle;
+
+        public Command ShareArticle
+        {
+            get { return _shareArticle; }
+        }
         public BookmarkViewModel()
         {
 
@@ -64,6 +72,17 @@ namespace AresNews.ViewModels
                 Bookmarks.Remove(article);
 
 
+            });
+
+
+            // Set command to share an article
+            _shareArticle = new Command(async (url) =>
+            {
+                await Share.RequestAsync(new ShareTextRequest
+                {
+                    Uri = url.ToString(),
+                    Title = "Share this article"
+                });
             });
         }
     }

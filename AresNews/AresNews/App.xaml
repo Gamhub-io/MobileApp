@@ -95,7 +95,9 @@
                                                HeightRequest="40"
                                                WidthRequest="40"
                                                 TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"/>
+                                               BackgroundColor="{StaticResource LightDark}"
+                                            Command="{TemplateBinding ShareCommand}"
+                                            CommandParameter="{TemplateBinding ShareCommandParameter}"/>
                                     <!-- Bookmark button-->
                                     <Button  Grid.Row="1"
                                                 CornerRadius="100"
@@ -109,8 +111,8 @@
                                                  Text="&#xf02e;"
                                                  TextColor="{StaticResource Primary}"
                                                BackgroundColor="{StaticResource LightDark}"
-                                                  Command="{TemplateBinding  BookmarkCommand}"
-                                                  CommandParameter="{TemplateBinding  ArticleId}">
+                                                  Command="{TemplateBinding BookmarkCommand}"
+                                                  CommandParameter="{TemplateBinding ArticleId}">
                                         <Button.Triggers>
                                             <DataTrigger TargetType="Button"
                                                          Binding="{TemplateBinding ArticleIsSaved}"
