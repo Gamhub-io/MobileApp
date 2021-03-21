@@ -43,6 +43,16 @@
     "name": "Major Nelson",
     "domain": "majornelson.com",
     "url": "https://majornelson.com/feed/"
+  },
+  {
+    "name": "Pocket Gamer",
+    "domain": "pocketgamer.com",
+    "url": "https://www.pocketgamer.com/rss/"
+  },
+  {
+    "name": "Push Square",
+    "domain": "pushsquare.com",
+    "url": "https://www.pushsquare.com/feeds/latest"
   }
   ,
   {
