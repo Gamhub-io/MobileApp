@@ -30,7 +30,9 @@
              Command="{Binding RefreshFeed}"
                      BackgroundColor="{StaticResource LightDark}"
                      RefreshColor="{StaticResource Primary}">
-            <CollectionView ItemsSource="{Binding Articles}" Margin="10,0" >
+            <CollectionView ItemsSource="{Binding Articles}" 
+                            Margin="10,0"
+                            >
                 <CollectionView.Header>
                     <BoxView HeightRequest="0"/>
                 </CollectionView.Header>
