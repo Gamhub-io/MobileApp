@@ -33,7 +33,7 @@ namespace AresNews.ViewModels
             }
         }
         // Command to add a Bookmark
-        private Command _addBookmark;
+        private readonly Command _addBookmark;
 
         public Command AddBookmark
         {
@@ -43,14 +43,14 @@ namespace AresNews.ViewModels
             }
         }
         // Command to refresh the news feed
-        private Command _refreshFeed;
+        private readonly Command _refreshFeed;
 
         public Command RefreshFeed
         {
             get { return _refreshFeed; }
         }
         // Command to add a Bookmark
-        private Command _shareArticle;
+        private readonly Command _shareArticle;
 
         public Command ShareArticle
         {
@@ -158,7 +158,6 @@ namespace AresNews.ViewModels
 
                 SyndicationFeed feed = SyndicationFeed.Load(reader);
 
-                
                 reader.Close();
 
                 
