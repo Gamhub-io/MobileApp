@@ -148,10 +148,10 @@ namespace AresNews.ViewModels
             var sources = App.Sources;
 
             // move throu all the sources
-            //foreach (var source in App.Sources)
-            for (int i = 0; i < sources.Count; i++)
+            foreach (var source in App.Sources)
+            //for (int i = 0; i < sources.Count; i++)
             {
-                var source = sources[i];
+                //var source = sources[i];
 
                 // Create the RSS reader
                 var reader = XmlReader.Create(source.Url);
@@ -160,36 +160,40 @@ namespace AresNews.ViewModels
 
                 reader.Close();
 
-                
+
                 // Add the news article of this feed one by one
-                foreach (SyndicationItem item in feed.Items)
-                 {
+                Task.Run(() =>
+                {
+                    foreach (SyndicationItem item in feed.Items)
+                    {
 
-                    // Get the main image
-                    var image = GetImagesFromRssItem(item)[0];
+                        // Get the main image
+                        var image = GetImagesFromRssItem(item)[0];
 
-                    // include the article only if the link is not an ad and if we can get an image
-                    string articleUrl = item.Links[0].Uri.OriginalString;
+                        // include the article only if the link is not an ad and if we can get an image
+                        string articleUrl = item.Links[0].Uri.OriginalString;
 
-                     if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
-                     {
-                         string id = item.Id;
-                         articles.Add(new Article
-                         {
-                             Id = id,
-                             Title = item.Title.Text,
-                             Content = Regex.Replace(item.Summary.Text, "<.*?>", string.Empty),
-                             Author = item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty,
-                             FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
-                             SourceName = source.Name,
-                             Image = image,
-                             Url = articleUrl,
-                             IsSaved = App.SqLiteConn.Find<Article>(id) != null
+                        if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
+                        {
+                            //sstring creator = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator").GetObject<XElement>().Value;
+                            string id = item.Id;
+                            articles.Add(new Article
+                            {
+                                Id = id,
+                                Title = item.Title.Text,
+                                Content = Regex.Replace(item.Summary.Text, "<.*?>", string.Empty),
+                                Author = item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty,
+                                FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
+                                SourceName = source.Name,
+                                Image = image,
+                                Url = articleUrl,
+                                IsSaved = App.SqLiteConn.Find<Article>(id) != null
 
-                         });
-                     }
+                            });
+                        }
 
-                 }
+                    }
+                });
                 
 
                 
