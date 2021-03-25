@@ -166,6 +166,13 @@ namespace AresNews.ViewModels
                 {
                     foreach (SyndicationItem item in feed.Items)
                     {
+                        var creatorExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator" );
+                        
+                        string creator = null;
+
+                        // If the author name is in the extension then we can mention it
+                        if (creatorExtension != null)
+                            creator = creatorExtension.GetObject<XElement>().Value;
 
                         // Get the main image
                         var image = GetImagesFromRssItem(item)[0];
@@ -182,7 +189,7 @@ namespace AresNews.ViewModels
                                 Id = id,
                                 Title = item.Title.Text,
                                 Content = Regex.Replace(item.Summary.Text, "<.*?>", string.Empty),
-                                Author = item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty,
+                                Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
                                 FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
                                 SourceName = source.Name,
                                 Image = image,

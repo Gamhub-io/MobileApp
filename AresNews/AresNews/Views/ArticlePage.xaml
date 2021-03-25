@@ -80,13 +80,14 @@
                                    TextColor="{StaticResource FontColor}"
                                    />
                             <Label Grid.Column="1" 
-                                   Text="{Binding SelectedArticle.PublishTime, StringFormat=' at {0}'}"
+                                   Text="{Binding SelectedArticle.PublishTime, StringFormat='at {0}'}"
                                    FontFamily="P-SemiBold"
                                    FontSize="13"
                                    TextColor="{StaticResource FontColor}"/>
 
                         </Grid>
                         <Label Text="{Binding SelectedArticle.Author, StringFormat='by {0}'}"
+                               TextType="Html"
                                IsVisible="{Binding SelectedArticle.Author, Converter={StaticResource EmptyToBoolConverter}}"
                                FontFamily="P-SemiBold"
                                FontSize="13"
