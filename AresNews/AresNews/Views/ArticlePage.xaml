@@ -150,6 +150,7 @@
                        Text="{Binding SelectedArticle.Content}"
                        TextColor="{StaticResource FontColor}"
                        Margin="25,5"
+                       TextType="Html"
                        FontFamily="P-Regular"
                        FontSize="15"
                        />
