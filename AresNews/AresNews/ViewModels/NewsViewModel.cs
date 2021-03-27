@@ -209,8 +209,7 @@ namespace AresNews.ViewModels
             IsRefreshing = false;
 
             //  Determine if the list has to get updated
-            bool v = !(_articles.All(articles.Contains) && articles.All(_articles.Contains));
-            if (v || forceUpdate)
+            if (_articles.All(articles.Contains) || forceUpdate)
                 Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
 
             
