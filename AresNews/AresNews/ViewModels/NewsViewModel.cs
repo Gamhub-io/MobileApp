@@ -211,9 +211,6 @@ namespace AresNews.ViewModels
             //  Determine if the list has to get updated
             if (_articles.All(articles.Contains) || forceUpdate)
                 Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
-
-            
-
         }
         /// <summary>
         /// Fetch an image from a url
@@ -225,65 +222,70 @@ namespace AresNews.ViewModels
             // Instanciate the list
             List<string> images = new List<string>();
 
-            var syndicationElementExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "content" || e.OuterName == "thumbnail");
+            var contentExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "content");
+            var thumnailExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "thumbnail");
 
             // Search if the image is clearly geven
-            if (syndicationElementExtension != null)
+            if (contentExtension != null)
             {
-                XElement ele = syndicationElementExtension.GetObject<XElement>();
+                AddImageFromExt(contentExtension);
+            }
+            if (thumnailExtension != null)
+            {
+                AddImageFromExt(thumnailExtension);
+            }
+            if (images.Count == 0)
+            {
+                // Load the Html
+                HtmlDocument doc = new HtmlDocument();
+
+                doc.LoadHtml(item.Summary.Text);
+
+                HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
+
+                if (imageNodes != null && imageNodes.Count != 0)
+                {
+                    foreach (HtmlNode node in imageNodes)
+                    {
+                        images.Add(node.Attributes["src"].Value);
+                    }
+                }
+                else
+                {
+                    // Load the webpage html
+                    using (WebClient client = new WebClient())
+                    {
+                        doc.LoadHtml(client.DownloadString(item.Links[0].Uri.OriginalString));
+
+                    }
+
+                    // Now, using LINQ to get all Images
+                    //List<HtmlNode> imageNodes = null;
+                    imageNodes = doc.DocumentNode.SelectNodes("//img");
+
+                    foreach (HtmlNode node in imageNodes)
+                    {
+                        var src = node.Attributes["src"].Value;
+                        if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
+                            images.Add(src);
+
+                    }
+                    images.Add(string.Empty);
+                }
+            }
+            
+
+            return images;
+
+            void AddImageFromExt(SyndicationElementExtension Extension)
+            {
+                XElement ele = Extension.GetObject<XElement>();
 
                 string value = ele.Attribute(XName.Get("url")).Value;
 
-                if (value != string.Empty)
+                if (!string.IsNullOrWhiteSpace(value)/*value != string.Empty*/)
                     images.Add(value);
             }
-            else
-            {
-                if (images.Count == 0)
-                {
-                    // Load the Html
-                    HtmlDocument doc = new HtmlDocument();
-
-                    doc.LoadHtml(item.Summary.Text);
-
-                    HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
-
-                    if (imageNodes != null && imageNodes.Count != 0)
-                    {
-                        foreach (HtmlNode node in imageNodes)
-                        {
-                            images.Add(node.Attributes["src"].Value);
-                        }
-                    }
-                    else
-                    {
-                        // Load the webpage html
-                        using (WebClient client = new WebClient())
-                        {
-                            doc.LoadHtml(client.DownloadString(item.Links[0].Uri.OriginalString));
-
-                        }
-
-                        // Now, using LINQ to get all Images
-                        //List<HtmlNode> imageNodes = null;
-                        imageNodes = doc.DocumentNode.SelectNodes("//img");
-
-                        foreach (HtmlNode node in imageNodes)
-                        {
-                            var src = node.Attributes["src"].Value;
-                            if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
-                                images.Add(src);
-
-                        }
-                        images.Add(string.Empty);
-                    }
-                }
-            }
-
-
-           
-
-            return images;
         }
     }
 }
