@@ -115,10 +115,8 @@ namespace AresNews.ViewModels
 
             _refreshFeed = new Command( () =>
                {
-
+                   // Fetch the article
                    Task.Run( () => FetchArticles());
-
-
                });
 
             // Set command to share an article
@@ -131,8 +129,6 @@ namespace AresNews.ViewModels
                });
            });
 
-            Task.Run( () =>  FetchArticles());
-
         }
         /// <summary>
         /// Fetch all the articles
@@ -143,7 +139,7 @@ namespace AresNews.ViewModels
         {
             IsRefreshing = true;
 
-            var articles = new Collection<Article>();
+            var articles = new ObservableCollection<Article>();
 
             var sources = App.Sources;
 
@@ -211,8 +207,8 @@ namespace AresNews.ViewModels
                 
             }
 
-            // Reorder articles
-            if (articles.Count != _articles.Count || forceUpdate)
+            //  Determine if the list has to get updated
+            if (!(_articles.All(articles.Contains) && articles.All(_articles.Contains)) || forceUpdate)
                 Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
 
             IsRefreshing = false;

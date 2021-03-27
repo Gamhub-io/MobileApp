@@ -25,11 +25,11 @@ namespace AresNews.Views
 
             BindingContext = _vm = new NewsViewModel ();
         }
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            Task.Run(() => _vm.FetchArticles(true));
+            this.newsRefreshView.Command.Execute(null);
         }
     }
 }

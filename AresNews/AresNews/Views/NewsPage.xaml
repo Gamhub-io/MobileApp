@@ -28,6 +28,7 @@
 
         <RefreshView IsRefreshing="{Binding IsRefreshing}"
              Command="{Binding RefreshFeed}"
+                     x:Name="newsRefreshView"
                      BackgroundColor="{StaticResource LightDark}"
                      RefreshColor="{StaticResource Primary}">
             <CollectionView ItemsSource="{Binding Articles}" 
