@@ -137,7 +137,7 @@ namespace AresNews.ViewModels
         /// <returns></returns>
         public void FetchArticles(bool forceUpdate = false)
         {
-            IsRefreshing = true;
+            //IsRefreshing = true;
 
             var articles = new ObservableCollection<Article>();
 
@@ -206,12 +206,13 @@ namespace AresNews.ViewModels
 
                 
             }
+            IsRefreshing = false;
 
             //  Determine if the list has to get updated
-            if (!(_articles.All(articles.Contains) && articles.All(_articles.Contains)) || forceUpdate)
+            bool v = !(_articles.All(articles.Contains) && articles.All(_articles.Contains));
+            if (v || forceUpdate)
                 Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
 
-            IsRefreshing = false;
             
 
         }
