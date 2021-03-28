@@ -5,6 +5,7 @@ using MvvmHelpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.ServiceModel;
@@ -177,7 +178,6 @@ namespace AresNews.ViewModels
 
                         // Get the main image
                         var image = GetImagesFromRssItem(item)[0];
-
                         // include the article only if the link is not an ad and if we can get an image
                         string articleUrl = item.Links[0].Uri.OriginalString;
 
@@ -189,7 +189,7 @@ namespace AresNews.ViewModels
                             {
                                 Id = id,
                                 Title = item.Title.Text,
-                                Content = item.Summary.Text,// Regex.Replace(item.Summary.Text, "<.*?>", string.Empty),
+                                Content =  Regex.Replace(item.Summary.Text, "^<img[^>]*>", string.Empty),
                                 Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
                                 FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
                                 SourceName = source.Name,
@@ -260,7 +260,6 @@ namespace AresNews.ViewModels
                     }
 
                     // Now, using LINQ to get all Images
-                    //List<HtmlNode> imageNodes = null;
                     imageNodes = doc.DocumentNode.SelectNodes("//img");
 
                     foreach (HtmlNode node in imageNodes)
