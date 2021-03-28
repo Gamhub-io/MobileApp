@@ -208,11 +208,11 @@ namespace AresNews.ViewModels
             }
             IsRefreshing = false;
 
-            //  Determine if the list has to get updated
-            //if (!_articles.All(articles.Contains) || forceUpdate)
-
             // Update list of articles
             Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+
+
+            //Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
         }
         /// <summary>
         /// Fetch an image from a url
