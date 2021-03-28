@@ -24,7 +24,7 @@
                 <BoxView HeightRequest="0"/>
             </CollectionView.Header>
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="20" />
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
             </CollectionView.ItemsLayout>
             <CollectionView.EmptyView>
 
