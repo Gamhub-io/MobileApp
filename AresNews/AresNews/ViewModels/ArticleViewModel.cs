@@ -76,6 +76,8 @@ namespace AresNews.ViewModels
                 {
                     Uri = url.ToString(),
                     Title = "Share this article",
+                    Subject =_selectedArticle.Title,
+                    Text = _selectedArticle.Title
                     
                 });
             });
