@@ -41,7 +41,7 @@ namespace AresNews.ViewModels
             {
                 return new Command(async () => await Browser.OpenAsync(_selectedArticle.Url, new BrowserLaunchOptions
                 {
-                    LaunchMode = BrowserLaunchMode.External,
+                    LaunchMode = BrowserLaunchMode.SystemPreferred,
                     TitleMode = BrowserTitleMode.Default,
                 }));
             }
@@ -75,7 +75,8 @@ namespace AresNews.ViewModels
                 await Share.RequestAsync(new ShareTextRequest
                 {
                     Uri = url.ToString(),
-                    Title = "Share this article"
+                    Title = "Share this article",
+                    
                 });
             });
         }
