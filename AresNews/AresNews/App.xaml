@@ -97,7 +97,7 @@
                                                 TextColor="{StaticResource Primary}"
                                                BackgroundColor="{StaticResource LightDark}"
                                             Command="{TemplateBinding ShareCommand}"
-                                            CommandParameter="{TemplateBinding ShareCommandParameter}"/>
+                                            CommandParameter="{TemplateBinding ArticleId}"/>
                                     <!-- Bookmark button-->
                                     <Button  Grid.Row="1"
                                                 CornerRadius="100"

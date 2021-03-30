@@ -121,12 +121,17 @@ namespace AresNews.ViewModels
                });
 
             // Set command to share an article
-            _shareArticle = new Command(async (url) =>
+            _shareArticle = new Command(async (id) =>
            {
+               // Get selected article
+               var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
+
                await Share.RequestAsync(new ShareTextRequest
                {
-                   Uri = url.ToString(),
-                   Title = "Share this article"
+                   Uri = article.Url,
+                   Title = "Share this article",
+                   Subject = article.Title,
+                   Text = article.Title
                });
            });
 
