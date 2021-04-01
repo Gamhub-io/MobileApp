@@ -292,6 +292,21 @@ namespace AresNews.ViewModels
                 if (!string.IsNullOrWhiteSpace(value)/*value != string.Empty*/)
                     images.Add(value);
             }
+
+        }
+        public void RefreshBookmarks ()
+        {
+            foreach (var bm in App.SqLiteConn.Table<Article>().Reverse())
+            {
+                var ele = _articles.FirstOrDefault(a => a.Id == bm.Id);
+
+                ele.IsSaved = true;
+
+
+
+
+
+            }
         }
     }
 }
