@@ -127,6 +127,6 @@ namespace AresNews.Models
         //    }
         //    set { _isSaved = value; }
         //}
-        public bool IsSaved { get; set; }
+        public bool IsSaved { get { return App.SqLiteConn.Find<Article>(Id) != null; } }
     }
 }

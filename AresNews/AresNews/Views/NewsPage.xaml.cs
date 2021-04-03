@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -24,12 +25,19 @@ namespace AresNews.Views
             InitializeComponent();
 
             BindingContext = _vm = new NewsViewModel ();
+
+            _vm.IsRefreshing = true;
+
         }
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
 
-            _vm.IsRefreshing = true;
+            _vm.RefreshBookmarks();
+
+            
+            
+            //_vm.IsRefreshing = true;
             //this.newsRefreshView.Command.Execute(null);
         }
     }

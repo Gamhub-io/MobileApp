@@ -57,15 +57,17 @@ namespace AresNews.ViewModels
                 bool isSaved = _selectedArticle.IsSaved;
 
                 // Marked the article as saved
-                _selectedArticle.IsSaved = !isSaved;
+                //_selectedArticle.IsSaved = !isSaved;
 
-                SelectedArticle = _selectedArticle;
 
                 if (isSaved)
                     App.SqLiteConn.Delete(_selectedArticle);
                 else
                     // Insert it in database
                     App.SqLiteConn.Insert(_selectedArticle);
+
+                SelectedArticle = _selectedArticle;
+
             });
 
 

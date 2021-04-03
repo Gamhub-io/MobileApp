@@ -99,8 +99,8 @@ namespace AresNews.ViewModels
                    // If the article is already in bookmarks
                    bool isSaved = article.IsSaved;
 
-                   // Marked the article as saved
-                   article.IsSaved = !article.IsSaved;
+                   //// Marked the article as saved
+                   //article.IsSaved = !article.IsSaved;
 
                    if (isSaved)
                        App.SqLiteConn.Delete(article);
@@ -134,6 +134,7 @@ namespace AresNews.ViewModels
                    Text = article.Title
                });
            });
+
 
         }
         /// <summary>
@@ -200,7 +201,7 @@ namespace AresNews.ViewModels
                                 SourceName = source.Name,
                                 Image = image,
                                 Url = articleUrl,
-                                IsSaved = App.SqLiteConn.Find<Article>(id) != null
+                                //IsSaved = App.SqLiteConn.Find<Article>(id) != null
 
                             });
                         }
@@ -296,17 +297,62 @@ namespace AresNews.ViewModels
         }
         public void RefreshBookmarks ()
         {
-            foreach (var bm in App.SqLiteConn.Table<Article>().Reverse())
+            if (_articles.Count > 0)
             {
-                var ele = _articles.FirstOrDefault(a => a.Id == bm.Id);
-
-                ele.IsSaved = true;
-
-
-
-
-
+                Task.Run (() => Articles = new ObservableCollection<Article>(_articles));
+                
             }
-        }
+
+            //var nbms = App.SqLiteConn.Table<Article>();//_articles.ToList().FindAll(a => a.IsSaved == true);
+            //if (_articles.Count > 0)
+            //{
+            //    // move through every article
+            //    foreach (var article in _articles)
+            //    {
+            //        //    // If the article is saved
+            //        //    if (nbms.Contains(article))
+            //        //        article.IsSaved = true;
+            //        //    else
+            //        //        article.IsSaved = false;
+
+            //        int index = _articles.IndexOf(article);
+            //        Articles[index] = article;
+
+            //    }
+            //}
+
+
+        //if (_articles.Count > 0)
+        //{
+        //    SQLite.TableQuery<Article> bms = App.SqLiteConn.Table<Article>();
+        //    foreach (var bm in bms)
+        //    {
+        //        var ele = _articles.FirstOrDefault(a => a.Id == bm.Id);
+
+        //        //if (!ele.IsSaved)
+        //        //{
+        //        ele.IsSaved = true;
+
+        //        Articles[_articles.IndexOf(ele)] = ele;
+        //        //}
+
+
+        //    }
+        //    foreach (var nbm in nbms)
+        //    {
+        //        var ele = bms.FirstOrDefault(bm => bm.Id == nbm.Id);
+
+        //        //if (!ele.IsSaved)
+        //        //{
+        //        ele.IsSaved = false;
+
+        //        Articles[_articles.IndexOf(ele)] = ele;
+        //        //}
+
+
+        //    }
+        //}
+
+    }
     }
 }
