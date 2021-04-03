@@ -295,64 +295,18 @@ namespace AresNews.ViewModels
             }
 
         }
-        public void RefreshBookmarks ()
+        /// <summary>
+        /// Refresh articles
+        /// </summary>
+        public async void RefreshArticles ()
         {
             if (_articles.Count > 0)
             {
-                Task.Run (() => Articles = new ObservableCollection<Article>(_articles));
+                //  Refresh articles
+                await Task.Run (() => Articles = new ObservableCollection<Article>(_articles));
                 
             }
 
-            //var nbms = App.SqLiteConn.Table<Article>();//_articles.ToList().FindAll(a => a.IsSaved == true);
-            //if (_articles.Count > 0)
-            //{
-            //    // move through every article
-            //    foreach (var article in _articles)
-            //    {
-            //        //    // If the article is saved
-            //        //    if (nbms.Contains(article))
-            //        //        article.IsSaved = true;
-            //        //    else
-            //        //        article.IsSaved = false;
-
-            //        int index = _articles.IndexOf(article);
-            //        Articles[index] = article;
-
-            //    }
-            //}
-
-
-        //if (_articles.Count > 0)
-        //{
-        //    SQLite.TableQuery<Article> bms = App.SqLiteConn.Table<Article>();
-        //    foreach (var bm in bms)
-        //    {
-        //        var ele = _articles.FirstOrDefault(a => a.Id == bm.Id);
-
-        //        //if (!ele.IsSaved)
-        //        //{
-        //        ele.IsSaved = true;
-
-        //        Articles[_articles.IndexOf(ele)] = ele;
-        //        //}
-
-
-        //    }
-        //    foreach (var nbm in nbms)
-        //    {
-        //        var ele = bms.FirstOrDefault(bm => bm.Id == nbm.Id);
-
-        //        //if (!ele.IsSaved)
-        //        //{
-        //        ele.IsSaved = false;
-
-        //        Articles[_articles.IndexOf(ele)] = ele;
-        //        //}
-
-
-        //    }
-        //}
-
-    }
+        }
     }
 }

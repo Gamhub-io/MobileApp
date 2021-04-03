@@ -29,16 +29,11 @@ namespace AresNews.Views
             _vm.IsRefreshing = true;
 
         }
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            _vm.RefreshBookmarks();
-
-            
-            
-            //_vm.IsRefreshing = true;
-            //this.newsRefreshView.Command.Execute(null);
+            _vm.RefreshArticles();
         }
     }
 }
