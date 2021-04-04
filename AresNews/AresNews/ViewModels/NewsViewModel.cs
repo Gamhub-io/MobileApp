@@ -169,33 +169,36 @@ namespace AresNews.ViewModels
                 {
                     foreach (SyndicationItem item in feed.Items)
                     {
-                        var creatorExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator" );
+                        var creatorExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator");
                         var encodedExt = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "encoded");
-                        
+
                         string creator = null;
                         string encoded = null;
 
                         // If the author name is in the extension then we can mention it
                         if (creatorExtension != null)
-                            creator = creatorExtension.GetObject<XElement>().Value;
-                        
+                            creator = Sterilize(creatorExtension.GetObject<XElement>().Value);
+
                         if (encodedExt != null)
                             encoded = encodedExt.GetObject<XElement>().Value;
 
+                        // Get the content
+                        //var content = Sterilize(item.Summary.Text);
+
                         // Get the main image
                         var image = GetImagesFromRssItem(item)[0];
+
                         // include the article only if the link is not an ad and if we can get an image
                         string articleUrl = item.Links[0].Uri.OriginalString;
 
                         if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
                         {
-                            //sstring creator = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator").GetObject<XElement>().Value;
-                            string id = item.Id;
+                            // Add the Article
                             articles.Add(new Article
                             {
-                                Id = id,
+                                Id = item.Id,
                                 Title = item.Title.Text,
-                                Content =  Regex.Replace(item.Summary.Text, "^<img[^>]*>", string.Empty),
+                                Content = Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty),
                                 Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
                                 FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
                                 SourceName = source.Name,
@@ -216,6 +219,12 @@ namespace AresNews.ViewModels
 
             // Update list of articles
             Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+
+            // Function to remove polutions in a string
+            string Sterilize(string text)
+            {
+                return Regex.Replace(text, @"[\r|\n|\t]", string.Empty);
+            }
 
 
             //Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));

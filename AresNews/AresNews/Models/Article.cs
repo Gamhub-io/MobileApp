@@ -30,7 +30,7 @@ namespace AresNews.Models
         public string Url { get; set; }
         public TimeSpan Time { get 
             {
-                return DateTime.UtcNow - this.FullPublishDate.ToUniversalTime();
+                return DateTime.Now.ToUniversalTime() - this.FullPublishDate.ToUniversalTime();
             } }
         public string TimeAgo
         {
