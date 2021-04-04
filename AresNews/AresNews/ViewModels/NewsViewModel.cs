@@ -150,7 +150,7 @@ namespace AresNews.ViewModels
 
             var sources = App.Sources;
 
-            // move throu all the sources
+            // Move throu all the sources
             foreach (var source in App.Sources)
             //for (int i = 0; i < sources.Count; i++)
             {
@@ -182,9 +182,6 @@ namespace AresNews.ViewModels
                         if (encodedExt != null)
                             encoded = encodedExt.GetObject<XElement>().Value;
 
-                        // Get the content
-                        //var content = Sterilize(item.Summary.Text);
-
                         // Get the main image
                         var image = GetImagesFromRssItem(item)[0];
 
@@ -198,13 +195,12 @@ namespace AresNews.ViewModels
                             {
                                 Id = item.Id,
                                 Title = item.Title.Text,
-                                Content = Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty),
+                                Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty) ,
                                 Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
                                 FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
                                 SourceName = source.Name,
                                 Image = image,
                                 Url = articleUrl,
-                                //IsSaved = App.SqLiteConn.Find<Article>(id) != null
 
                             });
                         }
@@ -226,8 +222,6 @@ namespace AresNews.ViewModels
                 return Regex.Replace(text, @"[\r|\n|\t]", string.Empty);
             }
 
-
-            //Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
         }
         /// <summary>
         /// Fetch an image from a url
