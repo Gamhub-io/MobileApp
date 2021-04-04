@@ -144,7 +144,6 @@ namespace AresNews.ViewModels
         /// <returns></returns>
         public void FetchArticles(bool forceUpdate = false)
         {
-            //IsRefreshing = true;
 
             var articles = new ObservableCollection<Article>();
 
@@ -169,41 +168,48 @@ namespace AresNews.ViewModels
                 {
                     foreach (SyndicationItem item in feed.Items)
                     {
-                        var creatorExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator");
-                        var encodedExt = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "encoded");
-
-                        string creator = null;
-                        string encoded = null;
-
-                        // If the author name is in the extension then we can mention it
-                        if (creatorExtension != null)
-                            creator = Sterilize(creatorExtension.GetObject<XElement>().Value);
-
-                        if (encodedExt != null)
-                            encoded = encodedExt.GetObject<XElement>().Value;
-
-                        // Get the main image
-                        var image = GetImagesFromRssItem(item)[0];
-
                         // include the article only if the link is not an ad and if we can get an image
                         string articleUrl = item.Links[0].Uri.OriginalString;
 
-                        if (!string.IsNullOrEmpty(image) && articleUrl.Contains(source.Domain))
+                        // Ensure that the article is not an ad
+                        if (articleUrl.Contains(source.Domain))
                         {
-                            // Add the Article
-                            articles.Add(new Article
-                            {
-                                Id = item.Id,
-                                Title = item.Title.Text,
-                                Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty) ,
-                                Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
-                                FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
-                                SourceName = source.Name,
-                                Image = image,
-                                Url = articleUrl,
+                            // Get the main image
+                            var image = GetImagesFromRssItem(item)[0];
 
-                            });
+                            // Show only the article containing a potential thumbnail
+                            if (!string.IsNullOrEmpty(image))
+                            {
+
+                                var creatorExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator");
+                                var encodedExt = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "encoded");
+
+                                string creator = null;
+                                string encoded = null;
+
+                                // If the author name is in the extension then we can mention it
+                                if (creatorExtension != null)
+                                    creator = Sterilize(creatorExtension.GetObject<XElement>().Value);
+
+                                if (encodedExt != null)
+                                    encoded = encodedExt.GetObject<XElement>().Value;
+
+                                // Add the Article
+                                articles.Add(new Article
+                                {
+                                    Id = item.Id,
+                                    Title = item.Title.Text,
+                                    Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty),
+                                    Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
+                                    FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
+                                    SourceName = source.Name,
+                                    Image = image,
+                                    Url = articleUrl,
+
+                                });
+                            }
                         }
+                        
 
                     }
                 });
