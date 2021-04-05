@@ -53,19 +53,21 @@
     "name": "Push Square",
     "domain": "pushsquare.com",
     "url": "https://www.pushsquare.com/feeds/latest"
-  }
-  ,
+  },
   {
     "name": "Guardian Of Gamers",
     "domain": "guardianofgamers.com",
     "url": "https://www.guardianofgamers.com/category/game-news/feed/"
-  }
-
-  // ToDo: fix this one
+  },
+  {
+    "name": "PC Gamer",
+    "domain": "pcgamer.com",
+    "url": "https://www.pcgamer.com/rss/"
+  },
   //{
-  //  "name": "PC Gamer",
-  //  "domain": "pcgamer.com",
-  //  "url": "https://www.pcgamer.com/rss/"
+  //  "name": "Us Gamer",
+  //  "domain": "usgamer.net",
+  //  "url": "https://www.usgamer.net/rss"
   //}
 
   //{

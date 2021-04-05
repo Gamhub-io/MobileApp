@@ -164,8 +164,7 @@ namespace AresNews.ViewModels
 
 
                 // Add the news article of this feed one by one
-                Task.Run(() =>
-                {
+                
                     foreach (SyndicationItem item in feed.Items)
                     {
                         // include the article only if the link is not an ad and if we can get an image
@@ -175,7 +174,7 @@ namespace AresNews.ViewModels
                         if (articleUrl.Contains(source.Domain))
                         {
                             // Get the main image
-                            var image = GetImagesFromRssItem(item)[0];
+                            var image = GetImagesFromRssItem(item);
 
                             // Show only the article containing a potential thumbnail
                             if (!string.IsNullOrEmpty(image))
@@ -194,6 +193,7 @@ namespace AresNews.ViewModels
                                 if (encodedExt != null)
                                     encoded = encodedExt.GetObject<XElement>().Value;
 
+                                
                                 // Add the Article
                                 articles.Add(new Article
                                 {
@@ -212,7 +212,6 @@ namespace AresNews.ViewModels
                         
 
                     }
-                });
                 
 
                 
@@ -222,37 +221,57 @@ namespace AresNews.ViewModels
             // Update list of articles
             Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
 
-            // Function to remove polutions in a string
-            string Sterilize(string text)
-            {
-                return Regex.Replace(text, @"[\r|\n|\t]", string.Empty);
-            }
+            
 
+        }
+        /// <summary>
+        /// Function to remove polutions in a string
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private static string Sterilize(string text)
+        {
+            return Regex.Replace(text, @"[\r|\n|\t]", string.Empty);
         }
         /// <summary>
         /// Fetch an image from a url
         /// </summary>
         /// <param name="html"></param>
         /// <returns></returns>
-        private static List<string> GetImagesFromRssItem(SyndicationItem item )
+        private static string GetImagesFromRssItem(SyndicationItem item )
         {
             // Instanciate the list
-            List<string> images = new List<string>();
+            //List<string> images = new List<string>();
 
             var contentExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "content");
             var thumnailExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "thumbnail");
+            //var thumnailsExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "thumbnails");
+            var imageExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "image");
 
-            // Search if the image is clearly geven
-            if (contentExtension != null)
+            // in case the image is in a image block
+            if (imageExtension != null)
             {
-                AddImageFromExt(contentExtension);
+                var el = imageExtension.GetObject<XElement>();
+
+                var img =  el.Element("url").Value;
+
+                // Add the image
+                if (!string.IsNullOrEmpty(img))
+                    return img;
+
+            } else if (contentExtension != null )
+            {
+                return AddImageFromExt(contentExtension);
             }
+            // Search if the image is clearly geven
+
             if (thumnailExtension != null)
             {
-                AddImageFromExt(thumnailExtension);
+                return AddImageFromExt(thumnailExtension);
             }
-            if (images.Count == 0)
-            {
+            
+            //if (images.Count == 0)
+            //{
                 // Load the Html
                 HtmlDocument doc = new HtmlDocument();
 
@@ -264,7 +283,10 @@ namespace AresNews.ViewModels
                 {
                     foreach (HtmlNode node in imageNodes)
                     {
-                        images.Add(node.Attributes["src"].Value);
+                        string value = node.Attributes["src"].Value;
+
+                        if (!string.IsNullOrEmpty(value))
+                            return value;
                     }
                 }
                 else
@@ -283,24 +305,25 @@ namespace AresNews.ViewModels
                     {
                         var src = node.Attributes["src"].Value;
                         if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
-                            images.Add(src);
+                            return src;
 
                     }
-                    images.Add(string.Empty);
                 }
-            }
+            //}
             
 
-            return images;
+            return string.Empty;
 
-            void AddImageFromExt(SyndicationElementExtension Extension)
+            string AddImageFromExt(SyndicationElementExtension Extension)
             {
                 XElement ele = Extension.GetObject<XElement>();
 
                 string value = ele.Attribute(XName.Get("url")).Value;
 
                 if (!string.IsNullOrWhiteSpace(value)/*value != string.Empty*/)
-                    images.Add(value);
+                    return value;
+
+                return string.Empty;
             }
 
         }
