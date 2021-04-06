@@ -11,6 +11,7 @@ using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -117,7 +118,7 @@ namespace AresNews.ViewModels
             _refreshFeed = new Command( () =>
                {
                    // Fetch the article
-                   Task.Run( () => FetchArticles());
+                   FetchArticles();
                });
 
             // Set command to share an article
@@ -142,84 +143,97 @@ namespace AresNews.ViewModels
         /// </summary>
         /// <param name="forceUpdate">force the update of the article list</param>
         /// <returns></returns>
-        public void FetchArticles(bool forceUpdate = false)
+        public async void FetchArticles(bool forceUpdate = false)
         {
 
             var articles = new ObservableCollection<Article>();
 
             var sources = App.Sources;
 
-            // Move throu all the sources
-            foreach (var source in App.Sources)
-            //for (int i = 0; i < sources.Count; i++)
-            {
-                //var source = sources[i];
-
-                // Create the RSS reader
-                var reader = XmlReader.Create(source.Url);
-
-                SyndicationFeed feed = SyndicationFeed.Load(reader);
-
-                reader.Close();
-
-
-                // Add the news article of this feed one by one
-                
-                    foreach (SyndicationItem item in feed.Items)
+            await Task.Run(
+                () =>
+                {
+                    // Move throu all the sources
+                    //foreach (var source in App.Sources)
+                    for (int i = 0; i < sources.Count; i++)
                     {
-                        // include the article only if the link is not an ad and if we can get an image
-                        string articleUrl = item.Links[0].Uri.OriginalString;
+                        var source = sources[i];
 
-                        // Ensure that the article is not an ad
-                        if (articleUrl.Contains(source.Domain))
+                        SyndicationFeed feed;
+
+                        // Create the RSS reader
+                        using (var reader = XmlReader.Create(source.Url))
                         {
-                            // Get the main image
-                            var image = GetImagesFromRssItem(item);
+                            feed = SyndicationFeed.Load(reader);
 
-                            // Show only the article containing a potential thumbnail
-                            if (!string.IsNullOrEmpty(image))
-                            {
-
-                                var creatorExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator");
-                                var encodedExt = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "encoded");
-
-                                string creator = null;
-                                string encoded = null;
-
-                                // If the author name is in the extension then we can mention it
-                                if (creatorExtension != null)
-                                    creator = Sterilize(creatorExtension.GetObject<XElement>().Value);
-
-                                if (encodedExt != null)
-                                    encoded = encodedExt.GetObject<XElement>().Value;
-
-                                
-                                // Add the Article
-                                articles.Add(new Article
-                                {
-                                    Id = item.Id,
-                                    Title = item.Title.Text,
-                                    Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty),
-                                    Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
-                                    FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
-                                    SourceName = source.Name,
-                                    Image = image,
-                                    Url = articleUrl,
-
-                                });
-                            }
                         }
-                        
 
-                    }
-                
+                        if (feed == null)
+                            return;
+                    
+                        // Add the news article of this feed one by one
+                        foreach (SyndicationItem item in feed.Items)
+                        {
 
-                
-            }
-            IsRefreshing = false;
+                            // include the article only if the link is not an ad and if we can get an image
+                            string articleUrl = item.Links[0].Uri.OriginalString;
 
-            // Update list of articles
-            Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+                            // Ensure that the article is not an ad
+                            if (articleUrl.Contains(source.Domain))
+                            {
+                                // Get the main image
+                                var image = GetImagesFromRssItem(item);
+
+                                // Show only the article containing a potential thumbnail
+                                if (!string.IsNullOrEmpty(image))
+                                {
+
+                                    var creatorExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator");
+                                    var encodedExt = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "encoded");
+
+                                    string creator = null;
+                                    string encoded = null;
+
+                                    // If the author name is in the extension then we can mention it
+                                    if (creatorExtension != null)
+                                        creator = Sterilize(creatorExtension.GetObject<XElement>().Value);
+
+                                    if (encodedExt != null)
+                                        encoded = encodedExt.GetObject<XElement>().Value;
+
+
+                                    // Add the Article
+                                    articles.Add(new Article
+                                    {
+                                        Id = item.Id,
+                                        Title = item.Title.Text,
+                                        Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty),
+                                        Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
+                                        FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
+                                        SourceName = source.Name,
+                                        Image = image,
+                                        Url = articleUrl,
+
+                                    });
+                                }
+                            }
+
+
+                        }
+
+
+
+                    
+                }
+            ).ContinueWith((r) =>
+            {
+                IsRefreshing = false;
+
+                // Update list of articles
+                Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+            });
+            
+           
 
             
 
