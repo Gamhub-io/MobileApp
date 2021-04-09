@@ -232,10 +232,6 @@ namespace AresNews.ViewModels
                 // Update list of articles
                 Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
             });
-            
-           
-
-            
 
         }
         /// <summary>
