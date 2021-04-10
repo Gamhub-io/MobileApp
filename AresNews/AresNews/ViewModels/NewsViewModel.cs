@@ -2,6 +2,7 @@
 using AresNews.Views;
 using HtmlAgilityPack;
 using MvvmHelpers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -153,33 +154,62 @@ namespace AresNews.ViewModels
             await Task.Run(
                 () =>
                 {
+                    var items = new List<SyndicationItem>();
                     // Move throu all the sources
                     //foreach (var source in App.Sources)
-                    for (int i = 0; i < sources.Count; i++)
+                    try
                     {
-                        var source = sources[i];
-
-                        SyndicationFeed feed;
-
-                        // Create the RSS reader
-                        using (var reader = XmlReader.Create(source.Url))
+                        for (int i = 0; i < sources.Count; i++)
                         {
-                            feed = SyndicationFeed.Load(reader);
+                            var source = sources[i];
 
+                            SyndicationFeed feed;
+
+                            // Create the RSS reader
+                            using (var reader = XmlReader.Create(source.Url))
+                            {
+                                feed = SyndicationFeed.Load(reader);
+
+                            }
+
+                            if (feed == null)
+                                return;
+
+                            // Override feed title
+                            feed.Title = new TextSyndicationContent(source.Name);
+
+                            // Add the domain
+                            feed.Items.Select(it =>
+                            {
+                                it.BaseUri = new Uri (source.Url);
+                                it.SourceFeed = feed;// new TextSyndicationContent(source.Name);
+                                return it;
+                            }).ToList();
+
+                            items = items.Concat(feed.Items).ToList();
+
+                            
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
 
-                        if (feed == null)
-                            return;
-
+                    try
+                    {
                         // Add the news article of this feed one by one
-                        foreach (SyndicationItem item in feed.Items)
+                        foreach (var item in items)
                         {
 
                             // include the article only if the link is not an ad and if we can get an image
-                            string articleUrl = item.Links[0].Uri.OriginalString;
+                            //string articleUrl = item.Links[0].Uri.OriginalString;
+                            var articleDomain = item.Links[0].Uri.Host;
+                            var feedDomain = item.BaseUri.Host;
 
                             // Ensure that the article is not an ad
-                            if (articleUrl.Contains(source.Domain))
+                            //if (articleUrl.Contains(item.BaseUri.OriginalString))
+                            if (articleDomain == feedDomain)
                             {
                                 // Get the main image
                                 var image = GetImagesFromRssItem(item);
@@ -210,18 +240,19 @@ namespace AresNews.ViewModels
                                         Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty),
                                         Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
                                         FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
-                                        SourceName = source.Name,
+                                        SourceName = item.SourceFeed.Title.Text,
                                         Image = image,
-                                        Url = articleUrl,
+                                        Url = item.Links[0].Uri.OriginalString,
 
                                     });
                                 }
                             }
-
-
                         }
+                    }
+                    catch (Exception ex)
+                    {
 
-
+                        throw;
                     }
                     
                 }
