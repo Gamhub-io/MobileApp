@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -148,111 +149,125 @@ namespace AresNews.ViewModels
             var sources = App.Sources;
 
             await Task.Run(
-                () =>
+                async () =>
                 {
                     var items = new List<SyndicationItem>();
+
                     // Move throu all the sources
                     //foreach (var source in App.Sources)
-                    try
+                    await Task.Run(async () => 
                     {
-                        for (int i = 0; i < sources.Count; i++)
+                        try
                         {
-                            var source = sources[i];
-
-                            SyndicationFeed feed;
-
-                            // Create the RSS reader
-                            using (var reader = XmlReader.Create(source.Url))
+                            for (int i = 0; i < sources.Count; i++)
                             {
-                                feed = SyndicationFeed.Load(reader);
+                                await Task.Run( () => 
+                                {
+                                    var source = sources[i];
+
+                                    SyndicationFeed feed;
+
+                                    // Create the RSS reader
+                                    using (var reader = XmlReader.Create(source.Url))
+                                    {
+                                        feed = SyndicationFeed.Load(reader);
+
+                                    }
+
+                                    if (feed == null)
+                                        return;
+
+                                    // Override feed title
+                                    feed.Title = new TextSyndicationContent(source.Name);
+
+                                    // Add the domain
+                                    feed.Items.Select(it =>
+                                    {
+                                        it.BaseUri = new Uri(source.Url);
+                                        it.SourceFeed = feed;
+                                        return it;
+                                    }).ToList();
+
+                                    //items = items.Concat(feed.Items).ToList();
+                                    items = Merge(items, new List<SyndicationItem>(feed.Items));
+
+                                });
+                                
+
 
                             }
-
-                            if (feed == null)
-                                return;
-
-                            // Override feed title
-                            feed.Title = new TextSyndicationContent(source.Name);
-
-                            // Add the domain
-                            feed.Items.Select(it =>
-                            {
-                                it.BaseUri = new Uri (source.Url);
-                                it.SourceFeed = feed;// new TextSyndicationContent(source.Name);
-                                return it;
-                            }).ToList();
-
-                            //items = items.Concat(feed.Items).ToList();
-                            items = Merge(items, new List<SyndicationItem>(feed.Items));
-
-                            
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-
-                    try
-                    {
-                        // Add the news article of this feed one by one
-                        foreach (var item in items)
+                        catch (Exception ex)
                         {
-
-                            // include the article only if the link is not an ad and if we can get an image
-                            var articleDomain = item.Links[0].Uri.Host;
-                            var feedDomain = item.BaseUri.Host;
-
-                            // Ensure that the article is not an ad
-                            //if (articleUrl.Contains(item.BaseUri.OriginalString))
-                            if (articleDomain == feedDomain)
+                            throw ex;
+                        }
+                    }).ContinueWith((res)=> 
+                    {
+                        try
+                        {
+                            // Add the news article of this feed one by one
+                            for (int i = 0; i < items.Count; i++)
                             {
-                                // Get the extensions
-                                var extensions = GetExtensions(item.ElementExtensions);
+                                var item = items[i];
 
-                                // Get the main image
-                                var image = GetImagesFromRssItem(item, extensions);
+                                // include the article only if the link is not an ad and if we can get an image
+                                var articleDomain = item.Links[0].Uri.Host;
+                                var feedDomain = item.BaseUri.Host;
 
-                                // Show only the article containing a potential thumbnail
-                                if (!string.IsNullOrEmpty(image))
+                                // Ensure that the article is not an ad
+                                //if (articleUrl.Contains(item.BaseUri.OriginalString))
+                                if (articleDomain == feedDomain)
                                 {
+                                    // Get the extensions
+                                    var extensions = GetExtensions(item.ElementExtensions);
 
-                                    var creatorExtension = extensions["creator"];
-                                    var encodedExt = extensions["encoded"];
+                                    // Get the main image
+                                    var image = GetImagesFromRssItem(item, extensions);
 
-                                    string creator = null;
-                                    string encoded = null;
-
-                                    // If the author name is in the extension then we can mention it
-                                    if (creatorExtension != null)
-                                        creator = Sterilize(creatorExtension.GetObject<XElement>().Value);
-
-                                    if (encodedExt != null)
-                                        encoded = encodedExt.GetObject<XElement>().Value;
-
-
-                                    // Add the Article
-                                    articles.Add(new Article
+                                    // Show only the article containing a potential thumbnail
+                                    if (!string.IsNullOrEmpty(image))
                                     {
-                                        Id = item.Id,
-                                        Title = item.Title.Text,
-                                        Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty),
-                                        Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
-                                        FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
-                                        SourceName = item.SourceFeed.Title.Text,
-                                        Image = image,
-                                        Url = item.Links[0].Uri.OriginalString,
 
-                                    });
+                                        var creatorExtension = extensions["creator"];
+                                        var encodedExt = extensions["encoded"];
+
+                                        string creator = null;
+                                        string encoded = null;
+
+                                        // If the author name is in the extension then we can mention it
+                                        if (creatorExtension != null)
+                                            creator = Sterilize(creatorExtension.GetObject<XElement>().Value);
+
+                                        if (encodedExt != null)
+                                            encoded = encodedExt.GetObject<XElement>().Value;
+
+
+                                        // Add the Article
+                                        articles.Add(new Article
+                                        {
+                                            Id = item.Id,
+                                            Title = item.Title.Text,
+                                            Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty),
+                                            Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
+                                            FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
+                                            SourceName = item.SourceFeed.Title.Text,
+                                            Image = image,
+                                            Url = item.Links[0].Uri.OriginalString,
+
+                                        });
+                                    }
                                 }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
+                        catch (Exception ex)
+                        {
 
-                        throw;
-                    }
+                            throw;
+                        }
+                    });
+                    
+
+                    
                     
                 }
             ).ContinueWith((r) =>
