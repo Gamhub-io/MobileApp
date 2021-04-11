@@ -2,17 +2,13 @@
 using AresNews.Views;
 using HtmlAgilityPack;
 using MvvmHelpers;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.ServiceModel;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -186,7 +182,8 @@ namespace AresNews.ViewModels
                                 return it;
                             }).ToList();
 
-                            items = items.Concat(feed.Items).ToList();
+                            //items = items.Concat(feed.Items).ToList();
+                            items = Merge(items, new List<SyndicationItem>(feed.Items));
 
                             
                         }
@@ -203,7 +200,6 @@ namespace AresNews.ViewModels
                         {
 
                             // include the article only if the link is not an ad and if we can get an image
-                            //string articleUrl = item.Links[0].Uri.OriginalString;
                             var articleDomain = item.Links[0].Uri.Host;
                             var feedDomain = item.BaseUri.Host;
 
@@ -211,15 +207,18 @@ namespace AresNews.ViewModels
                             //if (articleUrl.Contains(item.BaseUri.OriginalString))
                             if (articleDomain == feedDomain)
                             {
+                                // Get the extensions
+                                var extensions = GetExtensions(item.ElementExtensions);
+
                                 // Get the main image
-                                var image = GetImagesFromRssItem(item);
+                                var image = GetImagesFromRssItem(item, extensions);
 
                                 // Show only the article containing a potential thumbnail
                                 if (!string.IsNullOrEmpty(image))
                                 {
 
-                                    var creatorExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "creator");
-                                    var encodedExt = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "encoded");
+                                    var creatorExtension = extensions["creator"];
+                                    var encodedExt = extensions["encoded"];
 
                                     string creator = null;
                                     string encoded = null;
@@ -275,19 +274,16 @@ namespace AresNews.ViewModels
             return Regex.Replace(text, @"[\r|\n|\t]", string.Empty);
         }
         /// <summary>
-        /// Fetch an image from a url
+        /// Fetch an image for the article
         /// </summary>
-        /// <param name="html"></param>
+        /// <param name="item">Item relative to the article </param>
         /// <returns></returns>
-        private static string GetImagesFromRssItem(SyndicationItem item )
+        private static string GetImagesFromRssItem(SyndicationItem item, Dictionary<string, SyndicationElementExtension> extensions)
         {
-            // Instanciate the list
-            //List<string> images = new List<string>();
 
-            var contentExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "content");
-            var thumnailExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "thumbnail");
-            //var thumnailsExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "thumbnails");
-            var imageExtension = item.ElementExtensions.FirstOrDefault(e => e.OuterName == "image");
+            var contentExtension = extensions["content"];
+            var thumnailExtension = extensions["thumbnail"];
+            var imageExtension = extensions["image"];
 
             // in case the image is in a image block
             if (imageExtension != null)
@@ -380,6 +376,47 @@ namespace AresNews.ViewModels
                 
             }
 
+        }
+        /// <summary>
+        /// Merge two list of item without using LINQ
+        /// </summary>
+        /// <param name="receivers">List which will be returned</param>
+        /// <param name="mergers">List to merge</param>
+        /// <returns></returns>
+        private List<SyndicationItem> Merge (List<SyndicationItem> receivers, List<SyndicationItem> mergers)
+        {
+            for (int i = 0; i < mergers.Count; i++)
+            {
+                receivers.Add(mergers[i]);
+            }
+
+            return receivers;
+        }
+        private static Dictionary<string,SyndicationElementExtension> GetExtensions(SyndicationElementExtensionCollection elementExtensions)
+        {
+            var listResult = new Dictionary<string, SyndicationElementExtension>();
+
+            listResult.Add("content", null);
+            listResult.Add("thumbnail", null);
+            listResult.Add("image", null);
+            listResult.Add("encoded", null);
+            listResult.Add("creator", null);
+
+            // loop every single extension
+            for (int i = 0; i < elementExtensions.Count; i++)
+            {
+                string outerName = elementExtensions[i].OuterName;
+
+                if (outerName == "content" ||
+                    outerName == "thumbnail" ||
+                    outerName == "encoded" ||
+                    outerName == "creator" ||
+                    outerName == "image"
+                    )
+                    listResult[outerName] = elementExtensions[i];
+            }
+            
+            return listResult;
         }
     }
 }
