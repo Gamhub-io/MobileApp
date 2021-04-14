@@ -210,13 +210,8 @@ namespace AresNews.ViewModels
                             {
                                 var item = items[i];
 
-                                // include the article only if the link is not an ad and if we can get an image
-                                var articleDomain = item.Links[0].Uri.Host;
-                                var feedDomain = item.BaseUri.Host;
-
                                 // Ensure that the article is not an ad
-                                //if (articleUrl.Contains(item.BaseUri.OriginalString))
-                                if (articleDomain == feedDomain)
+                                if (item.BaseUri.Host == item.Links[0].Uri.Host)
                                 {
                                     // Get the extensions
                                     var extensions = GetExtensions(item.ElementExtensions);
@@ -311,7 +306,8 @@ namespace AresNews.ViewModels
                 if (!string.IsNullOrEmpty(img))
                     return img;
 
-            } else if (contentExtension != null )
+            }
+            if (contentExtension != null )
             {
                 return AddImageFromExt(contentExtension);
             }
@@ -341,27 +337,25 @@ namespace AresNews.ViewModels
                             return value;
                     }
                 }
-                else
+                
+                // Load the webpage html
+                using (WebClient client = new WebClient())
                 {
-                    // Load the webpage html
-                    using (WebClient client = new WebClient())
-                    {
-                        doc.LoadHtml(client.DownloadString(item.Links[0].Uri.OriginalString));
+                    doc.LoadHtml(client.DownloadString(item.Links[0].Uri.OriginalString));
 
-                    }
-
-                    // Now, using LINQ to get all Images
-                    imageNodes = doc.DocumentNode.SelectNodes("//img");
-
-                    foreach (HtmlNode node in imageNodes)
-                    {
-                        var src = node.Attributes["src"].Value;
-                        if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
-                            return src;
-
-                    }
                 }
-            //}
+
+                // Now, using LINQ to get all Images
+                imageNodes = doc.DocumentNode.SelectNodes("//img");
+
+                foreach (HtmlNode node in imageNodes)
+                {
+                    var src = node.Attributes["src"].Value;
+                    if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
+                        return src;
+
+                }
+                
             
 
             return string.Empty;
