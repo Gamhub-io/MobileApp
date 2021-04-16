@@ -79,9 +79,6 @@ namespace AresNews.ViewModels
                 OnPropertyChanged();
             }
         }
-
-
-
         public NewsViewModel()
         {
             _articles = new ObservableCollection<Article>();
@@ -139,9 +136,7 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Fetch all the articles
         /// </summary>
-        /// <param name="forceUpdate">force the update of the article list</param>
-        /// <returns></returns>
-        public async void FetchArticles(bool forceUpdate = false)
+        public async void FetchArticles()
         {
 
             var articles = new ObservableCollection<Article>();
@@ -257,7 +252,7 @@ namespace AresNews.ViewModels
                         catch (Exception ex)
                         {
 
-                            throw;
+                            throw ex;
                         }
                     });
                     
@@ -277,7 +272,7 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Function to remove polutions in a string
         /// </summary>
-        /// <param name="text"></param>
+        /// <param name="text">text to serilize</param>
         /// <returns></returns>
         private static string Sterilize(string text)
         {
@@ -317,9 +312,6 @@ namespace AresNews.ViewModels
             {
                 return AddImageFromExt(thumnailExtension);
             }
-            
-            //if (images.Count == 0)
-            //{
                 // Load the Html
                 HtmlDocument doc = new HtmlDocument();
 
@@ -355,6 +347,7 @@ namespace AresNews.ViewModels
                         return src;
 
                 }
+                
                 
             
 
@@ -401,6 +394,11 @@ namespace AresNews.ViewModels
 
             return receivers;
         }
+        /// <summary>
+        /// Get all the extensions from a collection of syndication extension
+        /// </summary>
+        /// <param name="elementExtensions">collection of syndication extension</param>
+        /// <returns>all the relevant extensions</returns>
         private static Dictionary<string,SyndicationElementExtension> GetExtensions(SyndicationElementExtensionCollection elementExtensions)
         {
             var listResult = new Dictionary<string, SyndicationElementExtension>();
