@@ -13,6 +13,10 @@
             <Color x:Key="FontColor" >#FAFAFA</Color>
         </ResourceDictionary>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
+        
+        <!-- Converter to convert time span to string-->
+        <helpers:TimeSpanConverter x:Key="TimeSpanConverter"/>
+        
         <ResourceDictionary>
             <ControlTemplate x:Key="ArticleTemplate">
                 <Frame CornerRadius="15" 

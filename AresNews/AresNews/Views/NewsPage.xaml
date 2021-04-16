@@ -45,7 +45,7 @@
                         <controls:ArticlePreview Headline="{Binding Title}"
                                                  ArticleId="{Binding Id}"
                                                  ArticleIsSaved="{Binding IsSaved}"
-                                                 ArticleTime="{Binding TimeAgo}"
+                                                 ArticleTime="{Binding Time, Converter={StaticResource TimeSpanConverter}}"
                                                  ArticleSource="{Binding SourceName}"
                                                  Thumnail="{Binding Image}"
                                                  ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle}"
