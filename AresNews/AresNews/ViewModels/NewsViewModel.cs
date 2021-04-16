@@ -85,7 +85,6 @@ namespace AresNews.ViewModels
 
             _addBookmark = new Command((id) =>
                {
-                   //App.StartDb();
 
                    // Get the article
                    var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
@@ -133,6 +132,7 @@ namespace AresNews.ViewModels
 
 
         }
+
         /// <summary>
         /// Fetch all the articles
         /// </summary>
