@@ -59,12 +59,12 @@
                     <controls:ArticlePreview Headline="{Binding Title}"
                                              ArticleId="{Binding Id}"
                                              ArticleIsSaved="{Binding IsSaved}"
-                                             ArticleTime="{Binding Time, Converter={StaticResource TimeSpanConverter}}"
+                                             ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
                                              ArticleSource="{Binding SourceName}"
                                              Thumnail="{Binding Image}"
-                                             ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=ShareArticle}"
+                                             ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=ShareArticle, Mode=OneWay}"
                                              ShareCommandParameter="{Binding Url}"
-                                             BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=AddBookmark}"
+                                             BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=AddBookmark, Mode=OneWay}"
                                              ControlTemplate="{StaticResource ArticleTemplate}"
                                              >
                         <controls:ArticlePreview.GestureRecognizers>
