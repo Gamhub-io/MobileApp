@@ -29,6 +29,7 @@ namespace AresNews.Views
 
             _vm.IsRefreshing = true;
 
+            // For the auto scroll
             MessagingCenter.Subscribe<MessageItem>(this._vm, "ScrollTop", (sender) =>
             {
                 // Scroll to the top of the collection view
