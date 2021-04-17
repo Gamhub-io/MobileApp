@@ -10,8 +10,7 @@
        Shell.BackgroundColor="{StaticResource LightDark}"
        >
     <control:ActionableTabBar >
-        <control:ActionableTabBar.ActionableTab >
-            <Tab>
+        <Tab>
                 <Tab.Icon>
                     <FontImageSource FontFamily="FaSolid" 
                                  Glyph="&#xf00b;" 
@@ -19,9 +18,8 @@
                 </Tab.Icon>
                 <ShellContent ContentTemplate="{DataTemplate views:NewsPage}" />
             </Tab>
-        </control:ActionableTabBar.ActionableTab>
-        
-        <Tab>
+
+            <Tab>
             <Tab.Icon>
                 <FontImageSource FontFamily="FaSolid" 
                                  Glyph="&#xf5fd;" 

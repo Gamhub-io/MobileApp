@@ -1,5 +1,6 @@
 ﻿
 using Android.Content;
+using AresNews;
 using AresNews.Controls;
 using AresNews.Droid.Renderers;
 using Xamarin.Forms;

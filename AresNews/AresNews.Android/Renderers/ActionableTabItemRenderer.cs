@@ -4,6 +4,9 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using AresNews.Models;
+using AresNews.Views;
+using MvvmHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +23,13 @@ namespace AresNews.Droid.Renderers
         }
 
         /// <summary>
-        /// Pops to root when the selected tab is pressed.
+        /// When we click on a current tab
         /// </summary>
         /// <param name="shellSection"></param>
         protected override void OnTabReselected(ShellSection shellSection)
         {
-            //Xamarin.Forms.Device.BeginInvokeOnMainThread(async () =>
-            //{
-            //    await shellSection?.Navigation.PopToRootAsync();
-            //});
+            // Send an action to go on top of the current feed
+            MessagingCenter.Send<MessageItem>(new MessageItem () { Id = Guid.NewGuid() }, "ScrollTop");
         }
     }
 }

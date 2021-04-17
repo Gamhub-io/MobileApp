@@ -1,5 +1,6 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
+using MvvmHelpers;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,12 @@ namespace AresNews.Views
             BindingContext = _vm = new NewsViewModel ();
 
             _vm.IsRefreshing = true;
+
+            MessagingCenter.Subscribe<MessageItem>(this._vm, "ScrollTop", (sender) =>
+            {
+                // Scroll to the top of the collection view
+                newsCollectionView.ScrollTo(0);
+            });
 
         }
         protected override void OnAppearing()
