@@ -31,7 +31,8 @@
                      x:Name="newsRefreshView"
                      BackgroundColor="{StaticResource LightDark}"
                      RefreshColor="{StaticResource Primary}">
-            <CollectionView ItemsSource="{Binding Articles}" 
+            <CollectionView ItemsSource="{Binding Articles}"
+                            x:Name="newsCollectionView"
                             Margin="10,0"
                             >
                 <CollectionView.Header>
