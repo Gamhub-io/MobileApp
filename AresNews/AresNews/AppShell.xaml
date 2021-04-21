@@ -14,7 +14,7 @@
                 <Tab.Icon>
                     <FontImageSource FontFamily="FaSolid" 
                                  Glyph="&#xf00b;" 
-                                 Size="50"/>
+                                 Size="28"/>
                 </Tab.Icon>
                 <ShellContent ContentTemplate="{DataTemplate views:NewsPage}" />
             </Tab>
@@ -23,7 +23,7 @@
             <Tab.Icon>
                 <FontImageSource FontFamily="FaSolid" 
                                  Glyph="&#xf5fd;" 
-                                 Size="50"/>
+                                 Size="28"/>
             </Tab.Icon>
             
             <ShellContent ContentTemplate="{DataTemplate views:BookmarkPage}" />
