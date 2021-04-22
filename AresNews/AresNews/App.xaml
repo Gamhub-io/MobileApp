@@ -23,6 +23,7 @@
                        BorderColor="{StaticResource Light}"
                        HeightRequest="221"
                        WidthRequest="330"
+                       IsClippedToBounds="True"
                        Padding="0">
                     <Grid>
 
@@ -63,13 +64,13 @@
 
                                 <!-- Mentionning the source -->
                                 <Frame Grid.Column="0"
-                                           HorizontalOptions="Start"
-                                           VerticalOptions="Start"
-                                           CornerRadius="8"
-                                           Margin="10,10,0,0"
-                                           HeightRequest="25"
-                                           Padding="5,0"
-                                           BackgroundColor="{StaticResource LightDark}">
+                                       HorizontalOptions="Start"
+                                       VerticalOptions="Start"
+                                       CornerRadius="8"
+                                       Margin="10,10,0,0"
+                                       HeightRequest="25"
+                                       Padding="5,0"
+                                       BackgroundColor="{StaticResource LightDark}">
                                     <Label  
                                                FontSize="13"
                                                HorizontalOptions="Center"
