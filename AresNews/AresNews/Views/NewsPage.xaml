@@ -29,8 +29,12 @@
         <RefreshView IsRefreshing="{Binding IsRefreshing}"
              Command="{Binding RefreshFeed}"
                      x:Name="newsRefreshView"
-                     BackgroundColor="{StaticResource LightDark}"
                      RefreshColor="{StaticResource Primary}">
+            <RefreshView.Padding>
+                <OnPlatform x:TypeArguments="Thickness">
+                    <On Platform="iOS" Value="0,20,0,0"/>
+                </OnPlatform>
+            </RefreshView.Padding>
             <CollectionView ItemsSource="{Binding Articles}"
                             x:Name="newsCollectionView"
                             Margin="10,0"

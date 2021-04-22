@@ -10,7 +10,6 @@ namespace AresNews.Helpers
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string span;
 
             var time = (TimeSpan)value;
 
