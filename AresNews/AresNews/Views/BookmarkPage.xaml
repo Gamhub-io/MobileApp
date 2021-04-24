@@ -19,13 +19,14 @@
     </Shell.TitleView>
 
     <ContentPage.Content>
-        <CollectionView ItemsSource="{Binding Bookmarks}" Margin="10,0" >
+        <CollectionView ItemsSource="{Binding Bookmarks}" 
+                        Margin="8,0" >
             <CollectionView.Header>
                 <BoxView  Margin="0">
                     <BoxView.HeightRequest>
                         <OnPlatform x:TypeArguments="x:Double">
                             <On Platform="Android" Value="0"/>
-                            <On Platform="iOS" Value="75"/>
+                            <On Platform="iOS" Value="30"/>
                         </OnPlatform>
                     </BoxView.HeightRequest>
                 </BoxView>

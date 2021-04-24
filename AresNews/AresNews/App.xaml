@@ -20,9 +20,8 @@
         <ResourceDictionary>
             <ControlTemplate x:Key="ArticleTemplate">
                 <Frame CornerRadius="15" 
-                       BorderColor="{StaticResource Light}"
+                       BorderColor="{StaticResource Dark}"
                        HeightRequest="221"
-                       WidthRequest="330"
                        IsClippedToBounds="True"
                        Padding="0">
                     <Grid>
@@ -146,11 +145,11 @@
                                 </Grid.RowDefinitions>
                                 <!-- Headline -->
                                 <Label Grid.Row="0" 
-                               Text="{TemplateBinding  Headline}"
-                               TextColor="{StaticResource FontColor}"
-                               Margin="10,0"
-                               FontFamily="P-Bold"
-                               FontSize="17"/>
+                                       Text="{TemplateBinding  Headline}"
+                                       TextColor="{StaticResource FontColor}"
+                                       Margin="10,0"
+                                       FontFamily="P-Bold"
+                                       FontSize="17"/>
 
                                 <!-- Time ago -->
                                 <Label Grid.Row="1" 
