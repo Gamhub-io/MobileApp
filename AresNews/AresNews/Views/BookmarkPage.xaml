@@ -36,13 +36,12 @@
             <CollectionView.EmptyView>
 
                 <ContentView>
-                    <StackLayout 
-                                 VerticalOptions="CenterAndExpand"
+                    <StackLayout VerticalOptions="CenterAndExpand"
                                     HorizontalOptions="CenterAndExpand">
                         <Label Text="&#xf02e;"
-                           FontFamily="FaRegular"
-                           TextColor="{StaticResource Primary}"
-                               FontSize="Header"
+                               FontFamily="FaRegular"
+                               TextColor="{StaticResource Primary}"
+                               FontSize="50"
                                HorizontalOptions="Center"
                            />
                         <Label Text="No article saved"
