@@ -148,6 +148,7 @@
                                        Text="{TemplateBinding  Headline}"
                                        TextColor="{StaticResource FontColor}"
                                        Margin="10,0"
+                                       TextType="Html"
                                        FontFamily="P-Bold"
                                        FontSize="17"/>
 
