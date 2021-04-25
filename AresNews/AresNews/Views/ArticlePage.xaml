@@ -4,6 +4,7 @@
              x:Class="AresNews.Views.ArticlePage"
              xmlns:helpers="clr-namespace:AresNews.Helpers"
              BackgroundColor="{StaticResource Dark}"
+             xmlns:mat="clr-namespace:LabelHtml.Forms.Plugin.Abstractions;assembly=HtmlLabel.Forms.Plugin"
              Shell.TabBarIsVisible="False">
     <Shell.TitleView>
         <Grid>
@@ -57,6 +58,7 @@
                        Text="{Binding SelectedArticle.Title}"
                        TextColor="{StaticResource FontColor}"
                        Margin="25,5"
+                       TextType="Html"
                        FontFamily="P-Bold"
                        FontSize="18"
                        />
@@ -117,18 +119,18 @@
                                             CommandParameter="{Binding SelectedArticle.Url}"/>
                         <!-- Bookmark button-->
                         <Button  Grid.Column="1"
-                                                CornerRadius="100"
-                                               HorizontalOptions="End"
-                                               VerticalOptions="CenterAndExpand"
-                                               Padding="0"
-                                               HeightRequest="40"
-                                               WidthRequest="40"
-                                                 FontSize="20"
-                                                 Text="&#xf02e;"
-                                                 TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"
-                                                  Command="{Binding AddBookmark}"
-                                                  CommandParameter="{Binding SelectedArticle.Id}">
+                                 CornerRadius="100"
+                                 HorizontalOptions="End"
+                                 VerticalOptions="CenterAndExpand"
+                                 Padding="0"
+                                 HeightRequest="40"
+                                 WidthRequest="40"
+                                 FontSize="20"
+                                 Text="&#xf02e;"
+                                 TextColor="{StaticResource Primary}"
+                                 BackgroundColor="{StaticResource LightDark}"
+                                 Command="{Binding AddBookmark}"
+                                 CommandParameter="{Binding SelectedArticle.Id}">
                             <Button.Triggers>
                                 <DataTrigger TargetType="Button"
                                              Binding="{Binding SelectedArticle.IsSaved}"
@@ -145,16 +147,12 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
-                <Label Grid.Row="3"
-                       HorizontalOptions="Center"
-                       Text="{Binding SelectedArticle.Content}"
-                       TextColor="{StaticResource FontColor}"
-                       Margin="25,5"
-                       TextType="Html"
-                       FontFamily="P-Regular"
-                       FontSize="15"
-                       />
-
+                <mat:HtmlLabel Text="{Binding SelectedArticle.Content}"
+                               TextColor="{StaticResource FontColor}"
+                               Margin="25,5"
+                               AndroidLegacyMode="True"
+                               FontFamily="P-Regular"
+                               Grid.Row="3"/>
             </Grid>
         </ScrollView>
     </ContentPage.Content>
