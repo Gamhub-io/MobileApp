@@ -237,7 +237,7 @@ namespace AresNews.ViewModels
                                         {
                                             Id = item.Id,
                                             Title = item.Title.Text,
-                                            Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(Sterilize(item.Summary.Text), "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty),
+                                            Content = string.IsNullOrEmpty(encoded) ? Regex.Replace(item.Summary.Text, "^<img[^>]*>", string.Empty) : Regex.Replace(encoded, "(\\[.*\\])", string.Empty),
                                             Author = creator ?? (item.Authors.Count != 0 ? item.Authors[0].Name : string.Empty),
                                             FullPublishDate = item.PublishDate.DateTime.ToLocalTime(),
                                             SourceName = item.SourceFeed.Title.Text,
