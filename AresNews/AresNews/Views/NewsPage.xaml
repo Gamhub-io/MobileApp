@@ -5,7 +5,6 @@
              xmlns:helpers="clr-namespace:AresNews.Helpers"
              xmlns:controls="clr-namespace:AresNews.Controls"
              xmlns:vm="clr-namespace:AresNews.ViewModels"
-             BackgroundColor="{StaticResource Dark}"
              
              >
     <Shell.TitleView>
@@ -20,6 +19,19 @@
         </Grid>
         
     </Shell.TitleView>
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="1,1">
+            <GradientStop Color="#262626"
+                           Offset="0.1"/>
+            <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+            <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            <GradientStop Color="Black"
+                           Offset="1.0"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
 
     <ContentPage.Resources>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
