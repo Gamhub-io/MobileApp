@@ -44,7 +44,7 @@
                      x:Name="newsRefreshView"
                      HorizontalOptions="CenterAndExpand"
                      RefreshColor="{StaticResource Primary}"
-                     Margin="0,0,-10,0">
+                     >
             <!--<RefreshView.Padding>
                 <OnPlatform x:TypeArguments="Thickness">
                     <On Platform="iOS" Value="0,30,0,0"/>
