@@ -16,13 +16,13 @@
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    FontSize="20"
-                   Margin="-10,0,0,0"
+                   Margin="0,0,0,0"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-Bold"
                    Grid.Column="0"/>
             
             <!-- Browser button -->
-            <Button Text="&#xf0ac;" 
+            <Button Text="&#xf141;" 
                     FontFamily="FaSolid"
                     TextColor="{StaticResource Primary}"
                     BackgroundColor="{StaticResource LightDark}"
