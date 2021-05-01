@@ -45,6 +45,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="60"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="100"/>
                 </Grid.RowDefinitions>
             
                 <!-- Thumbnail -->
@@ -153,6 +154,17 @@
                                AndroidLegacyMode="True"
                                FontFamily="P-Regular"
                                Grid.Row="3"/>
+                <!-- Button to open to the default Browser -->
+                <Button Text="Open on the website"
+                        BackgroundColor="{StaticResource LightDark}"
+                        TextColor="{StaticResource FontColor}"
+                        FontFamily="P-Regular"
+                        FontSize="12"
+                        Command="{Binding Browse}"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Row="4"/>
             </Grid>
         </ScrollView>
     </ContentPage.Content>
