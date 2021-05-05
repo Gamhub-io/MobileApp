@@ -8,25 +8,84 @@
        Shell.TabBarUnselectedColor="{StaticResource Primary}"
        Shell.TabBarTitleColor="{StaticResource Light}"
        Shell.BackgroundColor="{StaticResource LightDark}"
+       FlyoutBackgroundColor="{StaticResource LightDark}"
        >
-    <control:ActionableTabBar >
-        <Tab>
-                <Tab.Icon>
-                    <FontImageSource FontFamily="FaSolid" 
-                                 Glyph="&#xf00b;" 
-                                 Size="28"/>
-                </Tab.Icon>
-                <ShellContent ContentTemplate="{DataTemplate views:NewsPage}" />
-            </Tab>
-
-            <Tab>
-            <Tab.Icon>
+    <!-- Template for the shell content-->
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid HorizontalOptions="Center"
+                  Padding="0,10"
+                  >
+                <Grid.ColumnDefinitions>
+                    <!-- Icon -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- Title-->
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Icon -->
+                <Label  Grid.Column="0"
+                        Margin="50,0,0,0"
+                        VerticalOptions="Center"
+                        Text="{Binding Icon}" 
+                        FontFamily="FaSolid" 
+                        FontSize="25"
+                        TextColor="{StaticResource Primary}"/>
+                <!-- Title -->
+                <Label Grid.Column="1" 
+                       Text="{Binding Title}" 
+                       FontSize="23" 
+                       TextColor="{StaticResource FontColor}" 
+                       FontFamily="P-Regular"
+                       HorizontalOptions="Start"  />
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <Grid HorizontalOptions="Center"
+                  Padding="0,10"
+                  >
+                <Grid.ColumnDefinitions>
+                    <!-- Icon -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- Title-->
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Icon -->
+                <Label  Grid.Column="0"
+                        Margin="50,0,0,0"
+                        VerticalOptions="Center"
+                        Text="{Binding Icon}" 
+                        FontFamily="FaSolid" 
+                        FontSize="25"
+                        TextColor="{StaticResource Primary}"/>
+                <!-- Title -->
+                <Label Grid.Column="1" 
+                       Text="{Binding Title}" 
+                       FontSize="23" 
+                       TextColor="{StaticResource FontColor}" 
+                       FontFamily="P-Regular"
+                       HorizontalOptions="Start"  />
+            </Grid>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+    <FlyoutItem Title="Feed"
+                Icon="&#xf00b;">
+        <ShellContent FlyoutItemIsVisible="False"
+                      ContentTemplate="{DataTemplate views:NewsPage}">
+            <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
-                                 Glyph="&#xf5fd;" 
-                                 Size="28"/>
-            </Tab.Icon>
-            
-            <ShellContent ContentTemplate="{DataTemplate views:BookmarkPage}" />
-        </Tab>
-    </control:ActionableTabBar>
+                             Glyph="&#xf00b;" 
+                             Size="28"/>
+            </ShellContent.Icon>
+        </ShellContent>
+        <ShellContent FlyoutItemIsVisible="False"
+                      ContentTemplate="{DataTemplate views:BookmarkPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FaSolid" 
+                             Glyph="&#xf5fd;" 
+                             Size="28"/>
+            </ShellContent.Icon>
+        </ShellContent>
+    </FlyoutItem>
 </Shell>
