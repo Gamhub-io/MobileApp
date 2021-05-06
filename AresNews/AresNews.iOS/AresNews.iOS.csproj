@@ -136,4 +136,7 @@
       <Name>AresNews</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\AresLogo.png" />
+  </ItemGroup>
 </Project>
