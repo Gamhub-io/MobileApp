@@ -18,7 +18,7 @@
     <None Remove="Resources\Fonts\public-sans.bold.otf" />
     <None Remove="Resources\Fonts\public-sans.extrabold.otf" />
     <None Remove="Resources\Fonts\public-sans.regular.otf" />
-    <None Remove="Resources\Image\AresLogofinal.png" />
+    <None Remove="Resources\Image\Ares.png" />
     <None Remove="Resources\Sources.json" />
   </ItemGroup>
 
@@ -30,7 +30,7 @@
     <EmbeddedResource Include="Resources\Fonts\public-sans.extrabold.otf" />
     <EmbeddedResource Include="Resources\Fonts\public-sans.regular.otf" />
     <EmbeddedResource Include="Resources\Fonts\public-sans-SemiBold.otf" />
-    <EmbeddedResource Include="Resources\Image\AresLogofinal.png" />
+    <EmbeddedResource Include="Resources\Image\Ares.png" />
     <EmbeddedResource Include="Resources\Sources.json" />
   </ItemGroup>
 
