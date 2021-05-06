@@ -71,8 +71,8 @@
     </Shell.MenuItemTemplate>
     <Shell.FlyoutHeader >
         <Grid BackgroundColor="{StaticResource Alternate}"
-              HeightRequest="120">
-            <!--<Image Source="Resources.Image.Ares.png"/>-->
+              HeightRequest="80">
+            <Image Source="AresLogo.png"/>
         </Grid>
     </Shell.FlyoutHeader>
     <FlyoutItem Title="Feed"
