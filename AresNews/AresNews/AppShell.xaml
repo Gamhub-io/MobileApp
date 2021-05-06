@@ -69,6 +69,12 @@
             </Grid>
         </DataTemplate>
     </Shell.MenuItemTemplate>
+    <Shell.FlyoutHeader >
+        <Grid BackgroundColor="{StaticResource Alternate}"
+              HeightRequest="120">
+            <!--<Image Source="Resources.Image.Ares.png"/>-->
+        </Grid>
+    </Shell.FlyoutHeader>
     <FlyoutItem Title="Feed"
                 Icon="&#xf00b;">
         <ShellContent FlyoutItemIsVisible="False"
