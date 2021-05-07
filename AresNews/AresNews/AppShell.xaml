@@ -9,34 +9,57 @@
        Shell.TabBarTitleColor="{StaticResource Light}"
        Shell.BackgroundColor="{StaticResource LightDark}"
        FlyoutBackgroundColor="{StaticResource LightDark}"
+       Shell.ForegroundColor="{StaticResource Primary}"
+       FlyoutWidth="270"
+       
        >
     <!-- Template for the shell content-->
     <Shell.ItemTemplate>
         <DataTemplate>
             <Grid HorizontalOptions="Center"
-                  Padding="0,10"
+                  Padding="0,5"
                   >
-                <Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <!-- Icon -->
+                        <ColumnDefinition Width="*"/>
+                        <!-- Title-->
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
                     <!-- Icon -->
-                    <ColumnDefinition Width="*"/>
-                    <!-- Title-->
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-                <!-- Icon -->
-                <Label  Grid.Column="0"
-                        Margin="50,0,0,0"
+                    <Label  Grid.Column="0"
+                        Margin="20,0,0,0"
                         VerticalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            HorizontalOptions="Center"
                         Text="{Binding Icon}" 
                         FontFamily="FaSolid" 
-                        FontSize="25"
+                        FontSize="26"
                         TextColor="{StaticResource Primary}"/>
-                <!-- Title -->
-                <Label Grid.Column="1" 
+                    <!-- Title -->
+                    <Label Grid.Column="1" 
                        Text="{Binding Title}" 
                        FontSize="23" 
+                           VerticalOptions="Center"
+                           VerticalTextAlignment="Center"
                        TextColor="{StaticResource FontColor}" 
                        FontFamily="P-Regular"
                        HorizontalOptions="Start"  />
+                </Grid>
+                
+
+                <BoxView BackgroundColor="Gray" 
+                         Grid.Row="1"
+                         HorizontalOptions="CenterAndExpand"
+                         VerticalOptions="Center"
+                         Margin="0,10,0,0"
+                         HeightRequest="1"
+                         Opacity="0.1"
+                         WidthRequest="320"/>
             </Grid>
         </DataTemplate>
     </Shell.ItemTemplate>
@@ -97,8 +120,8 @@
     </FlyoutItem>
     
     <!-- About Page -->
-    <FlyoutItem Title="AboutPage"
-                Icon="">
-        <ShellContent ContentTemplate="{DataTemplate views:NewsPage}"/>
+    <FlyoutItem Title="About"
+                Icon="&#xf05a;">
+        <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
     </FlyoutItem>
 </Shell>
