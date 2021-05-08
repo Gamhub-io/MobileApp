@@ -2,11 +2,109 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.Views.AboutPage">
+    <Shell.TitleView>
+        <Grid>
+            <Label Text="About"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontSize="30"
+                   Margin="-55,0,0,0"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"/>
+        </Grid>
+
+    </Shell.TitleView>
+    <ContentPage.Resources>
+        <!-- Style of the title -->
+        <Style x:Key="TitleStyle"
+               TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin" Value="0,20,0,0" />
+            <Setter Property="FontFamily" Value="P-Bold" />
+            <Setter Property="FontSize" Value="23" />
+            <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+        </Style>
+        
+        <!-- Separator -->
+        <Style x:Key="SeparatorStyle" 
+               TargetType="BoxView">
+            <Setter Property="BackgroundColor" Value="{StaticResource FontColor}" />
+            <Setter Property="Margin" Value="20,0" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+            <Setter Property="HeightRequest" Value="1" />
+            <Setter Property="Opacity" Value="0.1" />
+        </Style>
+        
+        <!-- Paragraph -->
+        <Style x:Key="ParagraphStyle"
+               TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            <Setter Property="WidthRequest" Value="350" />
+            <Setter Property="FontFamily" Value="P-Regular" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+        </Style>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <!-- Image -->
+                <RowDefinition Height="100"/>
+                <!-- Description -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <!-- Economic model -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="1,1">
+                    <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                    <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                    <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+                    <GradientStop Color="Black"
+                           Offset="1.0"/>
+                </LinearGradientBrush>
+            </Grid.Background>
+            <!-- Image -->
+            <Image Source="AresLogo"
+                   VerticalOptions="Center"
+                   Grid.Row="0"
+                   Aspect="AspectFit"/>
+
+            <!-- Description -->
+            <Label Text="Project description"
+                   Grid.Row="1"
+                   Style="{StaticResource TitleStyle}" />
+            <BoxView Grid.Row="2"
+                     Style="{StaticResource SeparatorStyle}"/>
+            <Label Text="The purpose of AresGaming is to keep gamers 
+up-to-date on everything game-related, for free, 
+with no ads or any other type of annoyance. 
+
+As the app is open-source, the app evolve using
+is community's knowledge, opinions and skills.  "
+                   Grid.Row="3"
+                   Style="{StaticResource ParagraphStyle}"/>
+            
+            <!-- Profit -->
+            <Label Text="How do is it profitable?"
+                   Grid.Row="4"
+                   Style="{StaticResource TitleStyle}" />
+            <BoxView Grid.Row="5"
+                     Style="{StaticResource SeparatorStyle}"/>
+            <Label Text="It's not."
+                   Grid.Row="6"
+                   Style="{StaticResource ParagraphStyle}"/>
+            
+
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
