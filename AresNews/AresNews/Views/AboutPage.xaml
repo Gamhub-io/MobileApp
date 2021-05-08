@@ -87,7 +87,7 @@
                      Style="{StaticResource SeparatorStyle}"/>
             <Label Text="The purpose of AresGaming is to keep gamers 
 up-to-date on everything game-related, for free, 
-with no ads or any other type of annoyance. 
+with no ads or any other type of annoyance. &#10; &#10;
 
 As the app is open-source, the app evolve using
 is community's knowledge, opinions and skills.  "
