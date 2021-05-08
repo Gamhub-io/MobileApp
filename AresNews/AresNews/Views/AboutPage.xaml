@@ -95,7 +95,7 @@ is community's knowledge, opinions and skills.  "
                    Style="{StaticResource ParagraphStyle}"/>
             
             <!-- Profit -->
-            <Label Text="How do is it profitable?"
+            <Label Text="How could it be profitable, then?"
                    Grid.Row="4"
                    Style="{StaticResource TitleStyle}" />
             <BoxView Grid.Row="5"
