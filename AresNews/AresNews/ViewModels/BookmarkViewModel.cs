@@ -62,15 +62,29 @@ namespace AresNews.ViewModels
 
             _addBookmark = new Command((id) =>
             {
-                //App.StartDb();
+                try
+                {
+                    //App.StartDb();
 
-                // Get the article
-                var article = _bookmarks.FirstOrDefault(art => art.Id == id.ToString());
-                
-                App.SqLiteConn.Delete(article);
+                    // Get the article
+                    var article = _bookmarks.FirstOrDefault(art => art.Id == id.ToString());
 
-                // Marked the article as saved
-                Bookmarks.Remove(article);
+                    
+
+                    App.SqLiteConn.Delete(article);
+
+                    // Say the the bookmark has been removed
+                    MessagingCenter.Send<Article>(article, "SwitchBookmark");
+
+                    // Marked the article as saved
+                    Bookmarks.Remove(article);
+
+                }
+                catch (Exception ex)
+                {
+
+                   
+                }
 
 
             });

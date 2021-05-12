@@ -83,6 +83,36 @@ namespace AresNews.ViewModels
         {
             _articles = new ObservableCollection<Article>();
 
+            // Handle if a article change sees a change of bookmark state
+            MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
+            {
+                try
+                {
+                    if (_articles.Count > 0)
+                    {
+                        var article = _articles.FirstOrDefault<Article>(a => a.Id == sender.Id);
+                        
+                        // Get article index
+                        var index = _articles.IndexOf(article);
+
+                        // Remove the previous one 
+                        Articles.Remove(article);
+
+                        // to add the new one
+                        Articles.Insert(index, article);
+                    }
+                    
+
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                } 
+
+
+            });
+
             _addBookmark = new Command((id) =>
                {
 
@@ -374,7 +404,7 @@ namespace AresNews.ViewModels
             if (_articles.Count > 0)
             {
                 //  Refresh articles
-                await Task.Run (() => Articles = new ObservableCollection<Article>(_articles));
+                //await Task.Run (() => Articles = new ObservableCollection<Article>(_articles));
                 
             }
 
