@@ -404,7 +404,7 @@ namespace AresNews.ViewModels
             if (_articles.Count > 0)
             {
                 //  Refresh articles
-                //await Task.Run (() => Articles = new ObservableCollection<Article>(_articles));
+                await Task.Run (() => Articles = new ObservableCollection<Article>(_articles));
                 
             }
 
