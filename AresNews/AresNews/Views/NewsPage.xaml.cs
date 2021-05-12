@@ -40,8 +40,6 @@ namespace AresNews.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-
-            _vm.RefreshArticles();
         }
     }
 }
