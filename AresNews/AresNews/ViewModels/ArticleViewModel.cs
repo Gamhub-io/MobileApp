@@ -66,6 +66,8 @@ namespace AresNews.ViewModels
                     // Insert it in database
                     App.SqLiteConn.Insert(_selectedArticle);
 
+                MessagingCenter.Send<Article>(_selectedArticle, "SwitchBookmark");
+
                 SelectedArticle = _selectedArticle;
 
             });
