@@ -3,6 +3,7 @@ using AresNews.Views;
 using HtmlAgilityPack;
 using MvvmHelpers;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -82,6 +83,7 @@ namespace AresNews.ViewModels
         public NewsViewModel()
         {
             _articles = new ObservableCollection<Article>();
+            Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
@@ -454,6 +456,14 @@ namespace AresNews.ViewModels
             }
             
             return listResult;
+        }
+        void ObservableCollectionCallback(IEnumerable collection, object context, Action accessMethod, bool writeAccess)
+        {
+            // `lock` ensures that only one thread access the collection at a time
+            lock (collection)
+            {
+                accessMethod?.Invoke();
+            }
         }
     }
 }

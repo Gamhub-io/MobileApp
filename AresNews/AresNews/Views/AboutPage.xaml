@@ -79,7 +79,7 @@
                    Grid.Row="0"
                    Aspect="AspectFit"/>
 
-            <!-- Description -->
+            <!-- Description --> 
             <Label Text="Project description"
                    Grid.Row="1"
                    Style="{StaticResource TitleStyle}" />
