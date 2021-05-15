@@ -59,6 +59,10 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <!-- Creator -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Grid.Background>
                 <LinearGradientBrush StartPoint="0,0"
@@ -103,7 +107,80 @@ its community's skills, knowledges and opinions.  "
             <Label Text="It's not."
                    Grid.Row="6"
                    Style="{StaticResource ParagraphStyle}"/>
+
+            <!-- Creator -->
+            <Label Text="Founder"
+                   Grid.Row="7"
+                   Style="{StaticResource TitleStyle}" 
+                   />
+
+            <BoxView Grid.Row="8"
+                     Style="{StaticResource SeparatorStyle}"/>
             
+            <!-- Card creator -->
+            <Frame Grid.Row="9"
+                   BackgroundColor="{StaticResource LightDark}"
+                   CornerRadius="15"
+                   WidthRequest="265"
+                   HeightRequest="108"
+                   Margin="0,20,0,0"
+                   HorizontalOptions="Center"
+                   Padding="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Profile pic -->
+                    <Frame CornerRadius="100"
+                           Padding="0"
+                           Grid.Column="0"
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           WidthRequest="75"
+                           HeightRequest="75"
+                           IsClippedToBounds="True">
+                        <Image Source="https://pbs.twimg.com/profile_images/1067126620476055553/x6K-88A8.jpg"
+                               Aspect="AspectFit"
+                               />
+                    </Frame>
+
+                    <Grid Grid.Column="1"
+                          Margin="0,20,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Name -->
+                        <Label Text="Bryce Friha"
+                               FontSize="18"
+                               Grid.Row="0"
+                               FontFamily="P-Bold"
+                               TextColor="{StaticResource FontColor}"
+                               VerticalOptions="Center"/>
+
+                        <!-- Twitter -->
+                        <StackLayout Orientation="Horizontal"
+                                     Grid.Row="1">
+                            <!-- Twitter logo -->
+                            <Label Text="&#xf099;"
+                                   FontSize="15"
+                                   FontFamily="FaBrand"
+                                   TextColor="#1DA1F2"
+                                   VerticalOptions="Center"/>
+                            <!-- Name -->
+                            <Label Text="@BriceFriha"
+                               FontSize="14"
+                               FontFamily="P-Bold"
+                                   VerticalOptions="Center"
+                               TextColor="{StaticResource FontColor}"/>
+                        </StackLayout>
+                    </Grid>
+                    
+                </Grid>
+            </Frame>
 
         </Grid>
     </ContentPage.Content>
