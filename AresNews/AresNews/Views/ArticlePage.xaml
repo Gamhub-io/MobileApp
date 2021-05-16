@@ -162,16 +162,12 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
-                <!--<mat:HtmlLabel Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                <controls:HtmlContent Text="{Binding SelectedArticle.Content, Mode=OneWay}"
                                TextColor="{StaticResource FontColor}"
                                Margin="25,5"
                                AndroidLegacyMode="True"
                                FontFamily="P-Regular"
-                               Grid.Row="3"/>-->
-                <controls:HtmlLabel Grid.Row="3"
-                                    Text="{Binding SelectedArticle.Content, Mode=OneWay}"
-                                    FontFamily="P-Regular"
-                                    TextColor="{StaticResource FontColor}"/>
+                               Grid.Row="3"/>
 
                 <!-- Button to open to the default Browser -->
                 <Button Text="Open on the website"

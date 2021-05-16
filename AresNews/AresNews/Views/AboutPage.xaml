@@ -172,10 +172,10 @@ its community's skills, knowledges and opinions.  "
                                    VerticalOptions="Center"/>
                             <!-- Name -->
                             <Label Text="@BriceFriha"
-                               FontSize="14"
-                               FontFamily="P-Bold"
+                                   FontSize="14"
+                                   FontFamily="P-Bold"
                                    VerticalOptions="Center"
-                               TextColor="{StaticResource FontColor}"/>
+                                   TextColor="{StaticResource FontColor}"/>
                         </StackLayout>
                     </Grid>
                     
