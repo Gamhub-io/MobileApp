@@ -75,12 +75,12 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <controls:ArticlePreview Headline="{Binding Title}"
+                    <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
                                              ArticleId="{Binding Id}"
-                                             ArticleIsSaved="{Binding IsSaved}"
+                                             ArticleIsSaved="{Binding IsSaved, Mode=OneWay}"
                                              ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
-                                             ArticleSource="{Binding SourceName}"
-                                             Thumnail="{Binding Image}"
+                                             ArticleSource="{Binding SourceName, Mode=OneWay}"
+                                             Thumnail="{Binding Image, Mode=OneWay}"
                                              ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=ShareArticle, Mode=OneWay}"
                                              ShareCommandParameter="{Binding Url}"
                                              BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=AddBookmark, Mode=OneWay}"
