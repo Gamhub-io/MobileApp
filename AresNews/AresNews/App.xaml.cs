@@ -22,7 +22,6 @@ namespace AresNews
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
         public static SQLiteConnection SqLiteConn { get; set; }
-
         public App()
         {
             Sources = new Collection<Source>();
@@ -77,7 +76,7 @@ namespace AresNews
 
         protected override void OnSleep()
         {
-            SqLiteConn.Dispose();
+            //SqLiteConn.Dispose();
         }
 
         protected override void OnResume()

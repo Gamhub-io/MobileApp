@@ -59,7 +59,30 @@ namespace AresNews.ViewModels
 
             Bookmarks = new ObservableCollection<Article>(App.SqLiteConn.Table<Article>().Reverse());
 
+            // Handle if a article change sees a change of bookmark state
+            MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
+            {
+                try
+                {
+                    if (_bookmarks.Count > 0)
+                    {
+                        var article = _bookmarks.FirstOrDefault<Article>(a => a.Id == sender.Id);
 
+                        
+                        // Remove the the article
+                        Bookmarks.Remove(article);
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+
+                    throw;
+                }
+
+
+            });
             _addBookmark = new Command((id) =>
             {
                 try

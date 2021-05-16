@@ -71,9 +71,8 @@
                                        HeightRequest="25"
                                        Padding="5,0"
                                        BackgroundColor="{StaticResource LightDark}">
-                                    <Label  
-                                               FontSize="13"
-                                               HorizontalOptions="Center"
+                                    <Label FontSize="13"
+                                           HorizontalOptions="Center"
                                                 VerticalOptions="Center"
                                                Text="{TemplateBinding ArticleSource}"
                                                 FontFamily="P-Bold"
@@ -149,7 +148,7 @@
                                        Text="{TemplateBinding  Headline}"
                                        TextColor="{StaticResource FontColor}"
                                        Margin="10,0"
-                                       TextType="Html"
+                                       
                                        FontFamily="P-Bold"
                                        FontSize="17"/>
 
