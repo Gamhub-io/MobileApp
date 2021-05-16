@@ -2,6 +2,7 @@
 using MvvmHelpers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -21,6 +22,11 @@ namespace AresNews.ViewModels
                 OnPropertyChanged();
             }
         }
+        /// <summary>
+        /// Time spend reading the article
+        /// </summary>
+        public Stopwatch timeSpent { get; set; }
+
         // Command to add a Bookmark
         private Command _addBookmark;
 
@@ -49,7 +55,6 @@ namespace AresNews.ViewModels
 
         public ArticleViewModel(Article article)
         {
-            _selectedArticle = article;
 
             _addBookmark = new Command((id) =>
             {
@@ -85,6 +90,11 @@ namespace AresNews.ViewModels
                     
                 });
             });
+
+            _selectedArticle = article;
+
+            timeSpent = new Stopwatch();
+            timeSpent.Start();
         }
     }
 }

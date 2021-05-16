@@ -1,4 +1,5 @@
 ﻿using AresNews.Models;
+using AresNews.ViewModels;
 using AresNews.Views;
 using Newtonsoft.Json;
 using SQLite;
@@ -76,11 +77,31 @@ namespace AresNews
 
         protected override void OnSleep()
         {
+            base.OnSleep();
+
+            AppShell mainPage = ((AppShell)MainPage);
+            Page currentPage = mainPage.CurrentPage;
+
+            if (currentPage.ToString() == "AresNews.Views.ArticlePage")
+            {
+
+                ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).timeSpent.Stop();
+            }
             //SqLiteConn.Dispose();
         }
+        
 
         protected override void OnResume()
         {
+            AppShell mainPage = ((AppShell)MainPage);
+            Page currentPage = mainPage.CurrentPage;
+
+            if (currentPage.ToString() == "AresNews.Views.ArticlePage")
+            {
+
+                ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).timeSpent.Start();
+            }
+
             StartDb();
         }
         /// <summary>

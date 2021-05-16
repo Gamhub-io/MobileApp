@@ -36,7 +36,7 @@ namespace AresNews.ViewModels
                     var articlePage = new ArticlePage(_bookmarks.FirstOrDefault(art => art.Id == id.ToString()));
 
                     /*Task.Run(async () =>*/
-                    await App.Current.MainPage.Navigation.PushAsync(articlePage);/*);*/
+                    await App.Current.MainPage.Navigation.PushAsync(articlePage);
                 }); ;
             }
         }
