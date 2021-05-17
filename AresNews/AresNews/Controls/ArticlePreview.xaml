@@ -7,9 +7,155 @@
 
     <ContentView.Resources>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
-        
+
+        <ControlTemplate x:Key="ArticleTemplate">
+            <Frame CornerRadius="15" 
+                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
+                       BorderColor="{StaticResource Dark}"
+                       HeightRequest="221"
+                       IsClippedToBounds="True"
+                       Padding="0">
+                <Grid>
+
+                    <!-- Backgournd -->
+                    <Grid BackgroundColor="{StaticResource Dark}">
+                        <!-- Image -->
+                        <Image Source="{Binding Thumnail}" 
+                                   Opacity="0.60" 
+                                   Aspect="AspectFill"/>
+                        <!-- filter -->
+                        <Grid Opacity="0.15">
+                            <Grid.Background>
+                                <LinearGradientBrush EndPoint="0,1">
+
+                                    <GradientStop Color="{StaticResource Light}"
+                                                          Offset="0.1" />
+                                    <GradientStop Color="{StaticResource Light}"
+                                                          Offset="0.0" />
+                                    <GradientStop Color="{StaticResource Dark}"
+                                                          Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Grid.Background>
+                        </Grid>
+                    </Grid>
+                    <!-- Foreground -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="75"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Extra -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Mentionning the source -->
+                            <Frame Grid.Column="0"
+                                       HorizontalOptions="Start"
+                                       VerticalOptions="Start"
+                                       CornerRadius="8"
+                                       Margin="10,10,0,0"
+                                       HeightRequest="25"
+                                       Padding="5,0"
+                                       BackgroundColor="{StaticResource LightDark}">
+                                <Label FontSize="13"
+                                           HorizontalOptions="Center"
+                                                VerticalOptions="Center"
+                                               Text="{Binding ArticleSource}"
+                                                FontFamily="P-Bold"
+                                               TextColor="{StaticResource FontColor}"
+                                               />
+                            </Frame>
+
+                            <!-- Share and save-->
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                <!-- Share button-->
+                                <Button Grid.Row="0"
+                                                CornerRadius="100"
+                                               HorizontalOptions="End"
+                                               VerticalOptions="Center"
+                                                Text="&#xf1e0;"
+                                                FontFamily="FaSolid"
+                                                FontSize="20"
+                                               Padding="0"
+                                               Margin="0,10,10,0"
+                                               HeightRequest="40"
+                                               WidthRequest="40"
+                                                TextColor="{StaticResource Primary}"
+                                               BackgroundColor="{StaticResource LightDark}"
+                                            Command="{Binding ShareCommand}"
+                                            CommandParameter="{Binding ArticleId}"/>
+                                <!-- Bookmark button-->
+                                <Button  Grid.Row="1"
+                                                CornerRadius="100"
+                                               HorizontalOptions="End"
+                                               VerticalOptions="Center"
+                                               Padding="0"
+                                               Margin="0,0,10,0"
+                                               HeightRequest="40"
+                                               WidthRequest="40"
+                                                 FontSize="20"
+                                                 Text="&#xf02e;"
+                                                 TextColor="{StaticResource Primary}"
+                                               BackgroundColor="{StaticResource LightDark}"
+                                                  Command="{Binding BookmarkCommand}"
+                                                  CommandParameter="{Binding ArticleId}">
+                                    <Button.Triggers>
+                                        <DataTrigger TargetType="Button"
+                                                         Binding="{Binding ArticleIsSaved}"
+                                                         Value="true">
+                                            <Setter Property="FontFamily" Value="FaSolid"/>
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Button"
+                                                         Binding="{Binding ArticleIsSaved}"
+                                                         Value="false">
+                                            <Setter Property="FontFamily" Value="FaRegular"/>
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
+                            </Grid>
+
+                        </Grid>
+                        <!-- Banner -->
+                        <BoxView Grid.Row="1" 
+                                         BackgroundColor="{StaticResource Dark}" 
+                                         Opacity="0.24"/>
+                        <!-- Title -->
+                        <Grid Grid.Row="1" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="2*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!-- Headline -->
+                            <Label Grid.Row="0" 
+                                       Text="{Binding Headline}"
+                                       TextColor="{StaticResource FontColor}"
+                                       Margin="10,0"
+                                       
+                                       FontFamily="P-Bold"
+                                       FontSize="17"/>
+
+                            <!-- Time ago -->
+                            <Label Grid.Row="1" 
+                               Text="{Binding  ArticleTime}"
+                               TextColor="{StaticResource FontColor}"
+                               Margin="10,0"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End"
+                               FontFamily="P-Bold"
+                               FontSize="14"/>
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Frame>
+        </ControlTemplate>
     </ContentView.Resources>
-    <ContentView.Content>
-       
-    </ContentView.Content>
 </ContentView>
