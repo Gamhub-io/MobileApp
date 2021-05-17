@@ -138,7 +138,10 @@ namespace AresNews.ViewModels
 
                    Articles[_articles.IndexOf(article)] = article;
 
-                   
+                   // Say the the bookmark has been updated
+                   MessagingCenter.Send<Article>(article, "SwitchBookmark");
+
+
                });
 
             _refreshFeed = new Command( () =>

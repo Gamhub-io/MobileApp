@@ -68,9 +68,14 @@ namespace AresNews.ViewModels
                     {
                         var article = _bookmarks.FirstOrDefault<Article>(a => a.Id == sender.Id);
 
-                        
+                        // Get article index
+                        var index = _bookmarks.IndexOf(article);
+
                         // Remove the the article
                         Bookmarks.Remove(article);
+
+                        // to add the new one
+                        Bookmarks.Insert(index, article);
                     }
 
 
