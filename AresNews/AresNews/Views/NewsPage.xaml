@@ -75,7 +75,7 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <controls:ArticlePreview Headline="{Binding Title}"
+                        <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
                                                      ArticleId="{Binding Id}"
                                                      ArticleIsSaved="{Binding IsSaved}"
                                                      ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
