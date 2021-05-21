@@ -76,20 +76,20 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
-                                                     ArticleId="{Binding Id}"
-                                                     ArticleIsSaved="{Binding IsSaved}"
-                                                     ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
-                                                     ArticleSource="{Binding SourceName}"
-                                                     Thumnail="{Binding Image}"
-                                                     ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle, Mode=OneWay}"
-                                                     ShareCommandParameter="{Binding Url}"
-                                                     BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark, Mode=OneWay}"
-                                                     ControlTemplate="{StaticResource ArticleTemplate}"
+                                                 ArticleId="{Binding Id}"
+                                                 ArticleIsSaved="{Binding IsSaved}"
+                                                 ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
+                                                 ArticleSource="{Binding SourceName}"
+                                                 Thumnail="{Binding Image}"
+                                                 ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle, Mode=OneWay}"
+                                                 ShareCommandParameter="{Binding Url}"
+                                                 BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark, Mode=OneWay}"
+                                                 ControlTemplate="{StaticResource ArticleTemplate}"
                                                      
                                                  >
                             <controls:ArticlePreview.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}" 
-                                                          CommandParameter="{Binding Id}" />
+                                                      CommandParameter="{Binding Id}" />
                             </controls:ArticlePreview.GestureRecognizers>
                         </controls:ArticlePreview>
                     </DataTemplate>

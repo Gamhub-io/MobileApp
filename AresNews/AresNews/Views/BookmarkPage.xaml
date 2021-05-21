@@ -58,17 +58,17 @@
                                HorizontalOptions="Center"
                            />
                         <Label Text="No article saved"
-                           FontFamily="P-Bold"
-                           HorizontalOptions="Center"
+                               FontFamily="P-Bold"
+                               HorizontalOptions="Center"
                                FontSize="Title"
-                           TextColor="{StaticResource FontColor}"
-                           />
+                               TextColor="{StaticResource FontColor}"
+                               />
                         <Label Text="Tap on the bookmark icon on the articles you want to save."
                                FontFamily="P-Regular"
                                HorizontalTextAlignment="Center"
                                FontSize="Subtitle"
-                           TextColor="{StaticResource FontColor}"
-                           />
+                               TextColor="{StaticResource FontColor}"
+                               />
                     </StackLayout>
                 </ContentView>
 
@@ -88,7 +88,7 @@
                                              >
                         <controls:ArticlePreview.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=GoToDetail}" 
-                                                      CommandParameter="{Binding Id}" />
+                                                  CommandParameter="{Binding Id}" />
                         </controls:ArticlePreview.GestureRecognizers>
                     </controls:ArticlePreview>
                 </DataTemplate>
