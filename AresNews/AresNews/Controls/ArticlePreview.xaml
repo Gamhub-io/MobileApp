@@ -144,13 +144,13 @@
 
                             <!-- Time ago -->
                             <Label Grid.Row="1" 
-                               Text="{Binding  ArticleTime}"
-                               TextColor="{StaticResource FontColor}"
-                               Margin="10,0"
-                               VerticalOptions="Center"
-                               HorizontalOptions="End"
-                               FontFamily="P-Bold"
-                               FontSize="14"/>
+                                   Text="{Binding  ArticleTime}"
+                                   TextColor="{StaticResource FontColor}"
+                                   Margin="10,0"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"
+                                   FontFamily="P-Bold"
+                                   FontSize="14"/>
                         </Grid>
 
                     </Grid>
