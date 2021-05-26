@@ -6,10 +6,11 @@
 
 # AresGaming
 
-The purpose of AresGaming is to keep gamers 
+AresGaming is an iOS and Android app that keeps gamers 
 up-to-date on everything game-related, for free, 
 with no ads or any other type of annoyance.
 
+The app as been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms).
 
 ## Contributions
 As the app is open-source, the app evolve using
