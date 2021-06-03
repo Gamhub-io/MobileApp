@@ -8,7 +8,7 @@
              
              >
     <Shell.TitleView>
-        <Grid>
+        <Grid BackgroundColor="Red">
             <Label Text="News"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"

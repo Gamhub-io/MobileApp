@@ -78,33 +78,32 @@
                                 </Grid.RowDefinitions>
                                 <!-- Share button-->
                                 <Button Grid.Row="0"
-                                                CornerRadius="100"
-                                               HorizontalOptions="End"
-                                               VerticalOptions="Center"
-                                                Text="&#xf1e0;"
-                                                FontFamily="FaSolid"
-                                                FontSize="20"
-                                               Padding="0"
-                                               Margin="0,10,10,0"
-                                               HeightRequest="40"
-                                               WidthRequest="40"
-                                                TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"
-                                            Command="{Binding ShareCommand}"
-                                            CommandParameter="{Binding ArticleId}"/>
+                                        CornerRadius="100"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center"
+                                        Text="&#xf1e0;"
+                                        FontFamily="FaSolid"
+                                        FontSize="20"
+                                        Padding="0"
+                                        Margin="0,10,10,0"
+                                        HeightRequest="40"
+                                        WidthRequest="40"
+                                        TextColor="{StaticResource Primary}"
+                                        BackgroundColor="{StaticResource LightDark}"
+                                        Command="{Binding ShareCommand}"
+                                        CommandParameter="{Binding ArticleId}"/>
                                 <!-- Bookmark button-->
                                 <Button  Grid.Row="1"
                                                 CornerRadius="100"
                                                HorizontalOptions="End"
                                                VerticalOptions="Center"
-                                               Padding="0"
                                                Margin="0,0,10,0"
                                                HeightRequest="40"
                                                WidthRequest="40"
                                                  FontSize="20"
                                                  Text="&#xf02e;"
                                                  TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"
+                                               BackgroundColor="Black"
                                                   Command="{Binding BookmarkCommand}"
                                                   CommandParameter="{Binding ArticleId}">
                                     <Button.Triggers>
@@ -125,8 +124,8 @@
                         </Grid>
                         <!-- Banner -->
                         <BoxView Grid.Row="1" 
-                                         BackgroundColor="{StaticResource Dark}" 
-                                         Opacity="0.24"/>
+                                 BackgroundColor="{StaticResource Dark}" 
+                                 Opacity="0.24"/>
                         <!-- Title -->
                         <Grid Grid.Row="1" >
                             <Grid.RowDefinitions>
