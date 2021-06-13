@@ -162,7 +162,7 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
-                <controls:HtmlContent Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                <mat:HtmlLabel Text="{Binding SelectedArticle.Content, Mode=OneWay}"
                                TextColor="{StaticResource FontColor}"
                                Margin="25,5"
                                AndroidLegacyMode="True"

@@ -6,16 +6,20 @@
              x:Class="AresNews.Views.BookmarkPage"
              BackgroundColor="{StaticResource Dark}">
     <Shell.TitleView>
-        <Grid HorizontalOptions="Start">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="{StaticResource TitleRightMargin}"/>
+
+            </Grid.ColumnDefinitions>
+
             <Label Text="Bookmarks"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
+                   Grid.Column="1"
                    FontSize="30"
-                   Margin="-55,0,0,0"
-                   BackgroundColor="Red"
+                   VerticalOptions="Center"
                    TextColor="{StaticResource FontColor}"
-                   FontFamily="P-Bold">
-            </Label>
+                   FontFamily="P-Bold"/>
         </Grid>
 
     </Shell.TitleView>
