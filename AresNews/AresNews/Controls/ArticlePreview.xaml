@@ -89,7 +89,7 @@
                                         HeightRequest="40"
                                         WidthRequest="40"
                                         TextColor="{StaticResource Primary}"
-                                        BackgroundColor="{StaticResource LightDark}"
+                                        Background="{StaticResource LightDark}"
                                         Command="{Binding ShareCommand}"
                                         CommandParameter="{Binding ArticleId}"/>
                                 <!-- Bookmark button-->
@@ -103,7 +103,7 @@
                                                  FontSize="20"
                                                  Text="&#xf02e;"
                                                  TextColor="{StaticResource Primary}"
-                                               BackgroundColor="Black"
+                                               BackgroundColor="{StaticResource LightDark}"
                                                   Command="{Binding BookmarkCommand}"
                                                   CommandParameter="{Binding ArticleId}">
                                     <Button.Triggers>
