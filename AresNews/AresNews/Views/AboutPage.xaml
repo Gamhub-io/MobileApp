@@ -5,11 +5,17 @@
              x:Class="AresNews.Views.AboutPage">
     <Shell.TitleView>
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="{StaticResource TitleRightMargin}"/>
+
+            </Grid.ColumnDefinitions>
+
             <Label Text="About"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
+                   Grid.Column="1"
                    FontSize="30"
-                   Margin="-55,0,0,0"
+                   VerticalOptions="Center"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-Bold"/>
         </Grid>
