@@ -10,14 +10,14 @@
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="100" />
             </Grid.ColumnDefinitions>
             <Label Text="{Binding SelectedArticle.SourceName}"
-                   HorizontalOptions="Center"
                    VerticalOptions="Center"
                    FontSize="20"
-                   Margin="0,0,0,0"
+                   HorizontalOptions="Center"
+                   Margin="30,0,0,0"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-Bold"
                    Grid.Column="0"/>
@@ -26,10 +26,12 @@
             <Button Text="&#xf141;" 
                     FontFamily="FaSolid"
                     TextColor="{StaticResource Primary}"
-                    BackgroundColor="{StaticResource LightDark}"
+                    BackgroundColor="Transparent"
                     Grid.Column="1"
                     FontSize="30"
                     Padding="0"
+                   HorizontalOptions="Start"
+                    Margin="0"
                     Command="{Binding Browse}"
                     />
         </Grid>
@@ -162,7 +164,7 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
-                <controls:HtmlContent Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                <mat:HtmlLabel Text="{Binding SelectedArticle.Content, Mode=OneWay}"
                                TextColor="{StaticResource FontColor}"
                                Margin="25,5"
                                AndroidLegacyMode="True"
