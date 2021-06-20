@@ -14,7 +14,11 @@
             <Color x:Key="FontColor" >#ecebeb</Color>
         </ResourceDictionary>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
-        
+        <ResourceDictionary>
+            <OnPlatform x:Key="TitleRightMargin" 
+                        x:TypeArguments="GridLength" 
+                        iOS="2*" Android="1.9*" />
+        </ResourceDictionary>
         <!-- Converter to convert time span to string-->
         <helpers:TimeSpanConverter x:Key="TimeSpanConverter"/>
     </Application.Resources>
