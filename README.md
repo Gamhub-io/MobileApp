@@ -6,10 +6,11 @@
 
 # AresGaming
 
-The purpose of AresGaming is to keep gamers 
+AresGaming is an iOS and Android app that keeps gamers 
 up-to-date on everything game-related, for free, 
 with no ads or any other type of annoyance.
 
+The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms).
 
 ## Contributions
 As the app is open-source, the app evolve using
@@ -27,7 +28,7 @@ From the [list of issues](https://github.com/bricefriha/AresNews/issues), you ca
 ## Authors
 
 
-|  <img width="50px" style="border-radius:150px" src="https://avatars.githubusercontent.com/u/37577669?s=96&v=4" />|
+|  <img width="100px" style="border-radius:150px"  src="https://avatars.githubusercontent.com/u/37577669?v=4" />|
 |---|
 | **Bryce Friha** |
 | [![twitter](https://img.shields.io/twitter/follow/BriceFriha?label=Follow%20on%20Twitter&style=social)](https://twitter.com/BriceFriha?ref_src=twsrc%5Etfw) |
