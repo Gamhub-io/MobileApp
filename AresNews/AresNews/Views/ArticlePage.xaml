@@ -34,7 +34,7 @@
                             Grid.Column="1"
                             FontSize="30"
                             Padding="0"
-                           HorizontalOptions="Start"
+                           HorizontalOptions="End"
                             Margin="0"
                             Command="{Binding Browse}"
                             />
