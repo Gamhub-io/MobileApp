@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.Views.ArticlePage"
              xmlns:helpers="clr-namespace:AresNews.Helpers"
-             xmlns:controls="clr-namespace:AresNews.Controls"
              BackgroundColor="{StaticResource Dark}"
              xmlns:mat="clr-namespace:LabelHtml.Forms.Plugin.Abstractions;assembly=HtmlLabel.Forms.Plugin"
              Shell.TabBarIsVisible="False">
@@ -47,15 +46,15 @@
                         <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <Label Text="{Binding SelectedArticle.SourceName}"
-                   VerticalOptions="Center"
-                   FontSize="20"
-                   HorizontalOptions="Center"
-                   Margin="30,0,0,0"
-                   TextColor="{StaticResource FontColor}"
-                   FontFamily="P-Bold"
-                   Grid.Column="0"/>
+                           VerticalOptions="Center"
+                           FontSize="20"
+                           HorizontalOptions="Center"
+                           Margin="20,0,0,0"
+                           TextColor="{StaticResource FontColor}"
+                           FontFamily="P-Bold"
+                           Grid.Column="0"/>
 
-                    
+
                     <!-- Browser button -->
                     <Button Text="&#xf141;" 
                             FontFamily="FaSolid"
@@ -64,42 +63,13 @@
                             Grid.Column="1"
                             FontSize="30"
                             Padding="0"
-                           HorizontalOptions="Start"
+                            HorizontalOptions="Start"
                             Margin="0"
                             Command="{Binding Browse}"
                             />
                 </Grid>
             </OnPlatform.Android>
         </OnPlatform>
-        <!--
-        <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <Label Text="{Binding SelectedArticle.SourceName}"
-                   VerticalOptions="Center"
-                   FontSize="20"
-                   HorizontalOptions="Center"
-                   Margin="30,0,0,0"
-                   TextColor="{StaticResource FontColor}"
-                   FontFamily="P-Bold"
-                   Grid.Column="0"/>
-            
-            --><!-- Browser button --><!--
-            <Button Text="&#xf141;" 
-                    FontFamily="FaSolid"
-                    TextColor="{StaticResource Primary}"
-                    BackgroundColor="Transparent"
-                    Grid.Column="1"
-                    FontSize="30"
-                    Padding="0"
-                   HorizontalOptions="Start"
-                    Margin="0"
-                    Command="{Binding Browse}"
-                    />
-        </Grid>
-        -->
 
     </Shell.TitleView>
     <ContentPage.Resources>
