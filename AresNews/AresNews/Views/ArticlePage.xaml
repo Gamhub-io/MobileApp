@@ -117,11 +117,12 @@
                 <!-- Publishing info-->
                 <Grid Grid.Row="2" Padding="25,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <!-- Publish date time -->
-                    <StackLayout Grid.Column="0">
+                    <StackLayout Grid.Column="0"
+                                 Margin="0,0,15,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
@@ -149,53 +150,45 @@
                     </StackLayout>
                     <!-- Buttons -->
                     <!-- Share and save-->
-                    <Grid Grid.Column="1" ColumnSpacing="10">
+                    <Grid Grid.Column="1" 
+                          ColumnSpacing="5"
+                          HorizontalOptions="End"
+                          VerticalOptions="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <!-- Share button-->
-                        <Button Grid.Column="0"
-                                                CornerRadius="100"
-                                               HorizontalOptions="End"
-                                               VerticalOptions="CenterAndExpand"
-                                                Text="&#xf1e0;"
-                                                FontFamily="FaSolid"
-                                                FontSize="20"
-                                               Padding="0"
-                                               HeightRequest="40"
-                                               WidthRequest="40"
-                                                TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"
-                                            Command="{Binding ShareArticle}"
-                                            CommandParameter="{Binding SelectedArticle.Url}"/>
+                        <Frame Grid.Column="0"
+                               Style="{StaticResource ButtonFrame}">
+                            <Button Style="{StaticResource ButtonStyle}"
+                                    Text="&#xf1e0;"
+                                    Command="{Binding ShareArticle}"
+                                    CommandParameter="{Binding SelectedArticle.Url}"
+                                        />
+                        </Frame>
                         <!-- Bookmark button-->
-                        <Button  Grid.Column="1"
-                                 CornerRadius="100"
-                                 HorizontalOptions="End"
-                                 VerticalOptions="CenterAndExpand"
-                                 Padding="0"
-                                 HeightRequest="40"
-                                 WidthRequest="40"
-                                 FontSize="20"
-                                 Text="&#xf02e;"
-                                 TextColor="{StaticResource Primary}"
-                                 BackgroundColor="{StaticResource LightDark}"
-                                 Command="{Binding AddBookmark}"
-                                 CommandParameter="{Binding SelectedArticle.Id}">
-                            <Button.Triggers>
-                                <DataTrigger TargetType="Button"
-                                             Binding="{Binding SelectedArticle.IsSaved}"
-                                             Value="true">
-                                    <Setter Property="FontFamily" Value="FaSolid"/>
-                                </DataTrigger>
-                                <DataTrigger TargetType="Button"
-                                             Binding="{Binding SelectedArticle.IsSaved}"
-                                             Value="false">
-                                    <Setter Property="FontFamily" Value="FaRegular"/>
-                                </DataTrigger>
-                            </Button.Triggers>
-                        </Button>
+                        <Frame Grid.Column="1"
+                               Style="{StaticResource ButtonFrame}" >
+
+                            <Button Text="&#xf02e;" 
+                                    Style="{StaticResource ButtonStyle}"
+                                    Command="{Binding AddBookmark}"
+                                    CommandParameter="{Binding ArticleId}">
+                                <Button.Triggers>
+                                    <DataTrigger TargetType="Button"
+                                                 Binding="{Binding SelectedArticle.IsSaved}"
+                                                 Value="true">
+                                        <Setter Property="FontFamily" Value="FaSolid"/>
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Button"
+                                                 Binding="{Binding SelectedArticle.IsSaved}"
+                                                 Value="false">
+                                        <Setter Property="FontFamily" Value="FaRegular"/>
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </Frame>
                     </Grid>
                 </Grid>
                 <!-- content -->
