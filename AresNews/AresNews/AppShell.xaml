@@ -32,23 +32,23 @@
                     </Grid.ColumnDefinitions>
                     <!-- Icon -->
                     <Label  Grid.Column="0"
-                        Margin="20,0,0,0"
-                        VerticalOptions="Center"
+                            Margin="20,0,0,0"
+                            VerticalOptions="Center"
                             HorizontalTextAlignment="Center"
                             HorizontalOptions="Center"
-                        Text="{Binding Icon}" 
-                        FontFamily="FaSolid" 
-                        FontSize="26"
-                        TextColor="{StaticResource Primary}"/>
+                            Text="{Binding Icon}" 
+                            FontFamily="FaSolid" 
+                            FontSize="26"
+                            TextColor="{StaticResource Primary}"/>
                     <!-- Title -->
                     <Label Grid.Column="1" 
-                       Text="{Binding Title}" 
-                       FontSize="23" 
+                           Text="{Binding Title}" 
+                           FontSize="23" 
                            VerticalOptions="Center"
                            VerticalTextAlignment="Center"
-                       TextColor="{StaticResource FontColor}" 
-                       FontFamily="P-Regular"
-                       HorizontalOptions="Start"  />
+                           TextColor="{StaticResource FontColor}" 
+                           FontFamily="P-Regular"
+                           HorizontalOptions="Start"  />
                 </Grid>
                 
 
