@@ -7,31 +7,7 @@
 
     <ContentView.Resources>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
-        
-        <!-- Buttons -->
-        <Style TargetType="Frame"
-               x:Key="ButtonFrame">
-            <Setter Property="BackgroundColor" Value="{StaticResource LightDark}" />
-            <Setter Property="HorizontalOptions" Value="End" />
-            <Setter Property="VerticalOptions" Value="Center" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="CornerRadius" Value="17" />
-            <Setter Property="Margin" Value="0,10,10,0" />
-            <Setter Property="HeightRequest" Value="40" />
-            <Setter Property="WidthRequest" Value="40" />
-            <Setter Property="HasShadow" Value="False" />
-            <Setter Property="IsClippedToBounds" Value="True" />
-        </Style>
 
-        <Style TargetType="Button"
-               x:Key="ButtonStyle">
-            <Setter Property="FontFamily" Value="FaSolid" />
-            <Setter Property="FontSize" Value="20" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="TextColor" Value="{StaticResource Primary}" />
-            <Setter Property="BackgroundColor" Value="Transparent" />
-        </Style>
-        
         <!-- Template -->
         <ControlTemplate x:Key="ArticleTemplate">
             <Frame CornerRadius="15" 
