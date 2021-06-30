@@ -103,6 +103,7 @@
     <FlyoutItem Title="Feed"
                 Icon="&#xf00b;">
         <ShellContent FlyoutItemIsVisible="False"
+                      Route="NewsPage"
                       ContentTemplate="{DataTemplate views:NewsPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
@@ -111,6 +112,7 @@
             </ShellContent.Icon>
         </ShellContent>
         <ShellContent FlyoutItemIsVisible="False"
+                      Route="BookmarkPage"
                       ContentTemplate="{DataTemplate views:BookmarkPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 

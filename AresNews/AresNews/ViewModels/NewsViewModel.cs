@@ -88,7 +88,7 @@ namespace AresNews.ViewModels
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
-                if (Shell.Current.CurrentItem.CurrentItem.Page != "NewsPage")
+                if (Shell.Current.CurrentItem.CurrentItem.Route != "IMPL_NewsPage")
                 {
                     try
                     {
