@@ -23,6 +23,17 @@ namespace AresNews
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
         public static SQLiteConnection SqLiteConn { get; set; }
+
+        public enum PageType
+        {
+            about,
+            article,
+            bookmark,
+            news,
+            source
+
+
+        }
         public App()
         {
             Sources = new Collection<Source>();
