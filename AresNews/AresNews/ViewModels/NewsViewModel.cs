@@ -88,29 +88,33 @@ namespace AresNews.ViewModels
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
-                try
+                if (Shell.Current.CurrentItem.CurrentItem.Page != "NewsPage")
                 {
-                    if (_articles.Count > 0)
+                    try
                     {
-                        var article = _articles.FirstOrDefault<Article>(a => a.Id == sender.Id);
-                        
-                        // Get article index
-                        var index = _articles.IndexOf(article);
+                        if (_articles.Count > 0)
+                        {
+                            var article = _articles.FirstOrDefault<Article>(a => a.Id == sender.Id);
 
-                        // Remove the previous one 
-                        Articles.Remove(article);
+                            // Get article index
+                            var index = _articles.IndexOf(article);
 
-                        // to add the new one
-                        Articles.Insert(index, article);
+                            // Remove the previous one 
+                            Articles.Remove(article);
+
+                            // to add the new one
+                            Articles.Insert(index, article);
+                        }
+
+
                     }
-                    
+                    catch (Exception ex)
+                    {
+
+                        throw;
+                    }
 
                 }
-                catch (Exception ex)
-                {
-
-                    throw;
-                } 
 
 
             });
@@ -136,7 +140,7 @@ namespace AresNews.ViewModels
                        App.SqLiteConn.Insert(article);
 
 
-                   Articles[_articles.IndexOf(article)] = article;
+                   //Articles[_articles.IndexOf(article)] = article;
 
                    // Say the the bookmark has been updated
                    MessagingCenter.Send<Article>(article, "SwitchBookmark");

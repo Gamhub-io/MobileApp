@@ -2,6 +2,7 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:helpers="clr-namespace:AresNews.Helpers"
+             xmlns:ctrs="clr-namespace:AresNews.Controls"
              x:Class="AresNews.Controls.ArticlePreview"
              x:Name="preview">
 
@@ -12,10 +13,10 @@
         <ControlTemplate x:Key="ArticleTemplate">
             <Frame CornerRadius="15" 
                    BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
-                       BorderColor="{StaticResource Dark}"
-                       HeightRequest="221"
-                       IsClippedToBounds="True"
-                       Padding="0">
+                   BorderColor="{StaticResource Dark}"
+                   HeightRequest="221"
+                   IsClippedToBounds="True"
+                   Padding="0">
                 <Grid>
 
                     <!-- Backgournd -->
@@ -90,27 +91,11 @@
                                 </Frame>
                                 
                                 <!-- Bookmark button-->
-                                <Frame Grid.Row="1"
-                                       Style="{StaticResource ButtonFrame}" >
-
-                                    <Button Text="&#xf02e;" 
-                                        Style="{StaticResource ButtonStyle}"
-                                         Command="{Binding BookmarkCommand}"
-                                         CommandParameter="{Binding ArticleId}">
-                                        <Button.Triggers>
-                                            <DataTrigger TargetType="Button"
-                                                         Binding="{Binding ArticleIsSaved}"
-                                                         Value="true">
-                                                <Setter Property="FontFamily" Value="FaSolid"/>
-                                            </DataTrigger>
-                                            <DataTrigger TargetType="Button"
-                                                         Binding="{Binding ArticleIsSaved}"
-                                                         Value="false">
-                                                <Setter Property="FontFamily" Value="FaRegular"/>
-                                            </DataTrigger>
-                                        </Button.Triggers>
-                                    </Button>
-                                </Frame>
+                                <ctrs:BookmarkButton IsSaved="{Binding Path=ArticleIsSaved, Mode=TwoWay}"
+                                                     Command="{Binding BookmarkCommand}"
+                                                     CommandParameter="{Binding ArticleId}"
+                                                     Grid.Row="1"
+                                                     ControlTemplate="{StaticResource BookmarkButton}" />
                             </Grid>
 
                         </Grid>
