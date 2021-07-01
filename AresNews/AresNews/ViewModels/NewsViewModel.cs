@@ -95,6 +95,7 @@ namespace AresNews.ViewModels
                         if (_articles.Count > 0)
                         {
                             var article = _articles.FirstOrDefault<Article>(a => a.Id == sender.Id);
+                            article.IsSaved = !article.IsSaved;
 
                             // Get article index
                             var index = _articles.IndexOf(article);
@@ -282,6 +283,7 @@ namespace AresNews.ViewModels
                                             SourceName = item.SourceFeed.Title.Text,
                                             Image = image,
                                             Url = item.Links[0].Uri.OriginalString,
+                                            IsSaved = App.SqLiteConn.Find<Article>(item.Id) != null
 
                                         });
                                     }
