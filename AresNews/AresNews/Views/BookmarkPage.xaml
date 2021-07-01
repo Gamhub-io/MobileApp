@@ -83,7 +83,7 @@
                 <DataTemplate>
                     <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
                                              ArticleId="{Binding Id}"
-                                             ArticleIsSaved="{Binding IsSaved, Mode=OneWay}"
+                                             ArticleIsSaved="True"
                                              ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
                                              ArticleSource="{Binding SourceName, Mode=OneWay}"
                                              Thumnail="{Binding Image}"

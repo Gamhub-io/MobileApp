@@ -169,10 +169,10 @@
                                         />
                         </Frame>
                         <!-- Bookmark button-->
-                        <ctrls:BookmarkButton IsSaved="{Binding SelectedArticle.IsSaved}"
-                                              Command="{Binding AddBookmark}"
+                        <ctrls:BookmarkButton IsSaved="{Binding Path=SelectedArticle.IsSaved, Mode=TwoWay}"
+                                              Command="{Binding Path=AddBookmark, Mode=OneWay}"
                                               Grid.Column="1"
-                                              CommandParameter="{Binding ArticleId}"
+                                              CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"
                                               ControlTemplate="{StaticResource BookmarkButton}" />
                         
                     </Grid>

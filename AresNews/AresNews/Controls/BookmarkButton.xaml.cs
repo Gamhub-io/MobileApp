@@ -47,7 +47,7 @@ namespace AresNews.Controls
                                                          returnType: typeof(ICommand),
                                                          declaringType: typeof(BookmarkButton),
                                                          defaultValue: null,
-                                                         defaultBindingMode: BindingMode.TwoWay);
+                                                         defaultBindingMode: BindingMode.OneWay);
         public object CommandParameter
         {
             get
@@ -65,7 +65,7 @@ namespace AresNews.Controls
                                                          returnType: typeof(object),
                                                          declaringType: typeof(BookmarkButton),
                                                          defaultValue: null,
-                                                         defaultBindingMode: BindingMode.TwoWay);
+                                                         defaultBindingMode: BindingMode.OneWay);
         public BookmarkButton()
         {
             InitializeComponent();
