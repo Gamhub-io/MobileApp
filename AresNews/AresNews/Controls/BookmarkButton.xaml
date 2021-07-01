@@ -5,7 +5,7 @@
   <ContentView.Resources>
         <ControlTemplate x:Key="BookmarkButton">
             <!-- Bookmark button-->
-            <Frame Grid.Row="1"
+            <Frame 
                    Style="{StaticResource ButtonFrame}"
                    BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
 

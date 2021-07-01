@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.Views.ArticlePage"
              xmlns:helpers="clr-namespace:AresNews.Helpers"
+             xmlns:ctrls="clr-namespace:AresNews.Controls"
              BackgroundColor="{StaticResource Dark}"
              xmlns:mat="clr-namespace:LabelHtml.Forms.Plugin.Abstractions;assembly=HtmlLabel.Forms.Plugin"
              Shell.TabBarIsVisible="False">
@@ -33,7 +34,7 @@
                             Grid.Column="1"
                             FontSize="30"
                             Padding="0"
-                           HorizontalOptions="End"
+                            HorizontalOptions="End"
                             Margin="0"
                             Command="{Binding Browse}"
                             />
@@ -168,27 +169,12 @@
                                         />
                         </Frame>
                         <!-- Bookmark button-->
-                        <Frame Grid.Column="1"
-                               Style="{StaticResource ButtonFrame}" >
-
-                            <Button Text="&#xf02e;" 
-                                    Style="{StaticResource ButtonStyle}"
-                                    Command="{Binding AddBookmark}"
-                                    CommandParameter="{Binding ArticleId}">
-                                <Button.Triggers>
-                                    <DataTrigger TargetType="Button"
-                                                 Binding="{Binding SelectedArticle.IsSaved}"
-                                                 Value="true">
-                                        <Setter Property="FontFamily" Value="FaSolid"/>
-                                    </DataTrigger>
-                                    <DataTrigger TargetType="Button"
-                                                 Binding="{Binding SelectedArticle.IsSaved}"
-                                                 Value="false">
-                                        <Setter Property="FontFamily" Value="FaRegular"/>
-                                    </DataTrigger>
-                                </Button.Triggers>
-                            </Button>
-                        </Frame>
+                        <ctrls:BookmarkButton IsSaved="{Binding SelectedArticle.IsSaved}"
+                                              Command="{Binding AddBookmark}"
+                                              Grid.Column="1"
+                                              CommandParameter="{Binding ArticleId}"
+                                              ControlTemplate="{StaticResource BookmarkButton}" />
+                        
                     </Grid>
                 </Grid>
                 <!-- content -->
