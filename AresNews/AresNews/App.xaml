@@ -25,7 +25,6 @@
         <!-- Buttons -->
         <Style TargetType="Frame"
                x:Key="ButtonFrame">
-            <Setter Property="BackgroundColor" Value="{StaticResource LightDark}" />
             <Setter Property="HorizontalOptions" Value="End" />
             <Setter Property="VerticalOptions" Value="Center" />
             <Setter Property="Padding" Value="0" />
@@ -38,11 +37,15 @@
         </Style>
         <Style TargetType="Button"
                x:Key="ButtonStyle">
+            <Setter Property="BackgroundColor"
+                    Value="{StaticResource LightDark}" />
+
             <Setter Property="FontFamily" Value="FaSolid" />
             <Setter Property="FontSize" Value="20" />
             <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0" />
             <Setter Property="TextColor" Value="{StaticResource Primary}" />
-            <Setter Property="BackgroundColor" Value="Transparent" />
+           
         </Style>
     </Application.Resources>
 </Application>

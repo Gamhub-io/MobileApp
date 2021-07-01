@@ -85,8 +85,6 @@ namespace AresNews.ViewModels
                     // Get the article
                     var article = _bookmarks.FirstOrDefault(art => art.Id == id.ToString());
 
-                    
-
                     App.SqLiteConn.Delete(article);
 
                     // Say the the bookmark has been removed
