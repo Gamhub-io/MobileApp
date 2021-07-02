@@ -88,36 +88,49 @@ namespace AresNews.ViewModels
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
-                if (Shell.Current.CurrentItem.CurrentItem.Route != "IMPL_NewsPage")
+                var page = ((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
+
+                // Escape is the current page is the news page
+                if (page is NewsPage)
+                    return;
+
+                Article article = _articles.FirstOrDefault(a => a.Id == sender.Id);
+
+                // Get article index
+                int index = _articles.IndexOf(article);
+
+                if (page is BookmarkPage)
                 {
-                    try
+                    // Remove the previous one 
+                    Articles.Remove(article);
+
+                    // Remove the mark
+                    article.IsSaved = false;
+
+                    // to add the new one
+                    Articles.Insert(index, article);
+
+                    return;
+                }    
+
+                try
+                {
+                    if (_articles.Count > 0)
                     {
-                        if (_articles.Count > 0)
-                        {
-                            var article = _articles.FirstOrDefault<Article>(a => a.Id == sender.Id);
-                            article.IsSaved = !article.IsSaved;
+                        // Remove the previous one 
+                        Articles.Remove(article);
 
-                            // Get article index
-                            var index = _articles.IndexOf(article);
-
-                            // Remove the previous one 
-                            Articles.Remove(article);
-
-                            // to add the new one
-                            Articles.Insert(index, article);
-                        }
-
-
+                        // to add the new one
+                        Articles.Insert(index, article);
                     }
-                    catch (Exception ex)
-                    {
 
-                        throw;
-                    }
 
                 }
+                catch (Exception ex)
+                {
 
-
+                    throw ex;
+                }
             });
 
             _addBookmark = new Command((id) =>
