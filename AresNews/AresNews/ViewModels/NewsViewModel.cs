@@ -88,31 +88,49 @@ namespace AresNews.ViewModels
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
+                var page = ((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
+
+                // Escape is the current page is the news page
+                if (page is NewsPage)
+                    return;
+
+                Article article = _articles.FirstOrDefault(a => a.Id == sender.Id);
+
+                // Get article index
+                int index = _articles.IndexOf(article);
+
+                if (page is BookmarkPage)
+                {
+                    // Remove the previous one 
+                    Articles.Remove(article);
+
+                    // Remove the mark
+                    article.IsSaved = false;
+
+                    // to add the new one
+                    Articles.Insert(index, article);
+
+                    return;
+                }    
+
                 try
                 {
                     if (_articles.Count > 0)
                     {
-                        var article = _articles.FirstOrDefault<Article>(a => a.Id == sender.Id);
-                        
-                        // Get article index
-                        var index = _articles.IndexOf(article);
-
                         // Remove the previous one 
                         Articles.Remove(article);
 
                         // to add the new one
                         Articles.Insert(index, article);
                     }
-                    
+
 
                 }
                 catch (Exception ex)
                 {
 
-                    throw;
-                } 
-
-
+                    throw ex;
+                }
             });
 
             _addBookmark = new Command((id) =>
@@ -136,7 +154,7 @@ namespace AresNews.ViewModels
                        App.SqLiteConn.Insert(article);
 
 
-                   Articles[_articles.IndexOf(article)] = article;
+                   //Articles[_articles.IndexOf(article)] = article;
 
                    // Say the the bookmark has been updated
                    MessagingCenter.Send<Article>(article, "SwitchBookmark");
@@ -278,6 +296,7 @@ namespace AresNews.ViewModels
                                             SourceName = item.SourceFeed.Title.Text,
                                             Image = image,
                                             Url = item.Links[0].Uri.OriginalString,
+                                            IsSaved = App.SqLiteConn.Find<Article>(item.Id) != null
 
                                         });
                                     }

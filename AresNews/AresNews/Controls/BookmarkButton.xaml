@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AresNews.Controls.BookmarkButton">
+  <ContentView.Resources>
+        <ControlTemplate x:Key="BookmarkButton">
+            <!-- Bookmark button-->
+            <Frame 
+                   Style="{StaticResource ButtonFrame}"
+                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
+
+                <Button Text="&#xf02e;"
+                        Style="{StaticResource ButtonStyle}"
+                        Command="{Binding Command}"
+                        CommandParameter="{Binding CommandParameter}"
+                        Clicked="Button_Clicked">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding IsSaved}"
+                                     Value="true">
+                            <Setter Property="FontFamily"
+                                    Value="FaSolid" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding IsSaved}"
+                                     Value="false">
+                            <Setter Property="FontFamily"
+                                    Value="FaRegular" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Frame>
+        </ControlTemplate>
+  </ContentView.Resources>
+</ContentView>
