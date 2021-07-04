@@ -12,6 +12,11 @@
             <Color x:Key="LightDark" >#36383c</Color>
             <Color x:Key="Light" >#c8e6ca</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
+            <!--
+            Potential futur colour scheme:
+            <Color x:Key="Light">#87afc5</Color>
+            <Color x:Key="Primary">#5f94b1</Color>
+            -->
         </ResourceDictionary>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
         <ResourceDictionary>

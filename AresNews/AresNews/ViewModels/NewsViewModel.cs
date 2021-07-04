@@ -111,7 +111,7 @@ namespace AresNews.ViewModels
                     Articles.Insert(index, article);
 
                     return;
-                }    
+                }
 
                 try
                 {
