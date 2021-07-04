@@ -1,8 +1,9 @@
 
 <p align="center" class="container" >
   <img width="200px" src="https://user-images.githubusercontent.com/37577669/119268452-57d5ab80-bbf3-11eb-95bd-b2f4f314b99a.png" />
-  
 </p>
+  
+
 
 # AresGaming
 
@@ -11,6 +12,19 @@ up-to-date on everything game-related, for free,
 with no ads or any other type of annoyance.
 
 The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms).
+  
+<p align="center">
+  <a>
+    <img src="https://user-images.githubusercontent.com/37577669/124392291-f70eb800-dcf4-11eb-96d3-60c57f544234.jpeg" height="450"/> 
+  </a>
+  <a > 
+    <img src="https://user-images.githubusercontent.com/37577669/124392293-f7a74e80-dcf4-11eb-9e9d-9b320148ab9e.jpeg" height="450" />
+  </a>
+  
+  <a > 
+    <img src="https://user-images.githubusercontent.com/37577669/124392294-f83fe500-dcf4-11eb-9257-f106f5b51c55.jpeg" height="450" />
+  </a>
+</p>
 
 ## Contributions
 As the app is open-source, the app evolve using
