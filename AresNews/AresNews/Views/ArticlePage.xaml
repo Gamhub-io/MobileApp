@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AresNews.Views.ArticlePage"
              xmlns:helpers="clr-namespace:AresNews.Helpers"
+             xmlns:ctrls="clr-namespace:AresNews.Controls"
              BackgroundColor="{StaticResource Dark}"
              xmlns:mat="clr-namespace:LabelHtml.Forms.Plugin.Abstractions;assembly=HtmlLabel.Forms.Plugin"
              Shell.TabBarIsVisible="False">
@@ -33,7 +34,7 @@
                             Grid.Column="1"
                             FontSize="30"
                             Padding="0"
-                           HorizontalOptions="End"
+                            HorizontalOptions="End"
                             Margin="0"
                             Command="{Binding Browse}"
                             />
@@ -87,7 +88,7 @@
                 </Grid.RowDefinitions>
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0,0"
-                             EndPoint="1,1">
+                                         EndPoint="1,1">
                         <GradientStop Color="#262626"
                            Offset="0.1"/>
                         <GradientStop Color="{StaticResource Dark}"
@@ -117,11 +118,12 @@
                 <!-- Publishing info-->
                 <Grid Grid.Row="2" Padding="25,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <!-- Publish date time -->
-                    <StackLayout Grid.Column="0">
+                    <StackLayout Grid.Column="0"
+                                 Margin="0,0,15,0">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
@@ -149,53 +151,30 @@
                     </StackLayout>
                     <!-- Buttons -->
                     <!-- Share and save-->
-                    <Grid Grid.Column="1" ColumnSpacing="10">
+                    <Grid Grid.Column="1" 
+                          ColumnSpacing="5"
+                          HorizontalOptions="End"
+                          VerticalOptions="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <!-- Share button-->
-                        <Button Grid.Column="0"
-                                                CornerRadius="100"
-                                               HorizontalOptions="End"
-                                               VerticalOptions="CenterAndExpand"
-                                                Text="&#xf1e0;"
-                                                FontFamily="FaSolid"
-                                                FontSize="20"
-                                               Padding="0"
-                                               HeightRequest="40"
-                                               WidthRequest="40"
-                                                TextColor="{StaticResource Primary}"
-                                               BackgroundColor="{StaticResource LightDark}"
-                                            Command="{Binding ShareArticle}"
-                                            CommandParameter="{Binding SelectedArticle.Url}"/>
+                        <Frame Grid.Column="0"
+                               Style="{StaticResource ButtonFrame}">
+                            <Button Style="{StaticResource ButtonStyle}"
+                                    Text="&#xf1e0;"
+                                    Command="{Binding ShareArticle}"
+                                    CommandParameter="{Binding SelectedArticle.Url}"
+                                        />
+                        </Frame>
                         <!-- Bookmark button-->
-                        <Button  Grid.Column="1"
-                                 CornerRadius="100"
-                                 HorizontalOptions="End"
-                                 VerticalOptions="CenterAndExpand"
-                                 Padding="0"
-                                 HeightRequest="40"
-                                 WidthRequest="40"
-                                 FontSize="20"
-                                 Text="&#xf02e;"
-                                 TextColor="{StaticResource Primary}"
-                                 BackgroundColor="{StaticResource LightDark}"
-                                 Command="{Binding AddBookmark}"
-                                 CommandParameter="{Binding SelectedArticle.Id}">
-                            <Button.Triggers>
-                                <DataTrigger TargetType="Button"
-                                             Binding="{Binding SelectedArticle.IsSaved}"
-                                             Value="true">
-                                    <Setter Property="FontFamily" Value="FaSolid"/>
-                                </DataTrigger>
-                                <DataTrigger TargetType="Button"
-                                             Binding="{Binding SelectedArticle.IsSaved}"
-                                             Value="false">
-                                    <Setter Property="FontFamily" Value="FaRegular"/>
-                                </DataTrigger>
-                            </Button.Triggers>
-                        </Button>
+                        <ctrls:BookmarkButton IsSaved="{Binding Path=SelectedArticle.IsSaved, Mode=TwoWay}"
+                                              Command="{Binding Path=AddBookmark, Mode=OneWay}"
+                                              Grid.Column="1"
+                                              CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"
+                                              ControlTemplate="{StaticResource BookmarkButton}" />
+                        
                     </Grid>
                 </Grid>
                 <!-- content -->

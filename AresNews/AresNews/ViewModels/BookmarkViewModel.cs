@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace AresNews.ViewModels
 {
-    public class BookmarkViewModel :BaseViewModel
+    public class BookmarkViewModel : BaseViewModel
     {
         // Property list of articles
         private ObservableCollection<Article> _bookmarks;
@@ -81,12 +81,9 @@ namespace AresNews.ViewModels
             {
                 try
                 {
-                    //App.StartDb();
 
                     // Get the article
                     var article = _bookmarks.FirstOrDefault(art => art.Id == id.ToString());
-
-                    
 
                     App.SqLiteConn.Delete(article);
 
