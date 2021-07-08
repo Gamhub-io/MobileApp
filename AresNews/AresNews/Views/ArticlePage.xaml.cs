@@ -28,15 +28,15 @@ namespace AresNews.Views
             // Stop the timer
             _vm.timeSpent.Stop();
 
-            const int timeToWait = 4;
+            //const int timeToWait = 4;
 
-            // For sefty it's better to wait 4 seconds before navigating back from this page
-            double totalSeconds = _vm.timeSpent.Elapsed.TotalSeconds;
+            //// For sefty it's better to wait 4 seconds before navigating back from this page
+            //double totalSeconds = _vm.timeSpent.Elapsed.TotalSeconds;
 
-            if (totalSeconds < timeToWait)
-            {
-                Thread.Sleep(Convert.ToInt32((timeToWait - totalSeconds)* 1000));
-            }
+            //if (totalSeconds < timeToWait)
+            //{
+            //    Thread.Sleep(Convert.ToInt32((timeToWait - totalSeconds)* 1000));
+            //}
             base.OnDisappearing();
 
 
