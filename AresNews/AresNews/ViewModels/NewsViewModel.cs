@@ -94,24 +94,11 @@ namespace AresNews.ViewModels
                 if (page is NewsPage)
                     return;
 
-                Article article = _articles.FirstOrDefault(a => a.Id == sender.Id);
+                var article = new Article();
+                article = _articles.FirstOrDefault(a => a.Id == sender.Id);
 
                 // Get article index
                 int index = _articles.IndexOf(article);
-
-                if (page is BookmarkPage)
-                {
-                    // Remove the previous one 
-                    Articles.Remove(article);
-
-                    // Remove the mark
-                    article.IsSaved = false;
-
-                    // to add the new one
-                    Articles.Insert(index, article);
-
-                    return;
-                }    
 
                 try
                 {
@@ -119,6 +106,8 @@ namespace AresNews.ViewModels
                     {
                         // Remove the previous one 
                         Articles.Remove(article);
+
+                        article.IsSaved = !article.IsSaved;
 
                         // to add the new one
                         Articles.Insert(index, article);
@@ -135,9 +124,9 @@ namespace AresNews.ViewModels
 
             _addBookmark = new Command((id) =>
                {
-
+                   var article = new Article();
                    // Get the article
-                   var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
+                   article = _articles.FirstOrDefault(art => art.Id == id.ToString());
 
 
 
@@ -145,7 +134,7 @@ namespace AresNews.ViewModels
                    bool isSaved = article.IsSaved;
 
                    //// Marked the article as saved
-                   //article.IsSaved = !article.IsSaved;
+                   article.IsSaved = !article.IsSaved;
 
                    if (isSaved)
                        App.SqLiteConn.Delete(article);

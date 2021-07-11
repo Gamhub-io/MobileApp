@@ -38,7 +38,8 @@
     </ContentPage.Background>
     <ContentPage.Content>
         <CollectionView ItemsSource="{Binding Bookmarks}" 
-                        Margin="8,0" >
+                        Margin="8,0" 
+                        >
             <CollectionView.Header>
                 <BoxView  Margin="0">
                     <BoxView.HeightRequest>

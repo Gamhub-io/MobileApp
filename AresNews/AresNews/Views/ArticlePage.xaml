@@ -161,10 +161,12 @@
                         </Grid.ColumnDefinitions>
                         <!-- Share button-->
                         <Frame Grid.Column="0"
-                               Style="{StaticResource ButtonFrame}">
+                               Style="{StaticResource ButtonFrame}"
+                               Padding="0">
                             <Button Style="{StaticResource ButtonStyle}"
                                     Text="&#xf1e0;"
                                     Command="{Binding ShareArticle}"
+                                    Margin="0"
                                     CommandParameter="{Binding SelectedArticle.Url}"
                                         />
                         </Frame>
