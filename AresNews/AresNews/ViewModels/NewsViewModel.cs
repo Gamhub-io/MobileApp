@@ -100,20 +100,6 @@ namespace AresNews.ViewModels
                 // Get article index
                 int index = _articles.IndexOf(article);
 
-                //if (page is BookmarkPage)
-                //{
-                //    // Remove the previous one 
-                //    Articles.Remove(article);
-
-                //    // Remove the mark
-                //    article.IsSaved = false;
-
-                //    // to add the new one
-                //    Articles.Insert(index, article);
-
-                //    return;
-                //}
-
                 try
                 {
                     if (_articles.Count > 0)
