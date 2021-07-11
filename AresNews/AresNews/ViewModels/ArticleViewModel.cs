@@ -62,7 +62,7 @@ namespace AresNews.ViewModels
                 bool isSaved = _selectedArticle.IsSaved;
 
                 // Marked the article as saved
-                SelectedArticle.IsSaved = !isSaved;
+                //_selectedArticle.IsSaved = !isSaved;
 
 
                 if (isSaved)
@@ -73,6 +73,7 @@ namespace AresNews.ViewModels
 
                 MessagingCenter.Send<Article>(_selectedArticle, "SwitchBookmark");
 
+                SelectedArticle = _selectedArticle;
 
             });
 

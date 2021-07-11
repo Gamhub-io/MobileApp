@@ -12,11 +12,6 @@
             <Color x:Key="LightDark" >#36383c</Color>
             <Color x:Key="Light" >#c8e6ca</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
-            <!--
-            Potential future colour scheme:
-            <Color x:Key="Light">#87afc5</Color>
-            <Color x:Key="Primary">#5f94b1</Color>
-            -->
         </ResourceDictionary>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
         <ResourceDictionary>
@@ -39,8 +34,6 @@
             <Setter Property="WidthRequest" Value="40" />
             <Setter Property="HasShadow" Value="False" />
             <Setter Property="IsClippedToBounds" Value="True" />
-            <Setter Property="BackgroundColor"
-                    Value="Black" />
         </Style>
         <Style TargetType="Button"
                x:Key="ButtonStyle">

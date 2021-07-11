@@ -2,8 +2,10 @@
 using AresNews.Views;
 using MvvmHelpers;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -95,7 +97,7 @@ namespace AresNews.ViewModels
                 catch (Exception ex)
                 {
 
-                    throw;
+                   
                 }
 
 
