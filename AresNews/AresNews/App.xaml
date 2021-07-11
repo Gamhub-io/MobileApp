@@ -39,6 +39,8 @@
             <Setter Property="WidthRequest" Value="40" />
             <Setter Property="HasShadow" Value="False" />
             <Setter Property="IsClippedToBounds" Value="True" />
+            <Setter Property="BackgroundColor"
+                    Value="Black" />
         </Style>
         <Style TargetType="Button"
                x:Key="ButtonStyle">
