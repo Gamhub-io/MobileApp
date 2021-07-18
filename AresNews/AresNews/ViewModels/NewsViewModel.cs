@@ -94,8 +94,12 @@ namespace AresNews.ViewModels
                 if (page is NewsPage)
                     return;
 
-                var article = new Article();
-                article = _articles.FirstOrDefault(a => a.Id == sender.Id);
+                // Select the article
+                Article article = _articles.FirstOrDefault(a => a.Id == sender.Id);
+
+                // end there if the article is not listed anymore
+                if (article is null)
+                    return;
 
                 // Get article index
                 int index = _articles.IndexOf(article);
