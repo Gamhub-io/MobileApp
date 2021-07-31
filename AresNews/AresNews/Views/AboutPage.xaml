@@ -143,6 +143,8 @@ its community's skills, knowledges and opinions.  "
                     <xct:AvatarView Grid.Column="0" 
                                     HorizontalOptions="CenterAndExpand"
                                     VerticalOptions="CenterAndExpand"
+                                    Color="{DynamicResource Dark}"
+                                    Text=""
                                     Size="70"
                                     Source="https://pbs.twimg.com/profile_images/1067126620476055553/x6K-88A8.jpg" />
 

@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,10 +10,15 @@ namespace AresNews.Models
     {
         [PrimaryKey, Column("_id")]
         public string Id { get; set; }
+        [JsonProperty("sourceName")]
         public string SourceName { get; set; }
+        [JsonProperty("title")]
         public string Title { get; set; }
+        [JsonProperty("content")]
         public string Content { get; set; }
+        [JsonProperty("author")]
         public string Author { get; set; }
+        [JsonProperty("image")]
         public string Image { get; set; }
         public DateTime FullPublishDate { get; set; }
         public string PublishDate { get 
