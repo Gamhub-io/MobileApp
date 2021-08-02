@@ -39,6 +39,17 @@ namespace AresNews.Models
                 return DateTime.Now - this.FullPublishDate;
             } 
         }
-        public bool IsSaved { get; set; }
+        private bool ?_isSaved = null;
+        public bool IsSaved
+        {
+            get 
+            {
+                if (_isSaved == null)
+                    return App.SqLiteConn.Find<Article>(Id) != null;
+                
+                return (bool)_isSaved;
+            }
+            set { _isSaved = value; }
+        }
     }
 }
