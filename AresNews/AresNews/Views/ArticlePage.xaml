@@ -6,6 +6,7 @@
              xmlns:ctrls="clr-namespace:AresNews.Controls"
              BackgroundColor="{StaticResource Dark}"
              xmlns:mat="clr-namespace:LabelHtml.Forms.Plugin.Abstractions;assembly=HtmlLabel.Forms.Plugin"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              Shell.TabBarIsVisible="False">
     
     <Shell.TitleView>
@@ -101,10 +102,14 @@
                 </Grid.Background>
 
                 <!-- Thumbnail -->
-                <Image Grid.Row="0" 
-                       Source="{Binding SelectedArticle.Image}" 
-                       Aspect="AspectFill" />
-                
+                <ffimageloading:CachedImage Source="{Binding SelectedArticle.Image}"
+                                            CacheDuration="5"
+                                            Grid.Row="0"
+                                            RetryCount="3"
+                                            RetryDelay="600"
+                                            DownsampleToViewSize="true"
+                                            Aspect="AspectFill" />
+
                 <!-- Headline -->
                 <Label Grid.Row="1"
                        HorizontalOptions="Center"
