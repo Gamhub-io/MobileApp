@@ -4,6 +4,7 @@
              xmlns:helpers="clr-namespace:AresNews.Helpers"
              xmlns:ctrs="clr-namespace:AresNews.Controls"
              x:Class="AresNews.Controls.ArticlePreview"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              x:Name="preview">
 
     <ContentView.Resources>
@@ -22,9 +23,13 @@
                     <!-- Backgournd -->
                     <Grid BackgroundColor="{StaticResource Dark}">
                         <!-- Image -->
-                        <Image Source="{Binding Thumnail}" 
-                                   Opacity="0.60" 
-                                   Aspect="AspectFill"/>
+                        <ffimageloading:CachedImage Source="{Binding Thumnail}"
+                                                    Opacity="0.60"
+                                                    CacheDuration="5"
+                                                    RetryCount="3"
+                                                    RetryDelay="600"
+                                                    DownsampleToViewSize="true"
+                                                    Aspect="AspectFill" />
                         <!-- filter -->
                         <Grid Opacity="0.15">
                             <Grid.Background>
