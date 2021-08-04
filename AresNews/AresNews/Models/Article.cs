@@ -31,13 +31,13 @@ namespace AresNews.Models
         {
             get
             {
-                return FullPublishDate.ToString("HH:mm");
+                return FullPublishDate.ToLocalTime().ToString("HH:mm");
             }
         }
         public string Url { get; set; }
         public TimeSpan Time { get 
             {
-                return DateTime.Now - this.FullPublishDate;
+                return DateTime.Now - this.FullPublishDate.ToLocalTime();
             } 
         }
         private bool ?_isSaved = null;
