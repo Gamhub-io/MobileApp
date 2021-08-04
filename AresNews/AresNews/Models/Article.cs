@@ -20,6 +20,7 @@ namespace AresNews.Models
         public string Author { get; set; }
         [JsonProperty("image")]
         public string Image { get; set; }
+        [JsonProperty("isoDate")]
         public DateTime FullPublishDate { get; set; }
         public string PublishDate { get 
             {
