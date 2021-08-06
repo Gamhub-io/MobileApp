@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,11 +10,17 @@ namespace AresNews.Models
     {
         [PrimaryKey, Column("_id")]
         public string Id { get; set; }
+        [JsonProperty("sourceName")]
         public string SourceName { get; set; }
+        [JsonProperty("title")]
         public string Title { get; set; }
+        [JsonProperty("content")]
         public string Content { get; set; }
+        [JsonProperty("author")]
         public string Author { get; set; }
+        [JsonProperty("image")]
         public string Image { get; set; }
+        [JsonProperty("isoDate")]
         public DateTime FullPublishDate { get; set; }
         public string PublishDate { get 
             {
@@ -24,15 +31,26 @@ namespace AresNews.Models
         {
             get
             {
-                return FullPublishDate.ToString("HH:mm");
+                return FullPublishDate.ToLocalTime().ToString("HH:mm");
             }
         }
         public string Url { get; set; }
         public TimeSpan Time { get 
             {
-                return DateTime.Now - this.FullPublishDate;
+                return DateTime.Now - this.FullPublishDate.ToLocalTime();
             } 
         }
-        public bool IsSaved { get; set; }
+        private bool ?_isSaved = null;
+        public bool IsSaved
+        {
+            get 
+            {
+                if (_isSaved == null)
+                    return App.SqLiteConn.Find<Article>(Id) != null;
+                
+                return (bool)_isSaved;
+            }
+            set { _isSaved = value; }
+        }
     }
 }

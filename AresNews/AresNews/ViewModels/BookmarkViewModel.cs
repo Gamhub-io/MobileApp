@@ -97,6 +97,10 @@ namespace AresNews.ViewModels
 
                     throw;
                 }
+                finally
+                {
+
+                } 
 
 
             });
