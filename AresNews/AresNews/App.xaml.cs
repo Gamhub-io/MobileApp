@@ -1,6 +1,7 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
 using AresNews.Views;
+using CustardApi.Objects;
 using Newtonsoft.Json;
 using SQLite;
 using System;
@@ -23,6 +24,8 @@ namespace AresNews
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
         public static SQLiteConnection SqLiteConn { get; set; }
+        public static Service WService { get; set; }
+
 
         public enum PageType
         {
@@ -36,6 +39,10 @@ namespace AresNews
         }
         public App()
         {
+            // Set webservice
+            WService = new Service(host: "pinnate-beautiful-marigold.glitch.me",
+                                   sslCertificate: true);
+
             Sources = new Collection<Source>();
 
             InitializeComponent();
