@@ -72,7 +72,7 @@
                                 <Label FontSize="13"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"
-                                       Text="{Binding ArticleSource}"
+                                       Text="{Binding ArticleSource.Name}"
                                        FontFamily="P-Bold"
                                        TextColor="{StaticResource FontColor}"
                                            />

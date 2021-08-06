@@ -10,8 +10,6 @@ namespace AresNews.Models
     {
         [PrimaryKey, Column("_id")]
         public string Id { get; set; }
-        [JsonProperty("sourceName")]
-        public string SourceName { get; set; }
         [JsonProperty("title")]
         public string Title { get; set; }
         [JsonProperty("content")]
