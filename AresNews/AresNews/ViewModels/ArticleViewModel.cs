@@ -1,9 +1,7 @@
 ﻿using AresNews.Models;
 using MvvmHelpers;
-using System;
-using System.Collections.Generic;
+using SQLiteNetExtensions.Extensions;
 using System.Diagnostics;
-using System.Text;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -69,7 +67,7 @@ namespace AresNews.ViewModels
                     App.SqLiteConn.Delete(_selectedArticle);
                 else
                     // Insert it in database
-                    App.SqLiteConn.Insert(_selectedArticle);
+                    App.SqLiteConn.InsertWithChildren(_selectedArticle, recursive: true);
 
                 MessagingCenter.Send<Article>(_selectedArticle, "SwitchBookmark");
 

@@ -1,9 +1,12 @@
 ﻿using Newtonsoft.Json;
+using SQLite;
 
 namespace AresNews.Models
 {
     public class Source
     {
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
         [JsonProperty("name")]
         public string Name { get; set; }
         [JsonProperty("url")]

@@ -2,6 +2,7 @@
 using AresNews.Views;
 using HtmlAgilityPack;
 using MvvmHelpers;
+using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -141,10 +142,13 @@ namespace AresNews.ViewModels
                    article.IsSaved = !article.IsSaved;
 
                    if (isSaved)
-                       App.SqLiteConn.Delete(article);
+                       App.SqLiteConn.Delete(article, recursive: true);
                    else
+                   {
                        // Insert it in database
-                       App.SqLiteConn.Insert(article);
+                       App.SqLiteConn.InsertWithChildren(article, recursive: true);
+                   }
+                       
 
 
                    //Articles[_articles.IndexOf(article)] = article;
