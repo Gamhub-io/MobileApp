@@ -91,11 +91,11 @@ namespace AresNews.Controls
                                                          defaultBindingMode: BindingMode.TwoWay
                                                          /*propertyChanged: ArticleTimePropertyChanged*/);
 
-        public string ArticleSource
+        public Source ArticleSource
         {
             get
             {
-                return (string)GetValue(ArticleSourceProperty);
+                return (Source)GetValue(ArticleSourceProperty);
             }
 
             set
@@ -105,9 +105,9 @@ namespace AresNews.Controls
         }
         public static readonly BindableProperty ArticleSourceProperty = BindableProperty.Create(
                                                          propertyName: "ArticleSource",
-                                                         returnType: typeof(string),
+                                                         returnType: typeof(Source),
                                                          declaringType: typeof(ArticlePreview),
-                                                         defaultValue: "",
+                                                         defaultValue: null,
                                                          defaultBindingMode: BindingMode.TwoWay
                                                          /*propertyChanged: ArticleSourcePropertyChanged*/);
         public string Thumnail
