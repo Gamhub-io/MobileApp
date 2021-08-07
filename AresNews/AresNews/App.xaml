@@ -37,7 +37,7 @@
             <Setter Property="Margin" Value="0,10,10,0" />
             <Setter Property="HeightRequest" Value="40" />
             <Setter Property="WidthRequest" Value="40" />
-            <Setter Property="HasShadow" Value="False" />
+            <Setter Property="HasShadow" Value="True" />
             <Setter Property="IsClippedToBounds" Value="True" />
             <Setter Property="BackgroundColor"
                     Value="Black" />
