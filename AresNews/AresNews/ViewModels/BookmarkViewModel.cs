@@ -1,7 +1,9 @@
 ﻿using AresNews.Models;
 using AresNews.Views;
 using MvvmHelpers;
+using SQLiteNetExtensions.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Xamarin.Essentials;
@@ -55,15 +57,15 @@ namespace AresNews.ViewModels
         public BookmarkViewModel()
         {
 
-            Bookmarks = new ObservableCollection<Article>(App.SqLiteConn.Table<Article>().Reverse());
+            Bookmarks = new ObservableCollection<Article>(GetArticlesFromDb());
 
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
                 try
                 {
-                    
-                        Bookmarks = new ObservableCollection<Article>(App.SqLiteConn.Table<Article>().Reverse());
+
+                    Bookmarks = new ObservableCollection<Article>(GetArticlesFromDb());
 
 
                 }
@@ -83,7 +85,7 @@ namespace AresNews.ViewModels
                     // Get the article
                     var article = _bookmarks.FirstOrDefault(art => art.Id == id.ToString());
 
-                    App.SqLiteConn.Delete(article);
+                    App.SqLiteConn.Delete(article, recursive: true);
 
                     // Say the the bookmark has been removed
                     MessagingCenter.Send<Article>(article, "SwitchBookmark");
@@ -100,7 +102,7 @@ namespace AresNews.ViewModels
                 finally
                 {
 
-                } 
+                }
 
 
             });
@@ -120,6 +122,11 @@ namespace AresNews.ViewModels
                     Text = article.Title
                 });
             });
+        }
+
+        private static IEnumerable<Article> GetArticlesFromDb()
+        {
+            return App.SqLiteConn.GetAllWithChildren<Article>(recursive: true).Reverse<Article>();
         }
     }
 }

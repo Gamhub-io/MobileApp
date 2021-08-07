@@ -62,6 +62,7 @@ namespace AresNews
             // Start the db
             StartDb();
 
+            SqLiteConn.CreateTable<Source>();
             SqLiteConn.CreateTable<Article>();
 
             // Close the db
