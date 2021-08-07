@@ -39,9 +39,17 @@ namespace AresNews
         }
         public App()
         {
+#if __LOCAL__
             // Set webservice
+            WService = new Service(host: "192.168.1.15",
+                                    port: 3000,
+                                   sslCertificate: false);
+#else
+        // Set webservice
             WService = new Service(host: "pinnate-beautiful-marigold.glitch.me",
                                    sslCertificate: true);
+#endif
+
 
             Sources = new Collection<Source>();
 

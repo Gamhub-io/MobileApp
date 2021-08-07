@@ -65,16 +65,16 @@
                                    VerticalOptions="Start"
                                    CornerRadius="8"
                                    Margin="10,10,0,0"
-                                   HasShadow="False"
+                                   HasShadow="True"
                                    HeightRequest="25"
-                                   Padding="5,0"
-                                   BackgroundColor="{StaticResource LightDark}">
+                                   Padding="4,0"
+                                   BackgroundColor="{Binding ArticleSource.PrimaryColour}">
                                 <Label FontSize="13"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"
-                                       Text="{Binding ArticleSource}"
+                                       Text="{Binding ArticleSource.Name}"
                                        FontFamily="P-Bold"
-                                       TextColor="{StaticResource FontColor}"
+                                       TextColor="{Binding ArticleSource.SecondaryColour}"
                                            />
                             </Frame>
 
