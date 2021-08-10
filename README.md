@@ -14,15 +14,16 @@ with no ads or any other type of annoyance.
 The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms).
   
 <p align="center">
-  <a>
-    <img src="https://user-images.githubusercontent.com/37577669/124392291-f70eb800-dcf4-11eb-96d3-60c57f544234.jpeg" height="450"/> 
-  </a>
-  <a > 
-    <img src="https://user-images.githubusercontent.com/37577669/124392293-f7a74e80-dcf4-11eb-9e9d-9b320148ab9e.jpeg" height="450" />
-  </a>
+  
   
   <a > 
-    <img src="https://user-images.githubusercontent.com/37577669/124392294-f83fe500-dcf4-11eb-9257-f106f5b51c55.jpeg" height="450" />
+    <img src="https://user-images.githubusercontent.com/37577669/128909033-f012fc69-d494-4e89-8691-6bf676de66c2.jpeg" height="450" />
+  </a>
+  <a>
+    <img src="https://user-images.githubusercontent.com/37577669/128909027-c2049b08-64c8-406f-ba4d-1d184019ae38.jpeg" height="450"/> 
+  </a>
+  <a > 
+    <img src="https://user-images.githubusercontent.com/37577669/128909032-d76176cd-21ed-418e-adc4-2d5da8b696d2.jpeg" height="450" />
   </a>
 </p>
 
