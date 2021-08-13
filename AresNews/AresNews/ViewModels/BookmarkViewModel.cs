@@ -41,14 +41,14 @@ namespace AresNews.ViewModels
             }
         }
         // Command to add a Bookmark
-        private Command _addBookmark;
+        private readonly Command _addBookmark;
 
         public Command AddBookmark
         {
             get { return _addBookmark; }
         }
         // Command to add a Bookmark
-        private Command _shareArticle;
+        private readonly Command _shareArticle;
 
         public Command ShareArticle
         {
@@ -72,7 +72,7 @@ namespace AresNews.ViewModels
                 catch (Exception ex)
                 {
 
-                    throw;
+                    throw ex;
                 }
 
 
@@ -97,7 +97,7 @@ namespace AresNews.ViewModels
                 catch (Exception ex)
                 {
 
-                    throw;
+                    throw ex;
                 }
                 finally
                 {

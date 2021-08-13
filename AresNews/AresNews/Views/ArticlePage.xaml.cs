@@ -26,7 +26,7 @@ namespace AresNews.Views
         protected override void OnDisappearing()
         {
             // Stop the timer
-            _vm.timeSpent.Stop();
+            _vm.TimeSpent.Stop();
             
             //const int timeToWait = 4;
             //_vm.SelectedArticle.Content = null;
