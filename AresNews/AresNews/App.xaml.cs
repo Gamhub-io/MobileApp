@@ -112,7 +112,7 @@ namespace AresNews
             if (currentPage.ToString() == "AresNews.Views.ArticlePage")
             {
 
-                ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).timeSpent.Stop();
+                ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Stop();
             }
             //SqLiteConn.Dispose();
         }
@@ -126,7 +126,7 @@ namespace AresNews
             if (currentPage.ToString() == "AresNews.Views.ArticlePage")
             {
 
-                ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).timeSpent.Start();
+                ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
             }
 
             StartDb();

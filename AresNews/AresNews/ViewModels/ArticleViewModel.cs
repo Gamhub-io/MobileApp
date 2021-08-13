@@ -23,17 +23,17 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Time spend reading the article
         /// </summary>
-        public Stopwatch timeSpent { get; set; }
+        public Stopwatch TimeSpent { get; set; }
 
         // Command to add a Bookmark
-        private Command _addBookmark;
+        private readonly Command _addBookmark;
 
         public Command AddBookmark
         {
             get { return _addBookmark; }
         }
         // Command to add a Bookmark
-        private Command _shareArticle;
+        private readonly Command _shareArticle;
 
         public Command ShareArticle
         {
@@ -90,8 +90,8 @@ namespace AresNews.ViewModels
 
             _selectedArticle = article;
 
-            timeSpent = new Stopwatch();
-            timeSpent.Start();
+            TimeSpent = new Stopwatch();
+            TimeSpent.Start();
         }
     }
 }

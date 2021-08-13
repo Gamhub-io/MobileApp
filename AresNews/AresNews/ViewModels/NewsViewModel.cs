@@ -1,6 +1,5 @@
 ﻿using AresNews.Models;
 using AresNews.Views;
-using HtmlAgilityPack;
 using MvvmHelpers;
 using SQLiteNetExtensions.Extensions;
 using System;
@@ -198,103 +197,6 @@ namespace AresNews.ViewModels
 
         }
         /// <summary>
-        /// Function to remove polutions in a string
-        /// </summary>
-        /// <param name="text">text to serilize</param>
-        /// <returns></returns>
-        private static string Sterilize(string text)
-        {
-            return Regex.Replace(text, @"[\r|\n|\t]", string.Empty);
-        }
-        /// <summary>
-        /// Fetch an image for the article
-        /// </summary>
-        /// <param name="item">Item relative to the article </param>
-        /// <returns></returns>
-        private static string GetImagesFromRssItem(SyndicationItem item, Dictionary<string, SyndicationElementExtension> extensions)
-        {
-
-            var contentExtension = extensions["content"];
-            var thumnailExtension = extensions["thumbnail"];
-            var imageExtension = extensions["image"];
-
-            // in case the image is in a image block
-            if (imageExtension != null)
-            {
-                var el = imageExtension.GetObject<XElement>();
-
-                var img =  el.Element("url").Value;
-
-                // Add the image
-                if (!string.IsNullOrEmpty(img))
-                    return img;
-
-            }
-            if (contentExtension != null )
-            {
-                return AddImageFromExt(contentExtension);
-            }
-            // Search if the image is clearly geven
-
-            if (thumnailExtension != null)
-            {
-                return AddImageFromExt(thumnailExtension);
-            }
-                // Load the Html
-                HtmlDocument doc = new HtmlDocument();
-
-                doc.LoadHtml(item.Summary.Text);
-
-                HtmlNodeCollection imageNodes = doc.DocumentNode.SelectNodes("//img");
-
-                if (imageNodes != null && imageNodes.Count != 0)
-                {
-                    foreach (HtmlNode node in imageNodes)
-                    {
-                        string value = node.Attributes["src"].Value;
-
-                        if (!string.IsNullOrEmpty(value))
-                            return value;
-                    }
-                }
-                
-                // Load the webpage html
-                using (WebClient client = new WebClient())
-                {
-                    doc.LoadHtml(client.DownloadString(item.Links[0].Uri.OriginalString));
-
-                }
-
-                // Now, using LINQ to get all Images
-                imageNodes = doc.DocumentNode.SelectNodes("//img");
-
-                foreach (HtmlNode node in imageNodes)
-                {
-                    var src = node.Attributes["src"].Value;
-                    if (src.Contains(".png") || src.Contains(".jpg") || src.Contains(".jpeg"))
-                        return src;
-
-                }
-                
-                
-            
-
-            return string.Empty;
-
-            string AddImageFromExt(SyndicationElementExtension Extension)
-            {
-                XElement ele = Extension.GetObject<XElement>();
-
-                string value = ele.Attribute(XName.Get("url")).Value;
-
-                if (!string.IsNullOrWhiteSpace(value)/*value != string.Empty*/)
-                    return value;
-
-                return string.Empty;
-            }
-
-        }
-        /// <summary>
         /// Refresh articles
         /// </summary>
         public async void RefreshArticles ()
@@ -306,52 +208,6 @@ namespace AresNews.ViewModels
                 
             }
 
-        }
-        /// <summary>
-        /// Merge two list of item without using LINQ
-        /// </summary>
-        /// <param name="receivers">List which will be returned</param>
-        /// <param name="mergers">List to merge</param>
-        /// <returns></returns>
-        private List<SyndicationItem> Merge (List<SyndicationItem> receivers, List<SyndicationItem> mergers)
-        {
-            for (int i = 0; i < mergers.Count; i++)
-            {
-                receivers.Add(mergers[i]);
-            }
-
-            return receivers;
-        }
-        /// <summary>
-        /// Get all the extensions from a collection of syndication extension
-        /// </summary>
-        /// <param name="elementExtensions">collection of syndication extension</param>
-        /// <returns>all the relevant extensions</returns>
-        private static Dictionary<string,SyndicationElementExtension> GetExtensions(SyndicationElementExtensionCollection elementExtensions)
-        {
-            var listResult = new Dictionary<string, SyndicationElementExtension>();
-
-            listResult.Add("content", null);
-            listResult.Add("thumbnail", null);
-            listResult.Add("image", null);
-            listResult.Add("encoded", null);
-            listResult.Add("creator", null);
-
-            // loop every single extension
-            for (int i = 0; i < elementExtensions.Count; i++)
-            {
-                string outerName = elementExtensions[i].OuterName;
-
-                if (outerName == "content" ||
-                    outerName == "thumbnail" ||
-                    outerName == "encoded" ||
-                    outerName == "creator" ||
-                    outerName == "image"
-                    )
-                    listResult[outerName] = elementExtensions[i];
-            }
-            
-            return listResult;
         }
         void ObservableCollectionCallback(IEnumerable collection, object context, Action accessMethod, bool writeAccess)
         {
