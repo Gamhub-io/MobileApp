@@ -55,8 +55,6 @@ namespace AresNews
 
             InitializeComponent();
 
-            FetchSources();
-
             
 
             // Start the db
@@ -134,24 +132,6 @@ namespace AresNews
             }
 
             StartDb();
-        }
-        /// <summary>
-        /// Fetch all the sources
-        /// </summary>
-        public void FetchSources()
-        {
-            var assembly = typeof(App).GetTypeInfo().Assembly;
-
-            var res = assembly.GetManifestResourceNames().FirstOrDefault(r => r == "AresNews.Resources.Sources.json");
-
-            var stream = assembly.GetManifestResourceStream(res);
-
-            using (var reader = new System.IO.StreamReader(stream))
-            {
-
-                var json = reader.ReadToEnd();
-                Sources = JsonConvert.DeserializeObject<Collection<Source>>(json);
-            }
         }
     }
 }
