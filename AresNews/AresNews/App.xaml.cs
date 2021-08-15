@@ -128,6 +128,10 @@ namespace AresNews
 
                 ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
             }
+            else if (currentPage.ToString() == "AresNews.Views.NewPage")
+            {
+                ((NewsViewModel)((ArticlePage)currentPage).BindingContext).FetchArticles();
+            }
 
             StartDb();
         }
