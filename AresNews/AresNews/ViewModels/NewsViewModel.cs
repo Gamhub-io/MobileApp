@@ -85,8 +85,9 @@ namespace AresNews.ViewModels
             _articles = new ObservableCollection<Article>();
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
-            // Handle if a article change sees a change of bookmark state
-            MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
+           
+                // Handle if a article change sees a change of bookmark state
+                MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
                 var page = ((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
 
