@@ -142,10 +142,10 @@ namespace AresNews
 
             var stream = assembly.GetManifestResourceStream(res);
 
-            using (var reader = new System.IO.StreamReader(stream))
+            using (StreamReader reader = new StreamReader(stream))
             {
 
-                var json = reader.ReadToEnd();
+                string json = reader.ReadToEnd();
                 Sources = JsonConvert.DeserializeObject<Collection<Source>>(json);
             }
         }
