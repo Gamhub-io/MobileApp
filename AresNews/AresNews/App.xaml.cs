@@ -41,7 +41,7 @@ namespace AresNews
         {
 #if __LOCAL__
             // Set webservice
-            WService = new Service(host: "192.168.1.15",
+            WService = new Service(host: "192.168.1.12",
                                     port: 3000,
                                    sslCertificate: false);
 #else
