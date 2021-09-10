@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 [assembly: ExportFont("FontAwesome5Free-Regular-400.otf", Alias = "FaRegular")]
@@ -67,6 +68,8 @@ namespace AresNews
             //CloseDb();
 
             MainPage = new AppShell();
+
+            
         }
         /// <summary>
         ///  Function to close the database 
