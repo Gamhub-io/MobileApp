@@ -188,7 +188,16 @@ namespace AresNews.ViewModels
         /// </summary>
         public async void FetchArticles()
         {
-            var articles = new ObservableCollection<Article>((IEnumerable<Article>)await App.WService.Get<IEnumerable<Article>>("feeds"));
+            var articles = new ObservableCollection<Article>();
+
+            try
+            {
+                articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+            }
+            catch (Exception ex)
+            {
+
+            }
 
 
             // Update list of articles
