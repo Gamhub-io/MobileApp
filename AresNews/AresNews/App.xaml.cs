@@ -25,6 +25,7 @@ namespace AresNews
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
         public static SQLiteConnection SqLiteConn { get; set; }
+        public static SQLiteConnection BackUpConn { get; set; }
         public static Service WService { get; set; }
 
 
@@ -63,6 +64,8 @@ namespace AresNews
 
             SqLiteConn.CreateTable<Source>();
             SqLiteConn.CreateTable<Article>();
+            BackUpConn.CreateTable<Source>();
+            BackUpConn.CreateTable<Article>();
 
             // Close the db
             //CloseDb();
@@ -88,14 +91,21 @@ namespace AresNews
             string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
             var path = Path.Combine(libraryPath, "ares.db3");
+            var pathBackUp = Path.Combine(libraryPath, "aresBackup.db3");
 
             // Verify if a data base already exist
             if (!File.Exists(path))
                 // Create the folder path.
                 File.Create(path);
+
+            // Verify if a data base already exist
+            if (!File.Exists(pathBackUp))
+                // Create the folder path.
+                File.Create(pathBackUp);
             
             // Sqlite connection
             SqLiteConn = new SQLiteConnection(path);
+            BackUpConn = new SQLiteConnection(pathBackUp);
 
         }
 
