@@ -123,7 +123,10 @@ namespace AresNews.ViewModels
                 });
             });
         }
-
+        /// <summary>
+        /// Get all the articles bookmarked from the local database
+        /// </summary>
+        /// <returns></returns>
         private static IEnumerable<Article> GetArticlesFromDb()
         {
             return App.SqLiteConn.GetAllWithChildren<Article>(recursive: true).Reverse<Article>();

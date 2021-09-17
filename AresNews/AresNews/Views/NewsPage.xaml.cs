@@ -43,10 +43,14 @@ namespace AresNews.Views
             base.OnAppearing();
 
             // Is the app connected to the internet
-            if (Connectivity.NetworkAccess == NetworkAccess.Internet)
-            {
-                this.DisplayToastAsync("You're offline", 10000);
-            }
+            //if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            //{
+            //    this.DisplayToastAsync("You're offline", 60000);
+            //}
+        }
+        public void DisplayOfflineMessage ()
+        {
+            this.DisplayToastAsync("You're offline", 60000);
         }
     }
 }
