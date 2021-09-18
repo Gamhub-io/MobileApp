@@ -33,6 +33,7 @@ namespace AresNews.ViewModels
                 OnPropertyChanged();
             }
         }
+        private NewsPage CurrentPage { get; set; }
         // Command to add a Bookmark
         private readonly Command _addBookmark;
 
@@ -188,7 +189,24 @@ namespace AresNews.ViewModels
         /// </summary>
         public async void FetchArticles()
         {
-            var articles = new ObservableCollection<Article>((IEnumerable<Article>)await App.WService.Get<IEnumerable<Article>>("feeds"));
+            var articles = new ObservableCollection<Article>();
+
+            try
+            {
+                articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+
+                // TODO: Empty the table before doing this
+                App.BackUpConn.DeleteAll<Article>();
+                App.BackUpConn.InsertAllWithChildren(articles);
+
+            }
+            catch (Exception ex)
+            {
+                articles = new ObservableCollection<Article> (GetBackupFromDb()) ;
+
+                var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
+                page.DisplayOfflineMessage();
+            }
 
 
             // Update list of articles
@@ -209,6 +227,10 @@ namespace AresNews.ViewModels
                 
             }
 
+        }
+        private static IEnumerable<Article> GetBackupFromDb()
+        {
+            return App.BackUpConn.GetAllWithChildren<Article>(recursive: true).Reverse<Article>();
         }
         void ObservableCollectionCallback(IEnumerable collection, object context, Action accessMethod, bool writeAccess)
         {

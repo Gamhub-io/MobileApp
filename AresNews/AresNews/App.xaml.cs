@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 [assembly: ExportFont("FontAwesome5Free-Regular-400.otf", Alias = "FaRegular")]
@@ -24,6 +25,7 @@ namespace AresNews
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
         public static SQLiteConnection SqLiteConn { get; set; }
+        public static SQLiteConnection BackUpConn { get; set; }
         public static Service WService { get; set; }
 
 
@@ -41,7 +43,7 @@ namespace AresNews
         {
 #if __LOCAL__
             // Set webservice
-            WService = new Service(host: "192.168.1.15",
+            WService = new Service(host: "192.168.1.12",
                                     port: 3000,
                                    sslCertificate: false);
 #else
@@ -62,11 +64,15 @@ namespace AresNews
 
             SqLiteConn.CreateTable<Source>();
             SqLiteConn.CreateTable<Article>();
+            BackUpConn.CreateTable<Source>();
+            BackUpConn.CreateTable<Article>();
 
             // Close the db
             //CloseDb();
 
             MainPage = new AppShell();
+
+            
         }
         /// <summary>
         ///  Function to close the database 
@@ -85,14 +91,21 @@ namespace AresNews
             string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
             var path = Path.Combine(libraryPath, "ares.db3");
+            var pathBackUp = Path.Combine(libraryPath, "aresBackup.db3");
 
             // Verify if a data base already exist
             if (!File.Exists(path))
                 // Create the folder path.
                 File.Create(path);
+
+            // Verify if a data base already exist
+            if (!File.Exists(pathBackUp))
+                // Create the folder path.
+                File.Create(pathBackUp);
             
             // Sqlite connection
             SqLiteConn = new SQLiteConnection(path);
+            BackUpConn = new SQLiteConnection(pathBackUp);
 
         }
 
