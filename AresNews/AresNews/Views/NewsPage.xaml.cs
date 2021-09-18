@@ -11,8 +11,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.CommunityToolkit.Extensions;
 using Xamarin.Forms.Xaml;
 
 namespace AresNews.Views
@@ -40,6 +41,16 @@ namespace AresNews.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
+
+            // Is the app connected to the internet
+            //if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            //{
+            //    this.DisplayToastAsync("You're offline", 60000);
+            //}
+        }
+        public void DisplayOfflineMessage ()
+        {
+            this.DisplayToastAsync("You're offline", 60000);
         }
     }
 }
