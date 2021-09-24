@@ -195,8 +195,12 @@ namespace AresNews.ViewModels
             {
                 articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
-                App.BackUpConn.DeleteAll<Article>();
-                App.BackUpConn.InsertAllWithChildren(articles);
+                // Manage backuo
+               await Task.Run(() =>
+               {
+                   App.BackUpConn.DeleteAll<Article>();
+                   App.BackUpConn.InsertAllWithChildren(articles);
+               });
 
             }
             catch (Exception ex)
