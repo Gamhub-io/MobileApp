@@ -195,7 +195,6 @@ namespace AresNews.ViewModels
             {
                 articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
-                // TODO: Empty the table before doing this
                 App.BackUpConn.DeleteAll<Article>();
                 App.BackUpConn.InsertAllWithChildren(articles);
 
