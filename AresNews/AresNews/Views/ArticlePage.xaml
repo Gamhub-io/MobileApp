@@ -102,13 +102,16 @@
                 </Grid.Background>
 
                 <!-- Thumbnail -->
-                <ffimageloading:CachedImage Source="{Binding SelectedArticle.Image}"
+                <!--<ffimageloading:CachedImage Source="{Binding SelectedArticle.Image}"
                                             CacheDuration="5"
                                             Grid.Row="0"
                                             RetryCount="3"
                                             RetryDelay="600"
                                             DownsampleToViewSize="true"
-                                            Aspect="AspectFill" />
+                                            Aspect="AspectFill" />-->
+                <Image Source="{Binding SelectedArticle.Image}"
+                       Grid.Row="0"
+                       Aspect="AspectFill" />
 
                 <!-- Headline -->
                 <Label Grid.Row="1"
