@@ -55,3 +55,7 @@ From the [list of issues](https://github.com/bricefriha/AresNews/issues), you ca
 | **Bryce Friha** |
 | [![twitter](https://img.shields.io/twitter/follow/BriceFriha?label=Follow%20on%20Twitter&style=social)](https://twitter.com/BriceFriha?ref_src=twsrc%5Etfw) |
 | [![Github](https://img.shields.io/github/followers/bricefriha?label=Follow%20on%20Github&style=social)](https://github.com/bricefriha) |
+
+
+## More
+If you want to know more about the project you can check out the full [roadmap](https://github.com/bricefriha/AresGaming/projects)
