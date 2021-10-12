@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AresNews.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,8 @@ namespace AresNews.Views
         public AboutPage()
         {
             InitializeComponent();
+
+            BindingContext = new AboutViewModel();
         }
     }
 }
