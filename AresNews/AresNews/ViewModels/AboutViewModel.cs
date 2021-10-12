@@ -19,7 +19,7 @@ namespace AresNews.ViewModels
             {
                 return new Command(async () => await Browser.OpenAsync("https://github.com/bricefriha/AresGaming", new BrowserLaunchOptions
                 {
-                    LaunchMode = BrowserLaunchMode.External,
+                    LaunchMode = BrowserLaunchMode.SystemPreferred,
                     TitleMode = BrowserTitleMode.Default,
                 }));
             }
