@@ -144,9 +144,10 @@ its community's skills, knowledges and opinions.  "
                                     HorizontalOptions="CenterAndExpand"
                                     VerticalOptions="CenterAndExpand"
                                     Color="{DynamicResource Dark}"
+                                    TextColor="{DynamicResource Dark}"
                                     Text=""
                                     Size="70"
-                                    Source="https://pbs.twimg.com/profile_images/1067126620476055553/x6K-88A8.jpg" />
+                                    Source="Bryce.jpg" />
 
                     <Grid Grid.Column="1"
                           Margin="0,20,0,0">
