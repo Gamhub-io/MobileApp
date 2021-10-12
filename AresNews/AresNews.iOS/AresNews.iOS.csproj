@@ -176,4 +176,7 @@
   <ItemGroup>
     <BundleResource Include="Resources\AresLogo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Bryce.jpg" />
+  </ItemGroup>
 </Project>

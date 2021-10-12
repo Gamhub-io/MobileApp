@@ -24,6 +24,7 @@
     <None Remove="Resources\Fonts\public-sans.extrabold.otf" />
     <None Remove="Resources\Fonts\public-sans.regular.otf" />
     <None Remove="Resources\Image\Ares.png" />
+    <None Remove="Resources\Image\Bryce.jpg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,6 +36,7 @@
     <EmbeddedResource Include="Resources\Fonts\public-sans.regular.otf" />
     <EmbeddedResource Include="Resources\Fonts\public-sans-SemiBold.otf" />
     <EmbeddedResource Include="Resources\Image\Ares.png" />
+    <EmbeddedResource Include="Resources\Image\Bryce.jpg" />
   </ItemGroup>
 
   <ItemGroup>
