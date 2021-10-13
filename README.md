@@ -14,6 +14,11 @@
 
 # AresGaming
 
+| Build | Release|
+| ----- | ------|
+| Android| [![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)|
+
+
 AresGaming is an iOS and Android app that keeps gamers 
 up-to-date on everything game-related, for free, 
 with no ads or any other type of annoyance.
