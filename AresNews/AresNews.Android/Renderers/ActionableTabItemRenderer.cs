@@ -6,6 +6,7 @@ using Android.Views;
 using Android.Widget;
 using AresNews.Models;
 using AresNews.Views;
+using Google.Android.Material.BottomNavigation;
 using MvvmHelpers;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace AresNews.Droid.Renderers
 {
     public class ActionableTabItemRenderer : ShellItemRenderer
     {
+        BottomNavigationView _bottomView;
         public ActionableTabItemRenderer(IShellContext shellContext) : base(shellContext)
         {
         }
@@ -28,8 +30,21 @@ namespace AresNews.Droid.Renderers
         /// <param name="shellSection"></param>
         protected override void OnTabReselected(ShellSection shellSection)
         {
+
             // Send an action to go on top of the current feed
             MessagingCenter.Send<MessageItem>(new MessageItem () { Id = Guid.NewGuid() }, "ScrollTop");
+        }
+        public override Android.Views.View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        {
+            Android.Views.View outerlayout = base.OnCreateView(inflater, container, savedInstanceState);
+
+            // Get the bottom view
+            _bottomView = outerlayout.FindViewById<BottomNavigationView>(Resource.Id.bottomtab_tabbar);
+
+            // Remove the title if it's null
+            _bottomView.LabelVisibilityMode = LabelVisibilityMode.LabelVisibilityUnlabeled;
+
+            return outerlayout;
         }
     }
 }
