@@ -22,7 +22,8 @@
                    FontSize="30"
                    VerticalOptions="Center"
                    TextColor="{StaticResource FontColor}"
-                   FontFamily="P-Bold"/>
+                   FontFamily="P-Bold"
+                   Margin="{OnPlatform Android='0,0,0,0', iOS='30,0,0,0'}"/>
         </Grid>
 
     </Shell.TitleView>
@@ -48,7 +49,7 @@
     <ContentPage.Content>
 
         <RefreshView IsRefreshing="{Binding IsRefreshing}"
-             Command="{Binding RefreshFeed}"
+                     Command="{Binding RefreshFeed}"
                      x:Name="newsRefreshView"
                      HorizontalOptions="CenterAndExpand"
                      RefreshColor="{StaticResource Primary}"
