@@ -101,14 +101,18 @@
     </Shell.FlyoutHeader>
     <!-- Feed Page -->
     <FlyoutItem Title="Feed"
-                Icon="&#xf00b;">
+                Icon="&#xf00b;"
+                >
         <ShellContent FlyoutItemIsVisible="False"
                       Route="NewsPage"
+                      
                       ContentTemplate="{DataTemplate views:NewsPage}">
-            <ShellContent.Icon>
+            <ShellContent.Icon Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,-30'}"
+                               >
                 <FontImageSource FontFamily="FaSolid" 
                              Glyph="&#xf00b;" 
-                             Size="28"/>
+                             Size="28"
+                                 />
             </ShellContent.Icon>
         </ShellContent>
         <ShellContent FlyoutItemIsVisible="False"
@@ -116,8 +120,8 @@
                       ContentTemplate="{DataTemplate views:BookmarkPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
-                             Glyph="&#xf5fd;" 
-                             Size="28"/>
+                                 Glyph="&#xf5fd;" 
+                                 Size="28"/>
             </ShellContent.Icon>
         </ShellContent>
     </FlyoutItem>
