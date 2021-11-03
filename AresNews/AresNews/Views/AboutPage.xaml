@@ -68,6 +68,10 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <!-- Message for the half baked playstore reviewers -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <!-- Creator -->
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -140,18 +144,28 @@ its community's skills, knowledges and opinions.  "
             <Label Text="It's not."
                    Grid.Row="7"
                    Style="{StaticResource ParagraphStyle}"/>
+            
+            <!-- reviewer message -->
+            <Label Text="For all app store reviewer"
+                   Grid.Row="8"
+                   Style="{StaticResource TitleStyle}" />
+            <BoxView Grid.Row="9"
+                     Style="{StaticResource SeparatorStyle}"/>
+            <Label Text="There is no contact information in this app you dumdum."
+                   Grid.Row="10"
+                   Style="{StaticResource ParagraphStyle}"/>
 
             <!-- Creator -->
             <Label Text="Founder"
-                   Grid.Row="8"
+                   Grid.Row="11"
                    Style="{StaticResource TitleStyle}" 
                    />
 
-            <BoxView Grid.Row="9"
+            <BoxView Grid.Row="12"
                      Style="{StaticResource SeparatorStyle}"/>
             
             <!-- Card creator -->
-            <Frame Grid.Row="10"
+            <Frame Grid.Row="13"
                    BackgroundColor="{StaticResource LightDark}"
                    CornerRadius="15"
                    WidthRequest="265"
