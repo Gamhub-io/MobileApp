@@ -146,12 +146,14 @@ its community's skills, knowledges and opinions.  "
                    Style="{StaticResource ParagraphStyle}"/>
             
             <!-- reviewer message -->
-            <Label Text="For all app store reviewer"
+            <Label Text="Contact Us"
                    Grid.Row="8"
                    Style="{StaticResource TitleStyle}" />
             <BoxView Grid.Row="9"
                      Style="{StaticResource SeparatorStyle}"/>
-            <Label Text="There is no contact information in this app you dumdum."
+            <Label Text="Email: Contact@bricefriha.dev 
+                         Website: https://github.com/bricefriha/AresGaming
+                         Alternative way: if you yell loud enough I may be able to hear you..."
                    Grid.Row="10"
                    Style="{StaticResource ParagraphStyle}"/>
 
