@@ -54,6 +54,7 @@
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
+        <ScrollView>
         <Grid>
             <Grid.RowDefinitions>
                 <!-- Image -->
@@ -152,8 +153,7 @@ its community's skills, knowledges and opinions.  "
             <BoxView Grid.Row="9"
                      Style="{StaticResource SeparatorStyle}"/>
             <Label Text="Email: Contact@bricefriha.dev 
-                         Website: https://github.com/bricefriha/AresGaming
-                         Alternative way: if you yell loud enough I may be able to hear you..."
+                         Website: https://github.com/bricefriha/AresGaming"
                    Grid.Row="10"
                    Style="{StaticResource ParagraphStyle}"/>
 
@@ -172,7 +172,7 @@ its community's skills, knowledges and opinions.  "
                    CornerRadius="15"
                    WidthRequest="265"
                    HeightRequest="108"
-                   Margin="0,20,0,0"
+                   Margin="0,20"
                    HorizontalOptions="Center"
                    Padding="0">
                 <Grid>
@@ -229,5 +229,6 @@ its community's skills, knowledges and opinions.  "
             </Frame>
 
         </Grid>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

@@ -83,7 +83,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="200"/>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="60"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="100"/>
                 </Grid.RowDefinitions>
@@ -150,7 +150,7 @@
                                    TextColor="{StaticResource FontColor}"/>
 
                         </Grid>
-                        <Label 
+                        <!--<Label 
                                FontFamily="P-SemiBold"
                                FontSize="13">
                             <Label.FormattedText>
@@ -168,7 +168,7 @@
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Browse}"/>
                             </Label.GestureRecognizers>
-                        </Label>
+                        </Label>-->
                         <Label Text="{Binding SelectedArticle.Author, StringFormat='by {0}'}"
                                TextType="Html"
                                IsVisible="{Binding SelectedArticle.Author, Converter={StaticResource EmptyToBoolConverter}}"
