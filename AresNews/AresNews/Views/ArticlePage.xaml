@@ -152,6 +152,25 @@
                                    TextColor="{StaticResource FontColor}"/>
 
                         </Grid>
+                        <!--<Label 
+                               FontFamily="P-SemiBold"
+                               FontSize="13">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="Website: "
+                                          TextColor="{StaticResource FontColor}" />
+                                    <Span Text="{Binding SelectedArticle.Source.Domain, StringFormat='https://{0}/'}"
+                                          TextColor="{StaticResource Primary}" 
+                                          TextDecorations="Underline"
+                                          FontSize="12"
+                                          
+                                          />
+                                </FormattedString>
+                            </Label.FormattedText>
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Browse}"/>
+                            </Label.GestureRecognizers>
+                        </Label>-->
                         <Label Text="{Binding SelectedArticle.Author, StringFormat='by {0}'}"
                                TextType="Html"
                                IsVisible="{Binding SelectedArticle.Author, Converter={StaticResource EmptyToBoolConverter}}"
