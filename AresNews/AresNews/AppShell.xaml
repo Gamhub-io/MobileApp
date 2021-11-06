@@ -99,7 +99,6 @@
             <Image Source="AresLogo.png"/>
         </Grid>
     </Shell.FlyoutHeader>
-    
     <!-- Feed Page -->
     <FlyoutItem Title="Feed"
                 Icon="&#xf00b;"
@@ -112,8 +111,8 @@
             <ShellContent.Icon Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,-30'}"
                                >
                 <FontImageSource FontFamily="FaSolid" 
-                             Glyph="&#xf00b;" 
-                             Size="28"
+                                 Glyph="&#xf00b;" 
+                                 Size="{OnPlatform Android='26', iOS='25'}"
                                  />
             </ShellContent.Icon>
         </ShellContent>
@@ -124,7 +123,7 @@
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
                                  Glyph="&#xf5fd;" 
-                                 Size="28"/>
+                                 Size="{OnPlatform Android='26', iOS='25'}"/>
             </ShellContent.Icon>
         </ShellContent>
     </FlyoutItem>
