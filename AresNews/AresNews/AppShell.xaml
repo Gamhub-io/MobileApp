@@ -99,12 +99,14 @@
             <Image Source="AresLogo.png"/>
         </Grid>
     </Shell.FlyoutHeader>
+    
     <!-- Feed Page -->
     <FlyoutItem Title="Feed"
                 Icon="&#xf00b;"
                 >
         <ShellContent FlyoutItemIsVisible="False"
                       Route="NewsPage"
+                      Title="News Feed"
                       
                       ContentTemplate="{DataTemplate views:NewsPage}">
             <ShellContent.Icon Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,-30'}"
@@ -117,6 +119,7 @@
         </ShellContent>
         <ShellContent FlyoutItemIsVisible="False"
                       Route="BookmarkPage"
+                      Title="Bookmarks"
                       ContentTemplate="{DataTemplate views:BookmarkPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
