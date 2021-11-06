@@ -42,7 +42,7 @@ namespace AresNews.Droid.Renderers
             _bottomView = outerlayout.FindViewById<BottomNavigationView>(Resource.Id.bottomtab_tabbar);
 
             // Remove the title if it's null
-            _bottomView.LabelVisibilityMode = LabelVisibilityMode.LabelVisibilityUnlabeled;
+            //_bottomView.LabelVisibilityMode = LabelVisibilityMode.LabelVisibilityUnlabeled;
 
             return outerlayout;
         }
