@@ -1,10 +1,7 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.Views;
-using Android.Widget;
 using Android.OS;
 using LabelHtml.Forms.Plugin.Droid;
 
@@ -25,6 +22,12 @@ namespace AresNews.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
             LoadApplication(new App());
+
+            if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
+            {
+                // Set the navbar color
+                Window.SetNavigationBarColor(Android.Graphics.Color.ParseColor("#36383c"));
+            }
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

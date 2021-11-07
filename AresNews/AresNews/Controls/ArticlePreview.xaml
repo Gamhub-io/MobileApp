@@ -4,7 +4,7 @@
              xmlns:helpers="clr-namespace:AresNews.Helpers"
              xmlns:ctrs="clr-namespace:AresNews.Controls"
              x:Class="AresNews.Controls.ArticlePreview"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:viewmodels="clr-namespace:AresNews.ViewModels" x:DataType="viewmodels:ArticleViewModel"
              x:Name="preview">
 
     <ContentView.Resources>
@@ -17,7 +17,8 @@
                    BorderColor="{StaticResource Dark}"
                    HeightRequest="221"
                    IsClippedToBounds="True"
-                   Padding="0">
+                   Padding="0"
+                   >
                 <Grid>
 
                     <!-- Backgournd -->
@@ -68,7 +69,7 @@
                                    VerticalOptions="Start"
                                    CornerRadius="8"
                                    Margin="10,10,0,0"
-                                   HasShadow="True"
+                                   HasShadow="{OnPlatform Android='True', iOS='False'}"
                                    HeightRequest="25"
                                    Padding="4,0"
                                    BackgroundColor="{Binding ArticleSource.PrimaryColour}">

@@ -14,6 +14,7 @@ namespace AresNews.Droid.Renderers
     {
         public ActionableTabRenderer(Context context) : base(context)
         {
+            
         }
         protected override IShellItemRenderer CreateShellItemRenderer(ShellItem shellItem)
         {

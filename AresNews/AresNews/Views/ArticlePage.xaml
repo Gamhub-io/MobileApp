@@ -6,7 +6,9 @@
              xmlns:ctrls="clr-namespace:AresNews.Controls"
              BackgroundColor="{StaticResource Dark}"
              xmlns:mat="clr-namespace:LabelHtml.Forms.Plugin.Abstractions;assembly=HtmlLabel.Forms.Plugin"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:viewmodels="clr-namespace:AresNews.ViewModels" x:DataType="viewmodels:ArticleViewModel"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:viewmodels="clr-namespace:AresNews.ViewModels"
+             x:DataType="viewmodels:ArticleViewModel"
              Shell.TabBarIsVisible="False">
     
     <Shell.TitleView>
@@ -21,22 +23,22 @@
                            VerticalOptions="Center"
                            FontSize="20"
                            HorizontalOptions="Center"
-                           Margin="30,0,0,0"
+                           Margin="40,0,0,0"
                            TextColor="{StaticResource FontColor}"
                            FontFamily="P-Bold"
                            Grid.Column="0"/>
 
 
                     <!-- Browser button -->
-                    <Button Text="&#xf141;" 
+                    <Button Text="&#xf142;" 
                             FontFamily="FaSolid"
                             TextColor="{StaticResource Primary}"
                             BackgroundColor="Transparent"
                             Grid.Column="1"
-                            FontSize="30"
+                            FontSize="25"
                             Padding="0"
                             HorizontalOptions="End"
-                            Margin="0"
+                            Margin="40,0,0,0"
                             Command="{Binding Browse}"
                             />
                 </Grid>
