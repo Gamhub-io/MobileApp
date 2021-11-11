@@ -15,9 +15,9 @@ using Xamarin.Forms.Xaml;
 [assembly: ExportFont("FontAwesome5Free-Regular-400.otf", Alias = "FaRegular")]
 [assembly: ExportFont("FontAwesome5Brands-Regular-400.otf", Alias = "FaBrand")]
 [assembly: ExportFont("FontAwesome5Free-Solid-900.otf", Alias = "FaSolid")]
-[assembly: ExportFont("public-sans.regular.otf", Alias = "P-Regular")]
-[assembly: ExportFont("public-sans.bold.otf", Alias = "P-Bold")]
-[assembly: ExportFont("public-sans.semibold.otf", Alias = "P-SemiBold")]
+[assembly: ExportFont("Ubuntu-Regular.ttf", Alias = "P-Regular")]
+[assembly: ExportFont("Ubuntu-Bold.ttf", Alias = "P-Bold")]
+[assembly: ExportFont("Ubuntu-Medium.otf", Alias = "P-SemiBold")]
 namespace AresNews
 {
     public partial class App : Application
