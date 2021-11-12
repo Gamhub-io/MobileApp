@@ -115,11 +115,15 @@
     <Compile Include="MainActivity.cs" />
     <Compile Include="Renderers\ActionableTabItemRenderer.cs" />
     <Compile Include="Renderers\ActionableTabRenderer.cs" />
+    <Compile Include="Renderers\AndroidShell.cs" />
+    <Compile Include="Renderers\CustomTypefaceSpan.cs" />
     <Compile Include="Renderers\HtmlContentRenderer.cs" />
+    <Compile Include="Renderers\MyBottomNavigationView.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="Assets\Ubuntu-Regular.ttf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

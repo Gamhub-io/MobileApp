@@ -1,5 +1,6 @@
 ﻿
 using Android.Content;
+using Android.Graphics;
 using AresNews;
 using AresNews.Controls;
 using AresNews.Droid.Renderers;
@@ -21,6 +22,13 @@ namespace AresNews.Droid.Renderers
             return new ActionableTabItemRenderer(this);
         }
 
+        protected override IShellBottomNavViewAppearanceTracker CreateBottomNavViewAppearanceTracker(ShellItem shellItem)
+        {
+            return new MyBottomNavigationView(this.AndroidContext);
+            //Typeface.CreateFromAsset(this.AndroidContext.Assets, "Ubuntu-Regular.ttf");
+            //.SetTypeface(typeface, TypefaceStyle.Italic);
+            //return base.CreateBottomNavViewAppearanceTracker(shellItem);
+        }
     }
     
 }
