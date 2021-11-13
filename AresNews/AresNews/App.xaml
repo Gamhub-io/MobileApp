@@ -10,7 +10,7 @@
             <Color x:Key="Alternate">#5A5E64</Color>
             <Color x:Key="Dark" >#1a1a1a</Color>
             <Color x:Key="LightDark" >#36383c</Color>
-            <Color x:Key="Light" >#c8e6ca</Color>
+            <Color x:Key="Light" >#9FDBBE</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
             <!--
             Potential future colour scheme:

@@ -1,5 +1,6 @@
 ﻿
 using Android.Content;
+using Android.Graphics;
 using AresNews;
 using AresNews.Controls;
 using AresNews.Droid.Renderers;
@@ -21,6 +22,12 @@ namespace AresNews.Droid.Renderers
             return new ActionableTabItemRenderer(this);
         }
 
+        protected override IShellBottomNavViewAppearanceTracker CreateBottomNavViewAppearanceTracker(ShellItem shellItem)
+        {
+            if (shellItem.Items.Count == 1)
+                return base.CreateBottomNavViewAppearanceTracker(shellItem);
+            return new MyBottomNavigationView(this);
+        }
     }
     
 }
