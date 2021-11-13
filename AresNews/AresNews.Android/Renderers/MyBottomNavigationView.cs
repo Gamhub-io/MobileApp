@@ -52,6 +52,7 @@ namespace AresNews.Droid.Renderers
             for (int i = 0; i < menu.Size(); i++)
             {
                 IMenuItem menuItem = menu.GetItem(i);
+
                 var title = menuItem.TitleFormatted;
                 Typeface typeface = Typeface.CreateFromAsset(_context.AndroidContext.Assets, "Ubuntu-Regular.ttf");
                 SpannableStringBuilder sb = new SpannableStringBuilder(title);
@@ -84,7 +85,7 @@ namespace AresNews.Droid.Renderers
 
                    new int[] {Android.Resource.Attribute.StateChecked}, // unchecked
             };
-            //string unselectedColorHex = _shellAppearance.EffectiveTabBarUnselectedColor.ToHex();
+
             int[] colours = new int[]
             {
                 _shellAppearance.EffectiveTabBarUnselectedColor.ToAndroid(),
