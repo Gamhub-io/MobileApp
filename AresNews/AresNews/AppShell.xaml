@@ -17,7 +17,7 @@
     <Shell.ItemTemplate>
         <DataTemplate>
             <Grid HorizontalOptions="Center"
-                  Padding="0,10"
+                  Padding="0,10,0,0"
                   >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
