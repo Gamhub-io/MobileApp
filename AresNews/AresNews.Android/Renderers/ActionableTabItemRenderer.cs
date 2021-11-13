@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -43,6 +44,8 @@ namespace AresNews.Droid.Renderers
 
             // Remove the title if it's null
             //_bottomView.LabelVisibilityMode = LabelVisibilityMode.LabelVisibilityUnlabeled;
+            
+
 
             return outerlayout;
         }

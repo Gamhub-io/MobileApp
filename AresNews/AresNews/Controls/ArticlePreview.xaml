@@ -53,7 +53,7 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
-                            <RowDefinition Height="75"/>
+                            <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
 
                         <!-- Extra -->
@@ -110,12 +110,13 @@
                         </Grid>
                         <!-- Banner -->
                         <BoxView Grid.Row="1" 
-                                 BackgroundColor="{StaticResource Dark}" 
+                                 BackgroundColor="{StaticResource Dark}"
                                  Opacity="0.24"/>
                         <!-- Title -->
-                        <Grid Grid.Row="1" >
+                        <Grid Grid.Row="1" 
+                              Margin="0,12,0,5">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="2*"/>
+                                <RowDefinition Height="auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <!-- Headline -->
@@ -125,11 +126,11 @@
                                        Margin="10,0"
                                        TextType="Html"
                                        FontFamily="P-Bold"
-                                       FontSize="17"/>
+                                       FontSize="17" />
 
                             <!-- Time ago -->
                             <Label Grid.Row="1" 
-                                   Text="{Binding  ArticleTime}"
+                                   Text="{Binding ArticleTime}"
                                    TextColor="{StaticResource FontColor}"
                                    Margin="10,0"
                                    VerticalOptions="Center"
