@@ -23,6 +23,14 @@
     <None Remove="Resources\Fonts\public-sans.bold.otf" />
     <None Remove="Resources\Fonts\public-sans.extrabold.otf" />
     <None Remove="Resources\Fonts\public-sans.regular.otf" />
+    <None Remove="Resources\Fonts\Ubuntu-Bold.ttf" />
+    <None Remove="Resources\Fonts\Ubuntu-BoldItalic.ttf" />
+    <None Remove="Resources\Fonts\Ubuntu-Italic.ttf" />
+    <None Remove="Resources\Fonts\Ubuntu-Light.ttf" />
+    <None Remove="Resources\Fonts\Ubuntu-LightItalic.ttf" />
+    <None Remove="Resources\Fonts\Ubuntu-Medium.ttf" />
+    <None Remove="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
+    <None Remove="Resources\Fonts\Ubuntu-Regular.ttf" />
     <None Remove="Resources\Image\Ares.png" />
     <None Remove="Resources\Image\Bryce.jpg" />
   </ItemGroup>
@@ -35,6 +43,14 @@
     <EmbeddedResource Include="Resources\Fonts\public-sans.extrabold.otf" />
     <EmbeddedResource Include="Resources\Fonts\public-sans.regular.otf" />
     <EmbeddedResource Include="Resources\Fonts\public-sans-SemiBold.otf" />
+    <EmbeddedResource Include="Resources\Fonts\Ubuntu-Bold.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\Ubuntu-BoldItalic.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\Ubuntu-Italic.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\Ubuntu-Light.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\Ubuntu-LightItalic.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\Ubuntu-Medium.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\Ubuntu-Regular.ttf" />
     <EmbeddedResource Include="Resources\Image\Ares.png" />
     <EmbeddedResource Include="Resources\Image\Bryce.jpg" />
   </ItemGroup>
