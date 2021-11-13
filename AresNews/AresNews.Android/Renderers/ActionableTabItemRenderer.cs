@@ -44,6 +44,7 @@ namespace AresNews.Droid.Renderers
 
             // Remove the title if it's null
             //_bottomView.LabelVisibilityMode = LabelVisibilityMode.LabelVisibilityUnlabeled;
+            
 
 
             return outerlayout;
