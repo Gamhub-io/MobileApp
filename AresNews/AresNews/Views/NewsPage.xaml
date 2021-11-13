@@ -88,7 +88,7 @@
                                                  ArticleId="{Binding Id}"
                                                  ArticleIsSaved="{Binding IsSaved}"
                                                  ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
-                                                 ArticleSource="{Binding Source}"
+                                                 ArticleSource="{Binding Source, Mode=OneWay}"
                                                  Thumnail="{Binding Image}"
                                                  ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle, Mode=OneWay}"
                                                  ShareCommandParameter="{Binding Url}"
