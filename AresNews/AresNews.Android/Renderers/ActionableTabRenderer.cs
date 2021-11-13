@@ -24,10 +24,7 @@ namespace AresNews.Droid.Renderers
 
         protected override IShellBottomNavViewAppearanceTracker CreateBottomNavViewAppearanceTracker(ShellItem shellItem)
         {
-            return new MyBottomNavigationView(this.AndroidContext);
-            //Typeface.CreateFromAsset(this.AndroidContext.Assets, "Ubuntu-Regular.ttf");
-            //.SetTypeface(typeface, TypefaceStyle.Italic);
-            //return base.CreateBottomNavViewAppearanceTracker(shellItem);
+            return new MyBottomNavigationView(this);
         }
     }
     
