@@ -80,15 +80,19 @@ namespace AresNews.Droid.Renderers
             int[][] states = new int[][]
             {
                    // disabled
-                   new int[] {-Android.Resource.Attribute.Checked}, // unchecked
-                   new int[] { Android.Resource.Attribute.Checked }  // pressed
+                   new int[] { -Android.Resource.Attribute.StateChecked },  // pressed
+
+                   new int[] {Android.Resource.Attribute.StateChecked}, // unchecked
             };
-            int[] colors = new int[]
+            //string unselectedColorHex = _shellAppearance.EffectiveTabBarUnselectedColor.ToHex();
+            int[] colours = new int[]
             {
                 _shellAppearance.EffectiveTabBarUnselectedColor.ToAndroid(),
-                _shellAppearance.EffectiveTabBarBackgroundColor.ToAndroid(),
+                _shellAppearance.EffectiveTabBarTitleColor.ToAndroid(),
             };
-            ColorStateList colorStateList = new ColorStateList(states, colors);
+
+            ColorStateList colorStateList = new ColorStateList(states, colours);
+            
             bottomView.ItemIconTintList = colorStateList;
             bottomView.ItemTextColor = colorStateList;
         }
