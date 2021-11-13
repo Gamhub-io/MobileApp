@@ -24,6 +24,8 @@ namespace AresNews.Droid.Renderers
 
         protected override IShellBottomNavViewAppearanceTracker CreateBottomNavViewAppearanceTracker(ShellItem shellItem)
         {
+            if (shellItem.Items.Count == 1)
+                return base.CreateBottomNavViewAppearanceTracker(shellItem);
             return new MyBottomNavigationView(this);
         }
     }
