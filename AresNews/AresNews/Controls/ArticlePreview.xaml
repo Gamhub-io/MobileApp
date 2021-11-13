@@ -4,7 +4,7 @@
              xmlns:helpers="clr-namespace:AresNews.Helpers"
              xmlns:ctrs="clr-namespace:AresNews.Controls"
              x:Class="AresNews.Controls.ArticlePreview"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:viewmodels="clr-namespace:AresNews.ViewModels" x:DataType="viewmodels:ArticleViewModel"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:viewmodels="clr-namespace:AresNews.ViewModels" x:DataType="ctrs:ArticlePreview"
              x:Name="preview">
 
     <ContentView.Resources>
@@ -120,12 +120,12 @@
                             </Grid.RowDefinitions>
                             <!-- Headline -->
                             <Label Grid.Row="0" 
-                                       Text="{Binding Headline}"
-                                       TextColor="{StaticResource FontColor}"
-                                       Margin="10,0"
-                                       TextType="Html"
-                                       FontFamily="P-Bold"
-                                       FontSize="17"/>
+                                   Text="{Binding Headline}"
+                                   TextColor="{StaticResource FontColor}"
+                                   Margin="10,0"
+                                   TextType="Html"
+                                   FontFamily="P-Bold"
+                                   FontSize="17" />
 
                             <!-- Time ago -->
                             <Label Grid.Row="1" 
