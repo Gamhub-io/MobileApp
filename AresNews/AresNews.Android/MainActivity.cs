@@ -26,7 +26,7 @@ namespace AresNews.Droid
             if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
             {
                 // Set the navbar color
-                Window.SetNavigationBarColor(Android.Graphics.Color.ParseColor("#36383c"));
+                Window.SetNavigationBarColor(Android.Graphics.Color.ParseColor("#303236"));
             }
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
