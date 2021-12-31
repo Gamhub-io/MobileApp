@@ -24,7 +24,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>AresGaming</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.bricefriha.AresGaming</string>
+	<string>com.bricefriha.aresgaming</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>UILaunchStoryboardName</key>
@@ -34,6 +34,6 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0 Atlas</string>
+	<string>1.0</string>
 </dict>
 </plist>
