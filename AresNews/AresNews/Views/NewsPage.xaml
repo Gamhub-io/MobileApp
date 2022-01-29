@@ -23,7 +23,16 @@
                    VerticalOptions="Center"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-Bold"
-                   Margin="{OnPlatform Android='0,0,0,0', iOS='30,0,0,0'}"/>
+                   Margin="{OnPlatform Android='0,0,0,5', iOS='30,0,0,5'}"/>
+            <Button Text="&#xf002;"
+                    FontFamily="FaSolid"
+                    FontSize="27"
+                    CornerRadius="20"
+                    VerticalOptions="CenterAndExpand"
+                    HorizontalOptions="End"
+                    BackgroundColor="{StaticResource LightDark}"
+                    TextColor="{StaticResource FontColor}"
+                    Grid.Column="2"/>
         </Grid>
 
     </Shell.TitleView>
