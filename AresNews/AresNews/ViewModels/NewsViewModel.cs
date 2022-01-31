@@ -21,7 +21,7 @@ namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
-        private bool _isLaunching;
+        private bool _isLaunching = true;
         private bool _isSearching;
 
         public bool IsSearching
@@ -245,7 +245,6 @@ namespace AresNews.ViewModels
                });
            });
 
-            _isLaunching = false;
         }
 
         /// <summary>
@@ -267,12 +266,17 @@ namespace AresNews.ViewModels
                 articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
                 if (_isLaunching)
+                {
                     // Manage backuo
-                    await Task.Run(() =>
-                    {
-                        App.BackUpConn.DeleteAll<Article>();
-                        App.BackUpConn.InsertAllWithChildren(articles);
-                    });
+                    _ = Task.Run(() =>
+                      {
+                          App.BackUpConn.DeleteAll<Article>();
+                          App.BackUpConn.InsertAllWithChildren(articles);
+                      });
+                    _isLaunching = false;
+
+                }
+
 
             }
             catch (Exception ex)
