@@ -85,6 +85,7 @@
                                Text="{Binding SearchText}"
                                PlaceholderColor="{StaticResource FontColor}"
                                TextColor="{StaticResource FontColor}"
+                               x:Name="entrySearch"
                                ReturnType="Search"
                                ReturnCommand="{Binding Search}"/>
 
