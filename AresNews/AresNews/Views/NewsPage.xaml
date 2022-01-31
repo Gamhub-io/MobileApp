@@ -33,16 +33,18 @@
                    FontFamily="P-Bold"
                    Margin="{OnPlatform Android='0,0,0,5', iOS='30,0,0,5'}"/>
                 <Button Text="&#xf002;"
-                    FontFamily="FaSolid"
-                    FontSize="27"
-                    CornerRadius="20"
-                    VerticalOptions="CenterAndExpand"
-                    HorizontalOptions="End"
-                    Command="{Binding OpenSearch}"
-                    Margin="{OnPlatform iOS='0,0,10,0'}"
-                    BackgroundColor="{StaticResource LightDark}"
-                    TextColor="{StaticResource FontColor}"
-                    Grid.Column="2"/>
+                        FontFamily="FaSolid"
+                        FontSize="27"
+                        CornerRadius="20"
+                        VerticalOptions="CenterAndExpand"
+                        HorizontalOptions="End"
+                        Command="{Binding OpenSearch}"
+                        Margin="{OnPlatform iOS='0,0,10,0'}"
+                        BackgroundColor="{StaticResource LightDark}"
+                        TextColor="{StaticResource FontColor}"
+                        x:Name="openSearchButton"
+                        Clicked="OpenSearchButton_Clicked"
+                        Grid.Column="2"/>
             </Grid>
             <Grid IsVisible="{Binding IsSearching}">
                 <Grid.ColumnDefinitions>
@@ -54,6 +56,8 @@
                        x:Name="searchBar"
                        Grid.Column="0"
                        CornerRadius="10"
+                       WidthRequest="0"
+                       HorizontalOptions="CenterAndExpand"
                        HasShadow="False"
                        Padding="0"
                        Margin="0,8">
@@ -84,16 +88,19 @@
 
                         <!-- Button to close the search -->
                         <Button Text="&#xf057;"
-                               FontFamily="FaSolid"
-                               FontSize="20"
-                               Opacity="0.9"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Start"
+                                FontFamily="FaSolid"
+                                FontSize="20"
+                                Opacity="0.9"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Start"
                                 Padding="0"
                                 Margin="0"
                                 BackgroundColor="{StaticResource DarkSecondary}"
-                               TextColor="{StaticResource FontColor}"
-                               Grid.Column="2"/>
+                                TextColor="{StaticResource FontColor}"
+                                Grid.Column="2"
+                                Command="{Binding CloseSearch}"
+                                x:Name="CloseSearchButton"
+                                Clicked="CloseSearchButton_Clicked"/>
                     </Grid>
                 </Frame>
             </Grid>
