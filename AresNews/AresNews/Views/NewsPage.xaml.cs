@@ -52,5 +52,37 @@ namespace AresNews.Views
         {
             this.DisplayToastAsync("You're offline", 60000);
         }
+        /// <summary>
+        /// Method allowing the searchbar annimation
+        /// </summary>
+        /// <param name="startingHeight">Start size</param>
+        /// <param name="endingHeight">End size</param>
+        public void AnimateWidthSearchBar(double startingWidth, double endingWidth)
+        {
+            // update the height of the layout with this callback
+            Action<double> callback = input => { searchBar.WidthRequest = input; };
+
+            // pace at which aniation proceeds
+            uint rate = 30;
+
+            // one second animation
+            const uint length = 700;
+            Easing easing = Easing.Linear;
+
+            searchBar.Animate("invis", callback, startingWidth, endingWidth, rate, length, easing);
+        }
+
+        private void OpenSearchButton_Clicked(object sender, EventArgs e)
+        {
+            AnimateWidthSearchBar(0, 300);
+
+            // Focus on the entry 
+            entrySearch.Focus();
+        }
+
+        private void CloseSearchButton_Clicked(object sender, EventArgs e)
+        {
+            AnimateWidthSearchBar(300, 0);
+        }
     }
 }

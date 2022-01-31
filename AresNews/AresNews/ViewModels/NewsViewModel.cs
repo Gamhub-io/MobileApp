@@ -21,6 +21,70 @@ namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
+        private bool _isLaunching = true;
+        private bool _isSearching;
+
+        public bool IsSearching
+        {
+            get 
+            { 
+                return _isSearching; 
+            }
+            set 
+            { 
+                _isSearching = value; 
+                OnPropertyChanged(nameof(IsSearching));
+            }
+        }
+        private string _searchText;
+
+        public string SearchText
+        {
+            get 
+            { 
+                return _searchText; 
+            }
+            set 
+            { 
+                _searchText = value; 
+                OnPropertyChanged(nameof(SearchText));
+            }
+        }
+
+        public Command OpenSearch
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    IsSearching = true;
+                });
+            }
+        }
+        public Command CloseSearch
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    IsSearching = false;
+                    IsRefreshing = true;
+                    FetchArticles();
+                });
+            }
+        }
+        public Command Search
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    IsRefreshing = true;
+                    FetchArticles();
+                });
+            }
+        }
+
         // Property list of articles
         private ObservableCollection<Article> _articles;
 
@@ -30,7 +94,7 @@ namespace AresNews.ViewModels
             set 
             { 
                 _articles = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Articles));
             }
         }
         private NewsPage CurrentPage { get; set; }
@@ -86,9 +150,9 @@ namespace AresNews.ViewModels
             _articles = new ObservableCollection<Article>();
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
-           
-                // Handle if a article change sees a change of bookmark state
-                MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
+           _isLaunching = true;
+            // Handle if a article change sees a change of bookmark state
+            MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
                 var page = ((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
 
@@ -181,7 +245,6 @@ namespace AresNews.ViewModels
                });
            });
 
-
         }
 
         /// <summary>
@@ -193,14 +256,27 @@ namespace AresNews.ViewModels
 
             try
             {
+                // If we want to fetch the articles via search
+                if (_searchText != null && IsSearching == true)
+                {
+                    SearchArticles(articles);
+                    return;
+                }
+
                 articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
-                // Manage backuo
-               await Task.Run(() =>
-               {
-                   App.BackUpConn.DeleteAll<Article>();
-                   App.BackUpConn.InsertAllWithChildren(articles);
-               });
+                if (_isLaunching)
+                {
+                    // Manage backuo
+                    _ = Task.Run(() =>
+                      {
+                          App.BackUpConn.DeleteAll<Article>();
+                          App.BackUpConn.InsertAllWithChildren(articles);
+                      });
+                    _isLaunching = false;
+
+                }
+
 
             }
             catch (Exception ex)
@@ -217,6 +293,19 @@ namespace AresNews.ViewModels
 
             IsRefreshing = false;
 
+        }
+        /// <summary>
+        /// Load articles via search
+        /// </summary>
+        /// <param name="articles"></param>
+        private async void SearchArticles(ObservableCollection<Article> articles)
+        {
+            articles = await App.WService.Get<ObservableCollection<Article>>("feeds",jsonBody: $"{{\"search\": \"{_searchText}\"}}");
+
+            // Update list of articles
+            Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+
+            IsRefreshing = false;
         }
         /// <summary>
         /// Refresh articles
