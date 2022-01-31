@@ -75,6 +75,9 @@ namespace AresNews.Views
         private void OpenSearchButton_Clicked(object sender, EventArgs e)
         {
             AnimateWidthSearchBar(0, 300);
+
+            // Focus on the entry 
+            entrySearch.Focus();
         }
 
         private void CloseSearchButton_Clicked(object sender, EventArgs e)
