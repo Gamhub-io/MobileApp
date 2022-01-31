@@ -82,9 +82,11 @@
                         <Entry Grid.Column="1"
                                BackgroundColor="Transparent"
                                FontFamily="B-SemiBold"
+                               Text="{Binding SearchText}"
                                PlaceholderColor="{StaticResource FontColor}"
                                TextColor="{StaticResource FontColor}"
-                               ReturnType="Search"/>
+                               ReturnType="Search"
+                               ReturnCommand="{Binding Search}"/>
 
                         <!-- Button to close the search -->
                         <Button Text="&#xf057;"

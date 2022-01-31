@@ -21,6 +21,7 @@ namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
+        private bool _isLaunching;
         private bool _isSearching;
 
         public bool IsSearching
@@ -35,6 +36,21 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(IsSearching));
             }
         }
+        private string _searchText;
+
+        public string SearchText
+        {
+            get 
+            { 
+                return _searchText; 
+            }
+            set 
+            { 
+                _searchText = value; 
+                OnPropertyChanged(nameof(SearchText));
+            }
+        }
+
         public Command OpenSearch
         {
             get
@@ -52,6 +68,19 @@ namespace AresNews.ViewModels
                 return new Command(() =>
                 {
                     IsSearching = false;
+                    IsRefreshing = true;
+                    FetchArticles();
+                });
+            }
+        }
+        public Command Search
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    IsRefreshing = true;
+                    FetchArticles();
                 });
             }
         }
@@ -121,7 +150,7 @@ namespace AresNews.ViewModels
             _articles = new ObservableCollection<Article>();
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
-           
+           _isLaunching = true;
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
@@ -216,7 +245,7 @@ namespace AresNews.ViewModels
                });
            });
 
-
+            _isLaunching = false;
         }
 
         /// <summary>
@@ -228,14 +257,22 @@ namespace AresNews.ViewModels
 
             try
             {
+                // If we want to fetch the articles via search
+                if (_searchText != null && IsSearching == true)
+                {
+                    SearchArticles(articles);
+                    return;
+                }
+
                 articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
-                // Manage backuo
-               await Task.Run(() =>
-               {
-                   App.BackUpConn.DeleteAll<Article>();
-                   App.BackUpConn.InsertAllWithChildren(articles);
-               });
+                if (_isLaunching)
+                    // Manage backuo
+                    await Task.Run(() =>
+                    {
+                        App.BackUpConn.DeleteAll<Article>();
+                        App.BackUpConn.InsertAllWithChildren(articles);
+                    });
 
             }
             catch (Exception ex)
@@ -252,6 +289,19 @@ namespace AresNews.ViewModels
 
             IsRefreshing = false;
 
+        }
+        /// <summary>
+        /// Load articles via search
+        /// </summary>
+        /// <param name="articles"></param>
+        private async void SearchArticles(ObservableCollection<Article> articles)
+        {
+            articles = await App.WService.Get<ObservableCollection<Article>>("feeds",jsonBody: $"{{\"search\": \"{_searchText}\"}}");
+
+            // Update list of articles
+            Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+
+            IsRefreshing = false;
         }
         /// <summary>
         /// Refresh articles
