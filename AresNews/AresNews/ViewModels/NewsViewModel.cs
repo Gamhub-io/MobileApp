@@ -45,6 +45,16 @@ namespace AresNews.ViewModels
                 });
             }
         }
+        public Command CloseSearch
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    IsSearching = false;
+                });
+            }
+        }
 
         // Property list of articles
         private ObservableCollection<Article> _articles;
