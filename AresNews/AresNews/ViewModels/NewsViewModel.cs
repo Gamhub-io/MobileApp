@@ -21,6 +21,31 @@ namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
+        private bool _isSearching;
+
+        public bool IsSearching
+        {
+            get 
+            { 
+                return _isSearching; 
+            }
+            set 
+            { 
+                _isSearching = value; 
+                OnPropertyChanged(nameof(IsSearching));
+            }
+        }
+        public Command OpenSearch
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    IsSearching = true;
+                });
+            }
+        }
+
         // Property list of articles
         private ObservableCollection<Article> _articles;
 
@@ -30,7 +55,7 @@ namespace AresNews.ViewModels
             set 
             { 
                 _articles = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Articles));
             }
         }
         private NewsPage CurrentPage { get; set; }
@@ -87,8 +112,8 @@ namespace AresNews.ViewModels
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
            
-                // Handle if a article change sees a change of bookmark state
-                MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
+            // Handle if a article change sees a change of bookmark state
+            MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
                 var page = ((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
 
