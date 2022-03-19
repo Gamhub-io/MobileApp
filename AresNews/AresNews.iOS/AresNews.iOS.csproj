@@ -98,6 +98,7 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Renderers\ActionableTabItemRenderer.cs" />
     <Compile Include="Renderers\ActionableTabRenderer.cs" />
+    <Compile Include="Renderers\BorderlessEntryRenderer.cs" />
     <Compile Include="Renderers\BottomTabBarAppearance.cs" />
     <Compile Include="Renderers\CustomShellTabLayoutAppearanceTracker.cs" />
     <Compile Include="Renderers\HtmlLabelRenderer.cs" />

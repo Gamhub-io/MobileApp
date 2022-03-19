@@ -79,7 +79,7 @@
                                TextColor="{StaticResource FontColor}"
                                Grid.Column="0"/>
 
-                        <Entry Grid.Column="1"
+                        <controls:BorderlessEntry Grid.Column="1"
                                BackgroundColor="Transparent"
                                FontFamily="B-SemiBold"
                                Text="{Binding SearchText}"
