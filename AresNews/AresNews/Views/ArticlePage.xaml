@@ -187,6 +187,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <!-- Share button-->
                         <Frame Grid.Column="0"
@@ -205,6 +206,16 @@
                                               Grid.Column="1"
                                               CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"
                                               ControlTemplate="{StaticResource BookmarkButton}" />
+                        <!-- Text to speech button-->
+                        <Frame Grid.Column="2"
+                               Style="{StaticResource ButtonFrame}"
+                               Padding="0">
+                            <Button Style="{StaticResource ButtonStyle}"
+                                    Text="{Binding TtsIcon}"
+                                    Command="{Binding PlayTextToSpeech}"
+                                    Margin="0"
+                                        />
+                        </Frame>
                         
                     </Grid>
                 </Grid>
