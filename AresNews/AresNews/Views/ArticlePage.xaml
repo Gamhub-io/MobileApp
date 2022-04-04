@@ -9,6 +9,7 @@
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:viewmodels="clr-namespace:AresNews.ViewModels"
              x:DataType="viewmodels:ArticleViewModel"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
              Shell.TabBarIsVisible="False">
     
     <Shell.TitleView>
@@ -209,10 +210,15 @@
                         <!-- Text to speech button-->
                         <Frame Grid.Column="2"
                                Style="{StaticResource ButtonFrame}"
-                               Padding="0">
-                            <Button Style="{StaticResource ButtonStyle}"
+                               Padding="0"
+                               xct:TouchEffect.NativeAnimation="True"
+                               xct:TouchEffect.Command="{Binding PlayTextToSpeech}"
+                               >
+                            
+                            <Label Style="{StaticResource ButtonStyle}"
                                     Text="{Binding TtsIcon}"
-                                    Command="{Binding PlayTextToSpeech}"
+                                   HorizontalOptions="CenterAndExpand"
+                                   VerticalOptions="CenterAndExpand"
                                     Margin="0"
                                         />
                         </Frame>
