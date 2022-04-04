@@ -12,6 +12,7 @@ namespace AresNews.ViewModels
 {
     public class ArticleViewModel : BaseViewModel
     {
+        private CancellationTokenSource _cts;
         private Article _selectedArticle;
 
         public Article SelectedArticle
@@ -76,6 +77,29 @@ namespace AresNews.ViewModels
                 {
                     try
                     {
+                        // Stop the tts if already launched
+                        if (_audioIsPlaying)
+                        {
+                            CancelSpeech();
+                            // Reset icon
+                            TtsIcon = "\uf028";
+
+                            // Mark the audio as not playin
+                            AudioIsPlaying = false;
+                            return;
+                        }
+
+                        _cts = new CancellationTokenSource();
+
+                        // indicator text to speech done
+                        bool ttsDone = false;
+
+                        // Run text to speech
+                        await Task.Factory.StartNew(async () =>
+                        {
+                            await TextToSpeech.SpeakAsync(SelectedArticle.TextSnipet, _cts.Token);
+                            ttsDone = true;
+                        });
                         AudioIsPlaying = !_audioIsPlaying;
 
                         // Change the icon
@@ -83,7 +107,7 @@ namespace AresNews.ViewModels
                             await Task.Run(() =>
                             {
                                 
-                                while (_audioIsPlaying)
+                                while (_audioIsPlaying && !ttsDone)
                                 {
                                     //TtsIcon = "\uf6a8";
                                     //Thread.Sleep(500);
@@ -91,23 +115,6 @@ namespace AresNews.ViewModels
                                     Thread.Sleep(500);
                                     TtsIcon = "\uf027";
                                     Thread.Sleep(500);
-                                    //switch (_ttsIcon)
-                                    //{
-                                    //    case "\uf027":
-                                    //        TtsIcon = "\uf6a8";
-                                    //        Thread.Sleep(100);
-                                    //        break;
-                                    //    case "\uf6a8":
-                                    //        TtsIcon = "\uf028";
-                                    //        Thread.Sleep(100);
-                                    //        break;
-                                    //    case "\uf028":
-                                    //        TtsIcon = "\uf027";
-                                    //        Thread.Sleep(100);
-                                    //        break;
-                                    //    default:
-                                    //        break;
-                                    //}
                                 }
                             });
                     } 
@@ -132,6 +139,7 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(AudioIsPlaying));
             }
         }
+
         
 
 
@@ -177,6 +185,16 @@ namespace AresNews.ViewModels
 
             TimeSpent = new Stopwatch();
             TimeSpent.Start();
+        }
+        /// <summary>
+        /// Cancel text to speech
+        /// </summary>
+        public void CancelSpeech()
+        {
+            if (_cts?.IsCancellationRequested ?? true)
+                return;
+
+            _cts.Cancel();
         }
     }
 }
