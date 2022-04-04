@@ -1,7 +1,10 @@
 ﻿using AresNews.Models;
 using MvvmHelpers;
 using SQLiteNetExtensions.Extensions;
+using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -50,9 +53,91 @@ namespace AresNews.ViewModels
                 }));
             }
         }
+        private string _ttsIcon;
+
+        public string TtsIcon
+        {
+            get 
+            { 
+                return _ttsIcon; 
+            }
+            set 
+            {
+                _ttsIcon = value; 
+                OnPropertyChanged(nameof(TtsIcon));
+            }
+        }
+
+        public Command PlayTextToSpeech 
+        { 
+            get 
+            {
+                return new Command<string>(async (text) =>
+                {
+                    try
+                    {
+                        AudioIsPlaying = !_audioIsPlaying;
+
+                        // Change the icon
+                        if (_audioIsPlaying)
+                            await Task.Run(() =>
+                            {
+                                
+                                while (_audioIsPlaying)
+                                {
+                                    //TtsIcon = "\uf6a8";
+                                    //Thread.Sleep(500);
+                                    TtsIcon = "\uf028";
+                                    Thread.Sleep(500);
+                                    TtsIcon = "\uf027";
+                                    Thread.Sleep(500);
+                                    //switch (_ttsIcon)
+                                    //{
+                                    //    case "\uf027":
+                                    //        TtsIcon = "\uf6a8";
+                                    //        Thread.Sleep(100);
+                                    //        break;
+                                    //    case "\uf6a8":
+                                    //        TtsIcon = "\uf028";
+                                    //        Thread.Sleep(100);
+                                    //        break;
+                                    //    case "\uf028":
+                                    //        TtsIcon = "\uf027";
+                                    //        Thread.Sleep(100);
+                                    //        break;
+                                    //    default:
+                                    //        break;
+                                    //}
+                                }
+                            });
+                    } 
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                });
+            }
+        }
+        private bool  _audioIsPlaying;
+
+        public bool AudioIsPlaying
+        {
+            get 
+            {
+                return _audioIsPlaying; 
+            }
+            set 
+            { 
+                _audioIsPlaying = value; 
+                OnPropertyChanged(nameof(AudioIsPlaying));
+            }
+        }
+        
+
 
         public ArticleViewModel(Article article)
         {
+            _ttsIcon = "\uf028";
 
             _addBookmark = new Command((id) =>
             {
