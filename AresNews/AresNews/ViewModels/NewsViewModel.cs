@@ -303,7 +303,7 @@ namespace AresNews.ViewModels
             articles = await App.WService.Get<ObservableCollection<Article>>("feeds",jsonBody: $"{{\"search\": \"{_searchText}\"}}");
 
             // Update list of articles
-            Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+            Articles = new ObservableCollection<Article>(articles);
 
             IsRefreshing = false;
         }
