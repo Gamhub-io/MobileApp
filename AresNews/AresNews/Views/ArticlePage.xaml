@@ -183,6 +183,7 @@
                     <!-- Share and save-->
                     <Grid Grid.Column="1" 
                           ColumnSpacing="5"
+                          Margin="0,0,-20,0"
                           HorizontalOptions="End"
                           VerticalOptions="Center">
                         <Grid.ColumnDefinitions>
