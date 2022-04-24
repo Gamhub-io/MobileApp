@@ -80,12 +80,7 @@ namespace AresNews.ViewModels
                         // Stop the tts if already launched
                         if (_audioIsPlaying)
                         {
-                            CancelSpeech();
-                            // Reset icon
-                            TtsIcon = "\uf028";
-
-                            // Mark the audio as not playin
-                            AudioIsPlaying = false;
+                            StopTtS();
                             return;
                         }
 
@@ -116,6 +111,7 @@ namespace AresNews.ViewModels
                                     TtsIcon = "\uf027";
                                     Thread.Sleep(500);
                                 }
+                                StopTtS();
                             });
                     } 
                     catch (Exception ex)
@@ -125,6 +121,19 @@ namespace AresNews.ViewModels
                 });
             }
         }
+        /// <summary>
+        /// Stop text to speach
+        /// </summary>
+        private void StopTtS()
+        {
+            CancelSpeech();
+            // Reset icon
+            TtsIcon = "\uf028";
+
+            // Mark the audio as not playin
+            AudioIsPlaying = false;
+        }
+
         private bool  _audioIsPlaying;
 
         public bool AudioIsPlaying
