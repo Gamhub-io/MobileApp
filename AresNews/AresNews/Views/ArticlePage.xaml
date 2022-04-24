@@ -9,6 +9,7 @@
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:viewmodels="clr-namespace:AresNews.ViewModels"
              x:DataType="viewmodels:ArticleViewModel"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
              Shell.TabBarIsVisible="False">
     
     <Shell.TitleView>
@@ -182,9 +183,11 @@
                     <!-- Share and save-->
                     <Grid Grid.Column="1" 
                           ColumnSpacing="5"
+                          Margin="0,0,-20,0"
                           HorizontalOptions="End"
                           VerticalOptions="Center">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
@@ -205,6 +208,23 @@
                                               Grid.Column="1"
                                               CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"
                                               ControlTemplate="{StaticResource BookmarkButton}" />
+                        <!-- Text to speech button-->
+                        <Frame Grid.Column="2"
+                               Style="{StaticResource ButtonFrame}"
+                               Padding="0"
+                               xct:TouchEffect.NativeAnimation="True"
+                               xct:TouchEffect.Command="{Binding PlayTextToSpeech}"
+                               BackgroundColor="{Binding TtsColour}"
+                               >
+
+                            <Label TextColor="{StaticResource Primary}"
+                                    Text="{Binding TtsIcon}"
+                                   FontFamily="FaSolid"
+                                   HorizontalOptions="CenterAndExpand"
+                                   VerticalOptions="CenterAndExpand"
+                                    Margin="0"
+                                        />
+                        </Frame>
                         
                     </Grid>
                 </Grid>

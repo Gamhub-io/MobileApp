@@ -1,7 +1,10 @@
 ﻿using AresNews.Models;
 using MvvmHelpers;
 using SQLiteNetExtensions.Extensions;
+using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -9,6 +12,7 @@ namespace AresNews.ViewModels
 {
     public class ArticleViewModel : BaseViewModel
     {
+        private CancellationTokenSource _cts;
         private Article _selectedArticle;
 
         public Article SelectedArticle
@@ -50,9 +54,123 @@ namespace AresNews.ViewModels
                 }));
             }
         }
+        private string _ttsIcon;
+
+        public string TtsIcon
+        {
+            get 
+            { 
+                return _ttsIcon; 
+            }
+            set 
+            {
+                _ttsIcon = value; 
+                OnPropertyChanged(nameof(TtsIcon));
+            }
+        }
+        private string _ttsColour;
+
+        public string TtsColour
+        {
+            get 
+            { 
+                return _ttsColour; 
+            }
+            set 
+            {
+                _ttsColour = value; 
+                OnPropertyChanged(nameof(TtsColour));
+            }
+        }
+
+        public Command PlayTextToSpeech 
+        { 
+            get 
+            {
+                return new Command<string>(async (text) =>
+                {
+                    try
+                    {
+                        // Stop the tts if already launched
+                        if (_audioIsPlaying)
+                        {
+                            StopTtS();
+                            return;
+                        }
+
+                        _cts = new CancellationTokenSource();
+
+                        // indicator text to speech done
+                        bool ttsDone = false;
+
+                        // Run text to speech
+                        await Task.Factory.StartNew(async () =>
+                        {
+                            await TextToSpeech.SpeakAsync(SelectedArticle.TextSnipet, _cts.Token);
+                            ttsDone = true;
+                        });
+                        AudioIsPlaying = !_audioIsPlaying;
+
+                        // Change the icon
+                        if (_audioIsPlaying)
+                            await Task.Run(() =>
+                            {
+                                TtsColour = "#222326";
+                                while (_audioIsPlaying && !ttsDone)
+                                {
+                                    //TtsIcon = "\uf6a8";
+                                    //Thread.Sleep(500);
+                                    TtsIcon = "\uf028";
+                                    Thread.Sleep(500);
+                                    TtsIcon = "\uf027";
+                                    Thread.Sleep(500);
+                                }
+                                StopTtS();
+                            });
+                    } 
+                    catch (Exception ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                });
+            }
+        }
+        /// <summary>
+        /// Stop text to speach
+        /// </summary>
+        private void StopTtS()
+        {
+            CancelSpeech();
+            // Reset icon
+            TtsIcon = "\uf028";
+            TtsColour = "#36383c";
+
+            // Mark the audio as not playin
+            AudioIsPlaying = false;
+        }
+
+        private bool  _audioIsPlaying;
+
+        public bool AudioIsPlaying
+        {
+            get 
+            {
+                return _audioIsPlaying; 
+            }
+            set 
+            { 
+                _audioIsPlaying = value; 
+                OnPropertyChanged(nameof(AudioIsPlaying));
+            }
+        }
+
+        
+
 
         public ArticleViewModel(Article article)
         {
+            _ttsIcon = "\uf028";
+            _ttsColour = "#36383c";
 
             _addBookmark = new Command((id) =>
             {
@@ -92,6 +210,16 @@ namespace AresNews.ViewModels
 
             TimeSpent = new Stopwatch();
             TimeSpent.Start();
+        }
+        /// <summary>
+        /// Cancel text to speech
+        /// </summary>
+        public void CancelSpeech()
+        {
+            if (_cts?.IsCancellationRequested ?? true)
+                return;
+
+            _cts.Cancel();
         }
     }
 }

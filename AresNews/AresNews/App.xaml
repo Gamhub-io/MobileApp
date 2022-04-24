@@ -41,7 +41,7 @@
             <Setter Property="HasShadow" Value="{OnPlatform Android='True', iOS='False'}" />
             <Setter Property="IsClippedToBounds" Value="True" />
             <Setter Property="BackgroundColor"
-                    Value="Black" />
+                    Value="{StaticResource LightDark}" />
         </Style>
         <Style TargetType="Button"
                x:Key="ButtonStyle">
