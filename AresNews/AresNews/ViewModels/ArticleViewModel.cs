@@ -68,6 +68,20 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(TtsIcon));
             }
         }
+        private string _ttsColour;
+
+        public string TtsColour
+        {
+            get 
+            { 
+                return _ttsColour; 
+            }
+            set 
+            {
+                _ttsColour = value; 
+                OnPropertyChanged(nameof(TtsColour));
+            }
+        }
 
         public Command PlayTextToSpeech 
         { 
@@ -101,7 +115,7 @@ namespace AresNews.ViewModels
                         if (_audioIsPlaying)
                             await Task.Run(() =>
                             {
-                                
+                                TtsColour = "#222326";
                                 while (_audioIsPlaying && !ttsDone)
                                 {
                                     //TtsIcon = "\uf6a8";
@@ -129,6 +143,7 @@ namespace AresNews.ViewModels
             CancelSpeech();
             // Reset icon
             TtsIcon = "\uf028";
+            TtsColour = "#36383c";
 
             // Mark the audio as not playin
             AudioIsPlaying = false;
@@ -155,6 +170,7 @@ namespace AresNews.ViewModels
         public ArticleViewModel(Article article)
         {
             _ttsIcon = "\uf028";
+            _ttsColour = "#36383c";
 
             _addBookmark = new Command((id) =>
             {

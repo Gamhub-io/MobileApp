@@ -214,10 +214,12 @@
                                Padding="0"
                                xct:TouchEffect.NativeAnimation="True"
                                xct:TouchEffect.Command="{Binding PlayTextToSpeech}"
+                               BackgroundColor="{Binding TtsColour}"
                                >
-                            
-                            <Label Style="{StaticResource ButtonStyle}"
+
+                            <Label TextColor="{StaticResource Primary}"
                                     Text="{Binding TtsIcon}"
+                                   FontFamily="FaSolid"
                                    HorizontalOptions="CenterAndExpand"
                                    VerticalOptions="CenterAndExpand"
                                     Margin="0"
