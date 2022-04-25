@@ -27,7 +27,11 @@ namespace AresNews.Views
         {
             // Stop the timer
             _vm.TimeSpent.Stop();
-            
+
+            // Stop all text to speech
+            _vm.StopTtS();
+
+
             //const int timeToWait = 4;
             //_vm.SelectedArticle.Content = null;
 
