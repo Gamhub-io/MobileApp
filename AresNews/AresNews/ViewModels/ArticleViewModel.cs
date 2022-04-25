@@ -138,7 +138,7 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Stop text to speach
         /// </summary>
-        private void StopTtS()
+        public void StopTtS()
         {
             CancelSpeech();
             // Reset icon
