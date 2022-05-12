@@ -187,9 +187,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\AresLogo.png" />
+    <BundleResource Include="Resources\Bryce.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Bryce.jpg" />
+    <BundleResource Include="Resources\GameHubLogo.png" />
   </ItemGroup>
 </Project>
