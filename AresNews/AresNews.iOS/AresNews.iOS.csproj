@@ -190,6 +190,6 @@
     <BundleResource Include="Resources\Bryce.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\GameHubLogo.png" />
+    <BundleResource Include="Resources\GamHubLogo.png" />
   </ItemGroup>
 </Project>
