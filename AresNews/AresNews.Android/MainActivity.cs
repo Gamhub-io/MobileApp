@@ -7,7 +7,7 @@ using LabelHtml.Forms.Plugin.Droid;
 
 namespace AresNews.Droid
 {
-    [Activity(Label = "AresGaming", 
+    [Activity(Label = "GamHub", 
               Icon = "@mipmap/icon", 
               Theme = "@style/MainTheme", 
               MainLauncher = true, 

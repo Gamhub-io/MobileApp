@@ -22,7 +22,7 @@
 	<key>MinimumOSVersion</key>
 	<string>8.0</string>
 	<key>CFBundleDisplayName</key>
-	<string>AresGaming</string>
+	<string>GamHub</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.bricefriha.aresgaming</string>
 	<key>CFBundleVersion</key>
@@ -35,5 +35,7 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>UIMainStoryboardFile</key>
+	<string>LaunchScreen</string>
 </dict>
 </plist>
