@@ -1,22 +1,24 @@
 
 <p align="center" class="container" >
-  <img width="200px" src="https://user-images.githubusercontent.com/37577669/119268452-57d5ab80-bbf3-11eb-95bd-b2f4f314b99a.png" />
+  <img width="200px" src="https://user-images.githubusercontent.com/37577669/168440018-94d3e00b-5ddf-485a-94b7-c6488addface.png" />
 </p>
 
 <p align="center">
-<a  href='https://play.google.com/store/apps/details?id=com.bricefriha.aresgaming&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'>
-  <img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png' height="80"/>
+  <a href="https://apps.apple.com/us/app/aresgaming/id1595571591">
+    <img src="https://user-images.githubusercontent.com/13558917/75712535-ed96bb00-5c7c-11ea-8bd4-e9bd36365bb2.png" height="65"/> 
   </a>
-  
+  <a href="https://play.google.com/store/apps/details?id=com.bricefriha.aresgaming&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1"> 
+    <img src="https://user-images.githubusercontent.com/13558917/75712286-8d077e00-5c7c-11ea-86f0-cd693630eee0.png" height="65" />
+  </a>
 </p>
   
 
 
 # AresGaming
 
-| Builds | Release|
-| ----- | ------|
-| **Android**| [![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)|
+Platform | Test | Production |
+--- | ----- | ------|
+| **Android**| [![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)|[![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)
 
 
 AresGaming is an iOS and Android app that keeps gamers 
