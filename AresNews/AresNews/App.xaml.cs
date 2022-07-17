@@ -48,7 +48,7 @@ namespace AresNews
                                    sslCertificate: false);
 #else
         // Set webservice
-            WService = new Service(host: "pinnate-beautiful-marigold.glitch.me",
+            WService = new Service(host: "api.gamhub.io",
                                    sslCertificate: true);
 #endif
 
