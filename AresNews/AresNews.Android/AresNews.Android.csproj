@@ -121,6 +121,7 @@
     <Compile Include="Renderers\MyBottomNavigationView.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\InternetManagement.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\Ubuntu-Regular.ttf" />
