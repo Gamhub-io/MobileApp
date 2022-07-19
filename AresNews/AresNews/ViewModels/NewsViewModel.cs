@@ -246,7 +246,7 @@ namespace AresNews.ViewModels
         /// </summary>
         public async void FetchArticles()
         {
-            var articles = new ObservableCollection<Article>();
+            var articles = new Collection<Article>();
 
             try
             {
@@ -257,7 +257,7 @@ namespace AresNews.ViewModels
                     return;
                 }
 
-                articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                articles = await App.WService.Get<Collection<Article>>("feeds"/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
 
                 if (_isLaunching)
                 {
@@ -292,9 +292,9 @@ namespace AresNews.ViewModels
         /// Load articles via search
         /// </summary>
         /// <param name="articles"></param>
-        private async void SearchArticles(ObservableCollection<Article> articles)
+        private async void SearchArticles(Collection<Article> articles)
         {
-            articles = await App.WService.Get<ObservableCollection<Article>>("feeds",jsonBody: $"{{\"search\": \"{_searchText}\"}}");
+            articles = await App.WService.Get<Collection<Article>>("feeds",jsonBody: $"{{\"search\": \"{_searchText}\"}}");
 
             // Update list of articles
             Articles = new ObservableCollection<Article>(articles);
