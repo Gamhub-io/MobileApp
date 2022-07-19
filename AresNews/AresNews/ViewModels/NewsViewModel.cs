@@ -1,4 +1,5 @@
 ﻿using AresNews.Models;
+using AresNews.Services;
 using AresNews.Views;
 using MvvmHelpers;
 using SQLiteNetExtensions.Extensions;
@@ -17,6 +18,8 @@ namespace AresNews.ViewModels
     {
         private bool _isLaunching = true;
         private bool _isSearching;
+
+        private int _wifiRestartCount = 0;
 
         public bool IsSearching
         {
@@ -261,13 +264,23 @@ namespace AresNews.ViewModels
 
                 if (_isLaunching)
                 {
-                    // Manage backuo
-                    _ = Task.Run(() =>
-                      {
-                          App.BackUpConn.DeleteAll<Article>();
-                          App.BackUpConn.InsertAllWithChildren(articles);
-                      });
-                    _isLaunching = false;
+                    try
+                    {
+                        // Manage backuo
+                        _ = Task.Run(() =>
+                        {
+                            App.BackUpConn.DeleteAll<Article>();
+                            App.BackUpConn.InsertAllWithChildren(articles);
+                        });
+
+                    }
+                    catch
+                    { 
+                    }
+                    finally
+                    {
+                        _isLaunching = false;
+                    }
 
                 }
 
@@ -275,15 +288,32 @@ namespace AresNews.ViewModels
             }
             catch (Exception ex)
             {
+                // BLAME: the folowing lines are disgusting but it works 
+                // TODO: change this if possible
+                if (ex.Message.Contains("Network subsystem is down") && Device.RuntimePlatform == Device.Android && _wifiRestartCount < 5)
+                {
+                    // Restart wifi: only works with android < Q
+                    if (DependencyService.Get<IInternetManagement>().TurnWifi(false))
+                    {
+                        DependencyService.Get<IInternetManagement>().TurnWifi(true);
+
+                        _wifiRestartCount++;
+
+                        // call the thing again
+                        FetchArticles();
+                        return;
+
+                    }
+                }
                 articles = new ObservableCollection<Article> (GetBackupFromDb()) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
-                page.DisplayOfflineMessage();
+                page.DisplayOfflineMessage(ex.Message);
             }
 
 
             // Update list of articles
-            Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+            Articles = new ObservableCollection<Article>(articles/*.OrderBy(a => a.Time)*/);
 
             IsRefreshing = false;
 

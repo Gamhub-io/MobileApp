@@ -48,9 +48,19 @@ namespace AresNews.Views
             //    this.DisplayToastAsync("You're offline", 60000);
             //}
         }
-        public void DisplayOfflineMessage ()
+        public async void DisplayOfflineMessage (string msg = null)
         {
-            this.DisplayToastAsync("You're offline", 60000);
+            var current = Connectivity.NetworkAccess;
+
+            if (current == NetworkAccess.Internet)
+            {
+
+                await this.DisplayToastAsync($"You're offline: {msg.Replace("[Issue Handler]: ",string.Empty)}", 60000);
+                return;
+            }
+            await this.DisplayToastAsync($"You're offline, please check if you're connected to the internet", 60000);
+           
+
         }
         /// <summary>
         /// Method allowing the searchbar annimation
