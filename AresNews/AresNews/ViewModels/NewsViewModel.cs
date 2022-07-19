@@ -261,7 +261,7 @@ namespace AresNews.ViewModels
                 }
 
                 articles = await App.WService.Get<Collection<Article>>("feeds"/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
-
+                
                 if (_isLaunching)
                 {
                     try
@@ -290,7 +290,7 @@ namespace AresNews.ViewModels
             {
                 // BLAME: the folowing lines are disgusting but it works 
                 // TODO: change this if possible
-                if (ex.Message.Contains("Network subsystem is down") && Device.RuntimePlatform == Device.Android && _wifiRestartCount < 5)
+                if (ex.Message.Contains("Network subsystem is down") && Device.RuntimePlatform == Device.Android && _wifiRestartCount < 3)
                 {
                     // Restart wifi: only works with android < Q
                     if (DependencyService.Get<IInternetManagement>().TurnWifi(false))
@@ -305,7 +305,19 @@ namespace AresNews.ViewModels
 
                     }
                 }
-                articles = new ObservableCollection<Article> (GetBackupFromDb()) ;
+                // ELse use the former host until we figure something out
+                else if (ex.Message.Contains("Network subsystem is down"))
+                {
+                    // Change to backup host
+                    App.WService.Host = "pinnate-beautiful-marigold.glitch.me";
+
+                    FetchArticles();
+
+                    App.WService.Host = App.ProdHost;
+                    return;
+
+                }
+                articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time)) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
