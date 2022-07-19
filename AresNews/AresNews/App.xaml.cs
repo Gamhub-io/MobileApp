@@ -27,6 +27,7 @@ namespace AresNews
         public static SQLiteConnection SqLiteConn { get; set; }
         public static SQLiteConnection BackUpConn { get; set; }
         public static Service WService { get; set; }
+        public static string ProdHost { get; } = "api.gamhub.io";
 
 
         public enum PageType
