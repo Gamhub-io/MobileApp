@@ -3,6 +3,7 @@
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="31" />
 	<application android:label="GamHub" android:theme="@style/MainTheme" android:usesCleartextTraffic="true"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 	<queries>
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
