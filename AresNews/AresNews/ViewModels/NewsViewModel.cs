@@ -20,7 +20,7 @@ namespace AresNews.ViewModels
         private bool _isSearching;
 
         private int _wifiRestartCount = 0;
-
+        private bool _isInCustomFeed;
         public bool IsSearching
         {
             get 
@@ -67,6 +67,7 @@ namespace AresNews.ViewModels
                     IsSearching = false;
                     IsRefreshing = true;
                     FetchArticles();
+
                 });
             }
         }
@@ -331,7 +332,7 @@ namespace AresNews.ViewModels
             }
 
             // If the list is filled in the first place
-            if (_articles.Any())
+            if (_articles.Any() && !_isInCustomFeed)
             {
                 // Count the number of new elements
                 int count = articles.Count() - _articles.Count();
@@ -354,6 +355,8 @@ namespace AresNews.ViewModels
             {
                 // If not we creathe a new object instance
                 Articles = new ObservableCollection<Article>(articles/*.OrderBy(a => a.Time)*/);
+
+                if (_isInCustomFeed) _isInCustomFeed = false;
             }
 
 
@@ -372,6 +375,7 @@ namespace AresNews.ViewModels
             Articles = new ObservableCollection<Article>(articles);
 
             IsRefreshing = false;
+            _isInCustomFeed = true;
         }
         /// <summary>
         /// Refresh articles
