@@ -260,8 +260,15 @@ namespace AresNews.ViewModels
                     return;
                 }
 
-                articles = await App.WService.Get<Collection<Article>>("feeds"/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
+                articles = await App.WService.Get<Collection<Article>>("feeds", callbackError: (err) =>
+                {
+
+                }/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
+
+
                 
+
+
                 if (_isLaunching)
                 {
                     try
@@ -306,26 +313,49 @@ namespace AresNews.ViewModels
                     }
                 }
                 // ELse use the former host until we figure something out
-                else if (ex.Message.Contains("Network subsystem is down"))
-                {
-                    // Change to backup host
-                    App.WService.Host = "pinnate-beautiful-marigold.glitch.me";
+                //else if (ex.Message.Contains("Network subsystem is down"))
+                //{
+                //    // Change to backup host
+                //    App.WService.Host = "pinnate-beautiful-marigold.glitch.me";
 
-                    FetchArticles();
+                //    FetchArticles();
 
-                    App.WService.Host = App.ProdHost;
-                    return;
+                //    App.WService.Host = App.ProdHost;
+                //    return;
 
-                }
+                //}
                 articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time)) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
             }
 
+            // If the list is filled in the first place
+            if (_articles.Any())
+            {
+                // Count the number of new elements
+                int count = articles.Count() - _articles.Count();
 
-            // Update list of articles
-            Articles = new ObservableCollection<Article>(articles/*.OrderBy(a => a.Time)*/);
+                // To avoid crashs: if this number is out of range we end the process
+                if (count <= 0)
+                    return;
+
+                // Get all the new items
+                var newItems = articles.Take(count).ToList();
+
+                // Update list of articles
+                for (int i = 0; i < newItems.Count(); i++)
+                {
+                    // Add article one by one for a better visual effect
+                    Articles.Insert(0, newItems[i]);
+                }
+            }
+            else
+            {
+                // If not we creathe a new object instance
+                Articles = new ObservableCollection<Article>(articles/*.OrderBy(a => a.Time)*/);
+            }
+
 
             IsRefreshing = false;
 
