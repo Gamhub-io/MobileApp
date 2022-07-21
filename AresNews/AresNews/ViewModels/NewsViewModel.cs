@@ -261,13 +261,7 @@ namespace AresNews.ViewModels
                     return;
                 }
 
-                articles = await App.WService.Get<Collection<Article>>("feeds", callbackError: (err) =>
-                {
-
-                }/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
-
-
-                
+                articles = await App.WService.Get<Collection<Article>>("feeds"/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
 
 
                 if (_isLaunching)
@@ -339,7 +333,10 @@ namespace AresNews.ViewModels
 
                 // To avoid crashs: if this number is out of range we end the process
                 if (count <= 0)
+                {
+                    IsRefreshing = false;
                     return;
+                }
 
                 // Get all the new items
                 var newItems = articles.Take(count).ToList();
