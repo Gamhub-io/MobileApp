@@ -329,23 +329,25 @@ namespace AresNews.ViewModels
             if (_articles.Any() && !_isInCustomFeed)
             {
                 // Count the number of new elements
-                int count = articles.Count() - _articles.Count();
+                int nbNewItems = articles.Count() - _articles.Count();
 
                 // To avoid crashs: if this number is out of range we end the process
-                if (count <= 0)
+                if (nbNewItems <= 0)
                 {
                     IsRefreshing = false;
                     return;
                 }
 
                 // Get all the new items
-                var newItems = articles.Take(count).ToList();
+                var newItems = articles.Except(_articles.Where(a => articles.Any(na => na.Equals(a)))).ToList();//articles.Take(nbNewItems).ToList();
 
                 // Update list of articles
-                for (int i = 0; i < newItems.Count(); i++)
+                for (int i = 0; i < nbNewItems; i++)
                 {
+                    var current = newItems[i];
+                    var index = _articles.IndexOf(_articles.FirstOrDefault(a => a.Id == current.Id)); 
                     // Add article one by one for a better visual effect
-                    Articles.Insert(0, newItems[i]);
+                    Articles.Insert(index == -1 ? 0 : index, newItems[i]);
                 }
             }
             else
@@ -355,6 +357,8 @@ namespace AresNews.ViewModels
 
                 if (_isInCustomFeed) _isInCustomFeed = false;
             }
+            
+
 
 
             IsRefreshing = false;
