@@ -346,10 +346,24 @@ namespace AresNews.ViewModels
                 for (int i = 0; i < nbNewItems; i++)
                 {
                     var current = newItems[i];
-                    Article item = _articles.FirstOrDefault(a => a.Id == current.Id);
-                    var index = _articles.IndexOf(item); 
-                    // Add article one by one for a better visual effect
-                    Articles.Insert(index == -1 ? 0 : index, newItems[i]);
+                    Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+                    if (existingArticle != null)
+                    {
+
+                        Article item = articles.FirstOrDefault(a => a.Id == current.Id);
+
+                        var index = articles.IndexOf(item);
+
+                        // Add article one by one for a better visual effect
+                        Articles.Insert(index == -1 ? 0 + i : index, current);
+                    }
+                    //else
+                    //{
+                    //    int index = _articles.IndexOf(existingArticle);
+                    //    // replace the exisiting one with the new one
+                    //    Articles.Remove(existingArticle);
+                    //    Articles.Insert(index, current);
+                    //}
                 }
             }
             else
@@ -359,11 +373,11 @@ namespace AresNews.ViewModels
 
                 if (_isInCustomFeed) _isInCustomFeed = false;
             }
-            for (int i = 0; i < _articles.Count; i++)
-            {
+            //for (int i = 0; i < _articles.Count; i++)
+            //{
 
-                Articles[i].FullPublishDate = _articles[i].FullPublishDate;
-            }
+            //    Articles[i].FullPublishDate = _articles[i].FullPublishDate;
+            //}
 
 
 
