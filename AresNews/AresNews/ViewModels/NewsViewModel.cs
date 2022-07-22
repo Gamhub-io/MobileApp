@@ -257,7 +257,7 @@ namespace AresNews.ViewModels
                 // If we want to fetch the articles via search
                 if (_searchText != null && IsSearching == true)
                 {
-                    SearchArticles(articles);
+                    SearchArticles(articles.ToList());
                     return;
                 }
 
@@ -364,15 +364,31 @@ namespace AresNews.ViewModels
         /// Load articles via search
         /// </summary>
         /// <param name="articles"></param>
-        private async void SearchArticles(Collection<Article> articles)
+        private async void SearchArticles(List<Article> articles)
         {
-            articles = await App.WService.Get<Collection<Article>>("feeds",jsonBody: $"{{\"search\": \"{_searchText}\"}}");
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+            {
+                articles = await App.WService.Get<List<Article>>("feeds", jsonBody: $"{{\"search\": \"{_searchText}\"}}");
+
+            }
+            // Offline search
+            else
+            {
+                var words = _searchText.Split(' ');
+                for (int i = 0; i < words.Count(); i++)
+                {
+                    var word = words[i];
+                    articles.AddRange(_articles.Where((e) => e.Title.Contains(word)));
+                }
+                //articles.AddRange = _articles.Where((e) => e.Title.Contains(_searchText.Split()) || e.Content.Contains())
+            }
 
             // Update list of articles
             Articles = new ObservableCollection<Article>(articles);
 
             IsRefreshing = false;
             _isInCustomFeed = true;
+
         }
         /// <summary>
         /// Refresh articles
