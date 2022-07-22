@@ -93,6 +93,7 @@ namespace AresNews.ViewModels
             { 
                 _articles = value;
                 OnPropertyChanged(nameof(Articles));
+                SetProperty(ref _articles, value);
             }
         }
         private NewsPage CurrentPage { get; set; }
@@ -345,7 +346,8 @@ namespace AresNews.ViewModels
                 for (int i = 0; i < nbNewItems; i++)
                 {
                     var current = newItems[i];
-                    var index = _articles.IndexOf(_articles.FirstOrDefault(a => a.Id == current.Id)); 
+                    Article item = _articles.FirstOrDefault(a => a.Id == current.Id);
+                    var index = _articles.IndexOf(item); 
                     // Add article one by one for a better visual effect
                     Articles.Insert(index == -1 ? 0 : index, newItems[i]);
                 }
@@ -357,7 +359,11 @@ namespace AresNews.ViewModels
 
                 if (_isInCustomFeed) _isInCustomFeed = false;
             }
-            
+            for (int i = 0; i < _articles.Count; i++)
+            {
+
+                Articles[i].FullPublishDate = _articles[i].FullPublishDate;
+            }
 
 
 
