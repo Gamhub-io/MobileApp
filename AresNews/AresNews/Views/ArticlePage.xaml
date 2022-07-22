@@ -17,8 +17,8 @@
             <OnPlatform.iOS>
                 <Grid >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" />
-                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     <Label Text="{Binding SelectedArticle.Source.Name}"
                            VerticalOptions="Center"
