@@ -9,8 +9,9 @@ namespace AresNews.Models
 {
     public class Article
     {
-        [PrimaryKey, Column("_id")]
+        [PrimaryKey, Column("_id"),JsonProperty("uuid")]
         public string Id { get; set; }
+
         [JsonProperty("title")]
         public string Title { get; set; }
         [JsonProperty("textSnipet")]
