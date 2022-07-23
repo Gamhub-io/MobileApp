@@ -30,6 +30,7 @@
                    FontSize="30"
                    VerticalOptions="Center"
                    TextColor="{StaticResource FontColor}"
+                       
                    FontFamily="P-Bold"
                    Margin="{OnPlatform Android='0,0,0,5', iOS='30,0,0,5'}"/>
                 <Button Text="&#xf002;"
@@ -172,12 +173,14 @@
                                                  ShareCommandParameter="{Binding Url}"
                                                  BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark, Mode=OneWay}"
                                                  ControlTemplate="{StaticResource ArticleTemplate}"
+                                                 xct:TouchEffect.Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
+                                                 xct:TouchEffect.CommandParameter="{Binding Id}"
                                                      
                                                  >
-                            <controls:ArticlePreview.GestureRecognizers>
+                            <!--<controls:ArticlePreview.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}" 
                                                       CommandParameter="{Binding Id}" />
-                            </controls:ArticlePreview.GestureRecognizers>
+                            </controls:ArticlePreview.GestureRecognizers>-->
                         </controls:ArticlePreview>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
