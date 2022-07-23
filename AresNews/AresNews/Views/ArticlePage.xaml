@@ -10,71 +10,39 @@
              xmlns:viewmodels="clr-namespace:AresNews.ViewModels"
              x:DataType="viewmodels:ArticleViewModel"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
-             Shell.TabBarIsVisible="False">
-    
+             Shell.TabBarIsVisible="False"
+             >
     <Shell.TitleView>
-        <OnPlatform x:TypeArguments="View">
-            <OnPlatform.iOS>
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Label Text="{Binding SelectedArticle.Source.Name}"
-                           VerticalOptions="Center"
-                           FontSize="20"
-                           HorizontalOptions="Center"
-                           Margin="40,0,0,0"
-                           TextColor="{StaticResource FontColor}"
-                           FontFamily="P-Bold"
-                           Grid.Column="0"/>
+        <ContentView Margin="0,0,0,0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="{Binding SelectedArticle.Source.Name}"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       FontSize="20"
+                       TextColor="{StaticResource FontColor}"
+                       FontFamily="P-Bold"
+                       Grid.Column="0"/>
 
 
-                    <!-- Browser button -->
-                    <Button Text="&#xf142;" 
-                            FontFamily="FaSolid"
-                            TextColor="{StaticResource Primary}"
-                            BackgroundColor="Transparent"
-                            Grid.Column="1"
-                            FontSize="25"
-                            Padding="0"
-                            HorizontalOptions="End"
-                            Margin="40,0,0,0"
-                            Command="{Binding Browse}"
-                            />
-                </Grid>
-            </OnPlatform.iOS>
-            <OnPlatform.Android>
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Label Text="{Binding SelectedArticle.Source.Name}"
-                           VerticalOptions="Center"
-                           FontSize="20"
-                           HorizontalOptions="Center"
-                           Margin="20,0,0,0"
-                           TextColor="{StaticResource FontColor}"
-                           FontFamily="P-Bold"
-                           Grid.Column="0"/>
+                <!-- Browser button -->
+                <Button Text="&#xf141;" 
+                        FontFamily="FaSolid"
+                        TextColor="{StaticResource Primary}"
+                        BackgroundColor="Transparent"
+                        Grid.Column="1"
+                        FontSize="30"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        Margin="0"
+                        Command="{Binding Browse}"
+                        />
+            </Grid>
 
-
-                    <!-- Browser button -->
-                    <Button Text="&#xf141;" 
-                            FontFamily="FaSolid"
-                            TextColor="{StaticResource Primary}"
-                            BackgroundColor="Transparent"
-                            Grid.Column="1"
-                            FontSize="30"
-                            Padding="0"
-                            HorizontalOptions="Start"
-                            Margin="0"
-                            Command="{Binding Browse}"
-                            />
-                </Grid>
-            </OnPlatform.Android>
-        </OnPlatform>
+        </ContentView>
 
     </Shell.TitleView>
     <ContentPage.Resources>
