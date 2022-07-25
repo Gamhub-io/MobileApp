@@ -58,7 +58,7 @@ namespace AresNews
 
             InitializeComponent();
 
-            
+
 
             // Start the db
             StartDb();
@@ -89,7 +89,7 @@ namespace AresNews
         public static void StartDb()
         {
             // Just use whatever directory SpecialFolder.Personal returns
-            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
             var path = Path.Combine(libraryPath, "ares.db3");
             var pathBackUp = Path.Combine(libraryPath, "aresBackup.db3");
@@ -140,10 +140,10 @@ namespace AresNews
 
                 ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
             }
-            else if (currentPage.ToString() == "AresNews.Views.NewPage")
-            {
-                ((NewsViewModel)((ArticlePage)currentPage).BindingContext).FetchArticles();
-            }
+            //else if (currentPage.ToString() == "AresNews.Views.NewPage")
+            //{
+            //    ((NewsViewModel)((ArticlePage)currentPage).BindingContext).FetchArticles();
+            //}
 
             StartDb();
         }

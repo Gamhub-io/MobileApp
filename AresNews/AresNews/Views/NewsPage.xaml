@@ -127,8 +127,8 @@
     </ContentPage.Background>
     <ContentPage.Content>
 
-        <RefreshView IsRefreshing="{Binding IsRefreshing}"
-                     Command="{Binding RefreshFeed}"
+        <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
+                     Command="{Binding RefreshFeed, Mode=TwoWay}"
                      x:Name="newsRefreshView"
                      HorizontalOptions="CenterAndExpand"
                      RefreshColor="{StaticResource Primary}"
