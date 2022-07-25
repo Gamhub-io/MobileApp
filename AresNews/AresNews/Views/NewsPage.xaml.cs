@@ -26,9 +26,9 @@ namespace AresNews.Views
         {
             InitializeComponent();
 
-            BindingContext = _vm = new NewsViewModel ();
+            BindingContext = _vm = new NewsViewModel();
 
-            _vm.IsRefreshing = true;
+            //_vm.IsRefreshing = true;
 
             // For the auto scroll
             MessagingCenter.Subscribe<MessageItem>(this._vm, "ScrollTop", (sender) =>
@@ -42,24 +42,26 @@ namespace AresNews.Views
         {
             base.OnAppearing();
 
+            _vm.FetchArticles();
+
             // Is the app connected to the internet
             //if (Connectivity.NetworkAccess != NetworkAccess.Internet)
             //{
             //    this.DisplayToastAsync("You're offline", 60000);
             //}
         }
-        public async void DisplayOfflineMessage (string msg = null)
+        public async void DisplayOfflineMessage(string msg = null)
         {
             var current = Connectivity.NetworkAccess;
 
             if (current == NetworkAccess.Internet)
             {
 
-                await this.DisplayToastAsync($"You're offline: {msg.Replace("[Issue Handler]: ",string.Empty)}", 60000);
+                await this.DisplayToastAsync($"You're offline: {msg.Replace("[Issue Handler]: ", string.Empty)}", 60000);
                 return;
             }
             await this.DisplayToastAsync($"You're offline, please check if you're connected to the internet", 60000);
-           
+
 
         }
         /// <summary>

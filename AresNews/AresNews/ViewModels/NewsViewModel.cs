@@ -133,7 +133,7 @@ namespace AresNews.ViewModels
             }); ; }
         }
 
-        private bool _isRefreshing;
+        private bool _isRefreshing = true;
 
         public bool IsRefreshing
         {
@@ -270,7 +270,7 @@ namespace AresNews.ViewModels
                     try
                     {
                         // Manage backuo
-                        _ = Task.Run(() =>
+                        await Task.Run(() =>
                         {
                             App.BackUpConn.DeleteAll<Article>();
                             App.BackUpConn.InsertAllWithChildren(articles);
