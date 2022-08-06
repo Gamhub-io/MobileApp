@@ -146,7 +146,7 @@ namespace AresNews.ViewModels
         }
         public NewsViewModel()
         {
-            Articles = new ObservableRangeCollection<Article>();
+            Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
            _isLaunching = true;
@@ -243,7 +243,20 @@ namespace AresNews.ViewModels
                    Text = article.Title
                });
            });
-            _refreshFeed.Execute(null);
+
+            //
+            switch (Device.RuntimePlatform)
+            {
+                case Device.iOS:
+                    _refreshFeed.Execute(null);
+                    break;
+                case Device.Android:
+                      IsRefreshing = true;
+                    _refreshFeed.Execute(null);
+                    break; 
+                default:
+                    break;
+            }
 
         }
 
@@ -309,36 +322,16 @@ namespace AresNews.ViewModels
 
                     }
                 }
-                // ELse use the former host until we figure something out
-                //else if (ex.Message.Contains("Network subsystem is down"))
-                //{
-                //    // Change to backup host
-                //    App.WService.Host = "pinnate-beautiful-marigold.glitch.me";
-
-                //    FetchArticles();
-
-                //    App.WService.Host = App.ProdHost;
-                //    return;
-
-                //}
                 articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time).ToList()) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
             }
-            if (!_articles.Any())
+            // Reload if the list is empty of if the current list is too old
+            if (!_articles.Any() ||  DateTime.Now - _articles[0].FullPublishDate > TimeSpan.FromDays(29))
             {
-                //var arts = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
                 IsRefreshing = false;
                 Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
-                //await Task.Run(() =>
-                //{
-
-                //    foreach (var art in articles.OrderBy(a => a.Time))
-                //    {
-                //        Articles.Add(art);
-                //    }
-                //});
                 return;
             }
             // Count the number of new elements
