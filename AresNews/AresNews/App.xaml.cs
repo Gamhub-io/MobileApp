@@ -89,7 +89,7 @@ namespace AresNews
         public static void StartDb()
         {
             // Just use whatever directory SpecialFolder.Personal returns
-            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
             var path = Path.Combine(libraryPath, "ares.db3");
             var pathBackUp = Path.Combine(libraryPath, "aresBackup.db3");

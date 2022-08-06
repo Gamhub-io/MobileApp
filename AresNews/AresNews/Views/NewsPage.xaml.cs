@@ -42,7 +42,7 @@ namespace AresNews.Views
         {
             base.OnAppearing();
 
-            _vm.FetchArticles();
+            //_vm.FetchArticles();
 
             // Is the app connected to the internet
             //if (Connectivity.NetworkAccess != NetworkAccess.Internet)
