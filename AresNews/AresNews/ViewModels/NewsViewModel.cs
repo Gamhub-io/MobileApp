@@ -133,7 +133,7 @@ namespace AresNews.ViewModels
             }); ; }
         }
 
-        private bool _isRefreshing = true;
+        private bool _isRefreshing;
 
         public bool IsRefreshing
         {
@@ -141,12 +141,12 @@ namespace AresNews.ViewModels
             set 
             { 
                 _isRefreshing = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsRefreshing));
             }
         }
         public NewsViewModel()
         {
-            _articles = new ObservableCollection<Article>();
+            Articles = new ObservableRangeCollection<Article>();
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
            _isLaunching = true;
@@ -243,6 +243,7 @@ namespace AresNews.ViewModels
                    Text = article.Title
                });
            });
+            _refreshFeed.Execute(null);
 
         }
 
@@ -251,7 +252,7 @@ namespace AresNews.ViewModels
         /// </summary>
         public async void FetchArticles()
         {
-            var articles = new Collection<Article>();
+            var articles = new ObservableCollection<Article>();
 
             try
             {
@@ -262,7 +263,7 @@ namespace AresNews.ViewModels
                     return;
                 }
 
-                articles = await App.WService.Get<Collection<Article>>("feeds"/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
+                articles = await App.WService.Get<ObservableCollection<Article>>("feeds"/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
 
 
                 if (_isLaunching)
@@ -320,17 +321,28 @@ namespace AresNews.ViewModels
                 //    return;
 
                 //}
-                articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time)) ;
+                articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time).ToList()) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
             }
-
-            // If the list is filled in the first place
-            if (_articles.Any() && !_isInCustomFeed)
+            if (!_articles.Any())
             {
-                // Count the number of new elements
-                int nbNewItems = articles.Count() - _articles.Count();
+                //var arts = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+                IsRefreshing = false;
+                Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+                //await Task.Run(() =>
+                //{
+
+                //    foreach (var art in articles.OrderBy(a => a.Time))
+                //    {
+                //        Articles.Add(art);
+                //    }
+                //});
+                return;
+            }
+            // Count the number of new elements
+            int nbNewItems = articles.Count() - _articles.Count();
 
                 // To avoid crashs: if this number is out of range we end the process
                 if (nbNewItems <= 0)
@@ -342,6 +354,8 @@ namespace AresNews.ViewModels
                 // Get all the new items
                 var newItems = articles.Except(_articles.Where(a => articles.Any(na => na.Equals(a)))).ToList();//articles.Take(nbNewItems).ToList();
 
+            await Task.Factory.StartNew(() =>
+            {
                 // Update list of articles
                 for (int i = 0; i < nbNewItems; i++)
                 {
@@ -365,14 +379,16 @@ namespace AresNews.ViewModels
                         Articles.Insert(index, current);
                     }
                 }
-            }
-            else
-            {
-                // If not we creathe a new object instance
-                Articles = new ObservableCollection<Article>(articles/*.OrderBy(a => a.Time)*/);
+            });
+                
+            //}
+            //else
+            //{
+            //    // If not we creathe a new object instance
+            //    Articles = new ObservableCollection<Article>(articles/*.OrderBy(a => a.Time)*/);
 
-                if (_isInCustomFeed) _isInCustomFeed = false;
-            }
+            //    if (_isInCustomFeed) _isInCustomFeed = false;
+            //}
             //for (int i = 0; i < _articles.Count; i++)
             //{
 
@@ -406,25 +422,11 @@ namespace AresNews.ViewModels
                 }
                 //articles.AddRange = _articles.Where((e) => e.Title.Contains(_searchText.Split()) || e.Content.Contains())
             }
-
             // Update list of articles
-            Articles = new ObservableCollection<Article>(articles);
+            Articles = new ObservableRangeCollection<Article>(articles);
 
             IsRefreshing = false;
             _isInCustomFeed = true;
-
-        }
-        /// <summary>
-        /// Refresh articles
-        /// </summary>
-        public async void RefreshArticles ()
-        {
-            if (_articles.Count > 0)
-            {
-                //  Refresh articles
-                await Task.Run (() => Articles = new ObservableCollection<Article>(_articles));
-                
-            }
 
         }
         private static IEnumerable<Article> GetBackupFromDb()
