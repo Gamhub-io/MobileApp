@@ -33,7 +33,7 @@
                                                     RetryDelay="600"
                                                     DownsampleToViewSize="true"
                                                     Aspect="AspectFill" />-->
-                        <Image Source="{Binding Thumnail}"
+                        <Image Source="{Binding Thumnail, Mode=OneWay}"
                                Opacity="0.60"
                                Aspect="AspectFill" />
                         <!-- filter -->
@@ -74,13 +74,13 @@
                                    HasShadow="{OnPlatform Android='True', iOS='False'}"
                                    HeightRequest="25"
                                    Padding="4,0"
-                                   BackgroundColor="{Binding ArticleSource.PrimaryColour}">
+                                   BackgroundColor="{Binding ArticleSource.PrimaryColour, Mode=OneWay}">
                                 <Label FontSize="13"
                                        HorizontalOptions="Center"
                                        VerticalOptions="Center"
-                                       Text="{Binding ArticleSource.Name}"
+                                       Text="{Binding ArticleSource.Name, Mode=OneWay}"
                                        FontFamily="P-Bold"
-                                       TextColor="{Binding ArticleSource.SecondaryColour}"
+                                       TextColor="{Binding ArticleSource.SecondaryColour, Mode=OneWay}"
                                            />
                             </Frame>
 
