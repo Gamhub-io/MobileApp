@@ -147,9 +147,10 @@ namespace AresNews.ViewModels
         public NewsViewModel()
         {
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
-           _isLaunching = true;
+            _isLaunching = true;
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
@@ -284,10 +285,14 @@ namespace AresNews.ViewModels
                     try
                     {
                         // Manage backuo
-                        await Task.Run(() =>
+                        
+                        Device.BeginInvokeOnMainThread(async () =>
                         {
-                            App.BackUpConn.DeleteAll<Article>();
-                            App.BackUpConn.InsertAllWithChildren(articles);
+                            await Task.Run(() =>{
+
+                                App.BackUpConn.DeleteAll<Article>();
+                                App.BackUpConn.InsertAllWithChildren(articles, recursive: true);
+                            });
                         });
 
                     }
@@ -347,33 +352,43 @@ namespace AresNews.ViewModels
                 // Get all the new items
                 var newItems = articles.Except(_articles.Where(a => articles.Any(na => na.Equals(a)))).ToList();//articles.Take(nbNewItems).ToList();
 
+            List<Task> tasks = new List<Task>();
             await Task.Factory.StartNew(() =>
             {
                 // Update list of articles
                 for (int i = 0; i < nbNewItems; i++)
                 {
-                    var current = newItems[i];
-                    Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
-                    if (existingArticle == null)
-                    {
+                //tasks.Add(Task.Factory.StartNew(() =>
+                //    {
+                        var current = newItems[i];
+                        Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+                        if (existingArticle == null)
+                        {
 
-                        Article item = articles.FirstOrDefault(a => a.Id == current.Id);
+                            Article item = articles.FirstOrDefault(a => a.Id == current.Id);
 
-                        var index = articles.IndexOf(item);
+                            var index = articles.IndexOf(item);
 
-                        // Add article one by one for a better visual effect
-                        Articles.Insert(index == -1 ? 0 + i : index, current);
-                    }
-                    else
-                    {
-                        int index = _articles.IndexOf(existingArticle);
-                        // replace the exisiting one with the new one
-                        Articles.Remove(existingArticle);
-                        Articles.Insert(index, current);
-                    }
+                            // Add article one by one for a better visual effect
+                            Articles.Insert(index == -1 ? 0 + i : index, current);
+                        }
+                        else
+                        {
+                            int index = _articles.IndexOf(existingArticle);
+                            // replace the exisiting one with the new one
+                            Articles.Remove(existingArticle);
+                            Articles.Insert(index, current);
+                        }
+                    //}));
+
+
                 }
             });
-                
+
+            //Task.WaitAll(tasks.ToArray());
+                IsRefreshing = false;
+
+
             //}
             //else
             //{
@@ -390,7 +405,6 @@ namespace AresNews.ViewModels
 
 
 
-            IsRefreshing = false;
 
         }
         /// <summary>
