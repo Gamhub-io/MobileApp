@@ -268,7 +268,12 @@ namespace AresNews.ViewModels
         public async void FetchArticles(bool isFullRefresh = false)
         {
             if (isFullRefresh)
-                Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+            {
+                Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                IsRefreshing = false;
+                _isLaunching = false;
+                return;
+            }
 
             var articles = new ObservableCollection<Article>();
 
@@ -282,21 +287,29 @@ namespace AresNews.ViewModels
                     SearchArticles(articles.ToList());
                     return;
                 }
-                if (lastCall != null)
-                    if (_articles.Where(i => i.MongooseId != null).Count() > 0)
-                    {
-                        
-                        if (lastCall != null)
-                            articles = await App.WService.Get<ObservableCollection<Article>>("feeds", "update", parameters: new string[] { lastCall });
-                        else
-                            articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                if (lastCall == null)
+                {
+                    
+                    Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                    IsRefreshing = false;
+                    _isLaunching = false;
+                    Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
+                    return ;
+                }
+               if (_articles.Where(i => i.MongooseId != null).Count() > 0)
+               {
+                   
+                   if (lastCall != null)
+                       articles = await App.WService.Get<ObservableCollection<Article>>("feeds", "update", parameters: new string[] { lastCall });
+                   else
+                       articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
-                    }
-                    else
-                    {
-                        articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+               }
+               else
+               {
+                   articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
-                    }
+               }
             }
             catch (Exception ex)
             {
@@ -330,7 +343,7 @@ namespace AresNews.ViewModels
             //    return;
             //}
             // Count the number of new elements
-            int nbNewItems = articles.Count() - _articles.Count();
+            //int nbNewItems = articles.Count() - _articles.Count();
 
             // To avoid crashs: if this number is out of range we end the process
             if (articles == null || articles.Count() <= 0)
