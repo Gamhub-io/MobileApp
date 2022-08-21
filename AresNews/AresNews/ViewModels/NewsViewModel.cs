@@ -85,9 +85,9 @@ namespace AresNews.ViewModels
         }
 
         // Property list of articles
-        private ObservableRangeCollection<Article> _articles;
+        private ObservableCollection<Article> _articles;
 
-        public ObservableRangeCollection<Article> Articles
+        public ObservableCollection<Article> Articles
         {
             get { return _articles; }
             set 
@@ -271,25 +271,29 @@ namespace AresNews.ViewModels
 
             try
             {
+                var lastCall = Preferences.Get("lastRefresh", null);
+
                 // If we want to fetch the articles via search
                 if (_searchText != null && IsSearching == true)
                 {
                     SearchArticles(articles.ToList());
                     return;
                 }
-                if (_articles.Where(i => i.MongooseId != null).Count() > 0)
-                {
-                    // Mention the existing article in the body so the API only return the articles we don't already have
-                    string articleFilter = $"{{ \"articles\": {JsonConvert.SerializeObject(_articles.Select(m => new { uuid = m.Id }))}}}";
+                if (lastCall != null)
+                    if (_articles.Where(i => i.MongooseId != null).Count() > 0)
+                    {
+                        
+                        if (lastCall != null)
+                            articles = await App.WService.Get<ObservableCollection<Article>>("feeds", "update", parameters: new string[] { lastCall });
+                        else
+                            articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
-                    articles = await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: articleFilter);
+                    }
+                    else
+                    {
+                        articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
-                }
-                else
-                {
-                    articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
-
-                }
+                    }
 
 
 
@@ -316,7 +320,7 @@ namespace AresNews.ViewModels
 
                     }
                 }
-                articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time).ToList()) ;
+                //articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time).ToList()) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
@@ -397,6 +401,9 @@ namespace AresNews.ViewModels
             }
             _isLaunching = false;
             IsRefreshing = false;
+
+            // Register date of the refresh
+            Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
 
 
         }
