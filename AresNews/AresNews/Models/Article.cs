@@ -11,6 +11,8 @@ namespace AresNews.Models
     {
         [PrimaryKey, Column("_id"),JsonProperty("uuid")]
         public string Id { get; set; }
+        [ Column("mongoId"),JsonProperty("_id")]
+        public string MongooseId { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }
