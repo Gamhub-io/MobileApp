@@ -1,6 +1,10 @@
 
-<p align="center" class="container" >
+# GamHub
+<!-- <p align="center" class="container" >
   <img width="200px" src="https://user-images.githubusercontent.com/37577669/168440018-94d3e00b-5ddf-485a-94b7-c6488addface.png" />
+</p> -->
+<p align="center" class="container" >
+  <img src="https://user-images.githubusercontent.com/37577669/185776799-6e32c7f7-c45e-4181-91aa-313d24a38689.png" />
 </p>
 
 <p align="center">
@@ -11,23 +15,15 @@
     <img src="https://user-images.githubusercontent.com/13558917/75712286-8d077e00-5c7c-11ea-86f0-cd693630eee0.png" height="65" />
   </a>
 </p>
-  
 
 
-# AresGaming
-
-Platform | Test | Production |
---- | ----- | ------|
-| **Android**| [![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)|[![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)
-
-
-AresGaming is an iOS and Android app that keeps gamers 
+GamHub is an iOS and Android app that keeps gamers 
 up-to-date on everything game-related, for free, 
 with no ads or any other type of annoyance.
 
 The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms).
   
-<p align="center">
+<!-- <p align="center">
   
   
   <a > 
@@ -39,7 +35,13 @@ The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.
   <a > 
     <img src="https://user-images.githubusercontent.com/37577669/128909032-d76176cd-21ed-418e-adc4-2d5da8b696d2.jpeg" height="450" />
   </a>
-</p>
+</p> -->
+
+## Status
+
+Platform | Test | Production |
+--- | ----- | ------|
+| **Android**| [![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)|[![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)
 
 ## Contributions
 As the app is open-source, the app evolve using
