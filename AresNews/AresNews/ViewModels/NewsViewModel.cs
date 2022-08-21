@@ -67,7 +67,7 @@ namespace AresNews.ViewModels
                 {
                     IsSearching = false;
                     IsRefreshing = true;
-                    FetchArticles();
+                    FetchArticles(true);
 
                 });
             }
@@ -265,8 +265,11 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Fetch all the articles
         /// </summary>
-        public async void FetchArticles()
+        public async void FetchArticles(bool isFullRefresh = false)
         {
+            if (isFullRefresh)
+                Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+
             var articles = new ObservableCollection<Article>();
 
             try
@@ -294,12 +297,6 @@ namespace AresNews.ViewModels
                         articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
                     }
-
-
-
-                
-
-
             }
             catch (Exception ex)
             {
