@@ -2,6 +2,7 @@
 using AresNews.Services;
 using AresNews.Views;
 using MvvmHelpers;
+using Newtonsoft.Json;
 using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections;
@@ -84,9 +85,9 @@ namespace AresNews.ViewModels
         }
 
         // Property list of articles
-        private ObservableCollection<Article> _articles;
+        private ObservableRangeCollection<Article> _articles;
 
-        public ObservableCollection<Article> Articles
+        public ObservableRangeCollection<Article> Articles
         {
             get { return _articles; }
             set 
@@ -276,35 +277,23 @@ namespace AresNews.ViewModels
                     SearchArticles(articles.ToList());
                     return;
                 }
-
-                articles = await App.WService.Get<ObservableCollection<Article>>("feeds"/*, parameters: new string[] {DateTime.Now.AddDays(-7).ToString("dd-MM-yyyy"), "now" }*/);
-
-
-                if (_isLaunching)
+                if (_articles.Where(i => i.MongooseId != null).Count() > 0)
                 {
-                    try
-                    {
-                        // Manage backuo
-                        
-                        Device.BeginInvokeOnMainThread(async () =>
-                        {
-                            await Task.Run(() =>{
+                    // Mention the existing article in the body so the API only return the articles we don't already have
+                    string articleFilter = $"{{ \"articles\": {JsonConvert.SerializeObject(_articles.Select(m => new { uuid = m.Id }))}}}";
 
-                                App.BackUpConn.DeleteAll<Article>();
-                                App.BackUpConn.InsertAllWithChildren(articles, recursive: true);
-                            });
-                        });
-
-                    }
-                    catch
-                    { 
-                    }
-                    finally
-                    {
-                        _isLaunching = false;
-                    }
+                    articles = await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: articleFilter);
 
                 }
+                else
+                {
+                    articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+
+                }
+
+
+
+                
 
 
             }
@@ -332,78 +321,82 @@ namespace AresNews.ViewModels
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
             }
-            // Reload if the list is empty of if the current list is too old
-            if (!_articles.Any() ||  DateTime.Now - _articles[0].FullPublishDate > TimeSpan.FromDays(29))
-            {
-                IsRefreshing = false;
-                Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
-                return;
-            }
+            //// Reload if the list is empty of if the current list is too old
+            //if (!_articles.Any() ||  DateTime.Now - _articles[0].FullPublishDate > TimeSpan.FromDays(29))
+            //{
+            //    IsRefreshing = false;
+            //    Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
+            //    return;
+            //}
             // Count the number of new elements
             int nbNewItems = articles.Count() - _articles.Count();
 
-                // To avoid crashs: if this number is out of range we end the process
-                if (nbNewItems <= 0)
-                {
-                    IsRefreshing = false;
-                    return;
-                }
+            // To avoid crashs: if this number is out of range we end the process
+            if (articles == null || articles.Count() <= 0)
+            {
+                IsRefreshing = false;
+                return;
+            }
 
-                // Get all the new items
-                var newItems = articles.Except(_articles.Where(a => articles.Any(na => na.Equals(a)))).ToList();//articles.Take(nbNewItems).ToList();
+            // Get all the new items
+            var newItems = articles.Except(_articles.Where(a => articles.Any(na => na.Equals(a)))).ToList();//articles.Take(nbNewItems).ToList();
 
-            List<Task> tasks = new List<Task>();
             await Task.Factory.StartNew(() =>
             {
                 // Update list of articles
-                for (int i = 0; i < nbNewItems; i++)
+                for (int i = 0; i < articles.Count(); i++)
                 {
-                //tasks.Add(Task.Factory.StartNew(() =>
-                //    {
-                        var current = newItems[i];
-                        Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
-                        if (existingArticle == null)
-                        {
+                    var current = newItems[i];
+                    Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+                    if (existingArticle == null)
+                    {
 
-                            Article item = articles.FirstOrDefault(a => a.Id == current.Id);
+                        Article item = articles.FirstOrDefault(a => a.Id == current.Id);
 
-                            var index = articles.IndexOf(item);
+                        var index = articles.IndexOf(item);
 
-                            // Add article one by one for a better visual effect
-                            Articles.Insert(index == -1 ? 0 + i : index, current);
-                        }
-                        else
-                        {
-                            int index = _articles.IndexOf(existingArticle);
-                            // replace the exisiting one with the new one
-                            Articles.Remove(existingArticle);
-                            Articles.Insert(index, current);
-                        }
-                    //}));
+                        // Add article one by one for a better visual effect
+                        Articles.Insert(index == -1 ? 0 + i : index, current);
+                    }
+                    else
+                    {
+                        int index = _articles.IndexOf(existingArticle);
+                        // replace the exisiting one with the new one
+                        Articles.Remove(existingArticle);
+                        Articles.Insert(index, current);
+                    }
 
 
                 }
             });
 
-            //Task.WaitAll(tasks.ToArray());
-                IsRefreshing = false;
+            if (_isLaunching && articles.Count > 0)
+            {
+                try
+                {
+                    // Manage backuo
 
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Task.Run(() => {
 
-            //}
-            //else
-            //{
-            //    // If not we creathe a new object instance
-            //    Articles = new ObservableCollection<Article>(articles/*.OrderBy(a => a.Time)*/);
+                            App.BackUpConn.DeleteAll<Article>();
+                            App.BackUpConn.InsertAllWithChildren(_articles, recursive: true);
+                        });
+                    });
 
-            //    if (_isInCustomFeed) _isInCustomFeed = false;
-            //}
-            //for (int i = 0; i < _articles.Count; i++)
-            //{
+                }
+                catch
+                {
+                }
+                //finally
+                //{
+                //    _isLaunching = false;
+                //}
 
-            //    Articles[i].FullPublishDate = _articles[i].FullPublishDate;
-            //}
-
-
+            }
+            _isLaunching = false;
+            IsRefreshing = false;
 
 
         }
