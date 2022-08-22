@@ -173,15 +173,19 @@
                                                  ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle, Mode=OneWay}"
                                                  ShareCommandParameter="{Binding Url}"
                                                  BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark, Mode=OneWay}"
-                                                 ControlTemplate="{StaticResource ArticleTemplate}"
-                                                 xct:TouchEffect.Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
-                                                 xct:TouchEffect.CommandParameter="{Binding Id}"
-                                                     
+                                                 ControlTemplate="{StaticResource ArticleTemplate}" 
+                                                 TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
+                                                 TapCommandParameter="{Binding Id}"
                                                  >
+                            <!--
+                            TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
+                                                 TapCommandParameter="{Binding Id}"
+                            -->
                             <!--<controls:ArticlePreview.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}" 
                                                       CommandParameter="{Binding Id}" />
                             </controls:ArticlePreview.GestureRecognizers>-->
+                            
                         </controls:ArticlePreview>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

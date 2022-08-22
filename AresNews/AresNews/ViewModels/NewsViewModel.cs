@@ -296,7 +296,7 @@ namespace AresNews.ViewModels
                     Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                     return ;
                 }
-               if (_articles.Where(i => i.MongooseId != null).Count() > 0)
+               if (_articles?.Count() > 0)
                {
                    
                    if (lastCall != null)
@@ -307,6 +307,31 @@ namespace AresNews.ViewModels
                }
                else
                {
+                   if (_isLaunching)
+                    {
+                        Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                        try
+                        {
+                            // Manage backuo
+
+                            await Task.Factory.StartNew(async () =>
+                            {
+                                await Task.Run(() => {
+
+                                    App.BackUpConn.DeleteAll<Article>();
+                                    App.BackUpConn.InsertAllWithChildren(_articles, recursive: true);
+                                });
+                            });
+
+                        }
+                        catch
+                        {
+                        }
+
+                        _isLaunching = false;
+                        IsRefreshing = false;
+                        return;
+                    }
                    articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
 
                }
@@ -353,14 +378,14 @@ namespace AresNews.ViewModels
             }
 
             // Get all the new items
-            var newItems = articles.Except(_articles.Where(a => articles.Any(na => na.Equals(a)))).ToList();//articles.Take(nbNewItems).ToList();
+            //var newItems = articles.Except(_articles.Where(a => articles.Any(na => na.Equals(a)))).ToList();//articles.Take(nbNewItems).ToList();
 
             await Task.Factory.StartNew(() =>
             {
                 // Update list of articles
                 for (int i = 0; i < articles.Count(); i++)
                 {
-                    var current = newItems[i];
+                    var current = articles[i];
                     Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
                     if (existingArticle == null)
                     {
@@ -384,31 +409,31 @@ namespace AresNews.ViewModels
                 }
             });
 
-            if (_isLaunching && articles.Count > 0)
-            {
-                try
-                {
-                    // Manage backuo
+            //if (_isLaunching && articles.Count > 0)
+            //{
+            //    try
+            //    {
+            //        // Manage backuo
 
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        await Task.Run(() => {
+            //        await Task.Factory.StartNew(async () =>
+            //        {
+            //            await Task.Run(() => {
 
-                            App.BackUpConn.DeleteAll<Article>();
-                            App.BackUpConn.InsertAllWithChildren(_articles, recursive: true);
-                        });
-                    });
+            //                App.BackUpConn.DeleteAll<Article>();
+            //                App.BackUpConn.InsertAllWithChildren(_articles, recursive: true);
+            //            });
+            //        });
 
-                }
-                catch
-                {
-                }
-                //finally
-                //{
-                //    _isLaunching = false;
-                //}
+            //    }
+            //    catch
+            //    {
+            //    }
+            //    //finally
+            //    //{
+            //    //    _isLaunching = false;
+            //    //}
 
-            }
+            //}
             _isLaunching = false;
             IsRefreshing = false;
 
