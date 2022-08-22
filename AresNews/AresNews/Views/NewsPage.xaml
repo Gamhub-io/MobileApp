@@ -127,8 +127,8 @@
     </ContentPage.Background>
     <ContentPage.Content>
 
-        <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=OneWay}"
-                     Command="{Binding RefreshFeed, Mode=TwoWay}"
+        <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
+                     Command="{Binding RefreshFeed, Mode=OneWay}"
                      x:Name="newsRefreshView"
                      HorizontalOptions="CenterAndExpand"
                      RefreshColor="{StaticResource Primary}"
@@ -146,6 +146,7 @@
             <CollectionView ItemsSource="{Binding Articles, Mode=OneWay}"
                             VerticalScrollBarVisibility="Never"
                             x:Name="newsCollectionView"
+                            ItemsUpdatingScrollMode="KeepScrollOffset"
                             HorizontalOptions="Center"
                             Margin="8,0"
                             >
