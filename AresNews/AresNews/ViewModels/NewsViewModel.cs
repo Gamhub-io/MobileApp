@@ -17,11 +17,14 @@ namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
+
         private bool _isLaunching = true;
-        private bool _isSearching;
+        private string _prevSearch;
 
         private int _wifiRestartCount = 0;
         private bool _isInCustomFeed;
+
+        private bool _isSearching;
         public bool IsSearching
         {
             get 
@@ -32,6 +35,20 @@ namespace AresNews.ViewModels
             { 
                 _isSearching = value; 
                 OnPropertyChanged(nameof(IsSearching));
+            }
+        }
+
+        private bool _isSearchOpen;
+        public bool IsSearchOpen
+        {
+            get 
+            { 
+                return _isSearchOpen; 
+            }
+            set 
+            {
+                _isSearchOpen = value; 
+                OnPropertyChanged(nameof(IsSearchOpen));
             }
         }
         private string _searchText;
@@ -56,6 +73,7 @@ namespace AresNews.ViewModels
                 return new Command(() =>
                 {
                     IsSearching = true;
+                    
                 });
             }
         }
@@ -65,9 +83,12 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
+                    // Scroll up before fetching the items
+                    CurrentPage.ScrollFeed();
                     IsSearching = false;
                     IsRefreshing = true;
-                    FetchArticles(true);
+                    _prevSearch = null;
+                    //FetchArticles(true);
 
                 });
             }
@@ -78,8 +99,9 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
+                    if (_searchText == _prevSearch)
+                        return;
                     IsRefreshing = true;
-                    FetchArticles();
                 });
             }
         }
@@ -97,7 +119,7 @@ namespace AresNews.ViewModels
                 SetProperty(ref _articles, value);
             }
         }
-        private NewsPage CurrentPage { get; set; }
+        private NewsPage CurrentPage { get; set; } 
         // Command to add a Bookmark
         private readonly Command _addBookmark;
 
@@ -129,7 +151,7 @@ namespace AresNews.ViewModels
             {
                 var articlePage = new ArticlePage(_articles.FirstOrDefault(art => art.Id == id.ToString()));
 
-                
+
                 await App.Current.MainPage.Navigation.PushAsync(articlePage);
             }); ; }
         }
@@ -145,10 +167,10 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(IsRefreshing));
             }
         }
-        public NewsViewModel()
+        public NewsViewModel(NewsPage currentPage)
         {
+            CurrentPage = currentPage;
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
-
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
 
             _isLaunching = true;
@@ -228,7 +250,7 @@ namespace AresNews.ViewModels
             _refreshFeed = new Command( () =>
                {
                    // Fetch the article
-                   FetchArticles();
+                   FetchArticles(IsSearchOpen);
                });
 
             // Set command to share an article
@@ -254,7 +276,7 @@ namespace AresNews.ViewModels
                     break;
                 case Device.Android:
                       IsRefreshing = true;
-                    _refreshFeed.Execute(null);
+                    FetchArticles();
                     break; 
                 default:
                     break;
@@ -267,22 +289,33 @@ namespace AresNews.ViewModels
         /// </summary>
         public async void FetchArticles(bool isFullRefresh = false)
         {
-            if (isFullRefresh)
-            {
-                Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
-                IsRefreshing = false;
-                _isLaunching = false;
-                return;
-            }
 
             var articles = new ObservableCollection<Article>();
+            if (isFullRefresh)
+            {
+                //await Task.Run(async () =>
+                //{
+
+                articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                
+                _isLaunching = false;
+                Articles = articles;
+                // Register date of the refresh
+                Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
+                IsRefreshing = false;
+                IsSearchOpen = false;
+                return;
+                //});
+            }
+
+
 
             try
             {
                 var lastCall = Preferences.Get("lastRefresh", null);
 
                 // If we want to fetch the articles via search
-                if (_searchText != null && IsSearching == true)
+                if (_searchText != null && IsSearching == true )
                 {
                     SearchArticles(articles.ToList());
                     return;
@@ -319,7 +352,7 @@ namespace AresNews.ViewModels
                                 await Task.Run(() => {
 
                                     App.BackUpConn.DeleteAll<Article>();
-                                    App.BackUpConn.InsertAllWithChildren(_articles, recursive: true);
+                                    App.BackUpConn.InsertAllWithChildren(_articles);
                                 });
                             });
 
@@ -330,6 +363,8 @@ namespace AresNews.ViewModels
 
                         _isLaunching = false;
                         IsRefreshing = false;
+                        // Register date of the refresh
+                        Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                         return;
                     }
                    articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
@@ -450,8 +485,9 @@ namespace AresNews.ViewModels
         {
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
+                
                 articles = await App.WService.Get<List<Article>>("feeds", jsonBody: $"{{\"search\": \"{_searchText}\"}}");
-
+                _searchText = _prevSearch;
             }
             // Offline search
             else
@@ -465,10 +501,11 @@ namespace AresNews.ViewModels
                 //articles.AddRange = _articles.Where((e) => e.Title.Contains(_searchText.Split()) || e.Content.Contains())
             }
             // Update list of articles
-            Articles = new ObservableRangeCollection<Article>(articles);
+            Articles = new ObservableCollection<Article>(articles);
 
             IsRefreshing = false;
             _isInCustomFeed = true;
+            IsSearchOpen = true;
 
         }
         private static IEnumerable<Article> GetBackupFromDb()

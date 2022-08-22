@@ -26,7 +26,7 @@ namespace AresNews.Views
         {
             InitializeComponent();
 
-            BindingContext = _vm = new NewsViewModel();
+            BindingContext = _vm = new NewsViewModel(this);
 
             //_vm.IsRefreshing = true;
 
@@ -95,6 +95,14 @@ namespace AresNews.Views
         private void CloseSearchButton_Clicked(object sender, EventArgs e)
         {
             AnimateWidthSearchBar(300, 0);
+        }
+        /// <summary>
+        /// Scroll the feed
+        /// </summary>
+        /// <param name="position">Position you order the feed to be. default 0 (all the way up)</param>
+        public void ScrollFeed(int position = 0)
+        {
+            newsCollectionView.ScrollTo(position);
         }
     }
 }
