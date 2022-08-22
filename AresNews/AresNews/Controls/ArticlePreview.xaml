@@ -6,6 +6,7 @@
              x:Class="AresNews.Controls.ArticlePreview"
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:viewmodels="clr-namespace:AresNews.ViewModels" 
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
              x:DataType="ctrs:ArticlePreview"
              x:Name="preview">
 
@@ -20,8 +21,12 @@
                    HeightRequest="221"
                    IsClippedToBounds="True"
                    Padding="0"
+                   xct:TouchEffect.NativeAnimation="True"
+                   xct:TouchEffect.ShouldMakeChildrenInputTransparent="False"
+                   xct:TouchEffect.Command="{Binding TapCommand}"
+                   xct:TouchEffect.CommandParameter="{Binding TapCommandParameter}"
                    >
-                <Grid>
+                <Grid >
 
                     <!-- Backgournd -->
                     <Grid BackgroundColor="{StaticResource Dark}">
@@ -37,8 +42,8 @@
                                Opacity="0.60"
                                Aspect="AspectFill" />
                         <!-- filter -->
-                        <Grid Opacity="0.15">
-                            <Grid.Background>
+                        <Frame Opacity="0.15">
+                            <Frame.Background>
                                 <LinearGradientBrush EndPoint="0,1">
 
                                     <GradientStop Color="{StaticResource Light}"
@@ -48,8 +53,8 @@
                                     <GradientStop Color="{StaticResource Dark}"
                                                           Offset="1.0" />
                                 </LinearGradientBrush>
-                            </Grid.Background>
-                        </Grid>
+                            </Frame.Background>
+                        </Frame>
                     </Grid>
                     <!-- Foreground -->
                     <Grid>
@@ -93,11 +98,13 @@
                                 
                                 <!-- Share button-->
                                 <Frame Grid.Row="0"
-                                       Style="{StaticResource ButtonFrame}" >
-                                    <Button Style="{StaticResource ButtonStyle}"
+                                       Style="{StaticResource ButtonFrame}" 
+                                       BackgroundColor="{StaticResource LightDark}"
+                                        xct:TouchEffect.Command="{Binding ShareCommand}"
+                                        xct:TouchEffect.NativeAnimation="True"
+                                        xct:TouchEffect.CommandParameter="{Binding ArticleId}" >
+                                    <Label Style="{StaticResource LabelButtonStyle}"
                                             Text="&#xf1e0;"
-                                            Command="{Binding ShareCommand}"
-                                            CommandParameter="{Binding ArticleId}"
                                         />
                                 </Frame>
                                 
