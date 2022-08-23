@@ -12,9 +12,9 @@ using System.Reflection;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-[assembly: ExportFont("FontAwesome5Free-Regular-400.otf", Alias = "FaRegular")]
-[assembly: ExportFont("FontAwesome5Brands-Regular-400.otf", Alias = "FaBrand")]
-[assembly: ExportFont("FontAwesome5Free-Solid-900.otf", Alias = "FaSolid")]
+[assembly: ExportFont("FontAwesome6Free-Regular-400.otf", Alias = "FaRegular")]
+[assembly: ExportFont("FontAwesome6Brands-Regular-400.otf", Alias = "FaBrand")]
+[assembly: ExportFont("FontAwesome6Free-Solid-900.otf", Alias = "FaSolid")]
 [assembly: ExportFont("Ubuntu-Regular.ttf", Alias = "P-Regular")]
 [assembly: ExportFont("Ubuntu-Bold.ttf", Alias = "P-Bold")]
 [assembly: ExportFont("Ubuntu-Medium.otf", Alias = "P-SemiBold")]
@@ -27,6 +27,7 @@ namespace AresNews
         public static SQLiteConnection SqLiteConn { get; set; }
         public static SQLiteConnection BackUpConn { get; set; }
         public static Service WService { get; set; }
+        public static string ProdHost { get; } = "api.gamhub.io";
 
 
         public enum PageType
@@ -43,12 +44,12 @@ namespace AresNews
         {
 #if __LOCAL__
             // Set webservice
-            WService = new Service(host: "192.168.1.12",
+            WService = new Service(host: "192.168.1.11",
                                     port: 3000,
                                    sslCertificate: false);
 #else
         // Set webservice
-            WService = new Service(host: "pinnate-beautiful-marigold.glitch.me",
+            WService = new Service(host: "api.gamhub.io",
                                    sslCertificate: true);
 #endif
 
@@ -57,7 +58,7 @@ namespace AresNews
 
             InitializeComponent();
 
-            
+
 
             // Start the db
             StartDb();
@@ -139,10 +140,10 @@ namespace AresNews
 
                 ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
             }
-            else if (currentPage.ToString() == "AresNews.Views.NewPage")
-            {
-                ((NewsViewModel)((ArticlePage)currentPage).BindingContext).FetchArticles();
-            }
+            //else if (currentPage.ToString() == "AresNews.Views.NewPage")
+            //{
+            //    ((NewsViewModel)((ArticlePage)currentPage).BindingContext).FetchArticles();
+            //}
 
             StartDb();
         }

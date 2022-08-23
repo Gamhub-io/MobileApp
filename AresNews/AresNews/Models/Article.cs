@@ -9,10 +9,15 @@ namespace AresNews.Models
 {
     public class Article
     {
-        [PrimaryKey, Column("_id")]
+        [PrimaryKey, Column("_id"),JsonProperty("uuid")]
         public string Id { get; set; }
+        [ Column("mongoId"),JsonProperty("_id")]
+        public string MongooseId { get; set; }
+
         [JsonProperty("title")]
         public string Title { get; set; }
+        [JsonProperty("textSnipet")]
+        public string TextSnipet { get; set; }
         [JsonProperty("content")]
         public string Content { get; set; }
         [JsonProperty("author")]

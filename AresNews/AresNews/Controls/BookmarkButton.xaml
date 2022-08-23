@@ -1,13 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
              x:Class="AresNews.Controls.BookmarkButton">
   <ContentView.Resources>
         <ControlTemplate x:Key="BookmarkButton">
             <!-- Bookmark button-->
             <Frame 
                    Style="{StaticResource ButtonFrame}"
-                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
+                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
+                
+                   xct:TouchEffect.NativeAnimation="True"
+                    xct:TouchEffect.ShouldMakeChildrenInputTransparent="False"
+                >
 
                 <Button Text="&#xf02e;"
                         Style="{StaticResource ButtonStyle}"
@@ -30,6 +35,37 @@
                     </Button.Triggers>
                 </Button>
             </Frame>
+            
+            <!--
+            <Frame 
+                   Style="{StaticResource ButtonFrame}"
+                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
+                   xct:TouchEffect.Command="{Binding Command}"
+                   xct:TouchEffect.NativeAnimation="True"
+                   xct:TouchEffect.CommandParameter="{Binding CommandParameter}">
+
+                <Label Text="&#xf02e;"
+                        Style="{StaticResource LabelButtonStyle}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Button_Clicked"/>
+                    </Label.GestureRecognizers>
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding IsSaved}"
+                                     Value="true">
+                            <Setter Property="FontFamily"
+                                    Value="FaSolid" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding IsSaved}"
+                                     Value="false">
+                            <Setter Property="FontFamily"
+                                    Value="FaRegular" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+            </Frame>
+            -->
         </ControlTemplate>
   </ContentView.Resources>
 </ContentView>
