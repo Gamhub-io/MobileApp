@@ -149,6 +149,26 @@ namespace AresNews.Controls
                                                                  declaringType: typeof(ArticlePreview),
                                                                  defaultBindingMode: BindingMode.TwoWay
                                                                  /*propertyChanged: BookmarkCommandChanged*/);
+        public Command TapCommand
+        {
+            get
+            {
+                return (Command)GetValue(TapCommandProperty);
+            }
+
+            set
+            {
+                SetValue(TapCommandProperty, value);
+            }
+        }
+            
+
+        public static readonly BindableProperty TapCommandProperty = BindableProperty.Create(
+                                                                 propertyName: "TapCommand",
+                                                                 returnType: typeof(Command),
+                                                                 declaringType: typeof(ArticlePreview),
+                                                                 defaultBindingMode: BindingMode.TwoWay
+                                                                 /*propertyChanged: BookmarkCommandChanged*/);
 
         public Command ShareCommand 
         {
@@ -184,6 +204,25 @@ namespace AresNews.Controls
 
         public static readonly BindableProperty ShareCommandParameterProperty = BindableProperty.Create(
                                                          propertyName: "ShareCommandParameter",
+                                                         returnType: typeof(object),
+                                                         declaringType: typeof(ArticlePreview),
+                                                         defaultBindingMode: BindingMode.TwoWay
+                                                         /*propertyChanged: ShareCommandChanged*/);
+        public object TapCommandParameter
+        {
+            get
+            {
+                return (object)GetValue(TapCommandParameterProperty);
+            }
+
+            set
+            {
+                SetValue(TapCommandParameterProperty, value);
+            }
+        }
+
+        public static readonly BindableProperty TapCommandParameterProperty = BindableProperty.Create(
+                                                         propertyName: "TapCommandParameter",
                                                          returnType: typeof(object),
                                                          declaringType: typeof(ArticlePreview),
                                                          defaultBindingMode: BindingMode.TwoWay
