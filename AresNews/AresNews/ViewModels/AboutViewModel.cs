@@ -24,5 +24,17 @@ namespace AresNews.ViewModels
                 }));
             }
         }
+
+        public Command ViewTwitter
+        {
+            get
+            {
+                return new Command(async (username) => await Browser.OpenAsync($"https://twitter.com/{username}", new BrowserLaunchOptions
+                {
+                    LaunchMode = BrowserLaunchMode.SystemPreferred,
+                    TitleMode = BrowserTitleMode.Default,
+                }));
+            }
+        }
     }
 }

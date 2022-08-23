@@ -26,24 +26,24 @@
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <!-- Icon -->
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="60"/>
                         <!-- Title-->
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
                     <!-- Icon -->
                     <Label  Grid.Column="0"
-                            Margin="20,0,0,0"
+                            Margin="10,0,0,0"
                             VerticalOptions="Center"
                             HorizontalTextAlignment="Center"
                             HorizontalOptions="Center"
                             Text="{Binding Icon}" 
                             FontFamily="FaSolid" 
-                            FontSize="26"
+                            FontSize="23"
                             TextColor="{StaticResource Primary}"/>
                     <!-- Title -->
                     <Label Grid.Column="1" 
                            Text="{Binding Title}" 
-                           FontSize="23" 
+                           FontSize="18" 
                            VerticalOptions="Center"
                            VerticalTextAlignment="Center"
                            TextColor="{StaticResource FontColor}" 
@@ -96,7 +96,7 @@
     <Shell.FlyoutHeader >
         <Grid BackgroundColor="{StaticResource Alternate}"
               HeightRequest="80">
-            <Image Source="AresLogo.png"/>
+            <Image Source="GamHubLogo.png"/>
         </Grid>
     </Shell.FlyoutHeader>
     <!-- Feed Page -->

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" xmlns:viewmodels="clr-namespace:AresNews.ViewModels" x:DataType="viewmodels:AboutViewModel"
              x:Class="AresNews.Views.AboutPage">
     <Shell.TitleView>
         <Grid>
@@ -94,34 +94,54 @@
             </Grid.RowDefinitions>
             
             <!-- Image -->
-            <Image Source="AresLogo"
+            <Image Source="GamHubLogo"
                    VerticalOptions="Center"
                    Grid.Row="0"
                    Aspect="AspectFit" 
                    />
-            <Frame Grid.Row="1"
-                   CornerRadius="12"
-                   Padding="7"
-                   BackgroundColor="{StaticResource Dark}"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center">
-                <Frame.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding ViewGithub}" />
-                </Frame.GestureRecognizers>
-                <StackLayout Orientation="Horizontal">
-                    <!-- Github icon -->
-                    <Label Text="&#xf09b;"
+                <StackLayout Grid.Row="1"
+                             Orientation="Horizontal"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+                    <Frame CornerRadius="12"
+                           Padding="7"
+                           BackgroundColor="{StaticResource Dark}"
+                           xct:TouchEffect.Command="{Binding ViewGithub}">
+                        <StackLayout Orientation="Horizontal">
+                            <!-- Github icon -->
+                            <Label Text="&#xf09b;"
+                                   FontSize="20"
+                                   FontFamily="FaBrand"
+                                   TextColor="#fafafa"
+                                   VerticalOptions="Center" />
+                            <Label Text="View on Github"
+                                   FontSize="12"
+                                   FontFamily="P-SemiBold"
+                                   TextColor="#fafafa"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+                    <Frame CornerRadius="12"
+                           Padding="7"
+                           BackgroundColor="#1DA1F2"
+                           xct:TouchEffect.Command="{Binding ViewTwitter}"
+                           xct:TouchEffect.CommandParameter="gamhub_io">
+                        <StackLayout Orientation="Horizontal">
+                            <!-- Github icon -->
+                            <Label Text="&#xf099;"
                            FontSize="20"
                            FontFamily="FaBrand"
                            TextColor="#fafafa"
                            VerticalOptions="Center" />
-                    <Label Text="View on Github"
+                            <Label Text="Follow on Twitter"
                            FontSize="12"
                            FontFamily="P-SemiBold"
                            TextColor="#fafafa"
                            VerticalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+
                 </StackLayout>
-            </Frame>
 
             <!-- Description --> 
             <Label Text="Project description"
@@ -129,7 +149,7 @@
                    Style="{StaticResource TitleStyle}" />
             <BoxView Grid.Row="3"
                      Style="{StaticResource SeparatorStyle}"/>
-            <Label Text="The purpose of AresGaming is to keep gamers 
+            <Label Text="The purpose of GamHub is to keep gamers 
 up-to-date on everything game-related, for free, 
 with no ads or any other type of annoyance. &#10; &#10;
 
@@ -154,8 +174,7 @@ its community's skills, knowledges and opinions.  "
                    Style="{StaticResource TitleStyle}" />
             <BoxView Grid.Row="9"
                      Style="{StaticResource SeparatorStyle}"/>
-            <Label Text="Email: Contact@bricefriha.dev 
-                         Website: https://github.com/bricefriha/AresGaming"
+            <Label Text="Email: Contact@gamhub.io"
                    Grid.Row="10"
                    Style="{StaticResource ParagraphStyle}"/>
 
@@ -223,7 +242,9 @@ its community's skills, knowledges and opinions.  "
                                    FontSize="14"
                                    FontFamily="P-Bold"
                                    VerticalOptions="Center"
-                                   TextColor="{StaticResource FontColor}"/>
+                                   TextColor="{StaticResource FontColor}"
+                                   xct:TouchEffect.Command="{Binding ViewTwitter}"
+                                   xct:TouchEffect.CommandParameter="bricefriha"/>
                         </StackLayout>
                     </Grid>
                     
