@@ -19,6 +19,9 @@
     <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
     <None Remove="Resources\FontAwesome5Brands-Regular-400.otf" />
     <None Remove="Resources\FontAwesome5Free-Solid-900.otf" />
+    <None Remove="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
+    <None Remove="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
+    <None Remove="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
     <None Remove="Resources\Fonts\public-sans-SemiBold.otf" />
     <None Remove="Resources\Fonts\public-sans.bold.otf" />
     <None Remove="Resources\Fonts\public-sans.extrabold.otf" />
@@ -39,6 +42,9 @@
     <EmbeddedResource Include="Resources\Fonts\FontAwesome5Brands-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome5Free-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome5Free-Solid-900.otf" />
+    <EmbeddedResource Include="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
+    <EmbeddedResource Include="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
+    <EmbeddedResource Include="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
     <EmbeddedResource Include="Resources\Fonts\public-sans.bold.otf" />
     <EmbeddedResource Include="Resources\Fonts\public-sans.extrabold.otf" />
     <EmbeddedResource Include="Resources\Fonts\public-sans.regular.otf" />
@@ -56,17 +62,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Custard" Version="0.1.6" />
+    <PackageReference Include="Custard" Version="0.2.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
-    <PackageReference Include="Xam.Plugin.HtmlLabel" Version="5.0.0" />
-    <PackageReference Include="Xamarin.CommunityToolkit" Version="1.3.0-pre1" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="6.0.0" />
+    <PackageReference Include="Xam.Plugin.HtmlLabel" Version="5.1.0" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.4" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.11.982" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2515" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
     <PackageReference Include="Xamarin.Forms.PancakeView" Version="2.3.0.759" />
   </ItemGroup>
 

@@ -9,71 +9,40 @@
              xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:viewmodels="clr-namespace:AresNews.ViewModels"
              x:DataType="viewmodels:ArticleViewModel"
-             Shell.TabBarIsVisible="False">
-    
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             Shell.TabBarIsVisible="False"
+             >
     <Shell.TitleView>
-        <OnPlatform x:TypeArguments="View">
-            <OnPlatform.iOS>
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" />
-                        <ColumnDefinition Width="50" />
-                    </Grid.ColumnDefinitions>
-                    <Label Text="{Binding SelectedArticle.Source.Name}"
-                           VerticalOptions="Center"
-                           FontSize="20"
-                           HorizontalOptions="Center"
-                           Margin="40,0,0,0"
-                           TextColor="{StaticResource FontColor}"
-                           FontFamily="P-Bold"
-                           Grid.Column="0"/>
+        <ContentView Margin="0,0,0,0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="{Binding SelectedArticle.Source.Name}"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       FontSize="20"
+                       TextColor="{StaticResource FontColor}"
+                       FontFamily="P-Bold"
+                       Grid.Column="0"/>
 
 
-                    <!-- Browser button -->
-                    <Button Text="&#xf142;" 
-                            FontFamily="FaSolid"
-                            TextColor="{StaticResource Primary}"
-                            BackgroundColor="Transparent"
-                            Grid.Column="1"
-                            FontSize="25"
-                            Padding="0"
-                            HorizontalOptions="End"
-                            Margin="40,0,0,0"
-                            Command="{Binding Browse}"
-                            />
-                </Grid>
-            </OnPlatform.iOS>
-            <OnPlatform.Android>
-                <Grid >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Label Text="{Binding SelectedArticle.Source.Name}"
-                           VerticalOptions="Center"
-                           FontSize="20"
-                           HorizontalOptions="Center"
-                           Margin="20,0,0,0"
-                           TextColor="{StaticResource FontColor}"
-                           FontFamily="P-Bold"
-                           Grid.Column="0"/>
+                <!-- Browser button -->
+                <Button Text="&#xf141;" 
+                        FontFamily="FaSolid"
+                        TextColor="{StaticResource Primary}"
+                        BackgroundColor="Transparent"
+                        Grid.Column="1"
+                        FontSize="30"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        Margin="0"
+                        Command="{Binding Browse}"
+                        />
+            </Grid>
 
-
-                    <!-- Browser button -->
-                    <Button Text="&#xf141;" 
-                            FontFamily="FaSolid"
-                            TextColor="{StaticResource Primary}"
-                            BackgroundColor="Transparent"
-                            Grid.Column="1"
-                            FontSize="30"
-                            Padding="0"
-                            HorizontalOptions="Start"
-                            Margin="0"
-                            Command="{Binding Browse}"
-                            />
-                </Grid>
-            </OnPlatform.Android>
-        </OnPlatform>
+        </ContentView>
 
     </Shell.TitleView>
     <ContentPage.Resources>
@@ -85,7 +54,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="200"/>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="100"/>
                 </Grid.RowDefinitions>
@@ -131,10 +100,17 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="auto"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    
                     <!-- Publish date time -->
-                    <StackLayout Grid.Column="0"
-                                 Margin="0,0,15,0">
-                        <Grid>
+                    <!--<StackLayout >-->
+                        <Grid Grid.Column="0"
+                              Grid.ColumnSpan="2"
+                              Grid.Row="0"
+                              Margin="0,0,15,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="auto"/>
                                 <ColumnDefinition Width="auto"/>
@@ -176,15 +152,19 @@
                                IsVisible="{Binding SelectedArticle.Author, Converter={StaticResource EmptyToBoolConverter}}"
                                FontFamily="P-SemiBold"
                                FontSize="13"
+                               Grid.Row="1"
                                TextColor="{StaticResource FontColor}"/>
-                    </StackLayout>
+                    <!--</StackLayout>-->
                     <!-- Buttons -->
                     <!-- Share and save-->
                     <Grid Grid.Column="1" 
+                          Grid.Row="1"
                           ColumnSpacing="5"
+                          Margin="0,0,-20,0"
                           HorizontalOptions="End"
                           VerticalOptions="Center">
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
@@ -205,6 +185,23 @@
                                               Grid.Column="1"
                                               CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"
                                               ControlTemplate="{StaticResource BookmarkButton}" />
+                        <!-- Text to speech button-->
+                        <Frame Grid.Column="2"
+                               Style="{StaticResource ButtonFrame}"
+                               Padding="0"
+                               xct:TouchEffect.NativeAnimation="True"
+                               xct:TouchEffect.Command="{Binding PlayTextToSpeech}"
+                               BackgroundColor="{Binding TtsColour}"
+                               >
+
+                            <Label TextColor="{StaticResource Primary}"
+                                    Text="{Binding TtsIcon}"
+                                   FontFamily="FaSolid"
+                                   HorizontalOptions="CenterAndExpand"
+                                   VerticalOptions="CenterAndExpand"
+                                    Margin="0"
+                                        />
+                        </Frame>
                         
                     </Grid>
                 </Grid>

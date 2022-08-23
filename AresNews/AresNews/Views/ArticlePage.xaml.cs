@@ -1,12 +1,6 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -27,7 +21,11 @@ namespace AresNews.Views
         {
             // Stop the timer
             _vm.TimeSpent.Stop();
-            
+
+            // Stop all text to speech
+            _vm.StopTtS();
+
+
             //const int timeToWait = 4;
             //_vm.SelectedArticle.Content = null;
 
