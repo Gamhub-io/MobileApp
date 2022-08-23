@@ -42,6 +42,7 @@ The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.
 Platform | Test | Production |
 --- | ----- | ------|
 | **Android**| [![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)|[![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)
+| **iOS**| [![Build status](https://build.appcenter.ms/v0.1/apps/ccbb4d7f-7e53-41ca-8da6-be665b7eeeb4/branches/develop/badge)](https://appcenter.ms)|[![Build status](https://build.appcenter.ms/v0.1/apps/ccbb4d7f-7e53-41ca-8da6-be665b7eeeb4/branches/master/badge)](https://appcenter.ms)|
 
 ## Contributions
 As the app is open-source, the app evolve using
