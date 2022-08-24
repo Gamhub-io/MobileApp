@@ -23,9 +23,12 @@
                    Padding="0"
                    xct:TouchEffect.NativeAnimation="True"
                    xct:TouchEffect.ShouldMakeChildrenInputTransparent="False"
-                   xct:TouchEffect.Command="{Binding TapCommand}"
-                   xct:TouchEffect.CommandParameter="{Binding TapCommandParameter}"
                    >
+
+                <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding TapCommand}" 
+                                                      CommandParameter="{Binding TapCommandParameter}" />
+                </Frame.GestureRecognizers>
                 <Grid >
 
                     <!-- Backgournd -->
