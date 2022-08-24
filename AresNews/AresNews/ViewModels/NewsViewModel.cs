@@ -313,7 +313,8 @@ namespace AresNews.ViewModels
 
             try
             {
-                _lastCallDateTime = _articles?.FirstOrDefault().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm");//Preferences.Get("lastRefresh", null);
+                if (_articles?.Count() > 0)
+                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm");//Preferences.Get("lastRefresh", null);
 
                 // If we want to fetch the articles via search
                 if (_searchText != null && IsSearching == true )
@@ -327,33 +328,27 @@ namespace AresNews.ViewModels
                     Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
                     IsRefreshing = false;
                     _isLaunching = false;
-                    //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
+                    await RefreshDB();
                     return ;
                 }
                if (_articles?.Count() > 0)
                {
                    
                        articles = await App.WService.Get<ObservableCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime });
-                   
 
-               }
+                    
+
+                }
                else
                {
                    if (_isLaunching)
                     {
-                        Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
                         try
                         {
+                            Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+
                             // Manage backuo
-
-                            await Task.Factory.StartNew(async () =>
-                            {
-                                await Task.Run(() => {
-
-                                    App.BackUpConn.DeleteAll<Article>();
-                                    App.BackUpConn.InsertAllWithChildren(_articles);
-                                });
-                            });
+                            await RefreshDB();
 
                         }
                         catch
@@ -429,21 +424,12 @@ namespace AresNews.ViewModels
                 }
             });
                 try
-                {
-                    // Manage backuo
+            {
+                // Manage backuo
+                await RefreshDB();
 
-                    await Task.Factory.StartNew(async () =>
-                    {
-                        await Task.Run(() =>
-                        {
-
-                            App.BackUpConn.DeleteAll<Article>();
-                            App.BackUpConn.InsertAllWithChildren(_articles);
-                        });
-                    });
-
-                }
-                catch
+            }
+            catch
                 {
                 }
                 //finally
@@ -460,6 +446,20 @@ namespace AresNews.ViewModels
 
 
         }
+
+        private async Task RefreshDB()
+        {
+            await Task.Factory.StartNew(async () =>
+            {
+                await Task.Run(() =>
+                {
+
+                    App.BackUpConn.DeleteAll<Article>();
+                    App.BackUpConn.InsertAllWithChildren(_articles);
+                });
+            });
+        }
+
         /// <summary>
         /// Load articles via search
         /// </summary>
