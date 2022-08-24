@@ -20,7 +20,7 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>15.0</string>
+	<string>15.4</string>
 	<key>CFBundleDisplayName</key>
 	<string>GamHub</string>
 	<key>CFBundleIdentifier</key>
@@ -40,7 +40,7 @@
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
-		<true/>
+		<false/>
 	</dict>
 </dict>
 </plist>
