@@ -20,6 +20,7 @@ namespace AresNews.ViewModels
 
         private bool _isLaunching = true;
         private string _prevSearch;
+        private string _lastCallDateTime;
 
         private int _wifiRestartCount = 0;
         private bool _isInCustomFeed;
@@ -301,7 +302,7 @@ namespace AresNews.ViewModels
                 _isLaunching = false;
                 Articles = articles;
                 // Register date of the refresh
-                Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
+                //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                 IsRefreshing = false;
                 IsSearchOpen = false;
                 return;
@@ -312,7 +313,7 @@ namespace AresNews.ViewModels
 
             try
             {
-                var lastCall = Preferences.Get("lastRefresh", null);
+                _lastCallDateTime = _articles?.FirstOrDefault().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm");//Preferences.Get("lastRefresh", null);
 
                 // If we want to fetch the articles via search
                 if (_searchText != null && IsSearching == true )
@@ -320,22 +321,20 @@ namespace AresNews.ViewModels
                     SearchArticles(articles.ToList());
                     return;
                 }
-                if (lastCall == null)
+                if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
                     
                     Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
                     IsRefreshing = false;
                     _isLaunching = false;
-                    Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
+                    //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                     return ;
                 }
                if (_articles?.Count() > 0)
                {
                    
-                   if (lastCall != null)
-                       articles = await App.WService.Get<ObservableCollection<Article>>("feeds", "update", parameters: new string[] { lastCall });
-                   else
-                       articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                       articles = await App.WService.Get<ObservableCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime });
+                   
 
                }
                else
@@ -363,8 +362,6 @@ namespace AresNews.ViewModels
 
                         _isLaunching = false;
                         IsRefreshing = false;
-                        // Register date of the refresh
-                        Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                         return;
                     }
                    articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
@@ -395,15 +392,6 @@ namespace AresNews.ViewModels
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
             }
-            //// Reload if the list is empty of if the current list is too old
-            //if (!_articles.Any() ||  DateTime.Now - _articles[0].FullPublishDate > TimeSpan.FromDays(29))
-            //{
-            //    IsRefreshing = false;
-            //    Articles = new ObservableCollection<Article>(articles.OrderBy(a => a.Time));
-            //    return;
-            //}
-            // Count the number of new elements
-            //int nbNewItems = articles.Count() - _articles.Count();
 
             // To avoid crashs: if this number is out of range we end the process
             if (articles == null || articles.Count() <= 0)
@@ -411,9 +399,6 @@ namespace AresNews.ViewModels
                 IsRefreshing = false;
                 return;
             }
-
-            // Get all the new items
-            //var newItems = articles.Except(_articles.Where(a => articles.Any(na => na.Equals(a)))).ToList();//articles.Take(nbNewItems).ToList();
 
             await Task.Factory.StartNew(() =>
             {
@@ -443,34 +428,32 @@ namespace AresNews.ViewModels
 
                 }
             });
+                try
+                {
+                    // Manage backuo
 
-            //if (_isLaunching && articles.Count > 0)
-            //{
-            //    try
-            //    {
-            //        // Manage backuo
+                    await Task.Factory.StartNew(async () =>
+                    {
+                        await Task.Run(() =>
+                        {
 
-            //        await Task.Factory.StartNew(async () =>
-            //        {
-            //            await Task.Run(() => {
+                            App.BackUpConn.DeleteAll<Article>();
+                            App.BackUpConn.InsertAllWithChildren(_articles);
+                        });
+                    });
 
-            //                App.BackUpConn.DeleteAll<Article>();
-            //                App.BackUpConn.InsertAllWithChildren(_articles, recursive: true);
-            //            });
-            //        });
+                }
+                catch
+                {
+                }
+                //finally
+                //{
+                //    _isLaunching = false;
+                //}
 
-            //    }
-            //    catch
-            //    {
-            //    }
-            //    //finally
-            //    //{
-            //    //    _isLaunching = false;
-            //    //}
-
-            //}
             _isLaunching = false;
             IsRefreshing = false;
+
 
             // Register date of the refresh
             Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
