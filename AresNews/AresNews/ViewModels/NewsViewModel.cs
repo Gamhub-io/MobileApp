@@ -314,8 +314,8 @@ namespace AresNews.ViewModels
             try
             {
                 if (_articles?.Count() > 0)
-                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm");//Preferences.Get("lastRefresh", null);
-
+                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");//Preferences.Get("lastRefresh", null);
+                ;
                 // If we want to fetch the articles via search
                 if (_searchText != null && IsSearching == true )
                 {
