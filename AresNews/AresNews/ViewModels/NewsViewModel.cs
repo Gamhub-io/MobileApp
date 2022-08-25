@@ -100,8 +100,8 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
-                    if (_searchText == _prevSearch)
-                        return;
+                    //if (_searchText == _prevSearch)
+                        //return;
                     IsRefreshing = true;
                 });
             }
@@ -250,8 +250,12 @@ namespace AresNews.ViewModels
 
             _refreshFeed = new Command( () =>
                {
+                   if (IsSearchOpen)
+                   {
+                       Search.Execute(null);
+                   }
                    // Fetch the article
-                   FetchArticles(IsSearchOpen);
+                   FetchArticles();
                });
 
             // Set command to share an article
@@ -305,6 +309,7 @@ namespace AresNews.ViewModels
                 //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                 IsRefreshing = false;
                 IsSearchOpen = false;
+                _prevSearch = string.Empty;
                 return;
                 //});
             }
@@ -314,10 +319,10 @@ namespace AresNews.ViewModels
             try
             {
                 if (_articles?.Count() > 0)
-                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");//Preferences.Get("lastRefresh", null);
+                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
                 ;
                 // If we want to fetch the articles via search
-                if (_searchText != null && IsSearching == true )
+                if (!string.IsNullOrEmpty(_searchText) && IsSearching == true )
                 {
                     SearchArticles(articles.ToList());
                     return;
@@ -398,30 +403,7 @@ namespace AresNews.ViewModels
             await Task.Factory.StartNew(() =>
             {
                 // Update list of articles
-                for (int i = 0; i < articles.Count(); i++)
-                {
-                    var current = articles[i];
-                    Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
-                    if (existingArticle == null)
-                    {
-
-                        Article item = articles.FirstOrDefault(a => a.Id == current.Id);
-
-                        var index = articles.IndexOf(item);
-
-                        // Add article one by one for a better visual effect
-                        Articles.Insert(index == -1 ? 0 + i : index, current);
-                    }
-                    else
-                    {
-                        int index = _articles.IndexOf(existingArticle);
-                        // replace the exisiting one with the new one
-                        Articles.Remove(existingArticle);
-                        Articles.Insert(index, current);
-                    }
-
-
-                }
+                UpdateArticles(articles);
             });
                 try
             {
@@ -447,6 +429,34 @@ namespace AresNews.ViewModels
 
         }
 
+        private void UpdateArticles(ObservableCollection<Article> articles)
+        {
+            for (int i = 0; i < articles.Count(); i++)
+            {
+                var current = articles[i];
+                Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+                if (existingArticle == null)
+                {
+
+                    Article item = articles.FirstOrDefault(a => a.Id == current.Id);
+
+                    var index = articles.IndexOf(item);
+
+                    // Add article one by one for a better visual effect
+                    Articles.Insert(index == -1 ? 0 + i : index, current);
+                }
+                else
+                {
+                    int index = _articles.IndexOf(existingArticle);
+                    // replace the exisiting one with the new one
+                    Articles.Remove(existingArticle);
+                    Articles.Insert(index, current);
+                }
+
+
+            }
+        }
+
         private async Task RefreshDB()
         {
             await Task.Factory.StartNew(async () =>
@@ -470,7 +480,7 @@ namespace AresNews.ViewModels
             {
                 
                 articles = await App.WService.Get<List<Article>>("feeds", jsonBody: $"{{\"search\": \"{_searchText}\"}}");
-                _searchText = _prevSearch;
+                
             }
             // Offline search
             else
@@ -489,6 +499,7 @@ namespace AresNews.ViewModels
             IsRefreshing = false;
             _isInCustomFeed = true;
             IsSearchOpen = true;
+            _prevSearch = _searchText;
 
         }
         private static IEnumerable<Article> GetBackupFromDb()
