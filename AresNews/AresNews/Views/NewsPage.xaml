@@ -83,7 +83,7 @@
                         <controls:BorderlessEntry Grid.Column="1"
                                BackgroundColor="Transparent"
                                FontFamily="B-SemiBold"
-                               Text="{Binding SearchText}"
+                               Text="{Binding SearchText, Mode=TwoWay}"
                                PlaceholderColor="{StaticResource FontColor}"
                                TextColor="{StaticResource FontColor}"
                                x:Name="entrySearch"

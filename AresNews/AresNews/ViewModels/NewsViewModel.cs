@@ -100,8 +100,8 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
-                    if (_searchText == _prevSearch)
-                        return;
+                    //if (_searchText == _prevSearch)
+                        //return;
                     IsRefreshing = true;
                 });
             }
@@ -250,8 +250,12 @@ namespace AresNews.ViewModels
 
             _refreshFeed = new Command( () =>
                {
+                   if (IsSearchOpen)
+                   {
+                       Search.Execute(null);
+                   }
                    // Fetch the article
-                   FetchArticles(IsSearchOpen);
+                   FetchArticles();
                });
 
             // Set command to share an article
@@ -291,13 +295,13 @@ namespace AresNews.ViewModels
         public async void FetchArticles(bool isFullRefresh = false)
         {
 
-            var articles = new ObservableCollection<Article>();
+            var articles = new ObservableRangeCollection<Article>();
             if (isFullRefresh)
             {
                 //await Task.Run(async () =>
                 //{
 
-                articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
                 
                 _isLaunching = false;
                 Articles = articles;
@@ -305,6 +309,7 @@ namespace AresNews.ViewModels
                 //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                 IsRefreshing = false;
                 IsSearchOpen = false;
+                _prevSearch = string.Empty;
                 return;
                 //});
             }
@@ -314,12 +319,12 @@ namespace AresNews.ViewModels
             try
             {
                 if (_articles?.Count() > 0)
-                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");//Preferences.Get("lastRefresh", null);
+                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
                 ;
                 // If we want to fetch the articles via search
-                if (_searchText != null && IsSearching == true )
+                if (!string.IsNullOrEmpty(_searchText) && IsSearching == true )
                 {
-                    SearchArticles(articles.ToList());
+                    SearchArticles(articles);
                     return;
                 }
                 if (string.IsNullOrEmpty(_lastCallDateTime))
@@ -334,7 +339,7 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = await App.WService.Get<ObservableCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime });
+                       articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime });
 
                     
 
@@ -359,7 +364,7 @@ namespace AresNews.ViewModels
                         IsRefreshing = false;
                         return;
                     }
-                   articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                   articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
 
                }
             }
@@ -398,30 +403,7 @@ namespace AresNews.ViewModels
             await Task.Factory.StartNew(() =>
             {
                 // Update list of articles
-                for (int i = 0; i < articles.Count(); i++)
-                {
-                    var current = articles[i];
-                    Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
-                    if (existingArticle == null)
-                    {
-
-                        Article item = articles.FirstOrDefault(a => a.Id == current.Id);
-
-                        var index = articles.IndexOf(item);
-
-                        // Add article one by one for a better visual effect
-                        Articles.Insert(index == -1 ? 0 + i : index, current);
-                    }
-                    else
-                    {
-                        int index = _articles.IndexOf(existingArticle);
-                        // replace the exisiting one with the new one
-                        Articles.Remove(existingArticle);
-                        Articles.Insert(index, current);
-                    }
-
-
-                }
+                UpdateArticles(articles);
             });
                 try
             {
@@ -442,9 +424,40 @@ namespace AresNews.ViewModels
 
 
             // Register date of the refresh
-            Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
+            //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
 
 
+        }
+        /// <summary>
+        /// Update the curent article feed by adding new elements
+        /// </summary>
+        /// <param name="articles">new articles</param>
+        private void UpdateArticles(ObservableCollection<Article> articles)
+        {
+            for (int i = 0; i < articles.Count(); i++)
+            {
+                var current = articles[i];
+                Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+                if (existingArticle == null)
+                {
+
+                    Article item = articles.FirstOrDefault(a => a.Id == current.Id);
+
+                    var index = articles.IndexOf(item);
+
+                    // Add article one by one for a better visual effect
+                    Articles.Insert(index == -1 ? 0 + i : index, current);
+                }
+                else
+                {
+                    int index = _articles.IndexOf(existingArticle);
+                    // replace the exisiting one with the new one
+                    Articles.Remove(existingArticle);
+                    Articles.Insert(index, current);
+                }
+
+
+            }
         }
 
         private async Task RefreshDB()
@@ -464,13 +477,16 @@ namespace AresNews.ViewModels
         /// Load articles via search
         /// </summary>
         /// <param name="articles"></param>
-        private async void SearchArticles(List<Article> articles)
+        private async void SearchArticles(ObservableRangeCollection<Article> articles)
         {
+            bool isUpdate = _prevSearch == _searchText;
+
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
+
+                string v = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{_searchText}\"}}");
                 
-                articles = await App.WService.Get<List<Article>>("feeds", jsonBody: $"{{\"search\": \"{_searchText}\"}}");
-                _searchText = _prevSearch;
             }
             // Offline search
             else
@@ -483,12 +499,23 @@ namespace AresNews.ViewModels
                 }
                 //articles.AddRange = _articles.Where((e) => e.Title.Contains(_searchText.Split()) || e.Content.Contains())
             }
-            // Update list of articles
-            Articles = new ObservableCollection<Article>(articles);
+
+            if (isUpdate)
+            {
+                if (articles.Count > 0)
+                    UpdateArticles(articles);
+            }
+            else
+            {
+                // Update list of articles
+                Articles = new ObservableRangeCollection<Article>(articles);
+
+            }
 
             IsRefreshing = false;
             _isInCustomFeed = true;
             IsSearchOpen = true;
+            _prevSearch = _searchText;
 
         }
         private static IEnumerable<Article> GetBackupFromDb()
