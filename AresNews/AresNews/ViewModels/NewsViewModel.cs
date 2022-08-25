@@ -295,13 +295,13 @@ namespace AresNews.ViewModels
         public async void FetchArticles(bool isFullRefresh = false)
         {
 
-            var articles = new ObservableCollection<Article>();
+            var articles = new ObservableRangeCollection<Article>();
             if (isFullRefresh)
             {
                 //await Task.Run(async () =>
                 //{
 
-                articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
                 
                 _isLaunching = false;
                 Articles = articles;
@@ -324,7 +324,7 @@ namespace AresNews.ViewModels
                 // If we want to fetch the articles via search
                 if (!string.IsNullOrEmpty(_searchText) && IsSearching == true )
                 {
-                    SearchArticles(articles.ToList());
+                    SearchArticles(articles);
                     return;
                 }
                 if (string.IsNullOrEmpty(_lastCallDateTime))
@@ -339,7 +339,7 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = await App.WService.Get<ObservableCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime });
+                       articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime });
 
                     
 
@@ -364,7 +364,7 @@ namespace AresNews.ViewModels
                         IsRefreshing = false;
                         return;
                     }
-                   articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                   articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
 
                }
             }
@@ -424,11 +424,14 @@ namespace AresNews.ViewModels
 
 
             // Register date of the refresh
-            Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
+            //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
 
 
         }
-
+        /// <summary>
+        /// Update the curent article feed by adding new elements
+        /// </summary>
+        /// <param name="articles">new articles</param>
         private void UpdateArticles(ObservableCollection<Article> articles)
         {
             for (int i = 0; i < articles.Count(); i++)
@@ -474,12 +477,15 @@ namespace AresNews.ViewModels
         /// Load articles via search
         /// </summary>
         /// <param name="articles"></param>
-        private async void SearchArticles(List<Article> articles)
+        private async void SearchArticles(ObservableRangeCollection<Article> articles)
         {
+            bool isUpdate = _prevSearch == _searchText;
+
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
-                
-                articles = await App.WService.Get<List<Article>>("feeds", jsonBody: $"{{\"search\": \"{_searchText}\"}}");
+
+                string v = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{_searchText}\"}}");
                 
             }
             // Offline search
@@ -493,8 +499,18 @@ namespace AresNews.ViewModels
                 }
                 //articles.AddRange = _articles.Where((e) => e.Title.Contains(_searchText.Split()) || e.Content.Contains())
             }
-            // Update list of articles
-            Articles = new ObservableCollection<Article>(articles);
+
+            if (isUpdate)
+            {
+                if (articles.Count > 0)
+                    UpdateArticles(articles);
+            }
+            else
+            {
+                // Update list of articles
+                Articles = new ObservableRangeCollection<Article>(articles);
+
+            }
 
             IsRefreshing = false;
             _isInCustomFeed = true;
