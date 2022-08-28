@@ -36,5 +36,13 @@ namespace AresNews.ViewModels
                 }));
             }
         }
+
+        public Command MailTo
+        {
+            get
+            {
+                return new Command<string>(async (address) => await Email.ComposeAsync(subject: "", body: "",to: new string[] { address }));
+            }
+        }
     }
 }
