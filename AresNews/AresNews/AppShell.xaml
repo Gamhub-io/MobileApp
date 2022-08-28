@@ -12,8 +12,7 @@
        Shell.ForegroundColor="{StaticResource Primary}"
        FlyoutWidth="270"
        xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
-       
-       >
+       xmlns:viewmodels="clr-namespace:AresNews.ViewModels">
     <!-- Template for the shell content-->
     <Shell.ItemTemplate>
         <DataTemplate>
@@ -94,7 +93,7 @@
             </Grid>
         </DataTemplate>
     </Shell.MenuItemTemplate>
-    <Shell.FlyoutHeader >
+    <Shell.FlyoutHeader  x:DataType="viewmodels:AppShellViewModel">
         <Grid BackgroundColor="{StaticResource Alternate}"
               HeightRequest="80">
             <Image Source="GamHubLogo.png"/>
@@ -137,7 +136,7 @@
 
 
 
-    <Shell.FlyoutFooter>
+    <Shell.FlyoutFooter  x:DataType="viewmodels:AppShellViewModel">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="35"/>
