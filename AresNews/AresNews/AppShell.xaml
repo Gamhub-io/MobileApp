@@ -11,6 +11,7 @@
        FlyoutBackgroundColor="{StaticResource LightDark}"
        Shell.ForegroundColor="{StaticResource Primary}"
        FlyoutWidth="270"
+       xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
        
        >
     <!-- Template for the shell content-->
@@ -133,4 +134,81 @@
                 Icon="&#xf05a;">
         <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
     </FlyoutItem>
+
+
+
+    <Shell.FlyoutFooter>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <!-- Support -->
+            <Grid Grid.Row="1" 
+                  xct:TouchEffect.NativeAnimation="True"
+                  VerticalOptions="End" >
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding MailTo}"
+                                          CommandParameter="support@gamhub.io"/>
+                </Grid.GestureRecognizers>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <!-- Button to log out -->
+                <Label Text="&#xf590;"
+                       FontFamily="FaSolid"
+                       Margin="10,0,0,0"
+                       VerticalOptions="Center"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       FontSize="23"
+                       TextColor="{StaticResource Primary}"
+                       Grid.Column="0"/>
+
+                <!-- label -->
+                <Label Text="Contact support"
+                       FontFamily="P-Regular"
+                       FontSize="18" 
+                       VerticalOptions="Center"
+                       VerticalTextAlignment="Center"
+                       TextColor="{StaticResource FontColor}"
+                       Grid.Column="1" 
+                   />
+            </Grid>
+
+            <!-- Logout -->
+            <!--<Grid Grid.Row="2" 
+              xct:TouchEffect.NativeAnimation="True"
+              VerticalOptions="End" >
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding LogOut}"/>
+                </Grid.GestureRecognizers>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="35"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+                -->
+            <!-- Button to log out -->
+            <!--
+                <Label 
+                    Text="&#xf2f5;"
+                    Style="{StaticResource Logo}"/>
+
+                -->
+            <!-- label -->
+            <!--
+                <Label Text="Log out"
+                   FontFamily="{StaticResource Bold}"
+                   Style="{StaticResource TextMode}"
+                   />
+            </Grid>-->
+        </Grid>
+
+    </Shell.FlyoutFooter>
 </Shell>
