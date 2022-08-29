@@ -34,16 +34,16 @@
                     <!-- Backgournd -->
                     <Grid BackgroundColor="{StaticResource Dark}">
                         <!-- Image -->
-                        <!--<ffimageloading:CachedImage Source="{Binding Thumnail}"
+                        <ffimageloading:CachedImage Source="{Binding Thumnail}"
                                                     Opacity="0.60"
                                                     CacheDuration="5"
                                                     RetryCount="3"
                                                     RetryDelay="600"
                                                     DownsampleToViewSize="true"
-                                                    Aspect="AspectFill" />-->
-                        <Image Source="{Binding Thumnail, Mode=OneWay}"
+                                                    Aspect="AspectFill" />
+                        <!--<Image Source="{Binding Thumnail, Mode=OneWay}"
                                Opacity="0.60"
-                               Aspect="AspectFill" />
+                               Aspect="AspectFill" />-->
                         <!-- filter -->
                         <Frame Opacity="0.15">
                             <Frame.Background>
