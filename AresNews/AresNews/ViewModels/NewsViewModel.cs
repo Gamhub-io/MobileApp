@@ -405,7 +405,7 @@ namespace AresNews.ViewModels
                 // Update list of articles
                 UpdateArticles(articles);
             });
-                try
+            try
             {
                 // Manage backuo
                 await RefreshDB();
@@ -434,7 +434,7 @@ namespace AresNews.ViewModels
         /// <param name="articles">new articles</param>
         private void UpdateArticles(ObservableCollection<Article> articles)
         {
-            for (int i = 0; i < articles.Count(); i++)
+            for (int i = 0; i < articles.Count(); ++i)
             {
                 var current = articles[i];
                 Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
