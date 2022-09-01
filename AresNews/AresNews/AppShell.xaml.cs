@@ -1,4 +1,5 @@
-﻿using AresNews.Views;
+﻿using AresNews.ViewModels;
+using AresNews.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace AresNews
         public AppShell()
         {
             InitializeComponent();
+            BindingContext = new AppShellViewModel();
         }
     }
 }
