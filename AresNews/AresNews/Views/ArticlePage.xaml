@@ -50,10 +50,11 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <ScrollView>
+
+            <ScrollView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
+            </ScrollView.GestureRecognizers>
             <Grid>
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
-                </Grid.GestureRecognizers>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="200"/>
                     <RowDefinition Height="auto"/>
