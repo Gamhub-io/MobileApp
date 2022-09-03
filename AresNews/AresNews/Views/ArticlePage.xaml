@@ -222,7 +222,6 @@
                 <Button Text="Read more"
                         BackgroundColor="{StaticResource LightDark}"
                         TextColor="{StaticResource Primary}"
-                        IsVisible="{OnPlatform Android=true, iOS=false}"
                         FontFamily="P-Bold"
                         FontSize="12"
                         Command="{Binding Browse}"
@@ -230,6 +229,7 @@
                         VerticalOptions="Center"
                         CornerRadius="12"
                         Grid.Row="4"/>
+                 <!-- Add IsVisible="{OnPlatform Android=true, iOS=false}" in case the app store is bothering us -->
             </Grid>
         </ScrollView>
 
