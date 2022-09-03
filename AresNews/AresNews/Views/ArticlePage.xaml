@@ -258,6 +258,7 @@
                 <Button Text="Read more"
                         BackgroundColor="{StaticResource LightDark}"
                         TextColor="{StaticResource Primary}"
+                        IsVisible="{OnPlatform Android=true, iOS=false}"
                         FontFamily="P-Bold"
                         FontSize="12"
                         Command="{Binding Browse}"
