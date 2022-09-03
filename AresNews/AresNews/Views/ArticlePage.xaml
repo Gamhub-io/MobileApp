@@ -232,10 +232,19 @@
                         Grid.Row="4"/>
             </Grid>
         </ScrollView>
+
+            <BoxView BackgroundColor="Transparent"
+                     HorizontalOptions="Fill"
+                     VerticalOptions="Fill"
+                     IsVisible="{Binding IsMenuOpen}">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
             <Frame HorizontalOptions="End"
                    x:Name="dropdownMenu"
                    VerticalOptions="Start"
-                   BackgroundColor="{StaticResource DarkSecondary}"
+                   BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
                    Padding="0"
                    CornerRadius="0"
@@ -269,14 +278,6 @@
                     </Grid>
                 </StackLayout>
             </Frame>
-            <BoxView BackgroundColor="Transparent"
-                     HorizontalOptions="Fill"
-                     VerticalOptions="Fill"
-                     IsVisible="{Binding IsMenuOpen}">
-                <BoxView.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
-                </BoxView.GestureRecognizers>
-            </BoxView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
