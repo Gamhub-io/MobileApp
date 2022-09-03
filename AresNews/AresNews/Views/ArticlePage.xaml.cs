@@ -56,6 +56,8 @@ namespace AresNews.Views
             uint rate = 24;
             dropdownMenu.Animate("AnimDropdownMenu", callback, dropdownMenu.Height, height, rate, 100, Easing.SinOut);
             dropdownMenu.Padding = 3;
+
+            _vm.IsMenuOpen = true;
         }
         /// <summary>
         /// Function to close a modal
@@ -69,6 +71,8 @@ namespace AresNews.Views
             uint rate = 24;
             dropdownMenu.Animate("AnimDropdownMenu", callback, dropdownMenu.Height, _modalHeightStart, rate, 500, Easing.SinOut);
             dropdownMenu.Padding = 0;
+
+            _vm.IsMenuOpen= false;
         }
 
         private void Menu_Clicked(object sender, EventArgs e)
