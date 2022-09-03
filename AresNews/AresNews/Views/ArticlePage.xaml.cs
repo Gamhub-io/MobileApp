@@ -10,6 +10,9 @@ namespace AresNews.Views
     public partial class ArticlePage : ContentPage
     {
         private ArticleViewModel _vm;
+        private uint _modalHeightStart = 0;
+
+
         public ArticlePage(Article article)
         {
             InitializeComponent();
@@ -40,10 +43,53 @@ namespace AresNews.Views
 
 
         }
-
-        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        /// <summary>
+        /// Function to open a the dropdrown
+        /// </summary>
+        public void OpenDropdownMenu()
         {
+            double height = 70;
+            //_vm.ModalClose = false;
+            // Animation
+            void callback(double input) => dropdownMenu.HeightRequest = input;
 
+            uint rate = 24;
+            dropdownMenu.Animate("AnimDropdownMenu", callback, dropdownMenu.Height, height, rate, 100, Easing.SinOut);
+            dropdownMenu.Padding = 3;
+        }
+        /// <summary>
+        /// Function to close a modal
+        /// </summary>
+        public void CloseDropdownMenu()
+        {
+            //_vm.ModalClose = true;
+
+            // Animation
+            void callback(double input) => dropdownMenu.HeightRequest = input;
+            uint rate = 24;
+            dropdownMenu.Animate("AnimDropdownMenu", callback, dropdownMenu.Height, _modalHeightStart, rate, 500, Easing.SinOut);
+            dropdownMenu.Padding = 0;
+        }
+
+        private void Menu_Clicked(object sender, EventArgs e)
+        {
+            // If dropdown is closed
+            if (dropdownMenu.Padding == 0)
+            {
+                OpenDropdownMenu();
+                return;
+            }
+
+            CloseDropdownMenu();
+        }
+
+        private void MenuItem_Tapped(object sender, EventArgs e)
+        {
+            // If dropdown is open
+            if (dropdownMenu.Padding != 0)
+            {
+                CloseDropdownMenu();
+            }
         }
     }
 }
