@@ -24,6 +24,18 @@ namespace AresNews.ViewModels
                 OnPropertyChanged();
             }
         }
+        private bool _isMenuOpen;
+
+        public bool IsMenuOpen
+        {
+            get { return _isMenuOpen; }
+            set 
+            {
+                _isMenuOpen = value;
+                OnPropertyChanged(nameof(IsMenuOpen));
+            }
+        }
+
         /// <summary>
         /// Time spend reading the article
         /// </summary>
