@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="666668" android:versionName="1.2.2 Atlas" package="com.bricefriha.aresgaming" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="666668" android:versionName="1.2.3 Atlas" package="com.bricefriha.aresgaming" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="24" android:targetSdkVersion="31" />
 	<application android:label="GamHub" android:theme="@style/MainTheme" android:usesCleartextTraffic="true"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
