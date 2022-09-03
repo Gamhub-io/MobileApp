@@ -11,6 +11,7 @@ namespace AresNews.Views
     {
         private ArticleViewModel _vm;
         private uint _modalHeightStart = 0;
+        private uint _modalWidthStart = 50;
 
 
         public ArticlePage(Article article)
@@ -49,12 +50,15 @@ namespace AresNews.Views
         public void OpenDropdownMenu()
         {
             double height = 70;
+            double width = 180;
             //_vm.ModalClose = false;
             // Animation
-            void callback(double input) => dropdownMenu.HeightRequest = input;
+            void callbackH(double inputH) => dropdownMenu.HeightRequest = inputH;
+            void callbackW(double inputW) => dropdownMenu.WidthRequest = inputW;
 
             uint rate = 24;
-            dropdownMenu.Animate("AnimDropdownMenu", callback, dropdownMenu.Height, height, rate, 100, Easing.SinOut);
+            dropdownMenu.Animate("AnimHeightDropdownMenu", callbackH, dropdownMenu.Height, height, rate, 100, Easing.SinOut);
+            dropdownMenu.Animate("AnimWidthDropdownMenu", callbackW, dropdownMenu.Width, width, rate, 100, Easing.SinOut);
             dropdownMenu.Padding = 3;
 
             _vm.IsMenuOpen = true;
@@ -67,9 +71,13 @@ namespace AresNews.Views
             //_vm.ModalClose = true;
 
             // Animation
-            void callback(double input) => dropdownMenu.HeightRequest = input;
+            void callbackH(double inputH) => dropdownMenu.HeightRequest = inputH;
+            void callbackW(double inputW) => dropdownMenu.WidthRequest = inputW;
             uint rate = 24;
-            dropdownMenu.Animate("AnimDropdownMenu", callback, dropdownMenu.Height, _modalHeightStart, rate, 500, Easing.SinOut);
+
+            dropdownMenu.Animate("AnimWidthDropdownMenu", callbackW, dropdownMenu.Width, _modalWidthStart, rate, 500, Easing.SinOut);
+            dropdownMenu.Animate("AnimHeightDropdownMenu", callbackH, dropdownMenu.Height, _modalHeightStart, rate, 500, Easing.SinOut);
+
             dropdownMenu.Padding = 0;
 
             _vm.IsMenuOpen= false;
