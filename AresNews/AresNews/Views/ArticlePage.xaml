@@ -233,15 +233,16 @@
             </Grid>
         </ScrollView>
             <Frame HorizontalOptions="End"
-                       x:Name="dropdownMenu"
-                       VerticalOptions="Start"
-                       BackgroundColor="{StaticResource Dark}"
-                       HeightRequest="0"
-                       Padding="0"
-                       WidthRequest="180">
-                <StackLayout>
+                   x:Name="dropdownMenu"
+                   VerticalOptions="Start"
+                   BackgroundColor="{StaticResource DarkSecondary}"
+                   HeightRequest="0"
+                   Padding="0"
+                   CornerRadius="0"
+                   WidthRequest="50">
+                <StackLayout IsVisible="{Binding IsMenuOpen}">
                     <Grid xct:TouchEffect.NativeAnimation="True"
-                              xct:TouchEffect.Command="{Binding Browse}">
+                          xct:TouchEffect.Command="{Binding Browse}">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
