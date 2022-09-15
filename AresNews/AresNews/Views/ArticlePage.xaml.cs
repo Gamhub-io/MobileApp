@@ -1,6 +1,7 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
 using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -102,6 +103,29 @@ namespace AresNews.Views
             {
                 CloseDropdownMenu();
             }
+        }
+
+        private async void SwipeBackgroundDown_Swiped(object sender, SwipedEventArgs e)
+        {
+            // If dropdown is open
+            if (dropdownMenu.Padding != 0)
+            {
+                CloseDropdownMenu();
+            }
+
+            // If dropdown is open
+            await scrollview.ScrollToAsync(scrollview.ScrollX, scrollview.ScrollY - 5, true);
+        }
+
+        private async void SwipeBackgroundUp_Swiped(object sender, SwipedEventArgs e)
+        {
+            // If dropdown is open
+            if (dropdownMenu.Padding != 0)
+            {
+                CloseDropdownMenu();
+            }
+            // If dropdown is open
+            await scrollview.ScrollToAsync(scrollview.ScrollX, scrollview.ScrollY + 5, true);
         }
     }
 }
