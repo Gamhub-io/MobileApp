@@ -50,7 +50,7 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid>
-        <ScrollView>
+        <ScrollView x:Name="scrollview">
             <Grid>
 
                 
@@ -239,6 +239,8 @@
                      IsVisible="{Binding IsMenuOpen}">
                 <BoxView.GestureRecognizers>
                     <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
+                    <SwipeGestureRecognizer Direction="Up" Swiped="SwipeBackgroundUp_Swiped"/>
+                    <SwipeGestureRecognizer Direction="Down" Swiped="SwipeBackgroundDown_Swiped"/>
                 </BoxView.GestureRecognizers>
             </BoxView>
             <Frame HorizontalOptions="End"
