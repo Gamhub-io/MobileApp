@@ -65,6 +65,7 @@ namespace AresNews
 
             SqLiteConn.CreateTable<Source>();
             SqLiteConn.CreateTable<Article>();
+            SqLiteConn.CreateTable<Feed>();
             BackUpConn.CreateTable<Source>();
             BackUpConn.CreateTable<Article>();
 
@@ -107,7 +108,7 @@ namespace AresNews
             // Sqlite connection
             SqLiteConn = new SQLiteConnection(path);
             BackUpConn = new SQLiteConnection(pathBackUp);
-
+             
         }
 
         protected override void OnStart()

@@ -52,20 +52,35 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(IsSearchOpen));
             }
         }
+        private Collection<Feed> Feeds {  get; set; }
         private string _searchText;
 
         public string SearchText
         {
-            get 
-            { 
-                return _searchText; 
+            get
+            {
+                return _searchText;
             }
-            set 
-            { 
-                _searchText = value; 
+            set
+            {
+                _searchText = value;
+
+                IsCurrentSearchSaved = Feeds.Any<Feed>(feed => feed.Keywords == value);
                 OnPropertyChanged(nameof(SearchText));
             }
         }
+        private Feed _currentFeed;
+
+        public Feed CurrentFeed
+        {
+            get { return _currentFeed;; }
+            set 
+            {
+                _currentFeed = value;
+                OnPropertyChanged(nameof(CurrentFeed));
+            }
+        }
+
 
         public Command OpenSearch
         {
@@ -75,6 +90,53 @@ namespace AresNews.ViewModels
                 {
                     IsSearching = true;
                     
+                });
+            }
+        }
+
+        private bool _isCurrentSearchSaved;
+
+        public bool IsCurrentSearchSaved
+        {
+            get { return _isCurrentSearchSaved; }
+            set 
+            { 
+                _isCurrentSearchSaved = value;
+                OnPropertyChanged(nameof(IsCurrentSearchSaved));
+            }
+        }
+
+        public Command SaveSearch
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    IsCurrentSearchSaved = !_isCurrentSearchSaved;
+                    //new Feed
+                    //{
+                    //    Id= Guid.NewGuid().ToString(),
+                    //    Title = SearchText,
+                    //    Keywords = SearchText,
+                    //    IsSaved = true,
+                    //};
+                    if (_isCurrentSearchSaved)
+                    {
+                        CurrentFeed.Id = Guid.NewGuid().ToString();
+                        CurrentFeed.Title = SearchText;
+                        CurrentFeed.Keywords = SearchText;
+                        CurrentFeed.IsSaved = true;
+                        App.SqLiteConn.InsertWithChildren(_currentFeed);
+                        Feeds.Add(_currentFeed);
+                        return;
+
+                    }
+
+                    App.SqLiteConn.Delete(_currentFeed);
+                    Feeds.Remove(_currentFeed);
+
+
+
                 });
             }
         }
@@ -170,10 +232,13 @@ namespace AresNews.ViewModels
         }
         public NewsViewModel(NewsPage currentPage)
         {
+
             CurrentPage = currentPage;
+            Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
-
+            CurrentFeed = new Feed();
             _isLaunching = true;
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
@@ -298,8 +363,6 @@ namespace AresNews.ViewModels
             var articles = new ObservableRangeCollection<Article>();
             if (isFullRefresh)
             {
-                //await Task.Run(async () =>
-                //{
 
                 articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
                 
@@ -311,7 +374,6 @@ namespace AresNews.ViewModels
                 IsSearchOpen = false;
                 _prevSearch = string.Empty;
                 return;
-                //});
             }
 
 
@@ -322,7 +384,7 @@ namespace AresNews.ViewModels
                     _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
                 ;
                 // If we want to fetch the articles via search
-                if (!string.IsNullOrEmpty(_searchText) && IsSearching == true )
+                if (!string.IsNullOrEmpty(SearchText) && IsSearching == true )
                 {
                     SearchArticles(articles);
                     return;
@@ -479,25 +541,25 @@ namespace AresNews.ViewModels
         /// <param name="articles"></param>
         private async void SearchArticles(ObservableRangeCollection<Article> articles)
         {
-            bool isUpdate = _prevSearch == _searchText;
+            bool isUpdate = _prevSearch == SearchText;
 
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
 
                 string v = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{_searchText}\"}}");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
                 
             }
             // Offline search
             else
             {
-                var words = _searchText.Split(' ');
+                var words = SearchText.Split(' ');
                 for (int i = 0; i < words.Count(); i++)
                 {
                     var word = words[i];
                     articles.AddRange(_articles.Where((e) => e.Title.Contains(word)));
                 }
-                //articles.AddRange = _articles.Where((e) => e.Title.Contains(_searchText.Split()) || e.Content.Contains())
+                
             }
 
             if (isUpdate)
@@ -515,7 +577,7 @@ namespace AresNews.ViewModels
             IsRefreshing = false;
             _isInCustomFeed = true;
             IsSearchOpen = true;
-            _prevSearch = _searchText;
+            _prevSearch = SearchText;
 
         }
         private static IEnumerable<Article> GetBackupFromDb()
