@@ -11,8 +11,7 @@
                    BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
                 
                    xct:TouchEffect.NativeAnimation="True"
-                    xct:TouchEffect.ShouldMakeChildrenInputTransparent="False"
-                >
+                    xct:TouchEffect.ShouldMakeChildrenInputTransparent="False">
 
                 <Button Text="&#xf02e;"
                         Style="{StaticResource ButtonStyle}"
