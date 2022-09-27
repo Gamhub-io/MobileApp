@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AresNews.Views.FeedsPage"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:model="clr-namespace:AresNews.Models" 
+             xmlns:viewmodels="clr-namespace:AresNews.ViewModels" 
+             x:DataType="viewmodels:FeedsViewModel">
+    <Shell.TitleView>
+        <ContentView Margin="0,0,0,0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="My Feeds"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       FontSize="20"
+                       TextColor="{StaticResource FontColor}"
+                       FontFamily="P-Bold"
+                       Grid.Column="0"/>
+
+
+                <!-- Browser button -->
+                <Button Text="&#xf141;" 
+                        FontFamily="FaSolid"
+                        TextColor="{StaticResource Primary}"
+                        BackgroundColor="{StaticResource LightDark}"
+                        Grid.Column="1"
+                        FontSize="30"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        Margin="0"
+                        />
+            </Grid>
+
+        </ContentView>
+
+    </Shell.TitleView>
+    <ContentPage.Content>
+        <xct:TabView TabStripPlacement="Top"
+                     TabStripBackgroundColor="{StaticResource DarkSecondary}"
+                     TabStripHeight="45"
+                     VerticalOptions="Fill"
+                     HorizontalOptions="Fill"
+                     TabItemsSource="{Binding Feeds}"
+                     TabIndicatorColor="{StaticResource Primary}">
+            <xct:TabView.Background>
+                <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="1,1">
+                    <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                    <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                    <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+                    <GradientStop Color="Black"
+                           Offset="1.0"/>
+                </LinearGradientBrush>
+            </xct:TabView.Background>
+
+            <xct:TabView.TabViewItemDataTemplate>
+                <DataTemplate x:DataType="model:Feed">
+                    <Grid>
+                        <Label  HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    FontFamily="P-Bold"
+                                     FontSize="12"
+                                    TextColor="{StaticResource FontColor}"
+                                    Text="{Binding Title}" />
+                    </Grid>
+
+                </DataTemplate>
+            </xct:TabView.TabViewItemDataTemplate>
+            <xct:TabView.TabContentDataTemplate>
+                <DataTemplate x:DataType="model:Feed">
+                    <Grid>
+                        <Label  HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                TextColor="{StaticResource FontColor}"
+                                Text="{Binding Keywords}" />
+                    </Grid>
+                </DataTemplate>
+            </xct:TabView.TabContentDataTemplate>
+        </xct:TabView>
+    </ContentPage.Content>
+</ContentPage>
