@@ -2,6 +2,7 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 
 namespace AresNews.Models
@@ -13,7 +14,7 @@ namespace AresNews.Models
         public string Title { get; set; }
         public string Keywords { get; set; }
         public bool IsSaved { get; set; }
-
-
+        [Ignore]
+        public ObservableCollection<Article> Articles { get; set; }
     }
 }
