@@ -392,7 +392,7 @@ namespace AresNews.ViewModels
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
                     
-                    Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                    Articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
                     IsRefreshing = false;
                     _isLaunching = false;
                     await RefreshDB();

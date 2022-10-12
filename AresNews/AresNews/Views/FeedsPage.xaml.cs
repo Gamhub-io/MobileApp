@@ -23,7 +23,7 @@ namespace AresNews.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            _vm.Refresh();
+            _vm.Refresh(_vm.Feeds[0]);
         }
     }
 }

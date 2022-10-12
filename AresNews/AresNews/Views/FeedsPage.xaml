@@ -4,8 +4,9 @@
              x:Class="AresNews.Views.FeedsPage"
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
              xmlns:model="clr-namespace:AresNews.Models" 
-             xmlns:viewmodels="clr-namespace:AresNews.ViewModels" 
-             x:DataType="viewmodels:FeedsViewModel">
+             xmlns:vm="clr-namespace:AresNews.ViewModels" 
+             xmlns:controls="clr-namespace:AresNews.Controls"
+             x:DataType="vm:FeedsViewModel">
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
             <Grid>
@@ -62,25 +63,87 @@
 
             <xct:TabView.TabViewItemDataTemplate>
                 <DataTemplate x:DataType="model:Feed">
-                    <Grid>
+                    <Grid xct:TouchEffect.Command="{Binding RefreshAll, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
+                          xct:TouchEffect.CommandParameter="{Binding .}">
                         <Label  HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    FontFamily="P-Bold"
-                                     FontSize="12"
-                                    TextColor="{StaticResource FontColor}"
-                                    Text="{Binding Title}" />
+                                VerticalOptions="Center"
+                                FontFamily="P-Bold"
+                                FontSize="12"
+                                TextColor="{StaticResource FontColor}"
+                                Text="{Binding Title}" />
                     </Grid>
 
                 </DataTemplate>
             </xct:TabView.TabViewItemDataTemplate>
             <xct:TabView.TabContentDataTemplate>
-                <DataTemplate x:DataType="model:Feed">
-                    <Grid>
-                        <Label  HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                TextColor="{StaticResource FontColor}"
-                                Text="{Binding Keywords}" />
-                    </Grid>
+                <DataTemplate >
+                    <RefreshView 
+                     Command="{Binding RefreshArticles, Mode=OneWay}"
+                        CommandParameter="{Binding .}"
+                        IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
+                     x:Name="newsRefreshView"
+                     HorizontalOptions="CenterAndExpand"
+                     RefreshColor="{StaticResource Primary}"
+                     >
+                        <!--<RefreshView.Padding>
+                <OnPlatform x:TypeArguments="Thickness">
+                    <On Platform="iOS" Value="0,30,0,0"/>
+                </OnPlatform>
+            </RefreshView.Padding>-->
+                        <RefreshView.BackgroundColor>
+                            <OnPlatform x:TypeArguments="Color">
+                                <On Platform="Android" Value="{StaticResource LightDark}"/>
+                            </OnPlatform>
+                        </RefreshView.BackgroundColor>
+                        <CollectionView ItemsSource="{Binding Articles, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                                        x:DataType="model:Feed"
+                                        VerticalScrollBarVisibility="Never"
+                                        x:Name="newsCollectionView"
+                                        ItemsUpdatingScrollMode="KeepScrollOffset"
+                                        HorizontalOptions="Center"
+                                        Margin="8,0">
+                            <CollectionView.Header>
+                                <BoxView  Margin="0">
+                                    <BoxView.HeightRequest>
+                                        <OnPlatform x:TypeArguments="x:Double">
+                                            <On Platform="Android" Value="0"/>
+                                            <On Platform="iOS" Value="75"/>
+                                        </OnPlatform>
+                                    </BoxView.HeightRequest>
+                                </BoxView>
+                            </CollectionView.Header>
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="model:Article">
+                                    <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
+                                                 ArticleId="{Binding Id}"
+                                                 ArticleIsSaved="{Binding IsSaved}"
+                                                 ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
+                                                 ArticleSource="{Binding Source, Mode=OneWay}"
+                                                 Thumnail="{Binding Image}"
+                                                 ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=ShareArticle, Mode=OneWay}"
+                                                 ShareCommandParameter="{Binding Url}"
+                                                 BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=AddBookmark, Mode=OneWay}"
+                                                 ControlTemplate="{StaticResource ArticleTemplate}" 
+                                                 TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=GoToDetail}"
+                                                 TapCommandParameter="{Binding Id}"
+                                                 >
+                                        <!--
+                            TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
+                                                 TapCommandParameter="{Binding Id}"
+                            -->
+                                        <!--<controls:ArticlePreview.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}" 
+                                                      CommandParameter="{Binding Id}" />
+                            </controls:ArticlePreview.GestureRecognizers>-->
+
+                                    </controls:ArticlePreview>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                    </RefreshView>
                 </DataTemplate>
             </xct:TabView.TabContentDataTemplate>
         </xct:TabView>
