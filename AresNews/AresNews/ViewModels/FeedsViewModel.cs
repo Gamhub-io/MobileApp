@@ -1,13 +1,18 @@
 ﻿using AresNews.Models;
+using AresNews.Views;
 using MvvmHelpers;
+using MvvmHelpers.Commands;
 using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
+using Xamarin.Forms;
+using Command = Xamarin.Forms.Command;
 
 namespace AresNews.ViewModels
 {
@@ -25,18 +30,137 @@ namespace AresNews.ViewModels
 			}
 		}
 
-		public FeedsViewModel()
+        private bool _isRefreshing; 
+
+
+        public bool IsRefreshing 
 		{
-			Refresh();
+			get { return _isRefreshing; }
+			set 
+			{
+                _isRefreshing = value; 
+				OnPropertyChanged(nameof(IsRefreshing));
+			}
+		}
+		private ObservableCollection<Article> _articles;
+
+		public ObservableCollection<Article> Articles
+		{
+			get { return _articles; }
+			set 
+			{
+                _articles = value; 
+				OnPropertyChanged(nameof(Articles));
+			}
+		}
+        private Feed _currentFeed;
+
+        public Feed CurrentFeed
+        {
+            get { return _currentFeed; }
+            set 
+            {
+                _currentFeed = value;
+                OnPropertyChanged(nameof(CurrentFeed));
+            }
         }
-		public void Refresh()
+
+        private Xamarin.Forms.Command<Feed> _refreshAll ;
+        public Xamarin.Forms.Command<Feed> RefreshAll => _refreshAll;
+
+        private Xamarin.Forms.Command<Feed> _refreshArticles;
+        public Xamarin.Forms.Command<Feed> RefreshArticles => _refreshArticles;
+		public FeedsViewModel()
 		{
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
-            foreach (var feed in _feeds)
+            _refreshAll = new Xamarin.Forms.Command<Feed>((feed) =>
             {
-                Task.Run(() => AgregateFeed(feed, false));
+                IsRefreshing = true;
+                CurrentFeed = feed;
+                //this.Refresh(feed);
+            });
+
+            _refreshArticles = new Xamarin.Forms.Command<Feed>((feed) =>
+            {
+                
+                this.Refresh(feed);
+            });
+
+
+            // Set command to share an article
+            _shareArticle = new Command(async (id) =>
+            {
+                // Get selected article
+                var article = CurrentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString());
+
+                await Share.RequestAsync(new ShareTextRequest
+                {
+                    Uri = article.Url,
+                    Title = "Share this article",
+                    Subject = article.Title,
+                    Text = article.Title
+                });
+            });
+            _addBookmark = new Command((id) =>
+            {
+                var article = new Article();
+                // Get the article
+                article = CurrentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString());
+
+
+
+                // If the article is already in bookmarks
+                bool isSaved = article.IsSaved;
+
+                //// Marked the article as saved
+                article.IsSaved = !article.IsSaved;
+
+                if (isSaved)
+                    App.SqLiteConn.Delete(article, recursive: true);
+                else
+                {
+                    // Insert it in database
+                    App.SqLiteConn.InsertWithChildren(article, recursive: true);
+                }
+
+
+
+                //Articles[_articles.IndexOf(article)] = article;
+
+                // Say the the bookmark has been updated
+                MessagingCenter.Send<Article>(article, "SwitchBookmark");
+
+
+            });
+        }
+        private readonly Command _shareArticle;
+
+        public Command ShareArticle
+        {
+            get { return _shareArticle; }
+        }
+        // Command to add a Bookmark
+        private readonly Command _addBookmark;
+
+        public Command AddBookmark
+        {
+            get
+            {
+                return _addBookmark;
             }
+        }
+        public void Refresh(Feed feed)
+		{
+            bool isFirstLoad = feed != _currentFeed;
+            if (isFirstLoad)
+                CurrentFeed = feed;
+
+            AgregateFeed(feed, isFirstLoad);
+            //foreach (var feed in _feeds)
+            //{
+            //    Task.Run(() => AgregateFeed(feed, false));
+            //}
         }
         /// <summary>
         /// Load articles via search
@@ -51,10 +175,14 @@ namespace AresNews.ViewModels
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
 
-                string v = feed.Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                articles = await App.WService.Get<List<Article>>("feeds", firstLoad ? "update" : null, parameters: firstLoad ? new string[] { v } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
+                string v = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+                var f = await App.WService.Get("feeds", feed.IsLoaded ? "update" : null, parameters: feed.IsLoaded ? new string[] { v } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
                 {
 
+                });
+                articles = await App.WService.Get<List<Article>>("feeds", feed.IsLoaded ? "update" : null, parameters: feed.IsLoaded ? new string[] { v } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
+                {
+                    throw err;
                 });
 
             }
@@ -70,30 +198,48 @@ namespace AresNews.ViewModels
 
             }
 
-            if (firstLoad)
+            if (feed.IsLoaded)
             {
                 if (articles.Count > 0)
-                    UpdateArticles(articles, feed);
+                    UpdateArticles(articles, feed, indexFeed);
             }
             else
             {
                 // Update list of articles
-                feed.Articles = new ObservableCollection<Article>(articles);
+                Articles = new ObservableCollection<Article>(articles);
 
             }
-            Feeds[indexFeed] = feed;
-            
-            //IsRefreshing = false;
+            CurrentFeed.IsLoaded = true;
+            //Feeds[indexFeed] = feed;
+
+            IsRefreshing = false;
             //_isInCustomFeed = true;
             //IsSearchOpen = true;
             //_prevSearch = SearchText;
 
         }
+
+        // See detail of the art;[p;l;;l.icle
+        public Command GoToDetail
+        {
+            get
+            {
+                return new Command(async (id) =>
+                {
+                    var articlePage = new ArticlePage(_currentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString()));
+
+
+                    await App.Current.MainPage.Navigation.PushAsync(articlePage);
+                }); ;
+            }
+        }
+
+
         /// <summary>
         /// Update the curent article feed by adding new elements
         /// </summary>
         /// <param name="articles">new articles</param>
-        private void UpdateArticles(List<Article> articles, Feed feed)
+        private void UpdateArticles(List<Article> articles, Feed feed, int indexFeed)
         {
             for (int i = 0; i < articles.Count(); ++i)
             {
@@ -107,14 +253,14 @@ namespace AresNews.ViewModels
                     var index = articles.IndexOf(item);
 
                     // Add article one by one for a better visual effect
-                    feed.Articles.Insert(index == -1 ? 0 + i : index, current);
+                    Articles.Insert(index == -1 ? 0 + i : index, current);
                 }
                 else
                 {
-                    int index = feed.Articles.IndexOf(existingArticle);
+                    int index = Feeds[indexFeed].Articles.IndexOf(existingArticle);
                     // replace the exisiting one with the new one
-                    feed.Articles.Remove(existingArticle);
-                    feed.Articles.Insert(index, current);
+                    Articles.Remove(existingArticle);
+                    Articles.Insert(index, current);
                 }
 
 

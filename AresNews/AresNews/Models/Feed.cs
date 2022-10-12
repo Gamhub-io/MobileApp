@@ -15,6 +15,8 @@ namespace AresNews.Models
         public string Keywords { get; set; }
         public bool IsSaved { get; set; }
         [Ignore]
+        public bool IsLoaded { get; set; }
+        [Ignore]
         public ObservableCollection<Article> Articles { get; set; }
     }
 }
