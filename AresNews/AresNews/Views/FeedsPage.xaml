@@ -44,6 +44,7 @@
                      TabStripBackgroundColor="{StaticResource DarkSecondary}"
                      TabStripHeight="45"
                      VerticalOptions="Fill"
+                     IsSwipeEnabled="False"
                      HorizontalOptions="Fill"
                      TabItemsSource="{Binding Feeds}"
                      TabIndicatorColor="{StaticResource Primary}">
@@ -77,15 +78,12 @@
             </xct:TabView.TabViewItemDataTemplate>
             <xct:TabView.TabContentDataTemplate>
                 <DataTemplate >
-                    <RefreshView 
-                        CommandParameter="{Binding .}"
-                        x:DataType="vm:FeedsViewModel"
-                        IsRefreshing="{Binding IsRefreshing}"
-                     x:Name="newsRefreshView"
-                        Refreshing="newsRefreshView_Refreshing"
+                    <RefreshView IsRefreshing="{Binding IsRefreshing, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"
+                     Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                     
+                                 x:Name="newsRefreshView"
                      HorizontalOptions="CenterAndExpand"
-                     RefreshColor="{StaticResource Primary}"
-                     >
+                     RefreshColor="{StaticResource Primary}">
                         <!--<RefreshView.Padding>
                 <OnPlatform x:TypeArguments="Thickness">
                     <On Platform="iOS" Value="0,30,0,0"/>

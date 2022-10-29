@@ -66,28 +66,42 @@ namespace AresNews.ViewModels
         }
 
         private Xamarin.Forms.Command<Feed> _refreshAll ;
-        public Xamarin.Forms.Command<Feed> RefreshAll => _refreshAll;
+        public Xamarin.Forms.Command<Feed> RefreshAll => new Xamarin.Forms.Command<Feed>((feed) =>
+        {
+            IsRefreshing = true;
+            Task.Run(() =>
+            {
+                this.Refresh(feed);
+            });
+            //CurrentFeed = feed;
 
-        private Xamarin.Forms.Command<Feed> _refreshArticles;
-        public Xamarin.Forms.Command<Feed> RefreshArticles =>  _refreshArticles;
+        });
+
+        public Xamarin.Forms.Command<Feed> SwitchFeed => new Xamarin.Forms.Command<Feed>((feed) =>
+        {
+            // Set new feed
+            CurrentFeed = feed;
+            CurrentFeed.IsLoaded = false;
+
+            // Load articles
+            RefreshArticles.Execute(null);
+
+        });
+
+        public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(() =>
+        {
+            IsRefreshing = true;
+            Task.Run(() =>
+            {
+                this.Refresh(_currentFeed);
+                // End the loading indicator
+                IsRefreshing = false;
+            });
+        });
 		public FeedsViewModel()
 		{
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
-            _refreshAll = new Xamarin.Forms.Command<Feed>((feed) =>
-            {
-                this.Refresh(feed);
-                //CurrentFeed = feed;
-
-                IsRefreshing = true;
-
-            });
-
-            _refreshArticles = new Xamarin.Forms.Command<Feed>((feed) =>
-            {
-                
-                this.Refresh(feed);
-            });
 
 
             // Set command to share an article
@@ -152,26 +166,28 @@ namespace AresNews.ViewModels
                 return _addBookmark;
             }
         }
-        public void Refresh(Feed feed)
+        public async void Refresh(Feed feed)
 		{
-            bool isFirstLoad = feed != _currentFeed;
-            if (isFirstLoad) 
-            {
+            if (_isRefreshing)
+                return;
 
-                CurrentFeed = feed;
-                CurrentFeed.IsLoaded = false;
-            }
+                bool isFirstLoad = feed != _currentFeed;
+                if (isFirstLoad)
+                {
+
+                    CurrentFeed = feed;
+                    CurrentFeed.IsLoaded = false;
+                }
 
 
-            Task.Factory.StartNew(() =>
-            {
+                await Task.Run(() =>
+                {
 
-                AgregateFeed(feed, isFirstLoad);
-            });
-            //foreach (var feed in _feeds)
-            //{
-            //    Task.Run(() => AgregateFeed(feed, false));
-            //}
+                    AgregateFeed(feed, isFirstLoad);
+
+                    // End the loading indicator
+                    IsRefreshing = false;
+                });
         }
         /// <summary>
         /// Load articles via search
@@ -187,10 +203,7 @@ namespace AresNews.ViewModels
             {
 
                 string v = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                var f = await App.WService.Get("feeds", feed.IsLoaded ? "update" : null, parameters: feed.IsLoaded ? new string[] { v } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
-                {
-
-                });
+                
                 articles = await App.WService.Get<List<Article>>("feeds", feed.IsLoaded ? "update" : null, parameters: feed.IsLoaded ? new string[] { v } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
                 {
                     throw err;
