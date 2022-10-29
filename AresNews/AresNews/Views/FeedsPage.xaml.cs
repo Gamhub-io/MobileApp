@@ -23,12 +23,11 @@ namespace AresNews.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            _vm.Refresh(_vm.Feeds[0]);
-        }
+            Task.Run(() =>
+            {
+                _vm.Refresh(_vm.Feeds[0]);
 
-        private void newsRefreshView_Refreshing(object sender, EventArgs e)
-        {
-
+            });
         }
     }
 }
