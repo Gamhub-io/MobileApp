@@ -69,16 +69,18 @@ namespace AresNews.ViewModels
         public Xamarin.Forms.Command<Feed> RefreshAll => _refreshAll;
 
         private Xamarin.Forms.Command<Feed> _refreshArticles;
-        public Xamarin.Forms.Command<Feed> RefreshArticles => _refreshArticles;
+        public Xamarin.Forms.Command<Feed> RefreshArticles =>  _refreshArticles;
 		public FeedsViewModel()
 		{
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
             _refreshAll = new Xamarin.Forms.Command<Feed>((feed) =>
             {
+                this.Refresh(feed);
+                //CurrentFeed = feed;
+
                 IsRefreshing = true;
-                CurrentFeed = feed;
-                //this.Refresh(feed);
+
             });
 
             _refreshArticles = new Xamarin.Forms.Command<Feed>((feed) =>
@@ -153,10 +155,19 @@ namespace AresNews.ViewModels
         public void Refresh(Feed feed)
 		{
             bool isFirstLoad = feed != _currentFeed;
-            if (isFirstLoad)
-                CurrentFeed = feed;
+            if (isFirstLoad) 
+            {
 
-            AgregateFeed(feed, isFirstLoad);
+                CurrentFeed = feed;
+                CurrentFeed.IsLoaded = false;
+            }
+
+
+            Task.Factory.StartNew(() =>
+            {
+
+                AgregateFeed(feed, isFirstLoad);
+            });
             //foreach (var feed in _feeds)
             //{
             //    Task.Run(() => AgregateFeed(feed, false));

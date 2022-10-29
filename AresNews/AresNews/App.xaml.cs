@@ -2,6 +2,7 @@
 using AresNews.ViewModels;
 using AresNews.Views;
 using CustardApi.Objects;
+using FFImageLoading;
 using Newtonsoft.Json;
 using SQLite;
 using System;
@@ -57,7 +58,6 @@ namespace AresNews
             Sources = new Collection<Source>();
 
             InitializeComponent();
-
 
 
             // Start the db
