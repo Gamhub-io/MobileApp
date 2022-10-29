@@ -25,5 +25,10 @@ namespace AresNews.Views
             base.OnAppearing();
             _vm.Refresh(_vm.Feeds[0]);
         }
+
+        private void newsRefreshView_Refreshing(object sender, EventArgs e)
+        {
+
+        }
     }
 }

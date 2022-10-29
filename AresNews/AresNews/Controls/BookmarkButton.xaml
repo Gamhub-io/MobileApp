@@ -9,7 +9,6 @@
             <Frame 
                    Style="{StaticResource ButtonFrame}"
                    BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
-                
                    xct:TouchEffect.NativeAnimation="True"
                     xct:TouchEffect.ShouldMakeChildrenInputTransparent="False">
 

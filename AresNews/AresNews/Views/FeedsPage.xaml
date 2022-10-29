@@ -78,10 +78,11 @@
             <xct:TabView.TabContentDataTemplate>
                 <DataTemplate >
                     <RefreshView 
-                     Command="{Binding RefreshArticles, Mode=OneWay}"
                         CommandParameter="{Binding .}"
-                        IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
+                        x:DataType="vm:FeedsViewModel"
+                        IsRefreshing="{Binding IsRefreshing}"
                      x:Name="newsRefreshView"
+                        Refreshing="newsRefreshView_Refreshing"
                      HorizontalOptions="CenterAndExpand"
                      RefreshColor="{StaticResource Primary}"
                      >
