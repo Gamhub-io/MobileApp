@@ -64,7 +64,7 @@
 
             <xct:TabView.TabViewItemDataTemplate>
                 <DataTemplate x:DataType="model:Feed">
-                    <Grid xct:TouchEffect.Command="{Binding RefreshAll, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
+                    <Grid xct:TouchEffect.Command="{Binding SwitchFeed, Mode=OneWay, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
                           xct:TouchEffect.CommandParameter="{Binding .}">
                         <Label  HorizontalOptions="Center"
                                 VerticalOptions="Center"

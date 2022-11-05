@@ -79,23 +79,25 @@ namespace AresNews.ViewModels
 
         public Xamarin.Forms.Command<Feed> SwitchFeed => new Xamarin.Forms.Command<Feed>((feed) =>
         {
+            if (IsBusy)
+                return;
             // Set new feed
             CurrentFeed = feed;
             CurrentFeed.IsLoaded = false;
-
+            IsRefreshing = true;
             // Load articles
-            RefreshArticles.Execute(null);
+            //RefreshArticles.Execute(null);
 
         });
 
         public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(() =>
         {
-            IsRefreshing = true;
+            if (IsBusy)
+                return;
+            //IsRefreshing = true;
             Task.Run(() =>
             {
                 this.Refresh(_currentFeed);
-                // End the loading indicator
-                IsRefreshing = false;
             });
         });
 		public FeedsViewModel()
@@ -168,9 +170,9 @@ namespace AresNews.ViewModels
         }
         public async void Refresh(Feed feed)
 		{
-            if (_isRefreshing)
+            if (IsBusy)
                 return;
-
+            IsBusy = true;
                 bool isFirstLoad = feed != _currentFeed;
                 if (isFirstLoad)
                 {
@@ -187,6 +189,8 @@ namespace AresNews.ViewModels
 
                     // End the loading indicator
                     IsRefreshing = false;
+                    IsBusy = false;
+
                 });
         }
         /// <summary>
