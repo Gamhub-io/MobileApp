@@ -84,9 +84,9 @@ namespace AresNews.ViewModels
             // Set new feed
             CurrentFeed = feed;
             CurrentFeed.IsLoaded = false;
-            IsRefreshing = true;
+
             // Load articles
-            //RefreshArticles.Execute(null);
+            IsRefreshing = true;
 
         });
 
@@ -259,6 +259,18 @@ namespace AresNews.ViewModels
 
                     await App.Current.MainPage.Navigation.PushAsync(articlePage);
                 }); ;
+            }
+        }
+
+        private bool _isMenuOpen;
+
+        public bool IsMenuOpen
+        {
+            get { return _isMenuOpen; }
+            set
+            {
+                _isMenuOpen = value;
+                OnPropertyChanged(nameof(IsMenuOpen));
             }
         }
 
