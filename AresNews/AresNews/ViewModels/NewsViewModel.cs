@@ -1,4 +1,5 @@
-﻿using AresNews.Models;
+﻿using AresNews.Helpers.Tools;
+using AresNews.Models;
 using AresNews.Services;
 using AresNews.Views;
 using MvvmHelpers;
@@ -600,7 +601,7 @@ namespace AresNews.ViewModels
             var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
             // We try to figure out if the two feed lists contains the same items
-            if (Feeds.Except(curFeeds).Count() > 0)
+            if (FeedToolkit.CampareItems(Feeds, curFeeds))
             {
                 // Reload the feeds
                 Feeds = curFeeds;
