@@ -1,14 +1,11 @@
 ﻿using AresNews.Models;
 using AresNews.Views;
 using MvvmHelpers;
-using MvvmHelpers.Commands;
+using Rg.Plugins.Popup.Extensions;
 using SQLiteNetExtensions.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -64,8 +61,6 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(CurrentFeed));
             }
         }
-
-        private Xamarin.Forms.Command<Feed> _refreshAll ;
         public Xamarin.Forms.Command<Feed> RefreshAll => new Xamarin.Forms.Command<Feed>((feed) =>
         {
             IsRefreshing = true;
@@ -89,6 +84,13 @@ namespace AresNews.ViewModels
             IsRefreshing = true;
 
         });
+        private FeedsPage CurrentPage { get; set; }
+
+        public Xamarin.Forms.Command<Feed> Delete => new Xamarin.Forms.Command<Feed>(async (feed) =>
+        {
+            await CurrentPage.Navigation.PushPopupAsync(new DeleteFeedPopUp(_currentFeed));
+
+        });
 
         public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(() =>
         {
@@ -100,8 +102,9 @@ namespace AresNews.ViewModels
                 this.Refresh(_currentFeed);
             });
         });
-		public FeedsViewModel()
+		public FeedsViewModel(FeedsPage page)
 		{
+            CurrentPage = page;
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
 

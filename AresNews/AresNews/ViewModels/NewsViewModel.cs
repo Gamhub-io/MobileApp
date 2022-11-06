@@ -2,13 +2,13 @@
 using AresNews.Services;
 using AresNews.Views;
 using MvvmHelpers;
-using Newtonsoft.Json;
 using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -364,7 +364,7 @@ namespace AresNews.ViewModels
             if (isFullRefresh)
             {
 
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds",jsonBody: null);
                 
                 _isLaunching = false;
                 Articles = articles;
@@ -392,7 +392,7 @@ namespace AresNews.ViewModels
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
                     
-                    Articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
+                    Articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds",jsonBody: null);
                     IsRefreshing = false;
                     _isLaunching = false;
                     await RefreshDB();
@@ -401,7 +401,7 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime });
+                       articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime }, jsonBody: null);
 
                     
 
@@ -412,7 +412,7 @@ namespace AresNews.ViewModels
                     {
                         try
                         {
-                            Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+                            Articles = await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null);
 
                             // Manage backuo
                             await RefreshDB();
@@ -426,7 +426,7 @@ namespace AresNews.ViewModels
                         IsRefreshing = false;
                         return;
                     }
-                   articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds");
+                   articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null);
 
                }
             }

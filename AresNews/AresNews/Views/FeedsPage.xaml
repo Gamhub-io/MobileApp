@@ -173,7 +173,7 @@
                                  BackgroundColor="{StaticResource FontColor}"
                                  Opacity="0.1"/>
                     <Grid xct:TouchEffect.NativeAnimation="True"
-                              xct:TouchEffect.Command="{Binding ShareArticle}">
+                              xct:TouchEffect.Command="{Binding Delete}">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
