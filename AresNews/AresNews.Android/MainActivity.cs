@@ -23,6 +23,7 @@ namespace AresNews.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             HtmlLabelRenderer.Initialize();
+            Rg.Plugins.Popup.Popup.Init(this);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
             LoadApplication(new App());

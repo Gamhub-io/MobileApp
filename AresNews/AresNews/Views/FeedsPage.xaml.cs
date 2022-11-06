@@ -21,7 +21,7 @@ namespace AresNews.Views
         public FeedsPage()
         {
             InitializeComponent();
-            BindingContext = _vm = new FeedsViewModel();
+            BindingContext = _vm = new FeedsViewModel(this);
         }
         protected override void OnAppearing()
         {
