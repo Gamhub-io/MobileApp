@@ -591,6 +591,21 @@ namespace AresNews.ViewModels
             {
                 accessMethod?.Invoke();
             }
+        }/// <summary>
+         /// Processed launched when the page reappear
+         /// </summary>
+        public void Resume()
+        {
+            // Get all the feeds regestered
+            var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+
+            // We try to figure out if the two feed lists contains the same items
+            if (Feeds.Except(curFeeds).Count() > 0)
+            {
+                // Reload the feeds
+                Feeds = curFeeds;
+            }
+
         }
     }
 }

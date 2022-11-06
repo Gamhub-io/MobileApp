@@ -28,7 +28,15 @@ namespace AresNews.Views
             base.OnAppearing();
             Task.Run(() =>
             {
-                _vm.Refresh(_vm.Feeds[0]);
+                if (_vm.CurrentFeed == null)
+                {
+
+                    _vm.Refresh(_vm.Feeds[0]);
+                    return;
+
+                }
+                _vm.RefreshArticles.Execute(null);
+                _vm.Resume();
 
             });
         }/// <summary>

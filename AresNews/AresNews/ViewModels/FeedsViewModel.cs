@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Xamarin.CommunityToolkit.Effects;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Command = Xamarin.Forms.Command;
@@ -68,7 +69,6 @@ namespace AresNews.ViewModels
             {
                 this.Refresh(feed);
             });
-            //CurrentFeed = feed;
 
         });
 
@@ -88,7 +88,7 @@ namespace AresNews.ViewModels
 
         public Xamarin.Forms.Command<Feed> Delete => new Xamarin.Forms.Command<Feed>(async (feed) =>
         {
-            await CurrentPage.Navigation.PushPopupAsync(new DeleteFeedPopUp(_currentFeed));
+            await CurrentPage.Navigation.PushPopupAsync(new DeleteFeedPopUp(_currentFeed, this));
 
         });
 
@@ -308,6 +308,52 @@ namespace AresNews.ViewModels
 
 
             }
+        }
+        /// <summary>
+        /// Remove a feed from the list
+        /// </summary>
+        /// <param name="feed">feed we want to remove</param>
+        public void RemoveFeed(Feed feed)
+        {
+            int indexNext = Feeds.IndexOf(feed)+1;
+            int indexPrev = Feeds.IndexOf(feed)-1;
+            Feeds.Remove(feed);
+
+            if (_currentFeed == feed)
+            {
+                if (_feeds.Count <= 0)
+                    return;
+
+                // We try to establish the next feed
+                Feed feedInView ;
+                if (indexPrev >= 0)
+                {
+                    feedInView = _feeds[indexPrev];
+                }
+                else
+                {
+                    feedInView = _feeds[indexNext];
+                }
+
+                // Switch the the next feed
+                SwitchFeed.Execute(feedInView);
+            }
+        }
+        /// <summary>
+        /// Processed launched when the page reappear
+        /// </summary>
+        public void Resume()
+        {
+            // Get all the feeds regestered
+            var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+
+            // We try to figure out if the two feed lists contains the same items
+            if (_feeds.Except(curFeeds).Count() > 0)
+            {
+                // Reload the feeds
+                Feeds = curFeeds;
+            }
+
         }
 
     }

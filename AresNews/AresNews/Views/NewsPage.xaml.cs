@@ -42,13 +42,8 @@ namespace AresNews.Views
         {
             base.OnAppearing();
 
-            //_vm.FetchArticles();
 
-            // Is the app connected to the internet
-            //if (Connectivity.NetworkAccess != NetworkAccess.Internet)
-            //{
-            //    this.DisplayToastAsync("You're offline", 60000);
-            //}
+            _vm.Resume();
         }
         public async void DisplayOfflineMessage(string msg = null)
         {
