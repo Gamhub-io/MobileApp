@@ -47,14 +47,16 @@ namespace AresNews.ViewModels.PopUps
 
         public Xamarin.Forms.Command Delete => new Xamarin.Forms.Command(async() =>
         {
-            // Delete the feed
-            App.SqLiteConn.Delete(_feed);
-
-            // Close the popup
-            await App.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
 
             // Remove feed
             Context.RemoveFeed(_feed);
+            // Delete the feed
+            App.SqLiteConn.Delete(_feed);
+
+
+
+            // Close the popup
+            await App.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
         });
 
         public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(async() =>

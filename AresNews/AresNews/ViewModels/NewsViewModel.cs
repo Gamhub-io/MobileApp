@@ -601,7 +601,7 @@ namespace AresNews.ViewModels
             var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
             // We try to figure out if the two feed lists contains the same items
-            if (FeedToolkit.CampareItems(Feeds, curFeeds))
+            if (!FeedToolkit.CampareItems(Feeds, curFeeds))
             {
                 // Reload the feeds
                 Feeds = curFeeds;
