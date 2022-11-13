@@ -81,7 +81,7 @@
             <xct:TabView.TabContentDataTemplate>
                 <DataTemplate >
                     <RefreshView IsRefreshing="{Binding IsRefreshing, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"
-                     Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                                 Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
                      
                                  x:Name="newsRefreshView"
                      HorizontalOptions="CenterAndExpand"

@@ -21,10 +21,24 @@ namespace AresNews.Helpers.Tools
         /// <returns></returns>
         public static bool CampareItems (IEnumerable<Feed> feedList1, IEnumerable<Feed> feedList2)
         {
-            return feedList1.All(f =>
+            int feedList1Length = feedList1.Count();
+            if (feedList1Length != feedList2.Count())
+                return false;
+
+            bool equal = true;
+            for (int i = 0; i < feedList1Length && equal == true; i++)
             {
-                return feedList2.All(cf => cf.Id == f.Id);
-            });
+                Feed feed1Item = feedList1.ToList()[i];
+                Feed feed2Item = feedList2.ToList()[i];
+                equal = feed1Item.Id == feed2Item.Id;
+
+                if (equal)
+                {
+                    equal = feed1Item.Keywords == feed2Item.Keywords;
+                }
+            }
+
+            return equal;
         }
     }
 }

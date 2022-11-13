@@ -23,20 +23,28 @@ namespace AresNews.Views
             InitializeComponent();
             BindingContext = _vm = new FeedsViewModel(this);
         }
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
-            Task.Run(() =>
+            await Task.Factory.StartNew(() =>
             {
-                if (_vm.CurrentFeed == null)
+                try
                 {
+                    if (_vm.CurrentFeed == null)
+                    {
 
-                    _vm.Refresh(_vm.Feeds[0]);
-                    return;
+                        _vm.Refresh(_vm.Feeds[0]);
+                        return;
+
+                    }
+                    _vm.RefreshArticles.Execute(null);
+                    _vm.Resume();
 
                 }
-                _vm.RefreshArticles.Execute(null);
-                _vm.Resume();
+                catch
+                {
+                    _vm.Refresh(_vm.Feeds[0]);
+                }
 
             });
         }/// <summary>
