@@ -26,27 +26,28 @@ namespace AresNews.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            await Task.Factory.StartNew(() =>
+            //await Task.Factory.StartNew(() =>
+            //{
+            try
             {
-                try
+                if (_vm.CurrentFeed == null)
                 {
-                    if (_vm.CurrentFeed == null)
-                    {
 
-                        _vm.Refresh(_vm.Feeds[0]);
-                        return;
-
-                    }
-                    _vm.RefreshArticles.Execute(null);
-                    _vm.Resume();
+                    await Task.Factory.StartNew(()=> _vm.Refresh(_vm.Feeds[0]));
+                    return;
 
                 }
-                catch
-                {
-                    _vm.Refresh(_vm.Feeds[0]);
-                }
+                await Task.Factory.StartNew(() => _vm.Refresh(_vm.Feeds[0])).ContinueWith((e) => /*_vm.Refresh(_vm.Feeds[0]*/_vm.Resume()/*_vm.RefreshArticles.Execute(null)*/);
+                
+                
 
-            });
+            }
+            catch
+            {
+                await Task.Factory.StartNew(() => _vm.Refresh(_vm.Feeds[0]));
+            }
+
+            //});
         }/// <summary>
          /// Function to open a the dropdrown
          /// </summary>

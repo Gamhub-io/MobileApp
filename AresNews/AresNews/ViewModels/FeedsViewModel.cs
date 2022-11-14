@@ -228,7 +228,8 @@ namespace AresNews.ViewModels
         /// <param name="articles"></param>
         private async void AgregateFeed(Feed feed, bool firstLoad = true)
         {
-            int indexFeed = _feeds.IndexOf(feed);
+            int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
+
             List<Article> articles = new List<Article>();
             //bool isUpdate = _prevSearch == SearchText;
 
@@ -389,8 +390,8 @@ namespace AresNews.ViewModels
             // We try to figure out if the two feed lists contains the same items
             if (!FeedToolkit.CampareItems(_feeds, curFeeds))
             {
-                // Reload the feeds
-                Feeds = curFeeds;
+                // Add the last feed added
+                Feeds.Add(curFeeds.Last());
             }
 
         }
