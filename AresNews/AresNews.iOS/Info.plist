@@ -24,7 +24,7 @@
 		<string>mailto</string>
 	</array>
 	<key>MinimumOSVersion</key>
-	<string>16.1</string>
+	<string>16.0</string>
 	<key>CFBundleDisplayName</key>
 	<string>GamHub</string>
 	<key>CFBundleIdentifier</key>
