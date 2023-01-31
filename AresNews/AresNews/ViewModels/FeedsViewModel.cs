@@ -120,7 +120,7 @@ namespace AresNews.ViewModels
                 try
                 {
 
-                    this.Refresh(_currentFeed);
+                    this.Refresh(CurrentFeed);
                 }
                 catch
                 {
