@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using LabelHtml.Forms.Plugin.iOS;
+using Sharpnado.CollectionView.iOS;
 using UIKit;
 
 namespace AresNews.iOS
@@ -25,6 +26,7 @@ namespace AresNews.iOS
         {
             HtmlLabelRenderer.Initialize();
             Rg.Plugins.Popup.Popup.Init();
+            Initializer.Initialize();
             global::Xamarin.Forms.Forms.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             LoadApplication(new App());

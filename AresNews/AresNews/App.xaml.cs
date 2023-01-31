@@ -58,7 +58,7 @@ namespace AresNews
             Sources = new Collection<Source>();
 
             InitializeComponent();
-
+            Sharpnado.CollectionView.Initializer.Initialize(true, false);
 
             // Start the db
             StartDb();
