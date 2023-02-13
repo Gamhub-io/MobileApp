@@ -23,6 +23,13 @@
 	<array>
 		<string>mailto</string>
 	</array>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict/>
+	</dict>
 	<key>MinimumOSVersion</key>
 	<string>15.3</string>
 	<key>CFBundleDisplayName</key>
@@ -43,8 +50,8 @@
 	<string>LaunchScreen</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<true/>
+		
 	</dict>
+	
 </dict>
 </plist>

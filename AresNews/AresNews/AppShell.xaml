@@ -126,6 +126,16 @@
                                  Size="{OnPlatform Android='26', iOS='25'}"/>
             </ShellContent.Icon>
         </ShellContent>
+        <ShellContent FlyoutItemIsVisible="False"
+                      Route="MyFeedsPage"
+                      Title="My Feeds"
+                      ContentTemplate="{DataTemplate views:FeedsPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FaSolid" 
+                                 Glyph="&#xf005;" 
+                                 Size="{OnPlatform Android='26', iOS='25'}"/>
+            </ShellContent.Icon>
+        </ShellContent>
     </FlyoutItem>
     
     <!-- About Page -->

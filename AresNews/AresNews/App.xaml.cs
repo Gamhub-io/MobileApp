@@ -2,6 +2,7 @@
 using AresNews.ViewModels;
 using AresNews.Views;
 using CustardApi.Objects;
+using FFImageLoading;
 using Newtonsoft.Json;
 using SQLite;
 using System;
@@ -57,14 +58,14 @@ namespace AresNews
             Sources = new Collection<Source>();
 
             InitializeComponent();
-
-
+            Sharpnado.CollectionView.Initializer.Initialize(true, false);
 
             // Start the db
             StartDb();
 
             SqLiteConn.CreateTable<Source>();
             SqLiteConn.CreateTable<Article>();
+            SqLiteConn.CreateTable<Feed>();
             BackUpConn.CreateTable<Source>();
             BackUpConn.CreateTable<Article>();
 
@@ -107,7 +108,7 @@ namespace AresNews
             // Sqlite connection
             SqLiteConn = new SQLiteConnection(path);
             BackUpConn = new SQLiteConnection(pathBackUp);
-
+             
         }
 
         protected override void OnStart()

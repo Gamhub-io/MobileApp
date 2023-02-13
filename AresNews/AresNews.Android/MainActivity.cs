@@ -4,6 +4,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.OS;
 using LabelHtml.Forms.Plugin.Droid;
+using Sharpnado.CollectionView.Droid;
 
 namespace AresNews.Droid
 {
@@ -23,6 +24,8 @@ namespace AresNews.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             HtmlLabelRenderer.Initialize();
+            Rg.Plugins.Popup.Popup.Init(this);
+            Initializer.Initialize();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
             LoadApplication(new App());
