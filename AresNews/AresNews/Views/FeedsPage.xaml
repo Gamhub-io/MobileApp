@@ -42,7 +42,39 @@
     </Shell.TitleView>
     <ContentPage.Content>
         <Grid>
-        <xct:TabView TabStripPlacement="Top"
+            <ContentView IsVisible="false">
+                <ContentView.Triggers>
+                    <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="ContentView"
+                                 Value="0">
+                        <Setter Property="IsVisible" 
+                                Value="true" />
+                    </DataTrigger>
+
+                </ContentView.Triggers>
+                <StackLayout VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="CenterAndExpand">
+                    <Label Text="&#xf005;"
+                               FontFamily="FaRegular"
+                               TextColor="{StaticResource Primary}"
+                               FontSize="50"
+                               HorizontalOptions="Center"
+                           />
+                    <Label Text="No feeds saved"
+                               FontFamily="P-Bold"
+                               HorizontalOptions="Center"
+                               FontSize="Title"
+                               TextColor="{StaticResource FontColor}"
+                               />
+                    <Label Text="When performing a search, tap on the star icon to save it as a feed."
+                               FontFamily="P-Regular"
+                               HorizontalTextAlignment="Center"
+                               FontSize="Subtitle"
+                               TextColor="{StaticResource FontColor}"
+                               />
+                </StackLayout>
+            </ContentView>
+            <xct:TabView TabStripPlacement="Top"
                      TabStripBackgroundColor="{StaticResource DarkSecondary}"
                      TabStripHeight="45"
                      VerticalOptions="Fill"
@@ -51,7 +83,16 @@
                      SelectedIndex="{Binding CurrentFeedIndex}"
                      TabItemsSource="{Binding Feeds}"
                      TabIndicatorColor="{StaticResource Primary}">
-            <xct:TabView.Background>
+                <xct:TabView.Triggers>
+                    <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="xct:TabView"
+                                 Value="0">
+                        <Setter Property="IsVisible" 
+                                Value="false" />
+                    </DataTrigger>
+                    
+                </xct:TabView.Triggers>
+                <xct:TabView.Background>
                 <LinearGradientBrush StartPoint="0,0"
                                          EndPoint="1,1">
                     <GradientStop Color="#262626"
