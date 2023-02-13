@@ -48,6 +48,7 @@
                      VerticalOptions="Fill"
                      IsSwipeEnabled="False"
                      HorizontalOptions="Fill"
+                     SelectedIndex="{Binding CurrentFeedIndex}"
                      TabItemsSource="{Binding Feeds}"
                      TabIndicatorColor="{StaticResource Primary}">
             <xct:TabView.Background>
@@ -158,11 +159,11 @@
                    WidthRequest="50">
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
                     <Grid xct:TouchEffect.NativeAnimation="True"
-                          xct:TouchEffect.Command="{Binding Browse, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}">
+                          xct:TouchEffect.Command="{Binding Edit, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
-                        <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Edit {0}'}"
+                        <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
                                    TextColor="{StaticResource FontColor}"
                                    FontFamily="P-SemiBold"
                                    FontSize="18"
@@ -177,7 +178,7 @@
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
-                        <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Delete {0}'}"
+                        <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Delete {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
                                    TextColor="{StaticResource FontColor}"
                                    FontFamily="P-SemiBold"
                                    FontSize="18"

@@ -21,6 +21,7 @@
         </ResourceDictionary>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
         <helpers:MultipleTOBoolConverter x:Key="MultipleTOBoolConverter"/>
+        <helpers:MaxLengthConverter x:Key="MaxLengthConverter"/>
         <ResourceDictionary>
             <OnPlatform x:Key="TitleRightMargin" 
                         x:TypeArguments="GridLength" 

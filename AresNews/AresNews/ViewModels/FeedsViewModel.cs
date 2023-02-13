@@ -110,6 +110,18 @@ namespace AresNews.ViewModels
 
         });
 
+        public Xamarin.Forms.Command<Feed> Rename => new Xamarin.Forms.Command<Feed>(async (feed) =>
+        {
+            await CurrentPage.Navigation.PushPopupAsync(new RenameFeedPopUp(_currentFeed, this));
+
+        });
+
+        public Xamarin.Forms.Command<Feed> Edit => new Xamarin.Forms.Command<Feed>(async (feed) =>
+        {
+            await CurrentPage.Navigation.PushAsync(new EditFeedPage(_currentFeed, this));
+
+        });
+
         public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(async() =>
         {
             if (IsBusy)
@@ -277,7 +289,7 @@ namespace AresNews.ViewModels
 
         }
 
-        // See detail of the art;[p;l;;l.icle
+        // See detail of the article
         public Command GoToDetail
         {
             get
@@ -378,6 +390,24 @@ namespace AresNews.ViewModels
 
             // Switch the the next feed
             //
+        }
+        /// <summary>
+        /// Update a feed
+        /// </summary>
+        /// <param name="feed">Updated data of feed</param>
+        public void UpdateCurrentFeed (Feed feed)
+        {
+            CurrentFeed = feed;
+            Feed feedToUpdate = Feeds.FirstOrDefault((e) => e.Id == feed.Id);
+
+            // Update the item visually
+            if (feedToUpdate != null)
+            {
+                int index = _feeds.IndexOf(feedToUpdate);
+                var f =_feeds[index] = feed;
+
+                CurrentFeedIndex = index;
+            }
         }
         /// <summary>
         /// Processed launched when the page reappear
