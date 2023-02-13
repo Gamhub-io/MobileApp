@@ -1,10 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AresNews.Views.PopUps.RenameFeedPopUp">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Welcome to Xamarin.Forms!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>-->
 <pages:PopupPage 
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" xmlns:popups="clr-namespace:AresNews.ViewModels.PopUps" x:DataType="popups:DeleteFeedPopUpViewModel"
-    x:Class="AresNews.Views.DeleteFeedPopUp">
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" xmlns:popups="clr-namespace:AresNews.ViewModels.PopUps" x:DataType="popups:RenameFeedPopUpViewModel"
+    x:Class="AresNews.Views.RenameFeedPopUp"
+     HasKeyboardOffset="False">
     <!--You can set an animation in the xaml file or in the csharp code behind-->
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation 
@@ -38,12 +50,12 @@
         </Frame.Background>
 
         <StackLayout >
-            <Label Text="&#xf1f8;"
+            <!--<Label Text="&#xf1f8;"
                    FontSize="60"
                    HorizontalOptions="Center"
                    TextColor="{StaticResource Primary}"
-                   FontFamily="FaSolid"/>
-            <Label Text="{Binding Feed.Title, StringFormat='Are you sure you want to delete {0}' }"
+                   FontFamily="FaSolid"/>-->
+            <Entry Text="{Binding Feed.Title}"
                    FontSize="15"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-SemiBold"/>
@@ -56,7 +68,7 @@
                         BackgroundColor="{StaticResource LightDark}"
                         TextColor="{StaticResource Primary}"
                         FontFamily="P-Bold"
-                        
+                        HeightRequest="40"
                         FontSize="15"
                         Padding="1"
                         Command="{Binding Cancel}"
@@ -70,7 +82,9 @@
                         FontFamily="P-Bold"
                         FontSize="15"
                         Padding="1"
-                        Command="{Binding Delete}"
+                        
+                        HeightRequest="40"
+                        Command="{Binding Validate}"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         CornerRadius="12"
