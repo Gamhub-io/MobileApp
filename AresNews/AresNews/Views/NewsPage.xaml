@@ -47,10 +47,10 @@
                         Clicked="OpenSearchButton_Clicked"
                         Grid.Column="2"/>
             </Grid>
-            <Grid IsVisible="{Binding IsSearching}">
+            <Grid IsVisible="{Binding IsSearching, Source={x:RelativeSource AncestorType={x:Type vm:NewsViewModel}}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
                 <!-- Search bar -->
                 <Frame BackgroundColor="{StaticResource DarkSecondary}"
@@ -81,14 +81,14 @@
                                Grid.Column="0"/>
 
                         <controls:BorderlessEntry Grid.Column="1"
-                               BackgroundColor="Transparent"
-                               FontFamily="B-SemiBold"
-                               Text="{Binding SearchText, Mode=TwoWay}"
-                               PlaceholderColor="{StaticResource FontColor}"
-                               TextColor="{StaticResource FontColor}"
-                               x:Name="entrySearch"
-                               ReturnType="Search"
-                               ReturnCommand="{Binding Search}"/>
+                                                  BackgroundColor="Transparent"
+                                                  FontFamily="B-SemiBold"
+                                                  Text="{Binding SearchText, Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Mode=TwoWay}"
+                                                  PlaceholderColor="{StaticResource FontColor}"
+                                                  TextColor="{StaticResource FontColor}"
+                                                  x:Name="entrySearch"
+                                                  ReturnType="Search"
+                                                  ReturnCommand="{Binding Search, Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}}"/>
 
                         <!-- Button to close the search -->
                         <Button Text="&#xf057;"
@@ -102,11 +102,41 @@
                                 BackgroundColor="{StaticResource DarkSecondary}"
                                 TextColor="{StaticResource FontColor}"
                                 Grid.Column="2"
-                                Command="{Binding CloseSearch}"
+                                Command="{Binding CloseSearch, Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}}"
                                 x:Name="CloseSearchButton"
                                 Clicked="CloseSearchButton_Clicked"/>
                     </Grid>
                 </Frame>
+                <Button Text="&#xf005;"
+                        FontSize="28"
+                        CornerRadius="20"
+                        FontFamily ="FaSolid"
+                        VerticalOptions="CenterAndExpand"
+                        HorizontalOptions="End"
+                        Command="{Binding SaveSearch, Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}}"
+                        Margin="{OnPlatform iOS='0,0,10,0'}"
+                        BackgroundColor="{StaticResource LightDark}"
+                        TextColor="{StaticResource FontColor}"
+                        Grid.Column="1">
+                    <Button.Triggers>
+                        <DataTrigger Binding="{Binding IsCurrentSearchSaved, Mode=TwoWay}"
+                                     TargetType="Button"
+                                     Value="True">
+                            <!--<Setter Property="FontFamily" 
+                                    Value="FaSolid" />-->
+                            <Setter Property="TextColor" 
+                                    Value="{StaticResource Primary}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsCurrentSearchSaved, Mode=TwoWay}"
+                                     TargetType="Button"
+                                     Value="False">
+                            <!--<Setter Property="FontFamily" 
+                                    Value="FaRegular" />-->
+                            <Setter Property="TextColor" 
+                                    Value="{StaticResource FontColor}" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
             </Grid>
 
         </Grid>
