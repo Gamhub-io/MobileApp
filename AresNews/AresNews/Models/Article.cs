@@ -26,7 +26,7 @@ namespace AresNews.Models
         public string Image { get; set; }
         //[ForeignKey(typeof(Source))]
         //public int SourceId { get; set; }
-        [ForeignKey(typeof(Source)),ManyToOne(CascadeOperations = CascadeOperation.All), JsonProperty("source")]
+        [ManyToOne(CascadeOperations = CascadeOperation.All), JsonProperty("source")]
         public Source Source { get; set; }
         [JsonProperty("isoDate")]
         public DateTime FullPublishDate { get; set; }

@@ -34,7 +34,16 @@
                         Padding="0"
                         HorizontalOptions="End"
                         Margin="0"
-                        />
+                        >
+                    <Button.Triggers>
+                        <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="Button"
+                                 Value="0">
+                            <Setter Property="IsVisible" 
+                                Value="false" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
             </Grid>
 
         </ContentView>
