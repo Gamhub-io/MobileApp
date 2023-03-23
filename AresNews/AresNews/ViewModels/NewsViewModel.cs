@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace AresNews.ViewModels
 {
@@ -238,6 +239,7 @@ namespace AresNews.ViewModels
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+            
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
             CurrentFeed = new Feed();
             _isLaunching = true;
@@ -352,7 +354,7 @@ namespace AresNews.ViewModels
                 default:
                     break;
             }
-
+            //Articles.ForEach(article => { if (article.Source == null) article.Source = App.Sources.FirstOrDefault(s => s.MongoId == article.SourceId); });
         }
 
         /// <summary>
@@ -402,7 +404,9 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime }, jsonBody: null);
+                       articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, callbackError: (err) =>
+                       {
+                       });
 
                     
 
@@ -531,7 +535,14 @@ namespace AresNews.ViewModels
                 {
 
                     App.BackUpConn.DeleteAll<Article>();
+                    //_articles.ForEach(article => article.SourceId ??= article.Source?.Id.ToString());
                     App.BackUpConn.InsertAllWithChildren(_articles);
+
+                    foreach (var source in _articles.Select(a => a.Source).Distinct().ToList())
+                    {
+                        App.BackUpConn.InsertOrReplace(source);
+
+                    }
                 });
             });
         }
@@ -548,7 +559,7 @@ namespace AresNews.ViewModels
             {
 
                 string v = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
                 
             }
             // Offline search
