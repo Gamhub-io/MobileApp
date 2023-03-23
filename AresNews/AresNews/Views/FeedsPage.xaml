@@ -7,6 +7,19 @@
              xmlns:vm="clr-namespace:AresNews.ViewModels" 
              xmlns:controls="clr-namespace:AresNews.Controls"
              x:DataType="vm:FeedsViewModel">
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="1,1">
+            <GradientStop Color="#262626"
+                           Offset="0.1"/>
+            <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+            <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            <GradientStop Color="Black"
+                           Offset="1.0"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
             <Grid>
@@ -64,7 +77,7 @@
                 <StackLayout VerticalOptions="CenterAndExpand"
                                     HorizontalOptions="CenterAndExpand">
                     <Label Text="&#xf005;"
-                               FontFamily="FaRegular"
+                               FontFamily="FaSolid"
                                TextColor="{StaticResource Primary}"
                                FontSize="50"
                                HorizontalOptions="Center"
@@ -77,6 +90,7 @@
                                />
                     <Label Text="When performing a search, tap on the star icon to save it as a feed."
                                FontFamily="P-Regular"
+                           Margin="5,0"
                                HorizontalTextAlignment="Center"
                                FontSize="Subtitle"
                                TextColor="{StaticResource FontColor}"
