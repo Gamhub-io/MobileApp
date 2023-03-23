@@ -28,9 +28,11 @@ namespace AresNews.Views
             base.OnAppearing();
             //await Task.Factory.StartNew(() =>
             //{
+            if (_vm.Feeds.Count == 0)
+                return;
             try
             {
-                if (_vm.CurrentFeed == null)
+                if ( _vm.CurrentFeed == null)
                 {
 
                     await Task.Factory.StartNew(()=> _vm.Refresh(_vm.Feeds[0]));
