@@ -151,7 +151,7 @@ namespace AresNews.ViewModels
             _shareArticle = new Command(async (id) =>
             {
                 // Get selected article
-                var article = CurrentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString());
+                var article = Articles.FirstOrDefault(art => art.Id == id.ToString());
 
                 await Share.RequestAsync(new ShareTextRequest
                 {
@@ -165,7 +165,7 @@ namespace AresNews.ViewModels
             {
                 var article = new Article();
                 // Get the article
-                article = CurrentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString());
+                article = Articles.FirstOrDefault(art => art.Id == id.ToString());
 
 
 
@@ -296,7 +296,7 @@ namespace AresNews.ViewModels
             {
                 return new Command(async (id) =>
                 {
-                    var articlePage = new ArticlePage(_currentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString()));
+                    var articlePage = new ArticlePage(Articles.FirstOrDefault(art => art.Id == id.ToString()));
 
 
                     await App.Current.MainPage.Navigation.PushAsync(articlePage);
