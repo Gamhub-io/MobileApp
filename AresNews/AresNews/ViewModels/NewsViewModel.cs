@@ -329,8 +329,8 @@ namespace AresNews.ViewModels
                 }
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
-                    
-                    Articles = await App.WService.Get<ObservableCollection<Article>>("feeds");
+
+                    Articles = await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action:"update", parameters: new string[] { DateTime.Now.AddMonths(-3).ToString("dd-MM-yyy_HH:mm:ss") }) ;
                     IsRefreshing = false;
                     _isLaunching = false;
                     await RefreshDB();
