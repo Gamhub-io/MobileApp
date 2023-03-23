@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -69,6 +70,21 @@ namespace AresNews
             BackUpConn.CreateTable<Source>();
             BackUpConn.CreateTable<Article>();
 
+            Task.Run(async () =>
+            {
+                Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", callbackError: (e) =>
+                {
+                    throw e;
+                });
+
+
+                foreach (var source in Sources)
+                {
+                    SqLiteConn.InsertOrReplace(source);
+                    BackUpConn.InsertOrReplace(source);
+                }
+            });
+
             // Close the db
             //CloseDb();
 
@@ -87,7 +103,7 @@ namespace AresNews
         /// <summary>
         /// Function to start the data base
         /// </summary>
-        public static void StartDb()
+        public static async void StartDb()
         {
             const SQLite.SQLiteOpenFlags Flags =
                     // open the database in read/write mode
@@ -111,11 +127,16 @@ namespace AresNews
             if (!File.Exists(pathBackUp))
                 // Create the folder path.
                 File.Create(pathBackUp);
+
+            
+
             
             // Sqlite connection
             SqLiteConn = new SQLiteConnection(path);
             BackUpConn = new SQLiteConnection(pathBackUp);
-             
+
+            
+
         }
 
         protected override void OnStart()
