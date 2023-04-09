@@ -17,7 +17,7 @@ namespace AresNews.Views
         private uint _modalHeightStart = 0;
         private uint _modalWidthStart = 50;
         private FeedsViewModel _vm;
-
+        private bool _appeared = false;
         public FeedsPage()
         {
             InitializeComponent();
@@ -28,6 +28,9 @@ namespace AresNews.Views
             base.OnAppearing();
             //await Task.Factory.StartNew(() =>
             //{
+            if (_appeared )
+                BindingContext = _vm = new FeedsViewModel(this);
+            
             if (_vm.Feeds.Count == 0)
                 return;
             try
@@ -48,7 +51,7 @@ namespace AresNews.Views
             {
                 await Task.Factory.StartNew(() => _vm.Refresh(_vm.Feeds[0]));
             }
-
+            _appeared = true;
             //});
         }/// <summary>
          /// Function to open a the dropdrown
