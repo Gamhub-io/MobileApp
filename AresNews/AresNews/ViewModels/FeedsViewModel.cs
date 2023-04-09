@@ -4,6 +4,7 @@ using AresNews.Views;
 using MvvmHelpers;
 using Rg.Plugins.Popup.Extensions;
 using SQLiteNetExtensions.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -145,7 +146,23 @@ namespace AresNews.ViewModels
             CurrentPage = page;
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
+            MessagingCenter.Subscribe<Feed>(this, "AddFeed", (sender) =>
+            {
+                Feeds.Add(sender);
 
+
+            });
+
+            MessagingCenter.Subscribe<Feed>(this, "RemoveFeed", (sender) =>
+            {
+                Feed item = _feeds.First(f => f.Id == sender.Id);
+                //if (_feeds.Count > 1 && _currentFeed == item )
+                //    CurrentFeed = _feeds[0];
+                //Feeds.Remove(item);
+                Delete.Execute(item);
+
+
+            });
 
             // Set command to share an article
             _shareArticle = new Command(async (id) =>

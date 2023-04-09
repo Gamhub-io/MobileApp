@@ -130,12 +130,17 @@ namespace AresNews.ViewModels
                         CurrentFeed.IsSaved = true;
                         App.SqLiteConn.InsertWithChildren(_currentFeed);
                         Feeds.Add(_currentFeed);
+
+                        // Update the feeds removetly
+                        MessagingCenter.Send<Feed>(_currentFeed, "AddFeed");
                         return;
 
                     }
 
                     App.SqLiteConn.Delete(_currentFeed);
                     Feeds.Remove(_currentFeed);
+                    MessagingCenter.Send<Feed>(_currentFeed, "RemoveFeed");
+
 
 
 
