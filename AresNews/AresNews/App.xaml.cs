@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -68,6 +69,20 @@ namespace AresNews
             BackUpConn.CreateTable<Source>();
             BackUpConn.CreateTable<Article>();
 
+            Task.Run(async () =>
+            {
+                Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", callbackError: (e) =>
+                {
+                    //throw e;
+                });
+
+
+                foreach (var source in Sources)
+                {
+                    SqLiteConn.InsertOrReplace(source);
+                    BackUpConn.InsertOrReplace(source);
+                }
+            });
             // Close the db
             //CloseDb();
 

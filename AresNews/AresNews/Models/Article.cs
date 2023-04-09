@@ -3,15 +3,16 @@ using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AresNews.Models
 {
     public class Article
     {
-        [PrimaryKey, Column("_id"),JsonProperty("uuid")]
+        [PrimaryKey, Column("_id"), JsonProperty("uuid")]
         public string Id { get; set; }
-        [ Column("mongoId"),JsonProperty("_id")]
+        [Column("mongoId"), JsonProperty("_id")]
         public string MongooseId { get; set; }
 
         [JsonProperty("title")]
@@ -25,15 +26,26 @@ namespace AresNews.Models
         [JsonProperty("image")]
         public string Image { get; set; }
         [ForeignKey(typeof(Source))]
-        public int SourceId { get; set; }
-        [ManyToOne(CascadeOperations = CascadeOperation.All), JsonProperty("source")]
-        public Source Source { get; set; }
+        public int SourceIdFk { get; set; }
+        [JsonProperty("sourceId")]
+        public string SourceId { get; set; }
+        //[ManyToOne(CascadeOperations = CascadeOperation.All), JsonProperty("source")]
+        //public Source Source { get; set; }
+        public Source Source
+        {
+            get
+            {
+                return App.Sources.FirstOrDefault(s => s.MongoId == SourceId);
+            }
+        }
         [JsonProperty("isoDate")]
         public DateTime FullPublishDate { get; set; }
-        public string PublishDate { get 
+        public string PublishDate
+        {
+            get
             {
                 return FullPublishDate.ToString("dd/MM/yyyy");
-            } 
+            }
         }
         public string PublishTime
         {
@@ -43,19 +55,21 @@ namespace AresNews.Models
             }
         }
         public string Url { get; set; }
-        public TimeSpan Time { get 
+        public TimeSpan Time
+        {
+            get
             {
                 return DateTime.Now - this.FullPublishDate.ToLocalTime();
-            } 
+            }
         }
-        private bool ?_isSaved = null;
+        private bool? _isSaved = null;
         public bool IsSaved
         {
-            get 
+            get
             {
                 if (_isSaved == null)
                     return App.SqLiteConn.Find<Article>(Id) != null;
-                
+
                 return (bool)_isSaved;
             }
             set { _isSaved = value; }
