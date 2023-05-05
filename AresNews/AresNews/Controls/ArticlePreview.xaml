@@ -39,6 +39,7 @@
                                                     CacheDuration="5"
                                                     RetryCount="3"
                                                     RetryDelay="600"
+                                                    
                                                     DownsampleToViewSize="true"
                                                     Aspect="AspectFill" >
                         </ffimageloading:CachedImage>

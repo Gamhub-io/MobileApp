@@ -67,7 +67,7 @@ namespace AresNews.ViewModels
             {
                 _searchText = value;
 
-                IsCurrentSearchSaved = Feeds.Any<Feed>(feed => feed.Keywords == value);
+                IsCurrentSearchSaved = Feeds.Any<Feed>(feed => feed.Keywords.ToLower() == value.ToLower());
                 OnPropertyChanged(nameof(SearchText));
             }
         }
@@ -115,13 +115,9 @@ namespace AresNews.ViewModels
                 return new Command(() =>
                 {
                     IsCurrentSearchSaved = !_isCurrentSearchSaved;
-                    //new Feed
-                    //{
-                    //    Id= Guid.NewGuid().ToString(),
-                    //    Title = SearchText,
-                    //    Keywords = SearchText,
-                    //    IsSaved = true,
-                    //};
+
+                    Feed feedTarget = _currentFeed ?? Feeds.FirstOrDefault(fd =>  fd.Title.ToLower() == SearchText.ToLower());
+
                     if (_isCurrentSearchSaved)
                     {
                         CurrentFeed.Id = Guid.NewGuid().ToString();
@@ -131,15 +127,18 @@ namespace AresNews.ViewModels
                         App.SqLiteConn.InsertWithChildren(_currentFeed);
                         Feeds.Add(_currentFeed);
 
-                        // Update the feeds removetly
+                        // Update the feeds remotely
                         MessagingCenter.Send<Feed>(_currentFeed, "AddFeed");
                         return;
 
                     }
 
-                    App.SqLiteConn.Delete(_currentFeed);
-                    Feeds.Remove(_currentFeed);
-                    MessagingCenter.Send<Feed>(_currentFeed, "RemoveFeed");
+                    if (feedTarget?.Keywords == null)
+                        feedTarget = Feeds.FirstOrDefault(f => f.Keywords.ToLower() == SearchText.ToLower());
+
+                    App.SqLiteConn.Delete(feedTarget);
+                    Feeds.Remove(feedTarget);
+                    MessagingCenter.Send<Feed>(feedTarget, "RemoveFeed");
 
 
 

@@ -69,6 +69,7 @@
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.1.0" />
     <PackageReference Include="Sharpnado.CollectionView" Version="2.1.0" />
+    <PackageReference Include="Sharpnado.Tabs" Version="2.2.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="7.0.0" />
