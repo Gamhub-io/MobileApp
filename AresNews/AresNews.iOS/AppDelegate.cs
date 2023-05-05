@@ -28,6 +28,7 @@ namespace AresNews.iOS
             Rg.Plugins.Popup.Popup.Init();
             Initializer.Initialize();
             global::Xamarin.Forms.Forms.Init();
+            Sharpnado.Tabs.iOS.Preserver.Preserve();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             LoadApplication(new App());
 

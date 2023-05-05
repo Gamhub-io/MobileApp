@@ -12,6 +12,8 @@ namespace AresNews.Helpers
         {
             int maxLength = int.Parse((string)parameter);
             string text = (string)value;
+            if (string.IsNullOrEmpty(text))
+                return 0;
             if (text.Length > maxLength)
             {
                 return text.Substring(0, maxLength) + "...";

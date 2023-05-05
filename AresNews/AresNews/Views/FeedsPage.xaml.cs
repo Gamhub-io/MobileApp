@@ -1,4 +1,5 @@
 ﻿using AresNews.ViewModels;
+using Sharpnado.CollectionView.RenderedViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,35 +27,45 @@ namespace AresNews.Views
         protected override async void OnAppearing()
         {
             base.OnAppearing();
-            //await Task.Factory.StartNew(() =>
-            //{
-            if (_appeared )
-                BindingContext = _vm = new FeedsViewModel(this);
+
+
+            _vm.Resume();
+            ////await Task.Factory.StartNew(() =>
+            ////{
+            //if (_appeared )
+            //    BindingContext = _vm = new FeedsViewModel(this);
             
-            if (_vm.Feeds.Count == 0)
-                return;
-            try
-            {
-                if ( _vm.CurrentFeed == null)
-                {
+            //if (_vm.Feeds.Count == 0)
+            //    return;
+            //ResetTabs();
 
-                    await Task.Factory.StartNew(()=> _vm.Refresh(_vm.Feeds[0]));
-                    return;
+            //try
+            //{
+            //    if ( _vm.CurrentFeed == null)
+            //    {
 
-                }
-                await Task.Factory.StartNew(() => _vm.Refresh(_vm.Feeds[0])).ContinueWith((e) => /*_vm.Refresh(_vm.Feeds[0]*/_vm.Resume()/*_vm.RefreshArticles.Execute(null)*/);
-                
-                
+            //        await Task.Run(()=> _vm.Refresh(_vm.Feeds[0]));
+            //        return;
 
-            }
-            catch
-            {
-                await Task.Factory.StartNew(() => _vm.Refresh(_vm.Feeds[0]));
-            }
-            _appeared = true;
-            //});
+            //    }
+            //    //TabView.TabItemsSource = null;
+            //    TabView.SelectedIndex = 0;
+            //    //TabView.TabItemsSource = null;
+
+            //    //await Task.Run(() => _vm.Refresh(_vm.Feeds[0]));
+            //    //await Task.Run(() => _vm.Refresh(_vm.Feeds[0])).ContinueWith((e) => /*_vm.Refresh(_vm.Feeds[0]*/_vm.Resume()/*_vm.RefreshArticles.Execute(null)*/);
+
+
+
+            //}
+            //catch
+            //{
+            //    await Task.Factory.StartNew(() => _vm.Refresh(_vm.Feeds[0]));
+            //}
+            //_appeared = true;
+            ////});
         }/// <summary>
-         /// Function to open a the dropdrown
+         /// Function to open a the dropdown
          /// </summary>
         public void OpenDropdownMenu()
         {
@@ -111,6 +122,33 @@ namespace AresNews.Views
             {
                 CloseDropdownMenu();
             }
+        }
+        public void ResetTabs ()
+        {
+            //TabView.TabItems.Clear();
+            //TabView.TabItems = new();
+
+            //foreach (var item in _vm.Feeds)
+            //{
+            //    TabView.TabItems.Add(new()
+            //    {
+            //        Text = item.Title
+            //    });
+            //}
+            //TabView.SelectedIndex = 0;
+        }
+        /// <summary>
+        /// Remove a tab organically 
+        /// </summary>
+        /// <param name="index">index of the tab you want to remove</param>
+        public void RemoveTab (int index)
+        {
+            TabView.TabItems.RemoveAt(index);
+        }
+
+        private void TabView_ChildRemoved(object sender, ElementEventArgs e)
+        {
+
         }
     }
 }

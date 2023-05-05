@@ -102,9 +102,10 @@
                      TabStripHeight="45"
                      VerticalOptions="Fill"
                      IsSwipeEnabled="False"
+                         TabItemsSource="{Binding Feeds }"
+                         x:Name="TabView"
                      HorizontalOptions="Fill"
                      SelectedIndex="{Binding CurrentFeedIndex}"
-                     TabItemsSource="{Binding Feeds}"
                      TabIndicatorColor="{StaticResource Primary}">
                 <xct:TabView.Triggers>
                     <DataTrigger Binding="{Binding Feeds.Count}"

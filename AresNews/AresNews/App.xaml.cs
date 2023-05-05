@@ -55,7 +55,8 @@ namespace AresNews
                                    sslCertificate: true);
 #endif
 
-
+            Sharpnado.Tabs.Initializer.Initialize(false, false);
+            Sharpnado.Shades.Initializer.Initialize(loggerEnable: false);
             Sources = new Collection<Source>();
 
             InitializeComponent();
