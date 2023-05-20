@@ -98,15 +98,16 @@
                 </StackLayout>
             </ContentView>
             <xct:TabView TabStripPlacement="Top"
-                     TabStripBackgroundColor="{StaticResource DarkSecondary}"
-                     TabStripHeight="45"
-                     VerticalOptions="Fill"
-                     IsSwipeEnabled="False"
+                         TabStripBackgroundColor="{StaticResource DarkSecondary}"
+                         TabStripHeight="45"
+                         VerticalOptions="Fill"
+                         IsSwipeEnabled="False"
+                         
                          TabItemsSource="{Binding Feeds }"
                          x:Name="TabView"
-                     HorizontalOptions="Fill"
-                     SelectedIndex="{Binding CurrentFeedIndex}"
-                     TabIndicatorColor="{StaticResource Primary}">
+                         HorizontalOptions="Fill"
+                         SelectedIndex="{Binding CurrentFeedIndex, Mode=TwoWay}"
+                         TabIndicatorColor="{StaticResource Primary}">
                 <xct:TabView.Triggers>
                     <DataTrigger Binding="{Binding Feeds.Count}"
                                  TargetType="xct:TabView"

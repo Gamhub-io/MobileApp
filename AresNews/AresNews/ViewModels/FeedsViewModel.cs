@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -414,16 +415,18 @@ namespace AresNews.ViewModels
         {
 
 
-            int indexNext = Feeds.IndexOf(feed) + 1;
-            int indexPrev = Feeds.IndexOf(feed) - 1;
-            Feeds.Remove(feed);
+            int feedIndex = Feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
+            int indexNext = feedIndex + 1;
+            int indexPrev = feedIndex - 1;
+            //Feeds.Remove(feed);
+            Feeds.RemoveAt(feedIndex);
 
             Feed feedInView = new Feed();
 
             await Task.Factory.StartNew(() =>
             {
 
-                if (_currentFeed == feed)
+                if (_currentFeed.Id == feed.Id)
                 {
                     if (_feeds.Count <= 0)
                         return;
@@ -431,15 +434,20 @@ namespace AresNews.ViewModels
                     // We try to establish the next feed
                     if (indexPrev >= 0)
                     {
+                        CurrentFeedIndex = indexPrev;
                         feedInView = _feeds[indexPrev];
                     }
                     else
                     {
+                        CurrentFeedIndex = indexPrev;
                         feedInView = _feeds[indexNext];
                     }
                 }
+                else
+                    CurrentFeedIndex = 0;
 
-            }).ContinueWith((e) =>
+            })
+            .ContinueWith((e) =>
             {
                 SwitchFeed.Execute(feedInView);
             });
@@ -473,23 +481,29 @@ namespace AresNews.ViewModels
         public void Resume()
         {
             //CurrentPage.ResetTabs();
+            //Task.Run(() =>
+            //{
 
-            foreach (var order in UpdateOrders)
-            {
-                if (order.Update == FeedUpdate.Remove)
+                //Thread.Sleep(10000);
+                foreach (var order in UpdateOrders)
                 {
-                    RemoveFeed(order.Feed);
-                    // Delete the feed
-                    App.SqLiteConn.Delete(order.Feed);
+                    if (order.Update == FeedUpdate.Remove)
+                    {
+                        //RemoveFeed(order.Feed);
+                        // Delete the feed
+                        App.SqLiteConn.Delete(order.Feed);
 
-                }
-                if (order.Update == FeedUpdate.Add)
-                {
-                    Feeds.Add(order.Feed);
+                    }
+                    if (order.Update == FeedUpdate.Add)
+                    {
+                        Feeds.Add(order.Feed);
 
+                    }
                 }
-            }
-            UpdateOrders.Clear();
+                UpdateOrders.Clear();
+
+
+            //});
             // Get all the feeds registered
             //var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
