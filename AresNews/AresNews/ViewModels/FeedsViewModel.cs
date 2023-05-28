@@ -80,7 +80,7 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(CurrentFeed));
             }
         }
-        public Xamarin.Forms.Command<Feed> RefreshAll => new Xamarin.Forms.Command<Feed>((feed) =>
+        public Xamarin.Forms.Command<Feed> RefreshAll => new Command<Feed>((feed) =>
         {
             IsRefreshing = true;
             Task.Run(() =>
@@ -90,11 +90,12 @@ namespace AresNews.ViewModels
 
         });
 
-        public Xamarin.Forms.Command<Feed> SwitchFeed => new Xamarin.Forms.Command<Feed>(async (feed) =>
+        public Xamarin.Forms.Command<Feed> SwitchFeed => new Command<Feed>(async (feed) =>
         {
             if (IsBusy)
                 return;
-            await Task.Factory.StartNew(() =>
+            IsRefreshing = true;
+            await Task.Run(() =>
              {
 
                  // Set new feed
@@ -103,6 +104,7 @@ namespace AresNews.ViewModels
 
                  //// Load articles
                  //
+
              });
 
             RefreshArticles.Execute(null);
@@ -127,22 +129,32 @@ namespace AresNews.ViewModels
 
         });
 
-        public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(async() =>
+        public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(() =>
         {
+
+
             if (IsBusy)
                 return;
-            //IsRefreshing = true;
-            await Task.Run(() =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
-                try
+                //IsRefreshing = true;
+                await Task.Run(() =>
                 {
+                    try
+                    {
 
-                    this.Refresh(CurrentFeed);
-                }
-                catch
-                {
-                    this.Refresh(_feeds[0]);
-                }
+                        if (CurrentFeed == null)
+                        {
+                            CurrentFeed = _feeds[0];
+
+                        }
+                        this.Refresh(CurrentFeed);
+                    }
+                    catch
+                    {
+                        this.Refresh(_feeds[0]);
+                    }
+                });
             });
         });
 		public FeedsViewModel(FeedsPage page)
@@ -150,6 +162,10 @@ namespace AresNews.ViewModels
             CurrentPage = page;
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             //CurrentPage.ResetTabs();
+
+            IsRefreshing = true;
+
+            RefreshArticles.Execute(null);
 
             UpdateOrders = new List<UpdateOrder>();
 
@@ -377,7 +393,7 @@ namespace AresNews.ViewModels
 
 
         /// <summary>
-        /// Update the curent article feed by adding new elements
+        /// Update the current article feed by adding new elements
         /// </summary>
         /// <param name="articles">new articles</param>
         private void UpdateArticles(List<Article> articles, Feed feed, int indexFeed)
@@ -385,7 +401,7 @@ namespace AresNews.ViewModels
             for (int i = 0; i < articles.Count(); ++i)
             {
                 var current = articles[i];
-                Article existingArticle = feed.Articles.FirstOrDefault(a => a.Id == current.Id);
+                Article existingArticle = feed.Articles?.FirstOrDefault(a => a.Id == current.Id);
                 if (existingArticle == null)
                 {
 
@@ -449,7 +465,11 @@ namespace AresNews.ViewModels
             })
             .ContinueWith((e) =>
             {
-                SwitchFeed.Execute(feedInView);
+                // TODO: Find a way to make sure the next item selected is the previous one (aka feedInView)
+                //SwitchFeed.Execute(feedInView);
+
+                // Select the first feed
+                SwitchFeed.Execute(_feeds[0]);
             });
 
 

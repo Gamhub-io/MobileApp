@@ -251,6 +251,8 @@ namespace AresNews.ViewModels
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
             CurrentFeed = new Feed();
             _isLaunching = true;
+
+
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
@@ -357,11 +359,12 @@ namespace AresNews.ViewModels
                     break;
                 case Device.Android:
                       IsRefreshing = true;
-                    FetchArticles();
                     break; 
                 default:
                     break;
             }
+
+            FetchArticles();
             //Articles.ForEach(article => { if (article.Source == null) article.Source = App.Sources.FirstOrDefault(s => s.MongoId == article.SourceId); });
         }
 
