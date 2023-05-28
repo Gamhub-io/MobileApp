@@ -60,7 +60,7 @@ namespace AresNews.Views
 
         }
         /// <summary>
-        /// Method allowing the searchbar annimation
+        /// Method allowing the search bar animation
         /// </summary>
         /// <param name="startingHeight">Start size</param>
         /// <param name="endingHeight">End size</param>
