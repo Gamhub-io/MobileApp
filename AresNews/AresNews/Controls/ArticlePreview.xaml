@@ -135,7 +135,7 @@
                             </Grid.RowDefinitions>
                             <!-- Headline -->
                             <Label Grid.Row="0" 
-                                   Text="{Binding Headline}"
+                                   Text="{Binding Headline, Converter={StaticResource MaxLengthConverter}, ConverterParameter=120}}"
                                    TextColor="{StaticResource FontColor}"
                                    Margin="10,0"
                                    TextType="Html"
