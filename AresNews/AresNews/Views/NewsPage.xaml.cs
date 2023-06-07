@@ -60,13 +60,13 @@ namespace AresNews.Views
 
         }
         /// <summary>
-        /// Method allowing the searchbar annimation
+        /// Method allowing the search bar animation
         /// </summary>
         /// <param name="startingHeight">Start size</param>
         /// <param name="endingHeight">End size</param>
         public void AnimateWidthSearchBar(double startingWidth, double endingWidth)
         {
-            // update the height of the layout with this callback
+            // update the height of the layout with this call-back
             Action<double> callback = input => { searchBar.WidthRequest = input; };
 
             // pace at which aniation proceeds

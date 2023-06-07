@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 
 namespace AresNews.ViewModels
 {
@@ -66,7 +67,7 @@ namespace AresNews.ViewModels
             {
                 _searchText = value;
 
-                IsCurrentSearchSaved = Feeds.Any<Feed>(feed => feed.Keywords == value);
+                IsCurrentSearchSaved = Feeds.Any<Feed>(feed => feed.Keywords.ToLower() == value.ToLower());
                 OnPropertyChanged(nameof(SearchText));
             }
         }
@@ -113,14 +114,13 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
+                    if (string.IsNullOrEmpty(SearchText))
+                        return;
+                    
                     IsCurrentSearchSaved = !_isCurrentSearchSaved;
-                    //new Feed
-                    //{
-                    //    Id= Guid.NewGuid().ToString(),
-                    //    Title = SearchText,
-                    //    Keywords = SearchText,
-                    //    IsSaved = true,
-                    //};
+
+                    Feed feedTarget = _currentFeed ?? Feeds.FirstOrDefault(fd =>  fd.Title.ToLower() == SearchText.ToLower());
+
                     if (_isCurrentSearchSaved)
                     {
                         CurrentFeed.Id = Guid.NewGuid().ToString();
@@ -129,12 +129,21 @@ namespace AresNews.ViewModels
                         CurrentFeed.IsSaved = true;
                         App.SqLiteConn.InsertWithChildren(_currentFeed);
                         Feeds.Add(_currentFeed);
+
+                        // Update the feeds remotely
+                        MessagingCenter.Send<Feed>(_currentFeed, "AddFeed");
                         return;
 
                     }
 
-                    App.SqLiteConn.Delete(_currentFeed);
-                    Feeds.Remove(_currentFeed);
+                    if (feedTarget?.Keywords == null)
+                        feedTarget = Feeds.FirstOrDefault(f => f.Keywords.ToLower() == SearchText.ToLower());
+                    /// TODO: For now we disable the ability to delete a feed
+
+                    //App.SqLiteConn.Delete(feedTarget);
+                    //Feeds.Remove(feedTarget);
+                    //MessagingCenter.Send<Feed>(feedTarget, "RemoveFeed");
+
 
 
 
@@ -238,9 +247,12 @@ namespace AresNews.ViewModels
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+            
             Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
             CurrentFeed = new Feed();
             _isLaunching = true;
+
+
             // Handle if a article change sees a change of bookmark state
             MessagingCenter.Subscribe<Article>(this, "SwitchBookmark", (sender) =>
             {
@@ -347,12 +359,13 @@ namespace AresNews.ViewModels
                     break;
                 case Device.Android:
                       IsRefreshing = true;
-                    FetchArticles();
                     break; 
                 default:
                     break;
             }
 
+            FetchArticles();
+            //Articles.ForEach(article => { if (article.Source == null) article.Source = App.Sources.FirstOrDefault(s => s.MongoId == article.SourceId); });
         }
 
         /// <summary>
@@ -392,8 +405,8 @@ namespace AresNews.ViewModels
                 }
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
-                    
-                    Articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds",jsonBody: null);
+
+                    Articles = await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-3).ToString("dd-MM-yyy_HH:mm:ss") });
                     IsRefreshing = false;
                     _isLaunching = false;
                     await RefreshDB();
@@ -402,7 +415,9 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", "update", parameters: new string[] { _lastCallDateTime }, jsonBody: null);
+                       articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, callbackError: (err) =>
+                       {
+                       });
 
                     
 
@@ -531,7 +546,14 @@ namespace AresNews.ViewModels
                 {
 
                     App.BackUpConn.DeleteAll<Article>();
+                    //_articles.ForEach(article => article.SourceId ??= article.Source?.Id.ToString());
                     App.BackUpConn.InsertAllWithChildren(_articles);
+
+                    foreach (var source in _articles.Select(a => a.Source).Distinct().ToList())
+                    {
+                        App.BackUpConn.InsertOrReplace(source);
+
+                    }
                 });
             });
         }
@@ -548,7 +570,7 @@ namespace AresNews.ViewModels
             {
 
                 string v = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
                 
             }
             // Offline search
