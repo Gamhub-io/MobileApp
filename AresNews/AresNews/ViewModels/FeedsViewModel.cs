@@ -4,19 +4,24 @@ using AresNews.Views;
 using MvvmHelpers;
 using Rg.Plugins.Popup.Extensions;
 using SQLiteNetExtensions.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using static AresNews.Models.UpdateOrder;
 using Command = Xamarin.Forms.Command;
 
 namespace AresNews.ViewModels
 {
     public class FeedsViewModel : BaseViewModel
     {
-		private ObservableCollection<Feed> _feeds;
+        
+        public List<UpdateOrder> UpdateOrders { get; private set; }
+        private ObservableCollection<Feed> _feeds;
 
 		public ObservableCollection<Feed> Feeds
 		{
@@ -75,7 +80,7 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(CurrentFeed));
             }
         }
-        public Xamarin.Forms.Command<Feed> RefreshAll => new Xamarin.Forms.Command<Feed>((feed) =>
+        public Xamarin.Forms.Command<Feed> RefreshAll => new Command<Feed>((feed) =>
         {
             IsRefreshing = true;
             Task.Run(() =>
@@ -85,11 +90,12 @@ namespace AresNews.ViewModels
 
         });
 
-        public Xamarin.Forms.Command<Feed> SwitchFeed => new Xamarin.Forms.Command<Feed>(async (feed) =>
+        public Xamarin.Forms.Command<Feed> SwitchFeed => new Command<Feed>(async (feed) =>
         {
             if (IsBusy)
                 return;
-            await Task.Factory.StartNew(() =>
+            IsRefreshing = true;
+            await Task.Run(() =>
              {
 
                  // Set new feed
@@ -98,6 +104,7 @@ namespace AresNews.ViewModels
 
                  //// Load articles
                  //
+
              });
 
             RefreshArticles.Execute(null);
@@ -122,36 +129,104 @@ namespace AresNews.ViewModels
 
         });
 
-        public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(async() =>
+        public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(() =>
         {
+
+
             if (IsBusy)
                 return;
-            //IsRefreshing = true;
-            await Task.Factory.StartNew(() =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
-                try
+                //IsRefreshing = true;
+                await Task.Run(() =>
                 {
+                    try
+                    {
 
-                    this.Refresh(CurrentFeed);
-                }
-                catch
-                {
-                    this.Refresh(_feeds[0]);
-                }
+                        if (CurrentFeed == null)
+                        {
+                            CurrentFeed = _feeds[0];
+
+                        }
+                        this.Refresh(CurrentFeed);
+                    }
+                    catch
+                    {
+                        this.Refresh(_feeds[0]);
+                    }
+                });
             });
         });
 		public FeedsViewModel(FeedsPage page)
 		{
             CurrentPage = page;
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+            //CurrentPage.ResetTabs();
+
+            IsRefreshing = true;
+
+            RefreshArticles.Execute(null);
+
+            UpdateOrders = new List<UpdateOrder>();
+
+            MessagingCenter.Subscribe<Feed>(this, "AddFeed", (sender) =>
+            {
+                //Feeds.Add(sender);
+                // Add the new item to the separate collection
+                //_feeds.Add(sender);
+
+                //// Update the ItemsSource of the CarouselView with the new collection
+                //Feeds = new ObservableCollection<Feed>(_feeds);
+
+                UpdateOrders.Add(new UpdateOrder
+                {
+                    Update= UpdateOrder.FeedUpdate.Add,
+                    Feed= sender
+                });
+
+            });
+
+            MessagingCenter.Subscribe<Feed>(this, "RemoveFeed", (sender) =>
+            {
+                //Feed item = _feeds.First(f => f.Id == sender.Id);
+                ////if (_feeds.Count > 1 && _currentFeed == item )
+                ////    CurrentFeed = _feeds[0];
+                ////Feeds.Remove(item);
+                //Delete.Execute(item);
+
+                if (sender == null)
+                    return;
+
+                UpdateOrders.Add(new UpdateOrder
+                {
+                    Update = UpdateOrder.FeedUpdate.Remove,
+                    Feed = sender
+                });
+                // Remove the item from the separate collection
+                //Feed feedToRemove = _feeds.FirstOrDefault(f => f.Keywords.ToLower() == sender.Keywords.ToLower());
+                //int index = _feeds.IndexOf(feedToRemove);
+
+                ////CurrentPage.RemoveTab(_feeds.IndexOf(feedToRemove));
+
+                //if (feedToRemove != null)
+                //{
+                //    CurrentPage.ResetTabs();
+                //    Feeds.Remove(feedToRemove);
+                //    CurrentPage.RemoveTab(index);
+                //    //var newFeeds = new ObservableCollection<Feed>(_feeds);
+                //    // Update the ItemsSource of the CarouselView with the new collection
+                //    //Feeds.Clear();
+                //    //Feeds = newFeeds;
+                //}
 
 
+            });
 
             // Set command to share an article
             _shareArticle = new Command(async (id) =>
             {
                 // Get selected article
-                var article = CurrentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString());
+                var article = Articles.FirstOrDefault(art => art.Id == id.ToString());
 
                 await Share.RequestAsync(new ShareTextRequest
                 {
@@ -165,7 +240,7 @@ namespace AresNews.ViewModels
             {
                 var article = new Article();
                 // Get the article
-                article = CurrentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString());
+                article = Articles.FirstOrDefault(art => art.Id == id.ToString());
 
 
 
@@ -223,10 +298,10 @@ namespace AresNews.ViewModels
                 }
 
 
-                await Task.Factory.StartNew(() =>
+                await Task.Run(() =>
                 {
 
-                    AgregateFeed(feed, isFirstLoad);
+                    AggregateFeed(feed, isFirstLoad);
 
                     // End the loading indicator
                     IsRefreshing = false;
@@ -238,7 +313,7 @@ namespace AresNews.ViewModels
         /// Load articles via search
         /// </summary>
         /// <param name="articles"></param>
-        private async void AgregateFeed(Feed feed, bool firstLoad = true)
+        private async void AggregateFeed(Feed feed, bool firstLoad = true)
         {
             int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
 
@@ -250,7 +325,7 @@ namespace AresNews.ViewModels
 
                 string v = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
                 
-                articles = await App.WService.Get<List<Article>>("feeds", feed.IsLoaded ? "update" : null, parameters: feed.IsLoaded ? new string[] { v } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
+                articles = await App.WService.Get<List<Article>>(controller:"feeds", action: feed.IsLoaded ? "update" : null, parameters: feed.IsLoaded ? new string[] { v } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
                 {
                     throw err;
                 });
@@ -296,7 +371,7 @@ namespace AresNews.ViewModels
             {
                 return new Command(async (id) =>
                 {
-                    var articlePage = new ArticlePage(_currentFeed.Articles.FirstOrDefault(art => art.Id == id.ToString()));
+                    var articlePage = new ArticlePage(Articles.FirstOrDefault(art => art.Id == id.ToString()));
 
 
                     await App.Current.MainPage.Navigation.PushAsync(articlePage);
@@ -318,7 +393,7 @@ namespace AresNews.ViewModels
 
 
         /// <summary>
-        /// Update the curent article feed by adding new elements
+        /// Update the current article feed by adding new elements
         /// </summary>
         /// <param name="articles">new articles</param>
         private void UpdateArticles(List<Article> articles, Feed feed, int indexFeed)
@@ -326,7 +401,7 @@ namespace AresNews.ViewModels
             for (int i = 0; i < articles.Count(); ++i)
             {
                 var current = articles[i];
-                Article existingArticle = feed.Articles.FirstOrDefault(a => a.Id == current.Id);
+                Article existingArticle = feed.Articles?.FirstOrDefault(a => a.Id == current.Id);
                 if (existingArticle == null)
                 {
 
@@ -356,16 +431,18 @@ namespace AresNews.ViewModels
         {
 
 
-            int indexNext = Feeds.IndexOf(feed) + 1;
-            int indexPrev = Feeds.IndexOf(feed) - 1;
-            Feeds.Remove(feed);
+            int feedIndex = Feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
+            int indexNext = feedIndex + 1;
+            int indexPrev = feedIndex - 1;
+            //Feeds.Remove(feed);
+            Feeds.RemoveAt(feedIndex);
 
             Feed feedInView = new Feed();
 
             await Task.Factory.StartNew(() =>
             {
 
-                if (_currentFeed == feed)
+                if (_currentFeed.Id == feed.Id)
                 {
                     if (_feeds.Count <= 0)
                         return;
@@ -373,17 +450,26 @@ namespace AresNews.ViewModels
                     // We try to establish the next feed
                     if (indexPrev >= 0)
                     {
+                        CurrentFeedIndex = indexPrev;
                         feedInView = _feeds[indexPrev];
                     }
                     else
                     {
+                        CurrentFeedIndex = indexPrev;
                         feedInView = _feeds[indexNext];
                     }
                 }
+                else
+                    CurrentFeedIndex = 0;
 
-            }).ContinueWith((e) =>
+            })
+            .ContinueWith((e) =>
             {
-                SwitchFeed.Execute(feedInView);
+                // TODO: Find a way to make sure the next item selected is the previous one (aka feedInView)
+                //SwitchFeed.Execute(feedInView);
+
+                // Select the first feed
+                SwitchFeed.Execute(_feeds[0]);
             });
 
 
@@ -414,17 +500,46 @@ namespace AresNews.ViewModels
         /// </summary>
         public void Resume()
         {
-            // Get all the feeds regestered
-            var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+            //CurrentPage.ResetTabs();
+            //Task.Run(() =>
+            //{
 
+                //Thread.Sleep(10000);
+                foreach (var order in UpdateOrders)
+                {
+                    if (order.Update == FeedUpdate.Remove)
+                    {
+                        //RemoveFeed(order.Feed);
+                        // Delete the feed
+                        App.SqLiteConn.Delete(order.Feed);
+
+                    }
+                    if (order.Update == FeedUpdate.Add)
+                    {
+                        Feeds.Add(order.Feed);
+
+                    }
+                }
+                UpdateOrders.Clear();
+
+
+            //});
+            // Get all the feeds registered
+            //var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+
+            //CurrentPage.ResetTabs();
+            //Feeds = new ObservableCollection<Feed>(curFeeds);
             // We try to figure out if the two feed lists contains the same items
-            if (!FeedToolkit.CampareItems(_feeds, curFeeds))
-            {
-                // Add the last feed added
-                Feeds.Add(curFeeds.Last());
-            }
+            //if (!_feeds.SequenceEqual(curFeeds))
+            //{
+            //    // Add the last feed added
+            //    Feeds = new ObservableCollection<Feed>(curFeeds);
+            //    CurrentPage.ResetTabs();
+            //    //Feeds.Add(curFeeds.Last());
+            //}
 
         }
+        
 
     }
 }

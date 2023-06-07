@@ -7,6 +7,19 @@
              xmlns:vm="clr-namespace:AresNews.ViewModels" 
              xmlns:controls="clr-namespace:AresNews.Controls"
              x:DataType="vm:FeedsViewModel">
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="1,1">
+            <GradientStop Color="#262626"
+                           Offset="0.1"/>
+            <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+            <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            <GradientStop Color="Black"
+                           Offset="1.0"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
             <Grid>
@@ -34,15 +47,26 @@
                         Padding="0"
                         HorizontalOptions="End"
                         Margin="0"
-                        />
+                        >
+                    <Button.Triggers>
+                        <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="Button"
+                                 Value="0">
+                            <Setter Property="IsVisible" 
+                                Value="false" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
             </Grid>
 
         </ContentView>
 
     </Shell.TitleView>
     <ContentPage.Content>
-        <Grid>
-            <ContentView IsVisible="false">
+        <Grid RowDefinitions="30,*">
+            <!-- Empty View - If there is no feeds -->
+            <ContentView IsVisible="false"
+                         Grid.RowSpan="2">
                 <ContentView.Triggers>
                     <DataTrigger Binding="{Binding Feeds.Count}"
                                  TargetType="ContentView"
@@ -55,7 +79,7 @@
                 <StackLayout VerticalOptions="CenterAndExpand"
                                     HorizontalOptions="CenterAndExpand">
                     <Label Text="&#xf005;"
-                               FontFamily="FaRegular"
+                               FontFamily="FaSolid"
                                TextColor="{StaticResource Primary}"
                                FontSize="50"
                                HorizontalOptions="Center"
@@ -68,99 +92,55 @@
                                />
                     <Label Text="When performing a search, tap on the star icon to save it as a feed."
                                FontFamily="P-Regular"
+                           Margin="5,0"
                                HorizontalTextAlignment="Center"
                                FontSize="Subtitle"
                                TextColor="{StaticResource FontColor}"
                                />
                 </StackLayout>
             </ContentView>
-            <xct:TabView TabStripPlacement="Top"
-                     TabStripBackgroundColor="{StaticResource DarkSecondary}"
-                     TabStripHeight="45"
-                     VerticalOptions="Fill"
-                     IsSwipeEnabled="False"
-                     HorizontalOptions="Fill"
-                     SelectedIndex="{Binding CurrentFeedIndex}"
-                     TabItemsSource="{Binding Feeds}"
-                     TabIndicatorColor="{StaticResource Primary}">
-                <xct:TabView.Triggers>
-                    <DataTrigger Binding="{Binding Feeds.Count}"
-                                 TargetType="xct:TabView"
-                                 Value="0">
-                        <Setter Property="IsVisible" 
-                                Value="false" />
-                    </DataTrigger>
-                    
-                </xct:TabView.Triggers>
-                <xct:TabView.Background>
-                <LinearGradientBrush StartPoint="0,0"
-                                         EndPoint="1,1">
-                    <GradientStop Color="#262626"
-                           Offset="0.1"/>
-                    <GradientStop Color="{StaticResource Dark}"
-                           Offset="0.75"/>
-                    <GradientStop Color="#0d0d0d"
-                           Offset="65.0"/>
-                    <GradientStop Color="Black"
-                           Offset="1.0"/>
-                </LinearGradientBrush>
-            </xct:TabView.Background>
-
-            <xct:TabView.TabViewItemDataTemplate>
-                <DataTemplate x:DataType="model:Feed">
-                    <Grid xct:TouchEffect.Command="{Binding SwitchFeed, Mode=OneWay, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
-                          xct:TouchEffect.CommandParameter="{Binding .}">
-                        <Label  HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                FontFamily="P-Bold"
-                                FontSize="12"
-                                TextColor="{StaticResource FontColor}"
-                                Text="{Binding Title}" />
-                    </Grid>
-
-                </DataTemplate>
-            </xct:TabView.TabViewItemDataTemplate>
-            <xct:TabView.TabContentDataTemplate>
-                <DataTemplate >
-                    <RefreshView IsRefreshing="{Binding IsRefreshing, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"
-                                 Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
-                     
-                                 x:Name="newsRefreshView"
-                     HorizontalOptions="CenterAndExpand"
-                     RefreshColor="{StaticResource Primary}">
-                        <!--<RefreshView.Padding>
+            <!---->
+            
+            <!-- Current feed - list of article of the selected feed -->
+            <RefreshView IsRefreshing="{Binding IsRefreshing, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"
+                         Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                         Grid.Row="1"
+                         x:Name="newsRefreshView"
+                         HorizontalOptions="CenterAndExpand"
+                         RefreshColor="{StaticResource Primary}">
+                <!--<RefreshView.Padding>
                 <OnPlatform x:TypeArguments="Thickness">
                     <On Platform="iOS" Value="0,30,0,0"/>
                 </OnPlatform>
             </RefreshView.Padding>-->
-                        <RefreshView.BackgroundColor>
-                            <OnPlatform x:TypeArguments="Color">
-                                <On Platform="Android" Value="{StaticResource LightDark}"/>
-                            </OnPlatform>
-                        </RefreshView.BackgroundColor>
-                        <CollectionView ItemsSource="{Binding Articles, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                <RefreshView.BackgroundColor>
+                    <OnPlatform x:TypeArguments="Color">
+                        <On Platform="Android" Value="{StaticResource LightDark}"/>
+                    </OnPlatform>
+                </RefreshView.BackgroundColor>
+                <CollectionView ItemsSource="{Binding Articles, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
                                         x:DataType="model:Feed"
                                         VerticalScrollBarVisibility="Never"
                                         x:Name="newsCollectionView"
                                         ItemsUpdatingScrollMode="KeepScrollOffset"
                                         HorizontalOptions="Center"
                                         Margin="8,0">
-                            <CollectionView.Header>
-                                <BoxView  Margin="0">
-                                    <BoxView.HeightRequest>
-                                        <OnPlatform x:TypeArguments="x:Double">
-                                            <On Platform="Android" Value="0"/>
-                                            <On Platform="iOS" Value="75"/>
-                                        </OnPlatform>
-                                    </BoxView.HeightRequest>
-                                </BoxView>
-                            </CollectionView.Header>
-                            <CollectionView.ItemsLayout>
-                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
-                            </CollectionView.ItemsLayout>
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate x:DataType="model:Article">
-                                        <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
+                    <CollectionView.Header>
+                        <BoxView  Margin="0">
+                            <BoxView.HeightRequest>
+                                <OnPlatform x:TypeArguments="x:Double">
+                                    <On Platform="Android" Value="0"/>
+                                    <On Platform="iOS" Value="75"/>
+                                </OnPlatform>
+                            </BoxView.HeightRequest>
+                        </BoxView>
+                    </CollectionView.Header>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Article">
+                            <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
                                                  ArticleId="{Binding Id}"
                                                  ArticleIsSaved="{Binding IsSaved}"
                                                  ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
@@ -174,28 +154,72 @@
                                                  TapCommandParameter="{Binding Id}"
                                                  >
 
-                                        </controls:ArticlePreview>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </RefreshView>
-                </DataTemplate>
-            </xct:TabView.TabContentDataTemplate>
-        </xct:TabView>
+                            </controls:ArticlePreview>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+            <!---->
+
+
+            <!-- Feeds - List of feeds -->
+            <xct:TabView TabStripPlacement="Top"
+                         TabStripBackgroundColor="{StaticResource DarkSecondary}"
+                         TabStripHeight="45"
+                         VerticalOptions="Fill"
+                         IsSwipeEnabled="False"
+                         Grid.Row="0"
+                         TabItemsSource="{Binding Feeds }"
+                         x:Name="TabView"
+                         HorizontalOptions="Fill"
+                         SelectedIndex="{Binding CurrentFeedIndex, Mode=TwoWay}"
+                         TabIndicatorColor="{StaticResource Primary}">
+                <xct:TabView.Triggers>
+                    <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="xct:TabView"
+                                 Value="0">
+                        <Setter Property="IsVisible" 
+                                Value="false" />
+                    </DataTrigger>
+
+                </xct:TabView.Triggers>
+
+                <xct:TabView.TabViewItemDataTemplate>
+                    <DataTemplate x:DataType="model:Feed">
+                        <Grid xct:TouchEffect.Command="{Binding SwitchFeed, Mode=OneWay, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
+                          xct:TouchEffect.CommandParameter="{Binding .}">
+                            <Label  HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                FontFamily="P-Bold"
+                                FontSize="12"
+                                TextColor="{StaticResource FontColor}"
+                                Text="{Binding Title}" />
+                        </Grid>
+
+                    </DataTemplate>
+                </xct:TabView.TabViewItemDataTemplate>
+            </xct:TabView>
+            <!---->
+            <!-- HitBox - Layer that detect touch -->
             <BoxView BackgroundColor="Transparent"
                      HorizontalOptions="Fill"
                      VerticalOptions="Fill"
+                     Grid.RowSpan="2"
                      IsVisible="{Binding IsMenuOpen}">
                 <BoxView.GestureRecognizers>
                     <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                 </BoxView.GestureRecognizers>
             </BoxView>
+            <!-- -->
+            
+            <!-- Menu - Menu overlay-->
             <Frame HorizontalOptions="End"
                    x:Name="dropdownMenu"
                    VerticalOptions="Start"
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
                    Padding="0"
+                   Grid.RowSpan="2"
                    CornerRadius="0"
                    WidthRequest="50">
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
@@ -227,6 +251,7 @@
                     </Grid>
                 </StackLayout>
             </Frame>
+            <!-- -->
         </Grid>
     </ContentPage.Content>
 </ContentPage>
