@@ -1,9 +1,12 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
 using AresNews.Views;
+using AresNews.Views.PopUps;
 using CustardApi.Objects;
 using FFImageLoading;
 using Newtonsoft.Json;
+using Rg.Plugins.Popup.Extensions;
+using Rg.Plugins.Popup.Pages;
 using SQLite;
 using System;
 using System.Collections.ObjectModel;
@@ -24,10 +27,14 @@ namespace AresNews
 {
     public partial class App : Application
     {
+        private bool _isLoading;
+
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
         public static SQLiteConnection SqLiteConn { get; set; }
         public static SQLiteConnection BackUpConn { get; set; }
+
+        public PopupPage LoadingIndicator { get; private set; }
         public static Service WService { get; set; }
         public static string ProdHost { get; } = "api.gamhub.io";
 
@@ -71,6 +78,8 @@ namespace AresNews
             BackUpConn.CreateTable<Source>();
             BackUpConn.CreateTable<Article>();
 
+            LoadingIndicator = new LoadingPopUp();
+
             Task.Run(async () =>
             {
                 Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", callbackError: (e) =>
@@ -92,6 +101,33 @@ namespace AresNews
             MainPage = new AppShell();
 
             
+        }
+        /// <summary>
+        /// Show the popup loading indicator
+        /// </summary>
+        public async void ShowLoadingIndicator(bool longer = false)
+        {
+
+
+            if (_isLoading)
+                return;
+            _isLoading = true;
+
+            await this.MainPage.Navigation.PushPopupAsync(this.LoadingIndicator);
+        }
+
+        /// <summary>
+        /// Remove the popup loading indicator
+        /// </summary>
+        public async void RemoveLoadingIndicator()
+        {
+            if (!_isLoading )
+                return;
+
+
+            _isLoading = false;
+            //if (this.MainPage.Navigation.ModalStack.Contains(this.LoadingIndicator))
+            await this.MainPage.Navigation.RemovePopupPageAsync(this.LoadingIndicator);
         }
         /// <summary>
         ///  Function to close the database 
