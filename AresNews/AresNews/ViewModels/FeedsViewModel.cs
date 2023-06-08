@@ -94,7 +94,9 @@ namespace AresNews.ViewModels
         {
             if (IsBusy)
                 return;
-            IsRefreshing = true;
+            //IsRefreshing = true;
+
+            CurrentApp.ShowLoadingIndicator();
             await Task.Run(() =>
              {
 
@@ -108,7 +110,11 @@ namespace AresNews.ViewModels
              });
 
             RefreshArticles.Execute(null);
+            CurrentApp.RemoveLoadingIndicator();
+
         });
+
+        public App CurrentApp { get; }
         private FeedsPage CurrentPage { get; set; }
 
         public Xamarin.Forms.Command<Feed> Delete => new Xamarin.Forms.Command<Feed>(async (feed) =>
@@ -162,7 +168,8 @@ namespace AresNews.ViewModels
             });
         });
 		public FeedsViewModel(FeedsPage page)
-		{
+        {
+            CurrentApp = App.Current as App;
             CurrentPage = page;
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             //CurrentPage.ResetTabs();
