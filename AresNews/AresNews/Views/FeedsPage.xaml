@@ -141,18 +141,18 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Article">
                             <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
-                                                 ArticleId="{Binding Id}"
-                                                 ArticleIsSaved="{Binding IsSaved}"
-                                                 ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
-                                                 ArticleSource="{Binding Source, Mode=OneWay}"
-                                                 Thumnail="{Binding Image}"
-                                                 ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=ShareArticle, Mode=OneWay}"
-                                                 ShareCommandParameter="{Binding Url}"
-                                                 BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=AddBookmark, Mode=OneWay}"
-                                                 ControlTemplate="{StaticResource ArticleTemplate}" 
-                                                 TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=GoToDetail}"
-                                                 TapCommandParameter="{Binding Id}"
-                                                 >
+                                                     ArticleId="{Binding Id}"
+                                                     ArticleIsSaved="{Binding IsSaved}"
+                                                     ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
+                                                     ArticleSource="{Binding Source, Mode=OneWay}"
+                                                     Thumnail="{Binding Image}"
+                                                     ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=ShareArticle, Mode=OneWay}"
+                                                     ShareCommandParameter="{Binding Url}"
+                                                     BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=AddBookmark, Mode=OneWay}"
+                                                     ControlTemplate="{StaticResource ArticleTemplate}" 
+                                                     TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=GoToDetail}"
+                                                     TapCommandParameter="{Binding Id}"
+                                                     >
 
                             </controls:ArticlePreview>
                         </DataTemplate>
@@ -163,18 +163,19 @@
 
 
             <!-- Feeds - List of feeds -->
-            <xct:TabView TabStripPlacement="Top"
-                         TabStripBackgroundColor="{StaticResource DarkSecondary}"
-                         TabStripHeight="45"
-                         VerticalOptions="Fill"
-                         IsSwipeEnabled="False"
-                         Grid.Row="0"
-                         TabItemsSource="{Binding Feeds }"
-                         x:Name="TabView"
-                         HorizontalOptions="Fill"
-                         SelectedIndex="{Binding CurrentFeedIndex, Mode=TwoWay}"
-                         TabIndicatorColor="{StaticResource Primary}">
-                <xct:TabView.Triggers>
+            <controls:TabViewWorkaround TabStripPlacement="Top"
+                                        TabStripBackgroundColor="{StaticResource DarkSecondary}"
+                                        TabStripHeight="45"
+                                        VerticalOptions="Fill"
+                                        SelectionChanged="TabView_SelectionChanged"
+                                        IsSwipeEnabled="False"
+                                        Grid.Row="0"
+                                        TabItemsSource="{Binding Feeds }"
+                                        SelectedIndexWorkaround="{Binding CurrentFeedIndex}"
+                                        x:Name="TabView"
+                                        HorizontalOptions="Fill"
+                                        TabIndicatorColor="{StaticResource Primary}">
+                <controls:TabViewWorkaround.Triggers>
                     <DataTrigger Binding="{Binding Feeds.Count}"
                                  TargetType="xct:TabView"
                                  Value="0">
@@ -182,9 +183,9 @@
                                 Value="false" />
                     </DataTrigger>
 
-                </xct:TabView.Triggers>
+                </controls:TabViewWorkaround.Triggers>
 
-                <xct:TabView.TabViewItemDataTemplate>
+                <controls:TabViewWorkaround.TabViewItemDataTemplate>
                     <DataTemplate x:DataType="model:Feed">
                         <Grid xct:TouchEffect.Command="{Binding SwitchFeed, Mode=OneWay, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
                           xct:TouchEffect.CommandParameter="{Binding .}">
@@ -197,8 +198,8 @@
                         </Grid>
 
                     </DataTemplate>
-                </xct:TabView.TabViewItemDataTemplate>
-            </xct:TabView>
+                </controls:TabViewWorkaround.TabViewItemDataTemplate>
+            </controls:TabViewWorkaround>
             <!---->
             <!-- HitBox - Layer that detect touch -->
             <BoxView BackgroundColor="Transparent"
@@ -226,7 +227,8 @@
                     <Grid xct:TouchEffect.NativeAnimation="True"
                           xct:TouchEffect.Command="{Binding Edit, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}">
                         <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
+                            <TapGestureRecognizer Tapped="MenuItem_Tapped"
+                                                  />
                         </Grid.GestureRecognizers>
                         <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
                                    TextColor="{StaticResource FontColor}"
