@@ -52,12 +52,17 @@ namespace AresNews.ViewModels
 
             // Close the page
             await App.Current.MainPage.Navigation.PopAsync();
+
+            _context.CurrentFeedIndex = _context.Feeds.IndexOf(_feed);
         });
 
         public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(async () =>
         {
             // Close the page
+
+            //_context.CurrentFeedIndex = _context.Feeds.IndexOf(_feed);
             await App.Current.MainPage.Navigation.PopAsync();
+
         });
         public EditFeedViewModel( Feed feed, FeedsViewModel vm )
         {

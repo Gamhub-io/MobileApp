@@ -1,13 +1,15 @@
 ﻿using AresNews.ViewModels;
+using AresNews.Controls;
 using Sharpnado.CollectionView.RenderedViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Xamarin.CommunityToolkit.UI.Views;
 
 namespace AresNews.Views
 {
@@ -19,6 +21,7 @@ namespace AresNews.Views
         private uint _modalWidthStart = 50;
         private FeedsViewModel _vm;
         private bool _appeared = false;
+        public bool IsFromDetail { get; set; }
         public FeedsPage()
         {
             InitializeComponent();
@@ -30,11 +33,17 @@ namespace AresNews.Views
 
 
             _vm.Resume();
+            TabView.SelectedIndexWorkaround = 0;
+            TabView.SelectedIndexWorkaround = _vm.CurrentFeedIndex;
+            //SwitchItem(1);
+
+            //TabView.SelectedIndex = _vm.CurrentFeedIndex;
+
             ////await Task.Factory.StartNew(() =>
             ////{
             //if (_appeared )
             //    BindingContext = _vm = new FeedsViewModel(this);
-            
+
             //if (_vm.Feeds.Count == 0)
             //    return;
             //ResetTabs();
@@ -148,6 +157,30 @@ namespace AresNews.Views
 
         private void TabView_ChildRemoved(object sender, ElementEventArgs e)
         {
+
+        }
+        private void SwitchItem(int index)
+        {
+            if (index != -1 && index < TabView.TabItems.Count)
+            {
+                // See: https://github.com/xamarin/XamarinCommunityToolkit/issues/595
+                MethodInfo dynMethod = TabView.GetType().GetMethod("UpdateSelectedIndex", BindingFlags.NonPublic | BindingFlags.Instance);
+                dynMethod?.Invoke(TabView, new object[] { index, false });
+            }
+        }
+
+        private void TabView_SelectionChanged(object sender, TabSelectionChangedEventArgs e)
+        {
+            //var s = (sender as TabViewWorkaround);
+            //if (_vm.IsFromDetail && (s.SelectedIndexWorkaround != _vm.CurrentFocusIndex))
+            //{
+            //    s.SelectedIndexWorkaround = _vm.CurrentFocusIndex;
+            //    return;
+            //};
+            //_vm.CurrentFocusIndex = s.SelectedIndexWorkaround;
+
+           // _vm.IsFromDetail = false;
+
 
         }
     }
