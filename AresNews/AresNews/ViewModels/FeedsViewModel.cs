@@ -172,13 +172,17 @@ namespace AresNews.ViewModels
             CurrentApp = App.Current as App;
             CurrentPage = page;
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
-            //CurrentPage.ResetTabs();
+            
+            UpdateOrders = new List<UpdateOrder>();
+
+
+            if (_feeds.Count <= 0)
+                return;
 
             IsRefreshing = true;
 
             RefreshArticles.Execute(null);
 
-            UpdateOrders = new List<UpdateOrder>();
 
             MessagingCenter.Subscribe<Feed>(this, "AddFeed", (sender) =>
             {
