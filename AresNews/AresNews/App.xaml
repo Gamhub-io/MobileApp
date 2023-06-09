@@ -25,6 +25,7 @@
         <helpers:MultipleTOBoolConverter x:Key="MultipleTOBoolConverter"/>
         <helpers:MaxLengthConverter x:Key="MaxLengthConverter"/>
         <helpers:ThumbnailConverter x:Key="ThumbnailConverter"/>
+        <helpers:BoolInverseConverter x:Key="BoolInverseConverter"/>
         
         <ResourceDictionary>
             <OnPlatform x:Key="TitleRightMargin" 
