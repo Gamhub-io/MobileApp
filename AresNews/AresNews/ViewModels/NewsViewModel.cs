@@ -108,6 +108,18 @@ namespace AresNews.ViewModels
             }
         }
 
+        private bool _isSearchProcessed;
+
+        public bool IsSearchProcessed
+        {
+            get { return _isSearchProcessed; }
+            set 
+            {
+                _isSearchProcessed = value;
+                OnPropertyChanged(nameof(IsSearchProcessed));
+            }
+        }
+
         public Command SaveSearch
         {
             get
@@ -156,12 +168,19 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
+                    if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
+
+
                     // Scroll up before fetching the items
                     CurrentPage.ScrollFeed();
                     IsSearching = false;
                     IsRefreshing = true;
                     _prevSearch = null;
-                    //FetchArticles(true);
+
+                    // Empty the search bar
+                    SearchText = string.Empty;
+
+                    IsSearchProcessed = false;
 
                 });
             }
@@ -172,9 +191,8 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
-                    //if (_searchText == _prevSearch)
-                        //return;
-                    IsRefreshing = true;
+
+                    IsRefreshing = IsSearchProcessed = true;
                 });
             }
         }
