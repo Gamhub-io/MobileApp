@@ -26,7 +26,7 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center"
            Padding="0"
-           BackgroundColor="{StaticResource Dark}">
+           BackgroundColor="{StaticResource LightDark}">
         <StackLayout VerticalOptions="Center" 
                      HorizontalOptions="Center">
             <ActivityIndicator Color="{StaticResource Primary}"

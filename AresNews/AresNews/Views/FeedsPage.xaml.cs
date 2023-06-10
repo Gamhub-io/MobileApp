@@ -33,8 +33,8 @@ namespace AresNews.Views
 
 
             _vm.Resume();
-            TabView.SelectedIndexWorkaround = 0;
-            TabView.SelectedIndexWorkaround = _vm.CurrentFeedIndex;
+            //TabView.SelectedIndexWorkaround = 0;
+            //TabView.SelectedIndexWorkaround = _vm.CurrentFeedIndex;
             //SwitchItem(1);
 
             //TabView.SelectedIndex = _vm.CurrentFeedIndex;
@@ -73,6 +73,8 @@ namespace AresNews.Views
             //}
             //_appeared = true;
             ////});
+            ///
+           // var f = _vm.CurrentFeedIndex;
         }/// <summary>
          /// Function to open a the dropdown
          /// </summary>

@@ -408,6 +408,7 @@ namespace AresNews.ViewModels
 
         public bool IsFromDetail { get; set; }
         public int CurrentFocusIndex { get; set; }
+        public bool ListHasBeenUpdated { get; set; }
 
 
 
@@ -519,11 +520,10 @@ namespace AresNews.ViewModels
         /// </summary>
         public void Resume()
         {
-            //CurrentPage.ResetTabs();
-            //Task.Run(() =>
-            //{
+            try
+            {
 
-                //Thread.Sleep(10000);
+                CurrentApp.ShowLoadingIndicator();
                 foreach (var order in UpdateOrders)
                 {
                     if (order.Update == FeedUpdate.Remove)
@@ -538,22 +538,29 @@ namespace AresNews.ViewModels
                         Feeds.Add(order.Feed);
 
                     }
+                    if (order.Update == FeedUpdate.Edit)
+                    {
+                        int feedIndex = _feeds.IndexOf(order.Feed);
+
+
+                        //Feeds.RemoveAt(feedIndex);
+                        //Feeds.Add(order.Feed);
+
+                        Feeds[feedIndex] = order.Feed;
+
+                        CurrentFeedIndex = feedIndex;
+                    }
                 }
                 UpdateOrders.Clear();
-            //});
-            // Get all the feeds registered
-            //var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
-            //CurrentPage.ResetTabs();
-            //Feeds = new ObservableCollection<Feed>(curFeeds);
-            // We try to figure out if the two feed lists contains the same items
-            //if (!_feeds.SequenceEqual(curFeeds))
-            //{
-            //    // Add the last feed added
-            //    Feeds = new ObservableCollection<Feed>(curFeeds);
-            //    CurrentPage.ResetTabs();
-            //    //Feeds.Add(curFeeds.Last());
-            //}
+                CurrentApp.RemoveLoadingIndicator();
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+           
 
         }
         
