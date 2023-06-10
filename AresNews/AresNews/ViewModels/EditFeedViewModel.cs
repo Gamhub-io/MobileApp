@@ -48,12 +48,19 @@ namespace AresNews.ViewModels
             // update the feed
             App.SqLiteConn.Update(_feed);
 
-
+            _context.ListHasBeenUpdated = true;
 
             // Close the page
             await App.Current.MainPage.Navigation.PopAsync();
 
             _context.CurrentFeedIndex = _context.Feeds.IndexOf(_feed);
+
+            _context.UpdateOrders.Add(new UpdateOrder
+            {
+                Feed = _feed,
+                Update = UpdateOrder.FeedUpdate.Edit
+                
+            });
         });
 
         public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(async () =>
