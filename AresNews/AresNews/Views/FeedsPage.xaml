@@ -63,7 +63,7 @@
 
     </Shell.TitleView>
     <ContentPage.Content>
-        <Grid RowDefinitions="30,*">
+        <Grid RowDefinitions="60,*">
             <!-- Empty View - If there is no feeds -->
             <ContentView IsVisible="false"
                          Grid.RowSpan="2">
@@ -104,7 +104,9 @@
             <!-- Current feed - list of article of the selected feed -->
             <RefreshView IsRefreshing="{Binding IsRefreshing, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"
                          Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
-                         Grid.Row="1"
+                         Grid.Row="0"
+                         Grid.RowSpan="2"
+                         Margin="0,40,0,0"
                          x:Name="newsRefreshView"
                          HorizontalOptions="CenterAndExpand"
                          RefreshColor="{StaticResource Primary}">
@@ -163,11 +165,57 @@
 
 
             <!-- Feeds - List of feeds -->
-            <CollectionView HorizontalScrollBarVisibility="Never">
-                <CollectionView.ItemsLayout>
-                    
-                </CollectionView.ItemsLayout>
-            </CollectionView>
+            <Grid Padding="4,10"
+                  BackgroundColor="{StaticResource Dark }"
+                  Grid.Row="0">
+                
+                <Grid.Triggers>
+                    <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="Grid"
+                                 Value="0">
+                        <Setter Property="IsVisible" 
+                                Value="false" />
+                    </DataTrigger>
+                </Grid.Triggers>
+
+                <CollectionView HorizontalScrollBarVisibility="Never"
+                            ItemsSource="{Binding Feeds}"
+                                x:Name="collection"
+                            >
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Feed">
+                            <Button BackgroundColor="{StaticResource LightDark}"
+                                    Text="{Binding Title}"
+                                    HeightRequest="30"
+                                    WidthRequest="100"
+                                    VerticalOptions="Center"
+                                    TextColor="{StaticResource FontColor}"
+                                    FontFamily="P-SemiBold"
+                                    FontSize="12"
+                                    Padding="0"
+                                    CornerRadius="16"
+                                    Clicked="Feed_Clicked"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=FeedSelect}"
+                                    CommandParameter="{Binding .}"
+                                    
+                                    >
+                                <Button.Triggers>
+
+                                    <DataTrigger   Binding="{Binding IsSelected}" 
+                                                TargetType="Button"
+                                                 Value="true">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryAccent}" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
             <!---->
             <!-- HitBox - Layer that detect touch -->
             <BoxView BackgroundColor="Transparent"
@@ -188,6 +236,8 @@
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
                    Padding="0"
+                   
+                   
                    Grid.RowSpan="2"
                    CornerRadius="0"
                    WidthRequest="50">

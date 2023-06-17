@@ -289,6 +289,16 @@ namespace AresNews.ViewModels
         {
             get { return _shareArticle; }
         }
+
+        public Command FeedSelect
+        {
+            get { return new Command<Feed> ((feed) =>
+            {
+
+
+                
+            }); }
+        }
         // Command to add a Bookmark
         private readonly Command _addBookmark;
 
