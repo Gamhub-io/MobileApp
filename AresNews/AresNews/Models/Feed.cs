@@ -17,6 +17,8 @@ namespace AresNews.Models
         [Ignore]
         public bool IsLoaded { get; set; }
         [Ignore]
+        public bool IsSelected { get; set; }
+        [Ignore]
         public ObservableCollection<Article> Articles { get; set; }
     }
 }

@@ -185,5 +185,14 @@ namespace AresNews.Views
 
 
         }
+
+        private void Feed_Clicked(object sender, EventArgs e)
+        {
+            Button feedButton = (Button)sender;
+
+            feedButton.BackgroundColor = (Color)Application.Current.Resources["PrimaryAccent"];
+
+
+        }
     }
 }
