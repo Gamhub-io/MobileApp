@@ -163,43 +163,11 @@
 
 
             <!-- Feeds - List of feeds -->
-            <controls:TabViewWorkaround TabStripPlacement="Top"
-                                        TabStripBackgroundColor="{StaticResource DarkSecondary}"
-                                        TabStripHeight="45"
-                                        VerticalOptions="Fill"
-                                        SelectionChanged="TabView_SelectionChanged"
-                                        IsSwipeEnabled="False"
-                                        Grid.Row="0"
-                                        TabItemsSource="{Binding Feeds }"
-                                        SelectedIndexWorkaround="{Binding CurrentFeedIndex}"
-                                        x:Name="TabView"
-                                        HorizontalOptions="Fill"
-                                        TabIndicatorColor="{StaticResource Primary}">
-                <controls:TabViewWorkaround.Triggers>
-                    <DataTrigger Binding="{Binding Feeds.Count}"
-                                 TargetType="xct:TabView"
-                                 Value="0">
-                        <Setter Property="IsVisible" 
-                                Value="false" />
-                    </DataTrigger>
-
-                </controls:TabViewWorkaround.Triggers>
-
-                <controls:TabViewWorkaround.TabViewItemDataTemplate>
-                    <DataTemplate x:DataType="model:Feed">
-                        <Grid xct:TouchEffect.Command="{Binding SwitchFeed, Mode=OneWay, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
-                          xct:TouchEffect.CommandParameter="{Binding .}">
-                            <Label  HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                FontFamily="P-Bold"
-                                FontSize="12"
-                                TextColor="{StaticResource FontColor}"
-                                Text="{Binding Title}" />
-                        </Grid>
-
-                    </DataTemplate>
-                </controls:TabViewWorkaround.TabViewItemDataTemplate>
-            </controls:TabViewWorkaround>
+            <CollectionView HorizontalScrollBarVisibility="Never">
+                <CollectionView.ItemsLayout>
+                    
+                </CollectionView.ItemsLayout>
+            </CollectionView>
             <!---->
             <!-- HitBox - Layer that detect touch -->
             <BoxView BackgroundColor="Transparent"
