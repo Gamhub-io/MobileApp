@@ -152,24 +152,24 @@ namespace AresNews.Views
         /// Remove a tab organically 
         /// </summary>
         /// <param name="index">index of the tab you want to remove</param>
-        public void RemoveTab (int index)
-        {
-            TabView.TabItems.RemoveAt(index);
-        }
+        //public void RemoveTab (int index)
+        //{
+        //    TabView.TabItems.RemoveAt(index);
+        //}
 
-        private void TabView_ChildRemoved(object sender, ElementEventArgs e)
-        {
+        //private void TabView_ChildRemoved(object sender, ElementEventArgs e)
+        //{
 
-        }
-        private void SwitchItem(int index)
-        {
-            if (index != -1 && index < TabView.TabItems.Count)
-            {
-                // See: https://github.com/xamarin/XamarinCommunityToolkit/issues/595
-                MethodInfo dynMethod = TabView.GetType().GetMethod("UpdateSelectedIndex", BindingFlags.NonPublic | BindingFlags.Instance);
-                dynMethod?.Invoke(TabView, new object[] { index, false });
-            }
-        }
+        //}
+        //private void SwitchItem(int index)
+        //{
+        //    if (index != -1 && index < TabView.TabItems.Count)
+        //    {
+        //        // See: https://github.com/xamarin/XamarinCommunityToolkit/issues/595
+        //        MethodInfo dynMethod = TabView.GetType().GetMethod("UpdateSelectedIndex", BindingFlags.NonPublic | BindingFlags.Instance);
+        //        dynMethod?.Invoke(TabView, new object[] { index, false });
+        //    }
+        //}
 
         private void TabView_SelectionChanged(object sender, TabSelectionChangedEventArgs e)
         {
