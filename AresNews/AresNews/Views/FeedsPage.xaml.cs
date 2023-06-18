@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.CommunityToolkit.UI.Views;
+using System.Drawing;
+using System.Collections.ObjectModel;
 
 namespace AresNews.Views
 {
@@ -21,6 +23,9 @@ namespace AresNews.Views
         private uint _modalWidthStart = 50;
         private FeedsViewModel _vm;
         private bool _appeared = false;
+        private Button _previousSelectedButton;
+        private Button firstButton;
+
         public bool IsFromDetail { get; set; }
         public FeedsPage()
         {
@@ -31,7 +36,9 @@ namespace AresNews.Views
         {
             base.OnAppearing();
 
-
+            if (_previousSelectedButton == null)
+                ChangeFirstButtonColor((Xamarin.Forms.Color)Application.Current.Resources["LightDark"]);
+            
             _vm.Resume();
             //TabView.SelectedIndexWorkaround = 0;
             //TabView.SelectedIndexWorkaround = _vm.CurrentFeedIndex;
@@ -94,6 +101,27 @@ namespace AresNews.Views
 
             _vm.IsMenuOpen = true;
         }
+        /// <summary>
+        /// Method to change the color of the first button in the CollectionView
+        /// </summary>
+        /// <param name="colour"></param>
+        private void ChangeFirstButtonColor(Xamarin.Forms.Color colour)
+        {
+
+            firstButton.BackgroundColor = colour;
+        }
+        private void CollectionView_ItemAppearing(object sender, ItemVisibilityEventArgs e)
+        {
+            if (firstButton == null)
+            {
+                if (collection.FindByName<Button>("button") is Button button)
+                {
+                    firstButton = button;
+                    //firstButton.BackgroundColor = Color.Red; // Change the color as needed
+                }
+            }
+        }
+
         /// <summary>
         /// Function to close a modal
         /// </summary>
@@ -190,9 +218,37 @@ namespace AresNews.Views
         {
             Button feedButton = (Button)sender;
 
-            feedButton.BackgroundColor = (Color)Application.Current.Resources["PrimaryAccent"];
+            feedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+
+            if (_previousSelectedButton != feedButton && _previousSelectedButton != null)
+            {
+                _previousSelectedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+                
+
+            }
+            _previousSelectedButton = feedButton;
 
 
+        }
+        private Button FindFirstButton()
+        {
+
+            IEnumerable<Element> enumerable = collection.Descendants();
+            return enumerable.FirstOrDefault() as Button;
+        }
+
+        private void CollectionView_BindingContextChanged(object sender, System.EventArgs e)
+        {
+            if (collection.ItemsSource is ObservableCollection<Button> buttons && buttons.Count > 0)
+            {
+                if (firstButton != null)
+                {
+                    //firstButton.BackgroundColor = Color.Default; // Reset previous first button color
+                }
+
+                firstButton = buttons[0];
+                //firstButton.BackgroundColor = Color.Red; // Change the color as needed
+            }
         }
     }
 }
