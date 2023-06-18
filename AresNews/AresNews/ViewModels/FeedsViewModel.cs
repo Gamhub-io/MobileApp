@@ -68,16 +68,16 @@ namespace AresNews.ViewModels
 				OnPropertyChanged(nameof(Articles));
 			}
 		}
-        private Feed _currentFeed;
+        private Feed _selectedFeed;
 
-        public Feed CurrentFeed
+        public Feed SelectedFeed
         {
-            get { return _currentFeed; }
+            get { return _selectedFeed; }
             set 
             {
-                _currentFeed = value;
+                _selectedFeed = value;
                 //CurrentFeedIndex = _feeds.IndexOf(value);
-                OnPropertyChanged(nameof(CurrentFeed));
+                OnPropertyChanged(nameof(SelectedFeed));
             }
         }
         public Xamarin.Forms.Command<Feed> RefreshAll => new Command<Feed>((feed) =>
@@ -101,8 +101,8 @@ namespace AresNews.ViewModels
              {
 
                  // Set new feed
-                 CurrentFeed = feed;
-                 CurrentFeed.IsLoaded = false;
+                 SelectedFeed = feed;
+                 SelectedFeed.IsLoaded = false;
 
                  //// Load articles
                  //
@@ -119,21 +119,21 @@ namespace AresNews.ViewModels
 
         public Xamarin.Forms.Command<Feed> Delete => new Xamarin.Forms.Command<Feed>(async (feed) =>
         {
-            await CurrentPage.Navigation.PushPopupAsync(new DeleteFeedPopUp(_currentFeed, this));
+            await CurrentPage.Navigation.PushPopupAsync(new DeleteFeedPopUp(_selectedFeed, this));
 
         });
 
         public Xamarin.Forms.Command<Feed> Rename => new Xamarin.Forms.Command<Feed>(async (feed) =>
         {
-            await CurrentPage.Navigation.PushPopupAsync(new RenameFeedPopUp(_currentFeed, this));
+            await CurrentPage.Navigation.PushPopupAsync(new RenameFeedPopUp(_selectedFeed, this));
 
         });
 
         public Xamarin.Forms.Command<Feed> Edit => new Xamarin.Forms.Command<Feed>(async (feed) =>
         {
             IsFromDetail = true;
-            CurrentFocusIndex = _feeds.IndexOf(_currentFeed);
-            await CurrentPage.Navigation.PushAsync(new EditFeedPage(_currentFeed, this));
+            CurrentFocusIndex = _feeds.IndexOf(_selectedFeed);
+            await CurrentPage.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this));
 
         });
 
@@ -153,12 +153,12 @@ namespace AresNews.ViewModels
                     try
                     {
 
-                        if (CurrentFeed == null)
+                        if (SelectedFeed == null)
                         {
-                            CurrentFeed = _feeds[0];
+                            SelectedFeed = _feeds[0];
 
                         }
-                        this.Refresh(CurrentFeed);
+                        this.Refresh(SelectedFeed);
                     }
                     catch
                     {
@@ -295,8 +295,17 @@ namespace AresNews.ViewModels
             get { return new Command<Feed> ((feed) =>
             {
 
+                // Change the button colour of the clicked item
+                Feeds[_feeds.IndexOf(feed)].ButtonColor = (Color)Application.Current.Resources["PrimaryAccent"];
 
-                
+                // Reset the button colour for the previously selected item (if any)
+                if (SelectedFeed != null && SelectedFeed != feed)
+                {
+                    Feeds[_feeds.IndexOf(_selectedFeed)].ButtonColor = (Color)Application.Current.Resources["LightDark"];
+                }
+
+                SelectedFeed = feed;
+
             }); }
         }
         // Command to add a Bookmark
@@ -314,12 +323,12 @@ namespace AresNews.ViewModels
             if (IsBusy)
                 return;
             IsBusy = true;
-                bool isFirstLoad = feed != _currentFeed;
+                bool isFirstLoad = feed != _selectedFeed;
                 if (isFirstLoad)
                 {
 
-                    CurrentFeed = feed;
-                    CurrentFeed.IsLoaded = false;
+                    SelectedFeed = feed;
+                    SelectedFeed.IsLoaded = false;
                 }
 
 
@@ -379,7 +388,7 @@ namespace AresNews.ViewModels
                 Articles = new ObservableCollection<Article>(articles);
 
             }
-            CurrentFeed.IsLoaded = true;
+            SelectedFeed.IsLoaded = true;
             //Feeds[indexFeed] = feed;
 
             IsRefreshing = false;
@@ -472,7 +481,7 @@ namespace AresNews.ViewModels
             await Task.Factory.StartNew(() =>
             {
 
-                if (_currentFeed.Id == feed.Id)
+                if (_selectedFeed.Id == feed.Id)
                 {
                     if (_feeds.Count <= 0)
                         return;
@@ -513,7 +522,7 @@ namespace AresNews.ViewModels
         /// <param name="feed">Updated data of feed</param>
         public void UpdateCurrentFeed (Feed feed)
         {
-            CurrentFeed = feed;
+            SelectedFeed = feed;
             Feed feedToUpdate = Feeds.FirstOrDefault((e) => e.Id == feed.Id);
 
             // Update the item visually

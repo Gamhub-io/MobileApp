@@ -3,7 +3,9 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Text;
+using Xamarin.Forms;
 
 namespace AresNews.Models
 {
@@ -19,6 +21,9 @@ namespace AresNews.Models
         [Ignore]
         public bool IsSelected { get; set; }
         [Ignore]
+        public Xamarin.Forms.Color ButtonColor { get; set; } = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+        [Ignore]
         public ObservableCollection<Article> Articles { get; set; }
+
     }
 }

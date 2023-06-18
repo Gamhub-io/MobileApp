@@ -182,6 +182,14 @@
                             ItemsSource="{Binding Feeds}"
                                 x:Name="collection"
                             >
+                    <CollectionView.Triggers>
+                        <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="CollectionView"
+                                 Value="0">
+                            <Setter Property="IsVisible" 
+                                Value="false" />
+                        </DataTrigger>
+                    </CollectionView.Triggers>
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
                     </CollectionView.ItemsLayout>
@@ -203,14 +211,14 @@
                                     CommandParameter="{Binding .}"
                                     
                                     >
-                                <Button.Triggers>
+                                <!--<Button.Triggers>
 
                                     <DataTrigger   Binding="{Binding IsSelected}" 
-                                                TargetType="Button"
-                                                 Value="true">
-                                        <Setter Property="BackgroundColor" Value="{StaticResource PrimaryAccent}" />
+                                                  TargetType="Button"
+                                                   Value="true">
+                                        <Setter   Property="BackgroundColor" Value="{StaticResource PrimaryAccent}" />
                                     </DataTrigger>
-                                </Button.Triggers>
+                                </Button.Triggers>-->
                             </Button>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
@@ -248,7 +256,7 @@
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"
                                                   />
                         </Grid.GestureRecognizers>
-                        <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
+                        <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
                                    TextColor="{StaticResource FontColor}"
                                    FontFamily="P-SemiBold"
                                    FontSize="18"
@@ -263,7 +271,7 @@
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
-                        <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Delete {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
+                        <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Delete {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
                                    TextColor="{StaticResource FontColor}"
                                    FontFamily="P-SemiBold"
                                    FontSize="18"
