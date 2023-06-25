@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using Xamarin.Forms.PancakeView;
 using static AresNews.Models.UpdateOrder;
 using Command = Xamarin.Forms.Command;
 
@@ -32,6 +33,17 @@ namespace AresNews.ViewModels
 				OnPropertyChanged(nameof(Feeds));
 			}
 		}
+        private ObservableCollection<TabButton> _feedTabs;
+
+		public ObservableCollection<TabButton> FeedTabs
+		{
+			get { return _feedTabs; }
+			set 
+			{
+                _feedTabs = value; 
+				OnPropertyChanged(nameof(FeedTabs));
+			}
+		}
         private int _currentFeedIndex;
 
         public int CurrentFeedIndex
@@ -40,7 +52,10 @@ namespace AresNews.ViewModels
             set 
             {
                 _currentFeedIndex = value;
+                SwitchTabs(_currentFeedIndex);
                 OnPropertyChanged(nameof(CurrentFeedIndex));
+
+                _oldIndex = _currentFeedIndex;
             }
         }
 
@@ -76,7 +91,8 @@ namespace AresNews.ViewModels
             set 
             {
                 _selectedFeed = value;
-                //CurrentFeedIndex = _feeds.IndexOf(value);
+                CurrentFeedIndex = _feeds.IndexOf(value);
+                Refresh(value);
                 OnPropertyChanged(nameof(SelectedFeed));
             }
         }
@@ -162,6 +178,7 @@ namespace AresNews.ViewModels
                     }
                     catch
                     {
+                        // in case of error, refresh the first feed
                         this.Refresh(_feeds[0]);
                     }
                 });
@@ -169,10 +186,22 @@ namespace AresNews.ViewModels
         });
 		public FeedsViewModel(FeedsPage page)
         {
+            // CurrentApp and CurrentPage will allow use to access to global properties
             CurrentApp = App.Current as App;
             CurrentPage = page;
-            Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             
+            // Instantiate definitions 
+            FeedTabs = new ObservableCollection<TabButton>();
+            Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+
+            // Organise feeds into tabs
+            CopyFeedsToTabs();
+
+            // Select first item
+            CurrentFeedIndex = 0;
+
+            
+
             UpdateOrders = new List<UpdateOrder>();
 
 
@@ -203,11 +232,6 @@ namespace AresNews.ViewModels
 
             MessagingCenter.Subscribe<Feed>(this, "RemoveFeed", (sender) =>
             {
-                //Feed item = _feeds.First(f => f.Id == sender.Id);
-                ////if (_feeds.Count > 1 && _currentFeed == item )
-                ////    CurrentFeed = _feeds[0];
-                ////Feeds.Remove(item);
-                //Delete.Execute(item);
 
                 if (sender == null)
                     return;
@@ -217,22 +241,21 @@ namespace AresNews.ViewModels
                     Update = UpdateOrder.FeedUpdate.Remove,
                     Feed = sender
                 });
-                // Remove the item from the separate collection
-                //Feed feedToRemove = _feeds.FirstOrDefault(f => f.Keywords.ToLower() == sender.Keywords.ToLower());
-                //int index = _feeds.IndexOf(feedToRemove);
 
-                ////CurrentPage.RemoveTab(_feeds.IndexOf(feedToRemove));
 
-                //if (feedToRemove != null)
-                //{
-                //    CurrentPage.ResetTabs();
-                //    Feeds.Remove(feedToRemove);
-                //    CurrentPage.RemoveTab(index);
-                //    //var newFeeds = new ObservableCollection<Feed>(_feeds);
-                //    // Update the ItemsSource of the CarouselView with the new collection
-                //    //Feeds.Clear();
-                //    //Feeds = newFeeds;
-                //}
+            });
+
+            MessagingCenter.Subscribe<Feed>(this, "EditFeed", (sender) =>
+            {
+
+                if (sender == null)
+                    return;
+
+                UpdateOrders.Add(new UpdateOrder
+                {
+                    Update = UpdateOrder.FeedUpdate.Edit,
+                    Feed = sender
+                });
 
 
             });
@@ -292,19 +315,21 @@ namespace AresNews.ViewModels
 
         public Command FeedSelect
         {
-            get { return new Command<Feed> ((feed) =>
+            get { return new Command<string> ((feedId) =>
             {
-
+                Feed nextFeed = Feeds.FirstOrDefault(feed => feed.Id == feedId);
+                int nextIndex = _feeds.IndexOf(nextFeed);
+                
                 // Change the button colour of the clicked item
-                Feeds[_feeds.IndexOf(feed)].ButtonColor = (Color)Application.Current.Resources["PrimaryAccent"];
+                FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["PrimaryAccent"];
 
                 // Reset the button colour for the previously selected item (if any)
-                if (SelectedFeed != null && SelectedFeed != feed)
+                if (SelectedFeed != null && SelectedFeed != nextFeed)
                 {
-                    Feeds[_feeds.IndexOf(_selectedFeed)].ButtonColor = (Color)Application.Current.Resources["LightDark"];
+                    FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["LightDark"];
                 }
 
-                SelectedFeed = feed;
+                SelectedFeed = nextFeed;
 
             }); }
         }
@@ -414,6 +439,7 @@ namespace AresNews.ViewModels
         }
 
         private bool _isMenuOpen;
+        private int _oldIndex;
 
         public bool IsMenuOpen
         {
@@ -475,6 +501,7 @@ namespace AresNews.ViewModels
             int indexPrev = feedIndex - 1;
             //Feeds.Remove(feed);
             Feeds.RemoveAt(feedIndex);
+            FeedTabs.RemoveAt(feedIndex);
 
             Feed feedInView = new Feed();
 
@@ -539,6 +566,7 @@ namespace AresNews.ViewModels
         /// </summary>
         public void Resume()
         {
+            CurrentPage.CloseDropdownMenu();
             try
             {
 
@@ -559,15 +587,14 @@ namespace AresNews.ViewModels
                     }
                     if (order.Update == FeedUpdate.Edit)
                     {
-                        int feedIndex = _feeds.IndexOf(order.Feed);
 
 
                         //Feeds.RemoveAt(feedIndex);
                         //Feeds.Add(order.Feed);
 
-                        Feeds[feedIndex] = order.Feed;
+                        ChangeFeed(order.Feed);
 
-                        CurrentFeedIndex = feedIndex;
+                        //CurrentFeedIndex = feedIndex;
                     }
                 }
                 UpdateOrders.Clear();
@@ -582,7 +609,80 @@ namespace AresNews.ViewModels
            
 
         }
-        
+        /// <summary>
+        /// Change feed from another feed
+        /// </summary>
+        /// <param name="feed"></param>
+        private void ChangeFeed (Feed feed)
+        {
+            int feedIndex = _feeds.IndexOf(feed);
+
+            Feeds[feedIndex] = feed;
+            //CopyFeedsToTabs();
+            FeedTabs[feedIndex].Title = feed.Title;
+
+            Refresh(feed);
+        }
+        /// <summary>
+        /// Copies the items from the <see cref="_feeds"/> collection to the <see cref="FeedTabs"/> collection, transforming them into <see cref="TabButton"/> items.
+        /// </summary>
+        private void CopyFeedsToTabs()
+        {
+            FeedTabs.Clear();
+
+            var tabButtons = _feeds.Select(feed => new TabButton
+            {
+                Id = feed.Id,
+                Title = feed.Title
+                // Set other properties of TabButton if needed
+            });
+
+            foreach (var tabButton in tabButtons)
+            {
+                FeedTabs.Add(tabButton);
+            }
+            FeedTabs[_currentFeedIndex].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+        }
+        /// <summary>
+        /// Deselect all the feed tabs
+        /// </summary>
+        private void DeselectAll()
+        {
+            foreach (var item in FeedTabs)
+            {
+                FeedTabs[_currentFeedIndex].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+
+            }
+        }
+        /// <summary>
+        /// Select a tab from its index
+        /// </summary>
+        /// <param name="index">the index of the tab</param>
+        private void SelectTab(int index)
+        {
+            FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+        }
+        /// <summary>
+        /// Delect a tab from its index
+        /// </summary>
+        /// <param name="index">the index of the tab</param>
+        private void DeselectTab(int index)
+        {
+            FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+        }
+        /// <summary>
+        /// Switch from a tab to another
+        /// </summary>
+        /// <param name="index"> index of the tab you want to switch to</param>
+        private void SwitchTabs(int index)
+        {
+            // Deselect the previous tab
+            //DeselectAll();
+            DeselectTab(index);
+
+            // Select the new one
+            SelectTab(index);
+        }
 
     }
 }

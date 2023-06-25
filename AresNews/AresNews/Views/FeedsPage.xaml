@@ -170,7 +170,7 @@
                   Grid.Row="0">
                 
                 <Grid.Triggers>
-                    <DataTrigger Binding="{Binding Feeds.Count}"
+                    <DataTrigger Binding="{Binding FeedTabs.Count}"
                                  TargetType="Grid"
                                  Value="0">
                         <Setter Property="IsVisible" 
@@ -179,11 +179,11 @@
                 </Grid.Triggers>
 
                 <CollectionView HorizontalScrollBarVisibility="Never"
-                            ItemsSource="{Binding Feeds}"
+                            ItemsSource="{Binding FeedTabs}"
                                 x:Name="collection"
                             >
                     <CollectionView.Triggers>
-                        <DataTrigger Binding="{Binding Feeds.Count}"
+                        <DataTrigger Binding="{Binding FeedTabs.Count}"
                                  TargetType="CollectionView"
                                  Value="0">
                             <Setter Property="IsVisible" 
@@ -195,8 +195,8 @@
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:Feed">
-                            <Button BackgroundColor="{StaticResource LightDark}"
+                        <DataTemplate x:DataType="model:TabButton">
+                            <Button BackgroundColor="{Binding BackgroundColour}"
                                     Text="{Binding Title}"
                                     HeightRequest="30"
                                     WidthRequest="100"
@@ -208,7 +208,7 @@
                                     CornerRadius="16"
                                     Clicked="Feed_Clicked"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=FeedSelect}"
-                                    CommandParameter="{Binding .}"
+                                    CommandParameter="{Binding Id}"
                                     
                                     >
                                 <!--<Button.Triggers>
