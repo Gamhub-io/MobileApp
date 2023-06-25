@@ -36,52 +36,9 @@ namespace AresNews.Views
         {
             base.OnAppearing();
 
-            if (_previousSelectedButton == null)
-                ChangeFirstButtonColor((Xamarin.Forms.Color)Application.Current.Resources["LightDark"]);
             
             _vm.Resume();
-            //TabView.SelectedIndexWorkaround = 0;
-            //TabView.SelectedIndexWorkaround = _vm.CurrentFeedIndex;
-            //SwitchItem(1);
 
-            //TabView.SelectedIndex = _vm.CurrentFeedIndex;
-
-            ////await Task.Factory.StartNew(() =>
-            ////{
-            //if (_appeared )
-            //    BindingContext = _vm = new FeedsViewModel(this);
-
-            //if (_vm.Feeds.Count == 0)
-            //    return;
-            //ResetTabs();
-
-            //try
-            //{
-            //    if ( _vm.CurrentFeed == null)
-            //    {
-
-            //        await Task.Run(()=> _vm.Refresh(_vm.Feeds[0]));
-            //        return;
-
-            //    }
-            //    //TabView.TabItemsSource = null;
-            //    TabView.SelectedIndex = 0;
-            //    //TabView.TabItemsSource = null;
-
-            //    //await Task.Run(() => _vm.Refresh(_vm.Feeds[0]));
-            //    //await Task.Run(() => _vm.Refresh(_vm.Feeds[0])).ContinueWith((e) => /*_vm.Refresh(_vm.Feeds[0]*/_vm.Resume()/*_vm.RefreshArticles.Execute(null)*/);
-
-
-
-            //}
-            //catch
-            //{
-            //    await Task.Factory.StartNew(() => _vm.Refresh(_vm.Feeds[0]));
-            //}
-            //_appeared = true;
-            ////});
-            ///
-           // var f = _vm.CurrentFeedIndex;
         }/// <summary>
          /// Function to open a the dropdown
          /// </summary>
@@ -109,17 +66,6 @@ namespace AresNews.Views
         {
 
             firstButton.BackgroundColor = colour;
-        }
-        private void CollectionView_ItemAppearing(object sender, ItemVisibilityEventArgs e)
-        {
-            if (firstButton == null)
-            {
-                if (collection.FindByName<Button>("button") is Button button)
-                {
-                    firstButton = button;
-                    //firstButton.BackgroundColor = Color.Red; // Change the color as needed
-                }
-            }
         }
 
         /// <summary>
@@ -216,39 +162,19 @@ namespace AresNews.Views
 
         private void Feed_Clicked(object sender, EventArgs e)
         {
-            Button feedButton = (Button)sender;
+            //Button feedButton = (Button)sender;
 
-            feedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+            //feedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
 
-            if (_previousSelectedButton != feedButton && _previousSelectedButton != null)
-            {
-                _previousSelectedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+            //if (_previousSelectedButton != feedButton && _previousSelectedButton != null)
+            //{
+            //    _previousSelectedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
                 
 
-            }
-            _previousSelectedButton = feedButton;
+            //}
+            //_previousSelectedButton = feedButton;
 
 
-        }
-        private Button FindFirstButton()
-        {
-
-            IEnumerable<Element> enumerable = collection.Descendants();
-            return enumerable.FirstOrDefault() as Button;
-        }
-
-        private void CollectionView_BindingContextChanged(object sender, System.EventArgs e)
-        {
-            if (collection.ItemsSource is ObservableCollection<Button> buttons && buttons.Count > 0)
-            {
-                if (firstButton != null)
-                {
-                    //firstButton.BackgroundColor = Color.Default; // Reset previous first button color
-                }
-
-                firstButton = buttons[0];
-                //firstButton.BackgroundColor = Color.Red; // Change the color as needed
-            }
         }
     }
 }
