@@ -117,11 +117,13 @@ namespace AresNews.ViewModels
              {
 
                  // Set new feed
-                 SelectedFeed = feed;
+                 //SelectedFeed = feed;
+                 SwitchTabs(_feeds.IndexOf(feed));
                  SelectedFeed.IsLoaded = false;
 
                  //// Load articles
                  //
+                 
 
              });
 
@@ -532,10 +534,10 @@ namespace AresNews.ViewModels
             .ContinueWith((e) =>
             {
                 // TODO: Find a way to make sure the next item selected is the previous one (aka feedInView)
-                //SwitchFeed.Execute(feedInView);
+                SwitchFeed.Execute(feedInView);
 
                 // Select the first feed
-                SwitchFeed.Execute(_feeds[0]);
+                //SwitchFeed.Execute(_feeds[0]);
             });
 
 
@@ -573,16 +575,21 @@ namespace AresNews.ViewModels
                 CurrentApp.ShowLoadingIndicator();
                 foreach (var order in UpdateOrders)
                 {
+                    int feedIndex = _feeds.IndexOf(order.Feed);
+
                     if (order.Update == FeedUpdate.Remove)
                     {
                         //RemoveFeed(order.Feed);
                         // Delete the feed
                         App.SqLiteConn.Delete(order.Feed);
+                        //SelectTab(feedIndex);
+                        FeedTabs.RemoveAt(feedIndex);
 
                     }
                     if (order.Update == FeedUpdate.Add)
                     {
-                        Feeds.Add(order.Feed);
+                        Feed feed = order.Feed;
+                        AddFeed(feed);
 
                     }
                     if (order.Update == FeedUpdate.Edit)
@@ -609,6 +616,17 @@ namespace AresNews.ViewModels
            
 
         }
+
+        private void AddFeed(Feed feed)
+        {
+            Feeds.Add(feed);
+            FeedTabs.Add(new()
+            {
+                Title = feed.Title,
+
+            });
+        }
+
         /// <summary>
         /// Change feed from another feed
         /// </summary>
@@ -678,7 +696,8 @@ namespace AresNews.ViewModels
         {
             // Deselect the previous tab
             //DeselectAll();
-            DeselectTab(index);
+            if (_oldIndex <= _feeds.Count -1)
+                DeselectTab(_oldIndex);
 
             // Select the new one
             SelectTab(index);
