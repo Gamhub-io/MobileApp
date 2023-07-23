@@ -53,6 +53,7 @@ namespace AresNews.ViewModels
             {
                 _currentFeedIndex = value;
                 SwitchTabs(_currentFeedIndex);
+
                 OnPropertyChanged(nameof(CurrentFeedIndex));
 
                 _oldIndex = _currentFeedIndex;
@@ -319,9 +320,12 @@ namespace AresNews.ViewModels
         {
             get { return new Command<string> ((feedId) =>
             {
+
                 Feed nextFeed = Feeds.FirstOrDefault(feed => feed.Id == feedId);
                 int nextIndex = _feeds.IndexOf(nextFeed);
-                
+
+                if (nextIndex == -1)
+                    return;
                 // Change the button colour of the clicked item
                 FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["PrimaryAccent"];
 
@@ -350,6 +354,8 @@ namespace AresNews.ViewModels
             if (IsBusy)
                 return;
             IsBusy = true;
+
+            CurrentApp.ShowLoadingIndicator();
                 bool isFirstLoad = feed != _selectedFeed;
                 if (isFirstLoad)
                 {
@@ -367,6 +373,7 @@ namespace AresNews.ViewModels
                     // End the loading indicator
                     IsRefreshing = false;
                     IsBusy = false;
+                    CurrentApp.RemoveLoadingIndicator();
 
                 });
         }
@@ -572,7 +579,7 @@ namespace AresNews.ViewModels
             try
             {
 
-                CurrentApp.ShowLoadingIndicator();
+                //CurrentApp.ShowLoadingIndicator();
                 foreach (var order in UpdateOrders)
                 {
                     int feedIndex = _feeds.IndexOf(order.Feed);
@@ -584,6 +591,8 @@ namespace AresNews.ViewModels
                         App.SqLiteConn.Delete(order.Feed);
                         //SelectTab(feedIndex);
                         FeedTabs.RemoveAt(feedIndex);
+
+                        Refresh(_selectedFeed);
 
                     }
                     if (order.Update == FeedUpdate.Add)
@@ -616,7 +625,10 @@ namespace AresNews.ViewModels
            
 
         }
-
+        /// <summary>
+        /// Add a feed to the list: this method not only add it to the list of feed but also create a tab for this feed
+        /// </summary>
+        /// <param name="feed">feed that will be added</param>
         private void AddFeed(Feed feed)
         {
             Feeds.Add(feed);
@@ -678,7 +690,34 @@ namespace AresNews.ViewModels
         /// <param name="index">the index of the tab</param>
         private void SelectTab(int index)
         {
+            _oldIndex = index;
             FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+        }
+        /// <summary>
+        /// Select a tab after the select tab was deleted
+        /// </summary>
+        /// <param name="index">index of the former tab</param>
+        public void SelectDefaultTab(int index)
+        {
+
+            int indexNext = index + 1;
+            int indexPrev = index - 1;
+
+            int tabIndex = 0;
+            if (_feeds.Count <= 0)
+                return;
+
+            // We try to establish the next feed
+            if (indexPrev >= 0 )
+                tabIndex = indexPrev;
+            else if (indexNext <= _feeds.Count -1)
+                tabIndex = indexPrev;
+
+            // Select the tab that we determined
+            SelectTab(tabIndex);
+
+            // Refresh the tab
+            Refresh(_feeds[tabIndex]);
         }
         /// <summary>
         /// Delect a tab from its index
@@ -686,7 +725,15 @@ namespace AresNews.ViewModels
         /// <param name="index">the index of the tab</param>
         private void DeselectTab(int index)
         {
-            FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+            try
+            {
+
+                FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+            }
+            catch 
+            {
+
+            }
         }
         /// <summary>
         /// Switch from a tab to another
