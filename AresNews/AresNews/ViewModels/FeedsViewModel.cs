@@ -337,6 +337,13 @@ namespace AresNews.ViewModels
 
                 SelectedFeed = nextFeed;
 
+                // Flag all the other feeds as unloaded
+                for (int i = 0; i < _feeds.Count ; i++)
+                {
+                    if (_feeds[i].Id != SelectedFeed.Id)
+                        _feeds[i].IsLoaded = false;
+                }
+
             }); }
         }
         // Command to add a Bookmark
@@ -699,7 +706,6 @@ namespace AresNews.ViewModels
         /// <param name="index">index of the former tab</param>
         public void SelectDefaultTab(int index)
         {
-
             int indexNext = index + 1;
             int indexPrev = index - 1;
 
