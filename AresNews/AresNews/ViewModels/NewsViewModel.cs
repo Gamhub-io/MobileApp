@@ -108,6 +108,18 @@ namespace AresNews.ViewModels
             }
         }
 
+        private bool _isSearchProcessed;
+
+        public bool IsSearchProcessed
+        {
+            get { return _isSearchProcessed; }
+            set 
+            {
+                _isSearchProcessed = value;
+                OnPropertyChanged(nameof(IsSearchProcessed));
+            }
+        }
+
         public Command SaveSearch
         {
             get
@@ -156,12 +168,19 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
+                    if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
+
+
                     // Scroll up before fetching the items
                     CurrentPage.ScrollFeed();
                     IsSearching = false;
                     IsRefreshing = true;
                     _prevSearch = null;
-                    //FetchArticles(true);
+
+                    // Empty the search bar
+                    SearchText = string.Empty;
+
+                    IsSearchProcessed = false;
 
                 });
             }
@@ -172,9 +191,8 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
-                    //if (_searchText == _prevSearch)
-                        //return;
-                    IsRefreshing = true;
+
+                    IsRefreshing = IsSearchProcessed = true;
                 });
             }
         }
@@ -326,14 +344,14 @@ namespace AresNews.ViewModels
 
                });
 
-            _refreshFeed = new Command( () =>
+            _refreshFeed = new Command<bool>( (isAll) =>
                {
                    if (IsSearchOpen)
                    {
                        Search.Execute(null);
                    }
                    // Fetch the article
-                   FetchArticles();
+                   FetchArticles(isAll);
                });
 
             // Set command to share an article
@@ -378,10 +396,11 @@ namespace AresNews.ViewModels
             if (isFullRefresh)
             {
 
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds",jsonBody: null);
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") }, jsonBody: null);
                 
                 _isLaunching = false;
-                Articles = articles;
+                Articles.Clear();
+                Articles = new ObservableRangeCollection<Article>(articles);
                 // Register date of the refresh
                 //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                 IsRefreshing = false;
@@ -406,7 +425,7 @@ namespace AresNews.ViewModels
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
 
-                    Articles = await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-3).ToString("dd-MM-yyy_HH:mm:ss") });
+                    Articles = await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") });
                     IsRefreshing = false;
                     _isLaunching = false;
                     await RefreshDB();
