@@ -99,28 +99,6 @@ namespace AresNews.ViewModels
             }
         }
         private TabButton _selectedFeedTab;
-
-        //public TabButton SelectedFeedTab
-        //{
-        //    get { return _selectedFeedTab; }
-        //    set 
-        //    {
-        //        _selectedFeedTab = value;
-
-        //        int index = _feedTabs.IndexOf(value);
-        //        FeedTabs[index].IsSelected = true;
-        //        for (int i = 0; i < _feeds.Count; i++)
-        //        {
-        //            if (i != index)
-        //            {
-        //                _feeds[i].IsLoaded = false;
-        //                FeedTabs[i].IsSelected = false;
-
-        //            }
-        //        }
-        //        OnPropertyChanged(nameof(SelectedFeedTab));
-        //    }
-        //}
         public TabButton SelectedFeedTab
         {
             get { return _selectedFeedTab; }
@@ -271,12 +249,6 @@ namespace AresNews.ViewModels
 
             MessagingCenter.Subscribe<Feed>(this, "AddFeed", (sender) =>
             {
-                //Feeds.Add(sender);
-                // Add the new item to the separate collection
-                //_feeds.Add(sender);
-
-                //// Update the ItemsSource of the CarouselView with the new collection
-                //Feeds = new ObservableCollection<Feed>(_feeds);
 
                 UpdateOrders.Add(new UpdateOrder
                 {

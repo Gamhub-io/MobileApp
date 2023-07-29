@@ -30,6 +30,7 @@ namespace AresNews.ViewModels
             }
         }
         private RenameFeedPopUp _page;
+        private int index;
 
         public RenameFeedPopUp Page
         {
@@ -53,7 +54,8 @@ namespace AresNews.ViewModels
             // Close the page
             await App.Current.MainPage.Navigation.PopAsync();
 
-            _context.CurrentFeedIndex = _context.Feeds.IndexOf(_feed);
+            _context.CurrentFeedIndex = index = _context.Feeds.IndexOf(_feed);
+            _context.FeedTabs[index].Title = _feed.Title;
 
             _context.UpdateOrders.Add(new UpdateOrder
             {
