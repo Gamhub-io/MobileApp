@@ -196,29 +196,36 @@
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:TabButton">
-                            <Button BackgroundColor="{Binding BackgroundColour}"
+                            <Button 
                                     Text="{Binding Title}"
                                     HeightRequest="30"
                                     WidthRequest="100"
                                     VerticalOptions="Center"
-                                    TextColor="{StaticResource FontColor}"
                                     FontFamily="P-SemiBold"
                                     FontSize="12"
                                     Padding="0"
                                     CornerRadius="16"
-                                    Clicked="Feed_Clicked"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=FeedSelect}"
                                     CommandParameter="{Binding Id}"
                                     
                                     >
-                                <!--<Button.Triggers>
+                                <Button.Triggers>
 
-                                    <DataTrigger   Binding="{Binding IsSelected}" 
+                                    <DataTrigger   Binding="{Binding IsSelected, Mode=TwoWay}" 
                                                   TargetType="Button"
                                                    Value="true">
-                                        <Setter   Property="BackgroundColor" Value="{StaticResource PrimaryAccent}" />
+                                        <Setter   Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                        <Setter   Property="TextColor" Value="{StaticResource Dark}" />
+                                        <Setter Property="FontFamily" Value="P-Bold" />
                                     </DataTrigger>
-                                </Button.Triggers>-->
+
+                                    <DataTrigger   Binding="{Binding IsSelected, Mode=TwoWay}" 
+                                                  TargetType="Button"
+                                                   Value="false">
+                                        <Setter   Property="BackgroundColor" Value="{StaticResource LightDark}" />
+                                        <Setter   Property="TextColor" Value="{StaticResource FontColor}" />
+                                    </DataTrigger>
+                                </Button.Triggers>
                             </Button>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
