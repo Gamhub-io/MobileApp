@@ -159,6 +159,7 @@
 
         <RefreshView IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}"
                      Command="{Binding RefreshFeed, Mode=OneWay}"
+                     CommandParameter="{Binding IsSearching, Converter={StaticResource BoolInverseConverter}}"
                      x:Name="newsRefreshView"
                      HorizontalOptions="CenterAndExpand"
                      RefreshColor="{StaticResource Primary}"

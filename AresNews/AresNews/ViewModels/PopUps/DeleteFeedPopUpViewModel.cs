@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
+using Xamarin.Forms.PancakeView;
 
 namespace AresNews.ViewModels.PopUps
 {
@@ -48,15 +50,20 @@ namespace AresNews.ViewModels.PopUps
         public Xamarin.Forms.Command Delete => new Xamarin.Forms.Command(async() =>
         {
 
-            // Remove feed
-            Context.RemoveFeed(_feed);
             // Delete the feed
             App.SqLiteConn.Delete(_feed);
 
+            int index = _context.Feeds.IndexOf(_feed);
+            _context.FeedTabs.RemoveAt(index);
+            _context.Feeds.RemoveAt(index);
+            _context.SelectDefaultTab(index);
+            //_context.Refresh(_context.Feeds[index-1]);
 
+            // Update the feeds remotely
+            //MessagingCenter.Send<Feed>(_feed, "RemoveFeed");
 
             // Close the popup
-            await App.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
+            await Application.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
         });
 
         public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(async() =>

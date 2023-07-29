@@ -11,7 +11,8 @@ namespace AresNews.Models
         public enum FeedUpdate
         {
             Remove,
-            Add
+            Add,
+            Edit
         }
     }
 }

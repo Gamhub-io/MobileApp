@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Xamarin.CommunityToolkit.UI.Views;
+using System.Drawing;
+using System.Collections.ObjectModel;
 
 namespace AresNews.Views
 {
@@ -21,6 +23,9 @@ namespace AresNews.Views
         private uint _modalWidthStart = 50;
         private FeedsViewModel _vm;
         private bool _appeared = false;
+        private Button _previousSelectedButton;
+        private Button firstButton;
+
         public bool IsFromDetail { get; set; }
         public FeedsPage()
         {
@@ -31,48 +36,9 @@ namespace AresNews.Views
         {
             base.OnAppearing();
 
-
+            
             _vm.Resume();
-            TabView.SelectedIndexWorkaround = 0;
-            TabView.SelectedIndexWorkaround = _vm.CurrentFeedIndex;
-            //SwitchItem(1);
 
-            //TabView.SelectedIndex = _vm.CurrentFeedIndex;
-
-            ////await Task.Factory.StartNew(() =>
-            ////{
-            //if (_appeared )
-            //    BindingContext = _vm = new FeedsViewModel(this);
-
-            //if (_vm.Feeds.Count == 0)
-            //    return;
-            //ResetTabs();
-
-            //try
-            //{
-            //    if ( _vm.CurrentFeed == null)
-            //    {
-
-            //        await Task.Run(()=> _vm.Refresh(_vm.Feeds[0]));
-            //        return;
-
-            //    }
-            //    //TabView.TabItemsSource = null;
-            //    TabView.SelectedIndex = 0;
-            //    //TabView.TabItemsSource = null;
-
-            //    //await Task.Run(() => _vm.Refresh(_vm.Feeds[0]));
-            //    //await Task.Run(() => _vm.Refresh(_vm.Feeds[0])).ContinueWith((e) => /*_vm.Refresh(_vm.Feeds[0]*/_vm.Resume()/*_vm.RefreshArticles.Execute(null)*/);
-
-
-
-            //}
-            //catch
-            //{
-            //    await Task.Factory.StartNew(() => _vm.Refresh(_vm.Feeds[0]));
-            //}
-            //_appeared = true;
-            ////});
         }/// <summary>
          /// Function to open a the dropdown
          /// </summary>
@@ -92,6 +58,16 @@ namespace AresNews.Views
 
             _vm.IsMenuOpen = true;
         }
+        /// <summary>
+        /// Method to change the color of the first button in the CollectionView
+        /// </summary>
+        /// <param name="colour"></param>
+        private void ChangeFirstButtonColor(Xamarin.Forms.Color colour)
+        {
+
+            firstButton.BackgroundColor = colour;
+        }
+
         /// <summary>
         /// Function to close a modal
         /// </summary>
@@ -150,24 +126,24 @@ namespace AresNews.Views
         /// Remove a tab organically 
         /// </summary>
         /// <param name="index">index of the tab you want to remove</param>
-        public void RemoveTab (int index)
-        {
-            TabView.TabItems.RemoveAt(index);
-        }
+        //public void RemoveTab (int index)
+        //{
+        //    TabView.TabItems.RemoveAt(index);
+        //}
 
-        private void TabView_ChildRemoved(object sender, ElementEventArgs e)
-        {
+        //private void TabView_ChildRemoved(object sender, ElementEventArgs e)
+        //{
 
-        }
-        private void SwitchItem(int index)
-        {
-            if (index != -1 && index < TabView.TabItems.Count)
-            {
-                // See: https://github.com/xamarin/XamarinCommunityToolkit/issues/595
-                MethodInfo dynMethod = TabView.GetType().GetMethod("UpdateSelectedIndex", BindingFlags.NonPublic | BindingFlags.Instance);
-                dynMethod?.Invoke(TabView, new object[] { index, false });
-            }
-        }
+        //}
+        //private void SwitchItem(int index)
+        //{
+        //    if (index != -1 && index < TabView.TabItems.Count)
+        //    {
+        //        // See: https://github.com/xamarin/XamarinCommunityToolkit/issues/595
+        //        MethodInfo dynMethod = TabView.GetType().GetMethod("UpdateSelectedIndex", BindingFlags.NonPublic | BindingFlags.Instance);
+        //        dynMethod?.Invoke(TabView, new object[] { index, false });
+        //    }
+        //}
 
         private void TabView_SelectionChanged(object sender, TabSelectionChangedEventArgs e)
         {
@@ -180,6 +156,23 @@ namespace AresNews.Views
             //_vm.CurrentFocusIndex = s.SelectedIndexWorkaround;
 
            // _vm.IsFromDetail = false;
+
+
+        }
+
+        private void Feed_Clicked(object sender, EventArgs e)
+        {
+            //Button feedButton = (Button)sender;
+
+            //feedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+
+            //if (_previousSelectedButton != feedButton && _previousSelectedButton != null)
+            //{
+            //    _previousSelectedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+                
+
+            //}
+            //_previousSelectedButton = feedButton;
 
 
         }

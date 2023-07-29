@@ -63,7 +63,7 @@
 
     </Shell.TitleView>
     <ContentPage.Content>
-        <Grid RowDefinitions="30,*">
+        <Grid RowDefinitions="60,*">
             <!-- Empty View - If there is no feeds -->
             <ContentView IsVisible="false"
                          Grid.RowSpan="2">
@@ -104,7 +104,9 @@
             <!-- Current feed - list of article of the selected feed -->
             <RefreshView IsRefreshing="{Binding IsRefreshing, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"
                          Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
-                         Grid.Row="1"
+                         Grid.Row="0"
+                         Grid.RowSpan="2"
+                         Margin="0,40,0,0"
                          x:Name="newsRefreshView"
                          HorizontalOptions="CenterAndExpand"
                          RefreshColor="{StaticResource Primary}">
@@ -163,43 +165,72 @@
 
 
             <!-- Feeds - List of feeds -->
-            <controls:TabViewWorkaround TabStripPlacement="Top"
-                                        TabStripBackgroundColor="{StaticResource DarkSecondary}"
-                                        TabStripHeight="45"
-                                        VerticalOptions="Fill"
-                                        SelectionChanged="TabView_SelectionChanged"
-                                        IsSwipeEnabled="False"
-                                        Grid.Row="0"
-                                        TabItemsSource="{Binding Feeds }"
-                                        SelectedIndexWorkaround="{Binding CurrentFeedIndex}"
-                                        x:Name="TabView"
-                                        HorizontalOptions="Fill"
-                                        TabIndicatorColor="{StaticResource Primary}">
-                <controls:TabViewWorkaround.Triggers>
-                    <DataTrigger Binding="{Binding Feeds.Count}"
-                                 TargetType="xct:TabView"
+            <Grid Padding="4,10"
+                  BackgroundColor="{StaticResource Dark }"
+                  Grid.Row="0">
+                
+                <Grid.Triggers>
+                    <DataTrigger Binding="{Binding FeedTabs.Count}"
+                                 TargetType="Grid"
                                  Value="0">
                         <Setter Property="IsVisible" 
                                 Value="false" />
                     </DataTrigger>
+                </Grid.Triggers>
 
-                </controls:TabViewWorkaround.Triggers>
+                <CollectionView HorizontalScrollBarVisibility="Never"
+                            ItemsSource="{Binding FeedTabs}"
+                                x:Name="collection"
+                            >
+                    <CollectionView.Triggers>
+                        <DataTrigger Binding="{Binding FeedTabs.Count}"
+                                 TargetType="CollectionView"
+                                 Value="0">
+                            <Setter Property="IsVisible" 
+                                Value="false" />
+                        </DataTrigger>
+                    </CollectionView.Triggers>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
 
-                <controls:TabViewWorkaround.TabViewItemDataTemplate>
-                    <DataTemplate x:DataType="model:Feed">
-                        <Grid xct:TouchEffect.Command="{Binding SwitchFeed, Mode=OneWay, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
-                          xct:TouchEffect.CommandParameter="{Binding .}">
-                            <Label  HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                FontFamily="P-Bold"
-                                FontSize="12"
-                                TextColor="{StaticResource FontColor}"
-                                Text="{Binding Title}" />
-                        </Grid>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:TabButton">
+                            <Button 
+                                    Text="{Binding Title}"
+                                    HeightRequest="30"
+                                    WidthRequest="100"
+                                    VerticalOptions="Center"
+                                    FontFamily="P-SemiBold"
+                                    FontSize="12"
+                                    Padding="0"
+                                    CornerRadius="16"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=FeedSelect}"
+                                    CommandParameter="{Binding Id}"
+                                    
+                                    >
+                                <Button.Triggers>
 
-                    </DataTemplate>
-                </controls:TabViewWorkaround.TabViewItemDataTemplate>
-            </controls:TabViewWorkaround>
+                                    <DataTrigger   Binding="{Binding IsSelected, Mode=TwoWay}" 
+                                                  TargetType="Button"
+                                                   Value="true">
+                                        <Setter   Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                        <Setter   Property="TextColor" Value="{StaticResource Dark}" />
+                                        <Setter Property="FontFamily" Value="P-Bold" />
+                                    </DataTrigger>
+
+                                    <DataTrigger   Binding="{Binding IsSelected, Mode=TwoWay}" 
+                                                  TargetType="Button"
+                                                   Value="false">
+                                        <Setter   Property="BackgroundColor" Value="{StaticResource LightDark}" />
+                                        <Setter   Property="TextColor" Value="{StaticResource FontColor}" />
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
             <!---->
             <!-- HitBox - Layer that detect touch -->
             <BoxView BackgroundColor="Transparent"
@@ -220,6 +251,8 @@
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
                    Padding="0"
+                   
+                   
                    Grid.RowSpan="2"
                    CornerRadius="0"
                    WidthRequest="50">
@@ -230,7 +263,7 @@
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"
                                                   />
                         </Grid.GestureRecognizers>
-                        <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
+                        <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
                                    TextColor="{StaticResource FontColor}"
                                    FontFamily="P-SemiBold"
                                    FontSize="18"
@@ -245,7 +278,7 @@
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
-                        <Label Text="{Binding CurrentFeed.Title, StringFormat= 'Delete {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
+                        <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Delete {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
                                    TextColor="{StaticResource FontColor}"
                                    FontFamily="P-SemiBold"
                                    FontSize="18"
