@@ -9,7 +9,7 @@ using Xamarin.Forms;
 
 namespace AresNews.Models
 {
-    public class Feed
+    public class Feed : SelectableModel
     {
         [PrimaryKey, Column("_id")]
         public string Id { get; set; }
@@ -18,8 +18,6 @@ namespace AresNews.Models
         public bool IsSaved { get; set; }
         [Ignore]
         public bool IsLoaded { get; set; }
-        [Ignore]
-        public bool IsSelected { get; set; }
         [Ignore]
         public Xamarin.Forms.Color ButtonColor { get; set; } = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
         [Ignore]

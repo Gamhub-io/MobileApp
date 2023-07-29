@@ -7,11 +7,10 @@ using Xamarin.Forms;
 
 namespace AresNews.Models
 {
-    public class TabButton : INotifyPropertyChanged
+    public class TabButton : SelectableModel
     {
         private string _id;
         private string _title;
-        private Color _backgroundColour = (Color)Application.Current.Resources["LightDark"];
 
         public string Id
         {
@@ -25,7 +24,6 @@ namespace AresNews.Models
                 }
             }
         }
-
         public string Title
         {
             get { return _title; }
@@ -37,26 +35,6 @@ namespace AresNews.Models
                     OnPropertyChanged(nameof(Title));
                 }
             }
-        }
-
-        public Color BackgroundColour
-        {
-            get { return _backgroundColour; }
-            set
-            {
-                if (_backgroundColour != value)
-                {
-                    _backgroundColour = value;
-                    OnPropertyChanged(nameof(BackgroundColour));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 

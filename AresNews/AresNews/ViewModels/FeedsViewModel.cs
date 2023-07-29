@@ -7,6 +7,7 @@ using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace AresNews.ViewModels
             set 
             {
                 _currentFeedIndex = value;
-                SwitchTabs(_currentFeedIndex);
+                //SwitchTabs(_currentFeedIndex);
 
                 OnPropertyChanged(nameof(CurrentFeedIndex));
 
@@ -97,6 +98,58 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(SelectedFeed));
             }
         }
+        private TabButton _selectedFeedTab;
+
+        //public TabButton SelectedFeedTab
+        //{
+        //    get { return _selectedFeedTab; }
+        //    set 
+        //    {
+        //        _selectedFeedTab = value;
+
+        //        int index = _feedTabs.IndexOf(value);
+        //        FeedTabs[index].IsSelected = true;
+        //        for (int i = 0; i < _feeds.Count; i++)
+        //        {
+        //            if (i != index)
+        //            {
+        //                _feeds[i].IsLoaded = false;
+        //                FeedTabs[i].IsSelected = false;
+
+        //            }
+        //        }
+        //        OnPropertyChanged(nameof(SelectedFeedTab));
+        //    }
+        //}
+        public TabButton SelectedFeedTab
+        {
+            get { return _selectedFeedTab; }
+            set
+            {
+                if (_selectedFeedTab != value)
+                {
+                    // Set the IsSelected property for the newly selected tab
+                    _selectedFeedTab = value;
+                    int index = _feedTabs.IndexOf(value);
+                    FeedTabs[index].IsSelected = true;
+                    SelectedFeed = _feeds[index];
+                    // Reset the IsSelected property for other tabs
+                    for (int i = 0; i < _feedTabs.Count; i++)
+                    {
+                        if (i != index)
+                        {
+                            FeedTabs[i].IsSelected = false;
+                        }
+                    }
+
+                    OnPropertyChanged(nameof(SelectedFeedTab));
+                }
+            }
+        }
+
+
+
+
         public Xamarin.Forms.Command<Feed> RefreshAll => new Command<Feed>((feed) =>
         {
             IsRefreshing = true;
@@ -316,33 +369,42 @@ namespace AresNews.ViewModels
             get { return _shareArticle; }
         }
 
-        public Command FeedSelect
+        public Command<string> FeedSelect
         {
             get { return new Command<string> ((feedId) =>
             {
 
-                Feed nextFeed = Feeds.FirstOrDefault(feed => feed.Id == feedId);
-                int nextIndex = _feeds.IndexOf(nextFeed);
+                //Feed nextFeed = Feeds.FirstOrDefault(feed => feed.Id == feedId);
+                int nextIndex = _feeds.IndexOf(_feeds.FirstOrDefault(feed => feed.Id == feedId));//_feeds.IndexOf(nextFeed);
 
                 if (nextIndex == -1)
                     return;
+                SelectedFeedTab = _feedTabs[nextIndex]; //nextFeed;
+
                 // Change the button colour of the clicked item
-                FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["PrimaryAccent"];
+                //FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["PrimaryAccent"];
+                //FeedTabs[nextIndex].IsSelected = true;
+                //SwitchTabs(nextIndex);
 
                 // Reset the button colour for the previously selected item (if any)
-                if (SelectedFeed != null && SelectedFeed != nextFeed)
-                {
-                    FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["LightDark"];
-                }
-
-                SelectedFeed = nextFeed;
+                //if (SelectedFeed != null && SelectedFeed != nextFeed)
+                //{
+                //    //FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["LightDark"];
+                //    FeedTabs[nextIndex].IsSelected = false;
+                //}
 
                 // Flag all the other feeds as unloaded
-                for (int i = 0; i < _feeds.Count ; i++)
+                for (int i = 0; i < _feeds.Count; i++)
                 {
-                    if (_feeds[i].Id != SelectedFeed.Id)
+                    if (i != nextIndex)
+                    {
                         _feeds[i].IsLoaded = false;
+                        //FeedTabs[i].IsSelected = false;
+
+                    }
                 }
+
+
 
             }); }
         }
@@ -387,7 +449,7 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Load articles via search
         /// </summary>
-        /// <param name="feed"></param>
+        /// <param name="feed">feed we are searching</param>
         private async void AggregateFeed(Feed feed, bool firstLoad = true)
         {
             int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
@@ -678,7 +740,8 @@ namespace AresNews.ViewModels
             {
                 FeedTabs.Add(tabButton);
             }
-            FeedTabs[_currentFeedIndex].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+            //FeedTabs[_currentFeedIndex].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+            FeedTabs[_currentFeedIndex].IsSelected = true;
         }
         /// <summary>
         /// Deselect all the feed tabs
@@ -687,8 +750,8 @@ namespace AresNews.ViewModels
         {
             foreach (var item in FeedTabs)
             {
-                FeedTabs[_currentFeedIndex].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
-
+                //FeedTabs[_currentFeedIndex].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+                FeedTabs[_currentFeedIndex].IsSelected = false;
             }
         }
         /// <summary>
@@ -698,7 +761,8 @@ namespace AresNews.ViewModels
         private void SelectTab(int index)
         {
             _oldIndex = index;
-            FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+            //FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+            FeedTabs[index].IsSelected = true;
         }
         /// <summary>
         /// Select a tab after the select tab was deleted
@@ -734,7 +798,8 @@ namespace AresNews.ViewModels
             try
             {
 
-                FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+                //FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+                FeedTabs[index].IsSelected = false;
             }
             catch 
             {
