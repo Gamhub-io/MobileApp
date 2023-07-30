@@ -251,7 +251,7 @@ its community's skills, knowledges and opinions.  "
                         </Grid.RowDefinitions>
                         
                         <!-- Name -->
-                        <Label Text="Bryce Friha"
+                        <Label Text="Brice Friha"
                                FontSize="18"
                                Grid.Row="0"
                                FontFamily="P-Bold"
