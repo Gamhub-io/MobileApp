@@ -143,7 +143,7 @@ namespace AresNews.ViewModels
                         Feeds.Add(_currentFeed);
 
                         // Update the feeds remotely
-                        MessagingCenter.Send<Feed>(_currentFeed, "AddFeed");
+                        //MessagingCenter.Send<Feed>(_currentFeed, "AddFeed");
                         return;
 
                     }
@@ -154,7 +154,7 @@ namespace AresNews.ViewModels
 
                     App.SqLiteConn.Delete(feedTarget);
                     Feeds.Remove(feedTarget);
-                    MessagingCenter.Send<Feed>(feedTarget, "RemoveFeed");
+                    //MessagingCenter.Send<Feed>(feedTarget, "RemoveFeed");
 
 
 

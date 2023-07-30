@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Rg.Plugins.Popup.Extensions;
 using SQLiteNetExtensions.Extensions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -23,7 +24,7 @@ namespace AresNews.ViewModels
 {
     public class FeedsViewModel : BaseViewModel
     {
-        
+        private bool _dataLoaded = false;
         public List<UpdateOrder> UpdateOrders { get; private set; }
         private ObservableCollection<Feed> _feeds;
 
@@ -224,6 +225,7 @@ namespace AresNews.ViewModels
                     }
                 });
             });
+            _dataLoaded = true;
         });
 		public FeedsViewModel(FeedsPage page)
         {
@@ -560,7 +562,8 @@ namespace AresNews.ViewModels
 
             await Task.Factory.StartNew(() =>
             {
-
+                if (_selectedFeed == null)
+                    CurrentFeedIndex = 0;
                 if (_selectedFeed.Id == feed.Id)
                 {
                     if (_feeds.Count <= 0)
@@ -616,9 +619,12 @@ namespace AresNews.ViewModels
         /// </summary>
         public void Resume()
         {
+            if (!_dataLoaded) return;
             CurrentPage.CloseDropdownMenu();
             try
             {
+                UpdateFeeds();
+
                 if (_selectedFeed != null)
                     Refresh(_selectedFeed);
             }
@@ -633,6 +639,33 @@ namespace AresNews.ViewModels
            
 
         }
+        /// <summary>
+        /// Update the feeds list
+        /// </summary>
+        private void UpdateFeeds()
+        {
+            if (!_dataLoaded) return;
+            if (_feeds == null /*|| _selectedFeed ==null*/)
+                return;
+
+            // Get the updated list of feed
+            Collection<Feed> updatedFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+
+            List<Feed> newFeeds = updatedFeeds.Where(feed => !_feeds.Any(item => item.Id == feed.Id)).ToList();
+            List<Feed> removedFeeds = _feeds.Where(feed => !updatedFeeds.Any(item => item.Id == feed.Id)).ToList();
+
+            // Add the new feeds
+            foreach (var feed in newFeeds)
+            {
+                AddFeed(feed);
+            }
+            // Remove the outdated feeds
+            foreach (var feed in removedFeeds)
+            {
+                RemoveFeed(feed);
+            }
+        }
+
         /// <summary>
         /// Add a feed to the list: this method not only add it to the list of feed but also create a tab for this feed
         /// </summary>
