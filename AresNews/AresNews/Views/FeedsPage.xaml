@@ -203,8 +203,7 @@
 
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:TabButton">
-                            <Button 
-                                    Text="{Binding Title, Converter={StaticResource MaxLengthConverter}, ConverterParameter=10}"
+                            <Button Text="{Binding Title, Converter={StaticResource MaxLengthConverter}, ConverterParameter=10}"
                                     HeightRequest="30"
                                     WidthRequest="100"
                                     VerticalOptions="Center"
@@ -214,14 +213,12 @@
                                     CornerRadius="16"
                                     TextColor ="{StaticResource FontColor}"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=FeedSelect}"
-                                    CommandParameter="{Binding Id}"
-                                    
-                                    >
+                                    CommandParameter="{Binding Id}">
                                 <Button.Triggers>
 
-                                    <DataTrigger   Binding="{Binding IsSelected, Mode=TwoWay}" 
+                                    <DataTrigger  Binding="{Binding IsSelected, Mode=TwoWay}" 
                                                   TargetType="Button"
-                                                   Value="true">
+                                                  Value="true">
                                         <Setter   Property="BackgroundColor" Value="{StaticResource SelectionColor}" />
                                         <!--<Setter   Property="TextColor" Value="{StaticResource BgBannerColor}" />-->
                                         <Setter Property="FontFamily" Value="P-Bold" />
