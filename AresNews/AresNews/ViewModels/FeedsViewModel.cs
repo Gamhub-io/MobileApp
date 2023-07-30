@@ -250,11 +250,13 @@ namespace AresNews.ViewModels
             MessagingCenter.Subscribe<Feed>(this, "AddFeed", (sender) =>
             {
 
-                UpdateOrders.Add(new UpdateOrder
-                {
-                    Update= UpdateOrder.FeedUpdate.Add,
-                    Feed= sender
-                });
+                //UpdateOrders.Add(new UpdateOrder
+                //{
+                //    Update= UpdateOrder.FeedUpdate.Add,
+                //    Feed= sender
+                //});
+
+                AddFeed(sender);
 
             });
 
