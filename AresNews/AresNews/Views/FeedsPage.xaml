@@ -166,7 +166,7 @@
 
             <!-- Feeds - List of feeds -->
             <Grid Padding="4,10"
-                  BackgroundColor="{StaticResource Dark }"
+                  BackgroundColor="{StaticResource BgBannerColor }"
                   Grid.Row="0">
                 
                 <Grid.Triggers>

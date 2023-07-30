@@ -14,6 +14,7 @@
             <Color x:Key="LightDark" >#404348</Color>
             <Color x:Key="Light" >#9FDBBE</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
+            <Color x:Key="BgBannerColor" >#262626</Color>
             <!--
             Potential future colour scheme:
             <Color x:Key="Light">#87afc5</Color>

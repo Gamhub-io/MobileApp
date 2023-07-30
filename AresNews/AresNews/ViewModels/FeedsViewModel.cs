@@ -345,25 +345,16 @@ namespace AresNews.ViewModels
         {
             get { return new Command<string> ((feedId) =>
             {
+                if (string.IsNullOrEmpty(feedId))
+                    return;
 
                 //Feed nextFeed = Feeds.FirstOrDefault(feed => feed.Id == feedId);
                 int nextIndex = _feeds.IndexOf(_feeds.FirstOrDefault(feed => feed.Id == feedId));//_feeds.IndexOf(nextFeed);
 
                 if (nextIndex == -1)
                     return;
-                SelectedFeedTab = _feedTabs[nextIndex]; //nextFeed;
+                SelectedFeedTab = _feedTabs[nextIndex]; 
 
-                // Change the button colour of the clicked item
-                //FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["PrimaryAccent"];
-                //FeedTabs[nextIndex].IsSelected = true;
-                //SwitchTabs(nextIndex);
-
-                // Reset the button colour for the previously selected item (if any)
-                //if (SelectedFeed != null && SelectedFeed != nextFeed)
-                //{
-                //    //FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["LightDark"];
-                //    FeedTabs[nextIndex].IsSelected = false;
-                //}
 
                 // Flag all the other feeds as unloaded
                 for (int i = 0; i < _feeds.Count; i++)
@@ -673,8 +664,11 @@ namespace AresNews.ViewModels
         private void AddFeed(Feed feed)
         {
             Feeds.Add(feed);
+
+            // Add a tab for this feed
             FeedTabs.Add(new()
             {
+                Id = feed.Id,
                 Title = feed.Title,
 
             });
