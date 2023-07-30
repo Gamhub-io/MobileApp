@@ -165,9 +165,10 @@
 
 
             <!-- Feeds - List of feeds -->
-            <Grid Padding="4,10"
-                  BackgroundColor="{StaticResource Dark }"
-                  Grid.Row="0">
+            <Grid Padding="4,10,4,0"
+                  BackgroundColor="{StaticResource BgBannerColor }"
+                  Grid.Row="0"
+                  RowDefinitions="*,1">
                 
                 <Grid.Triggers>
                     <DataTrigger Binding="{Binding FeedTabs.Count}"
@@ -177,8 +178,14 @@
                                 Value="false" />
                     </DataTrigger>
                 </Grid.Triggers>
-
+                <BoxView HorizontalOptions="FillAndExpand"
+                         Color="{StaticResource FontColor}"
+                         Opacity="0.1"
+                         Grid.Row="1"
+                         Margin="0"/>
                 <CollectionView HorizontalScrollBarVisibility="Never"
+                                VerticalOptions="Center"
+                                Margin="0,5,0,0"
                             ItemsSource="{Binding FeedTabs}"
                                 x:Name="collection"
                             >
@@ -202,9 +209,10 @@
                                     WidthRequest="100"
                                     VerticalOptions="Center"
                                     FontFamily="P-SemiBold"
-                                    FontSize="12"
+                                    FontSize="13"
                                     Padding="0"
                                     CornerRadius="16"
+                                    TextColor ="{StaticResource FontColor}"
                                     Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=FeedSelect}"
                                     CommandParameter="{Binding Id}"
                                     
@@ -214,8 +222,8 @@
                                     <DataTrigger   Binding="{Binding IsSelected, Mode=TwoWay}" 
                                                   TargetType="Button"
                                                    Value="true">
-                                        <Setter   Property="BackgroundColor" Value="{StaticResource Primary}" />
-                                        <Setter   Property="TextColor" Value="{StaticResource Dark}" />
+                                        <Setter   Property="BackgroundColor" Value="{StaticResource SelectionColor}" />
+                                        <!--<Setter   Property="TextColor" Value="{StaticResource BgBannerColor}" />-->
                                         <Setter Property="FontFamily" Value="P-Bold" />
                                     </DataTrigger>
 
@@ -223,7 +231,7 @@
                                                   TargetType="Button"
                                                    Value="false">
                                         <Setter   Property="BackgroundColor" Value="{StaticResource LightDark}" />
-                                        <Setter   Property="TextColor" Value="{StaticResource FontColor}" />
+                                        <!--<Setter   Property="TextColor" Value="{StaticResource FontColor}" />-->
                                     </DataTrigger>
                                 </Button.Triggers>
                             </Button>

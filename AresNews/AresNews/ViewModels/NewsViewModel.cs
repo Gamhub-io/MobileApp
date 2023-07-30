@@ -152,9 +152,9 @@ namespace AresNews.ViewModels
                         feedTarget = Feeds.FirstOrDefault(f => f.Keywords.ToLower() == SearchText.ToLower());
                     /// TODO: For now we disable the ability to delete a feed
 
-                    //App.SqLiteConn.Delete(feedTarget);
-                    //Feeds.Remove(feedTarget);
-                    //MessagingCenter.Send<Feed>(feedTarget, "RemoveFeed");
+                    App.SqLiteConn.Delete(feedTarget);
+                    Feeds.Remove(feedTarget);
+                    MessagingCenter.Send<Feed>(feedTarget, "RemoveFeed");
 
 
 
