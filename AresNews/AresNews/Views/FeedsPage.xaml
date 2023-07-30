@@ -204,7 +204,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:TabButton">
                             <Button 
-                                    Text="{Binding Title}"
+                                    Text="{Binding Title, Converter={StaticResource MaxLengthConverter}, ConverterParameter=10}"
                                     HeightRequest="30"
                                     WidthRequest="100"
                                     VerticalOptions="Center"

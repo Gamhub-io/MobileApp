@@ -5,6 +5,7 @@ using AresNews.Views.PopUps;
 using CustardApi.Objects;
 using FFImageLoading;
 using Newtonsoft.Json;
+using Rg.Plugins.Popup.Exceptions;
 using Rg.Plugins.Popup.Extensions;
 using Rg.Plugins.Popup.Pages;
 using SQLite;
@@ -108,12 +109,19 @@ namespace AresNews
         public async void ShowLoadingIndicator(bool longer = false)
         {
 
+            try
+            {
 
-            if (_isLoading)
-                return;
-            _isLoading = true;
+                if (_isLoading)
+                    return;
+                _isLoading = true;
 
-            await this.MainPage.Navigation.PushPopupAsync(this.LoadingIndicator);
+                await this.MainPage.Navigation.PushPopupAsync(this.LoadingIndicator);
+            }
+            catch (RGPageInvalidException)
+            {
+            }
+
         }
 
         /// <summary>
