@@ -2,11 +2,13 @@
 using AresNews.Models;
 using AresNews.Views;
 using MvvmHelpers;
+using Newtonsoft.Json;
 using Rg.Plugins.Popup.Extensions;
 using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -145,24 +147,29 @@ namespace AresNews.ViewModels
             //IsRefreshing = true;
 
             CurrentApp.ShowLoadingIndicator();
-            await Task.Run(() =>
-             {
-
-                 // Set new feed
-                 //SelectedFeed = feed;
-                 SwitchTabs(_feeds.IndexOf(feed));
-                 SelectedFeed.IsLoaded = false;
-
-                 //// Load articles
-                 //
-                 
-
-             });
+            SwitchFeedAsync(feed);
 
             RefreshArticles.Execute(null);
             CurrentApp.RemoveLoadingIndicator();
 
         });
+
+        private async void SwitchFeedAsync(Feed feed)
+        {
+            await Task.Run(() =>
+            {
+
+                // Set new feed
+                //SelectedFeed = feed;
+                SwitchTabs(_feeds.IndexOf(feed));
+                SelectedFeed.IsLoaded = false;
+
+                //// Load articles
+                //
+
+
+            });
+        }
 
         public App CurrentApp { get; }
         private FeedsPage CurrentPage { get; set; }
@@ -250,11 +257,13 @@ namespace AresNews.ViewModels
             MessagingCenter.Subscribe<Feed>(this, "AddFeed", (sender) =>
             {
 
-                UpdateOrders.Add(new UpdateOrder
-                {
-                    Update= UpdateOrder.FeedUpdate.Add,
-                    Feed= sender
-                });
+                //UpdateOrders.Add(new UpdateOrder
+                //{
+                //    Update= UpdateOrder.FeedUpdate.Add,
+                //    Feed= sender
+                //});
+
+                AddFeed(sender);
 
             });
 
@@ -263,12 +272,12 @@ namespace AresNews.ViewModels
 
                 if (sender == null)
                     return;
-
-                UpdateOrders.Add(new UpdateOrder
-                {
-                    Update = UpdateOrder.FeedUpdate.Remove,
-                    Feed = sender
-                });
+                RemoveFeed(sender);
+                //UpdateOrders.Add(new UpdateOrder
+                //{
+                //    Update = UpdateOrder.FeedUpdate.Remove,
+                //    Feed = sender
+                //});
 
 
             });
@@ -345,25 +354,16 @@ namespace AresNews.ViewModels
         {
             get { return new Command<string> ((feedId) =>
             {
+                if (string.IsNullOrEmpty(feedId))
+                    return;
 
                 //Feed nextFeed = Feeds.FirstOrDefault(feed => feed.Id == feedId);
                 int nextIndex = _feeds.IndexOf(_feeds.FirstOrDefault(feed => feed.Id == feedId));//_feeds.IndexOf(nextFeed);
 
                 if (nextIndex == -1)
                     return;
-                SelectedFeedTab = _feedTabs[nextIndex]; //nextFeed;
+                SelectedFeedTab = _feedTabs[nextIndex]; 
 
-                // Change the button colour of the clicked item
-                //FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["PrimaryAccent"];
-                //FeedTabs[nextIndex].IsSelected = true;
-                //SwitchTabs(nextIndex);
-
-                // Reset the button colour for the previously selected item (if any)
-                //if (SelectedFeed != null && SelectedFeed != nextFeed)
-                //{
-                //    //FeedTabs[nextIndex].BackgroundColour = (Color)Application.Current.Resources["LightDark"];
-                //    FeedTabs[nextIndex].IsSelected = false;
-                //}
 
                 // Flag all the other feeds as unloaded
                 for (int i = 0; i < _feeds.Count; i++)
@@ -397,26 +397,26 @@ namespace AresNews.ViewModels
             IsBusy = true;
 
             CurrentApp.ShowLoadingIndicator();
-                bool isFirstLoad = feed != _selectedFeed;
-                if (isFirstLoad)
-                {
+            bool isFirstLoad = feed != _selectedFeed;
+            if (isFirstLoad)
+            {
 
-                    SelectedFeed = feed;
-                    SelectedFeed.IsLoaded = false;
-                }
+                SelectedFeed = feed;
+                SelectedFeed.IsLoaded = false;
+            }
 
 
-                await Task.Run(() =>
-                {
+            await Task.Run(() =>
+            {
 
-                    AggregateFeed(feed, isFirstLoad);
+                AggregateFeed(feed, isFirstLoad);
 
-                    // End the loading indicator
-                    IsRefreshing = false;
-                    IsBusy = false;
-                    CurrentApp.RemoveLoadingIndicator();
+                // End the loading indicator
+                IsRefreshing = false;
+                IsBusy = false;
+                CurrentApp.RemoveLoadingIndicator();
 
-                });
+             });
         }
         /// <summary>
         /// Load articles via search
@@ -548,7 +548,10 @@ namespace AresNews.ViewModels
 
             int feedIndex = Feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
             int indexNext = feedIndex + 1;
-            int indexPrev = feedIndex - 1;
+            
+            int indexPrev = 0;
+            if (feedIndex > 0)
+                indexPrev = feedIndex - 1;
             //Feeds.Remove(feed);
             Feeds.RemoveAt(feedIndex);
             FeedTabs.RemoveAt(feedIndex);
@@ -571,7 +574,7 @@ namespace AresNews.ViewModels
                     }
                     else
                     {
-                        CurrentFeedIndex = indexPrev;
+                        CurrentFeedIndex = indexNext;
                         feedInView = _feeds[indexNext];
                     }
                 }
@@ -579,14 +582,11 @@ namespace AresNews.ViewModels
                     CurrentFeedIndex = 0;
 
             })
-            .ContinueWith((e) =>
+            .ContinueWith((Action<Task>)((e) =>
             {
-                // TODO: Find a way to make sure the next item selected is the previous one (aka feedInView)
-                SwitchFeed.Execute(feedInView);
-
-                // Select the first feed
-                //SwitchFeed.Execute(_feeds[0]);
-            });
+                // Load selected feed
+                SwitchFeedAsync(feedInView);
+            }));
 
 
 
@@ -619,48 +619,15 @@ namespace AresNews.ViewModels
             CurrentPage.CloseDropdownMenu();
             try
             {
-
-                //CurrentApp.ShowLoadingIndicator();
-                foreach (var order in UpdateOrders)
-                {
-                    int feedIndex = _feeds.IndexOf(order.Feed);
-
-                    if (order.Update == FeedUpdate.Remove)
-                    {
-                        //RemoveFeed(order.Feed);
-                        // Delete the feed
-                        App.SqLiteConn.Delete(order.Feed);
-                        //SelectTab(feedIndex);
-                        FeedTabs.RemoveAt(feedIndex);
-
-                        Refresh(_selectedFeed);
-
-                    }
-                    if (order.Update == FeedUpdate.Add)
-                    {
-                        Feed feed = order.Feed;
-                        AddFeed(feed);
-
-                    }
-                    if (order.Update == FeedUpdate.Edit)
-                    {
-
-
-                        //Feeds.RemoveAt(feedIndex);
-                        //Feeds.Add(order.Feed);
-
-                        ChangeFeed(order.Feed);
-
-                        //CurrentFeedIndex = feedIndex;
-                    }
-                }
-                UpdateOrders.Clear();
-
-                CurrentApp.RemoveLoadingIndicator();
+                if (_selectedFeed != null)
+                    Refresh(_selectedFeed);
             }
             catch (Exception ex)
             {
-
+#if DEBUG
+                Debug.WriteLine($"Selected Feed {JsonConvert.SerializeObject(_selectedFeed)}");
+                throw ex;
+#endif
             }
 
            
@@ -673,8 +640,11 @@ namespace AresNews.ViewModels
         private void AddFeed(Feed feed)
         {
             Feeds.Add(feed);
+
+            // Add a tab for this feed
             FeedTabs.Add(new()
             {
+                Id = feed.Id,
                 Title = feed.Title,
 
             });
@@ -769,8 +739,11 @@ namespace AresNews.ViewModels
         {
             try
             {
-
+                if (index == -1)
+                    index = 0;
                 //FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+                if (FeedTabs.Count <= 0)
+                    return;
                 FeedTabs[index].IsSelected = false;
             }
             catch 
@@ -784,6 +757,8 @@ namespace AresNews.ViewModels
         /// <param name="index"> index of the tab you want to switch to</param>
         private void SwitchTabs(int index)
         {
+            if (index == -1)
+                return;
             // Deselect the previous tab
             //DeselectAll();
             if (_oldIndex <= _feeds.Count -1)
