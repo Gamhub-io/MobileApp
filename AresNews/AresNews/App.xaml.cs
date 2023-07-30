@@ -129,13 +129,19 @@ namespace AresNews
         /// </summary>
         public async void RemoveLoadingIndicator()
         {
-            if (!_isLoading )
-                return;
+            try 
+            {
+                if (!_isLoading)
+                    return;
 
 
-            _isLoading = false;
-            //if (this.MainPage.Navigation.ModalStack.Contains(this.LoadingIndicator))
-            await this.MainPage.Navigation.RemovePopupPageAsync(this.LoadingIndicator);
+                _isLoading = false;
+                //if (this.MainPage.Navigation.ModalStack.Contains(this.LoadingIndicator))
+                await this.MainPage.Navigation.RemovePopupPageAsync(this.LoadingIndicator);
+            }
+            catch (RGPageInvalidException)
+            {
+            }
         }
         /// <summary>
         ///  Function to close the database 
