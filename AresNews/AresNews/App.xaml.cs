@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+
 [assembly: ExportFont("FontAwesome6Free-Regular-400.otf", Alias = "FaRegular")]
 [assembly: ExportFont("FontAwesome6Brands-Regular-400.otf", Alias = "FaBrand")]
 [assembly: ExportFont("FontAwesome6Free-Solid-900.otf", Alias = "FaSolid")]
