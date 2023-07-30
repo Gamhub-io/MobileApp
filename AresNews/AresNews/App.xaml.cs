@@ -5,6 +5,7 @@ using AresNews.Views.PopUps;
 using CustardApi.Objects;
 using FFImageLoading;
 using Newtonsoft.Json;
+using Rg.Plugins.Popup.Exceptions;
 using Rg.Plugins.Popup.Extensions;
 using Rg.Plugins.Popup.Pages;
 using SQLite;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+
 [assembly: ExportFont("FontAwesome6Free-Regular-400.otf", Alias = "FaRegular")]
 [assembly: ExportFont("FontAwesome6Brands-Regular-400.otf", Alias = "FaBrand")]
 [assembly: ExportFont("FontAwesome6Free-Solid-900.otf", Alias = "FaSolid")]
@@ -108,12 +110,19 @@ namespace AresNews
         public async void ShowLoadingIndicator(bool longer = false)
         {
 
+            try
+            {
 
-            if (_isLoading)
-                return;
-            _isLoading = true;
+                if (_isLoading)
+                    return;
+                _isLoading = true;
 
-            await this.MainPage.Navigation.PushPopupAsync(this.LoadingIndicator);
+                await this.MainPage.Navigation.PushPopupAsync(this.LoadingIndicator);
+            }
+            catch (RGPageInvalidException)
+            {
+            }
+
         }
 
         /// <summary>
@@ -121,13 +130,19 @@ namespace AresNews
         /// </summary>
         public async void RemoveLoadingIndicator()
         {
-            if (!_isLoading )
-                return;
+            try 
+            {
+                if (!_isLoading)
+                    return;
 
 
-            _isLoading = false;
-            //if (this.MainPage.Navigation.ModalStack.Contains(this.LoadingIndicator))
-            await this.MainPage.Navigation.RemovePopupPageAsync(this.LoadingIndicator);
+                _isLoading = false;
+                //if (this.MainPage.Navigation.ModalStack.Contains(this.LoadingIndicator))
+                await this.MainPage.Navigation.RemovePopupPageAsync(this.LoadingIndicator);
+            }
+            catch (RGPageInvalidException)
+            {
+            }
         }
         /// <summary>
         ///  Function to close the database 
