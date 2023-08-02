@@ -8,6 +8,7 @@ namespace AresNews.ViewModels
     public class EditFeedViewModel : BaseViewModel
     {
         private Feed _feed;
+        private string _initialKeyWords;
 
         public Feed Feed
         {
@@ -51,18 +52,21 @@ namespace AresNews.ViewModels
 
             _context.ListHasBeenUpdated = true;
 
+            if (_initialKeyWords != _feed.Keywords)
+                _feed.IsLoaded = false;
+
             // Close the page
             await App.Current.MainPage.Navigation.PopAsync();
 
             _context.CurrentFeedIndex = index = _context.Feeds.IndexOf(_feed);
             _context.FeedTabs[index].Title = _feed.Title;
 
-            _context.UpdateOrders.Add(new UpdateOrder
-            {
-                Feed = _feed,
-                Update = UpdateOrder.FeedUpdate.Edit
+            //_context.UpdateOrders.Add(new UpdateOrder
+            //{
+            //    Feed = _feed,
+            //    Update = UpdateOrder.FeedUpdate.Edit
                 
-            });
+            //});
         });
 
         public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(async () =>
@@ -76,6 +80,7 @@ namespace AresNews.ViewModels
         public EditFeedViewModel( Feed feed, FeedsViewModel vm )
         {
             _feed = feed;
+            _initialKeyWords = feed.Keywords;
             _context = vm;
         }
     }
