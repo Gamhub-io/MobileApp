@@ -47,7 +47,7 @@
                         Clicked="OpenSearchButton_Clicked"
                         Grid.Column="2"/>
             </Grid>
-            <Grid IsVisible="{Binding IsSearching, Source={x:RelativeSource AncestorType={x:Type vm:NewsViewModel}}}">
+            <Grid IsVisible="{Binding IsSearching}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="60"/>
@@ -109,6 +109,7 @@
                 </Frame>
                 <Button Text="&#xf005;"
                         FontSize="28"
+                         IsVisible="{Binding IsSearching}"
                         CornerRadius="20"
                         FontFamily ="FaSolid"
                         VerticalOptions="CenterAndExpand"

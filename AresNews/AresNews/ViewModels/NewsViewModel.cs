@@ -168,12 +168,14 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
+
+                    IsSearching = false;
+
                     if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
 
 
                     // Scroll up before fetching the items
                     CurrentPage.ScrollFeed();
-                    IsSearching = false;
                     IsRefreshing = true;
                     _prevSearch = null;
 
