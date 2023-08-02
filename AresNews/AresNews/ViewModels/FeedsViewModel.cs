@@ -410,7 +410,7 @@ namespace AresNews.ViewModels
 
             await Task.Run(() =>
             {
-
+                //SelectedFeed.Keywords = feed.Keywords;
                 AggregateFeed(feed, isFirstLoad);
 
                 // End the loading indicator
