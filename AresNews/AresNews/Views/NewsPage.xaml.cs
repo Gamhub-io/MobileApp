@@ -81,16 +81,32 @@ namespace AresNews.Views
 
         private void OpenSearchButton_Clicked(object sender, EventArgs e)
         {
+            OpenSearch();
+        }
+        /// <summary>
+        /// Open the search header
+        /// </summary>
+        private void OpenSearch()
+        {
             AnimateWidthSearchBar(0, 300);
 
             // Focus on the entry 
             entrySearch.Focus();
         }
+        /// <summary>
+        /// Close the search header
+        /// </summary>
+        private void CloseSearch()
+        {
+            AnimateWidthSearchBar(300, 0);
+            _vm.IsSearching = false;
+        }
 
         private void CloseSearchButton_Clicked(object sender, EventArgs e)
         {
-            AnimateWidthSearchBar(300, 0);
+            CloseSearch();
         }
+
         /// <summary>
         /// Scroll the feed
         /// </summary>
@@ -98,6 +114,16 @@ namespace AresNews.Views
         public void ScrollFeed(int position = 0)
         {
             newsCollectionView.ScrollTo(position);
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            if (_vm.IsSearching)
+            {
+                CloseSearch();
+                return true;
+            }
+            return base.OnBackButtonPressed();
         }
     }
 }
