@@ -221,7 +221,7 @@ namespace AresNews.ViewModels
                     catch
                     {
                         // in case of error, refresh the first feed
-                        this.Refresh(_feeds[0]);
+                        RefreshFirstFeed();
                     }
                 });
             });
@@ -441,6 +441,8 @@ namespace AresNews.ViewModels
                     throw err;
                 });
 
+                Articles?.Clear();
+
             }
             // Offline search
             else
@@ -546,8 +548,6 @@ namespace AresNews.ViewModels
         /// <param name="feed">feed we want to remove</param>
         public async void RemoveFeed(Feed feed)
         {
-
-
             int feedIndex = Feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
             int indexNext = feedIndex + 1;
             
@@ -567,7 +567,11 @@ namespace AresNews.ViewModels
                 if (_selectedFeed.Id == feed.Id)
                 {
                     if (_feeds.Count <= 0)
+                    {
+                        Articles?.Clear();
                         return;
+
+                    }
 
                     // We try to establish the next feed
                     if (indexPrev >= 0)
@@ -623,6 +627,7 @@ namespace AresNews.ViewModels
             {
                 Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
+                // Refresh the first feed
                 RefreshFirstFeed();
 
                 // Organise feeds into tabs
@@ -649,7 +654,9 @@ namespace AresNews.ViewModels
            
 
         }
-
+        /// <summary>
+        /// Method to refresh the first feed
+        /// </summary>
         private void RefreshFirstFeed()
         {
             if (_feeds.Count > 0)
@@ -761,11 +768,11 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Select a tab after the select tab was deleted
         /// </summary>
-        /// <param name="index">index of the former tab</param>
-        public void SelectDefaultTab(int index)
+        /// <param name="fromIndex">index of the former tab</param>
+        public void SelectDefaultTab(int fromIndex)
         {
-            int indexNext = index + 1;
-            int indexPrev = index - 1;
+            int indexNext = fromIndex + 1;
+            int indexPrev = fromIndex - 1;
 
             int tabIndex = 0;
             if (_feeds.Count <= 0)

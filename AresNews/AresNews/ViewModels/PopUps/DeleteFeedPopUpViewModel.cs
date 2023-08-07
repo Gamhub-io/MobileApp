@@ -55,9 +55,10 @@ namespace AresNews.ViewModels.PopUps
 
             int index = _context.Feeds.IndexOf(_feed);
             _context.FeedTabs.RemoveAt(index);
+
+            _context.Articles?.Clear();
             _context.Feeds.RemoveAt(index);
             _context.SelectDefaultTab(index);
-            //_context.Refresh(_context.Feeds[index-1]);
 
             // Update the feeds remotely
             //MessagingCenter.Send<Feed>(_feed, "RemoveFeed");
