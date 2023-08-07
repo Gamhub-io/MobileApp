@@ -715,8 +715,10 @@ namespace AresNews.ViewModels
             {
                 FeedTabs.Add(tabButton);
             }
-            //FeedTabs[_currentFeedIndex].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
-            FeedTabs[_currentFeedIndex].IsSelected = true;
+
+            if (FeedTabs.Count >0)
+                FeedTabs[_currentFeedIndex].IsSelected = true;
+
         }
         /// <summary>
         /// Deselect all the feed tabs
