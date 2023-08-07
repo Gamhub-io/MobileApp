@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -789,6 +790,16 @@ namespace AresNews.ViewModels
 
             // Refresh the tab
             Refresh(_feeds[tabIndex]);
+        }
+        /// <summary>
+        /// Remove a feed using it's index
+        /// </summary>
+        /// <param name="feedIndex">index of the feed</param>
+        public void RemoveFeedByIndex(int feedIndex)
+        {
+            Articles?.Clear();
+            Feeds.RemoveAt(feedIndex);
+            SelectDefaultTab(feedIndex);
         }
         /// <summary>
         /// Delect a tab from its index
