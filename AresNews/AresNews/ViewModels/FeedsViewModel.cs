@@ -622,9 +622,8 @@ namespace AresNews.ViewModels
             if (!_dataLoaded)
             {
                 Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
-                
-                if (_feeds.Count > 0)
-                    Refresh(_feeds[0]);
+
+                RefreshFirstFeed();
 
                 // Organise feeds into tabs
                 CopyFeedsToTabs();
@@ -650,6 +649,13 @@ namespace AresNews.ViewModels
            
 
         }
+
+        private void RefreshFirstFeed()
+        {
+            if (_feeds.Count > 0)
+                Refresh(_feeds[0]);
+        }
+
         /// <summary>
         /// Update the feeds list
         /// </summary>
