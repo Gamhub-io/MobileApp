@@ -619,7 +619,17 @@ namespace AresNews.ViewModels
         /// </summary>
         public void Resume()
         {
-            if (!_dataLoaded) return;
+            if (!_dataLoaded)
+            {
+                Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+
+                Refresh(_feeds[0]);
+
+                // Organise feeds into tabs
+                CopyFeedsToTabs();
+
+                return;
+            };
             CurrentPage.CloseDropdownMenu();
             try
             {
