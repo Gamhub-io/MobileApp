@@ -54,14 +54,12 @@ namespace AresNews.ViewModels.PopUps
             App.SqLiteConn.Delete(_feed);
 
             int index = _context.Feeds.IndexOf(_feed);
+
+            // Remove the feed from the local DB
             _context.FeedTabs.RemoveAt(index);
 
-            _context.Articles?.Clear();
-            _context.Feeds.RemoveAt(index);
-            _context.SelectDefaultTab(index);
-
-            // Update the feeds remotely
-            //MessagingCenter.Send<Feed>(_feed, "RemoveFeed");
+            // Remove the feed from the feed page
+            _context.RemoveFeedByIndex(index);
 
             // Close the popup
             await Application.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
