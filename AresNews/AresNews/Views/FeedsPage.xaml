@@ -283,7 +283,7 @@
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
                    Padding="0"
-                   
+                   xct:CornerRadiusEffect.CornerRadius="0,0,8,0"
                    
                    Grid.RowSpan="2"
                    CornerRadius="0"
