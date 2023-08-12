@@ -140,6 +140,33 @@
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
                     </CollectionView.ItemsLayout>
+                    <CollectionView.EmptyView>
+                        <ContentView>
+
+                            <StackLayout VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="CenterAndExpand">
+                                <Label Text="&#xf005;"
+                                         FontFamily="FaSolid"
+                                         TextColor="{StaticResource Primary}"
+                                         FontSize="50"
+                                         HorizontalOptions="Center"
+                           />
+                                <Label Text="Ooopsi 😟"
+                               FontFamily="P-Bold"
+                               HorizontalOptions="Center"
+                               FontSize="Title"
+                               TextColor="{StaticResource FontColor}"
+                               />
+                                <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
+                               FontFamily="P-Regular"
+                           Margin="5,0"
+                               HorizontalTextAlignment="Center"
+                               FontSize="Subtitle"
+                               TextColor="{StaticResource FontColor}"
+                               />
+                            </StackLayout>
+                        </ContentView>
+                    </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:Article">
                             <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
