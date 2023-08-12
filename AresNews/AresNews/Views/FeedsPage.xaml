@@ -121,12 +121,12 @@
                     </OnPlatform>
                 </RefreshView.BackgroundColor>
                 <CollectionView ItemsSource="{Binding Articles, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
-                                        x:DataType="model:Feed"
-                                        VerticalScrollBarVisibility="Never"
-                                        x:Name="newsCollectionView"
-                                        ItemsUpdatingScrollMode="KeepScrollOffset"
-                                        HorizontalOptions="Center"
-                                        Margin="8,0">
+                                x:DataType="model:Feed"
+                                VerticalScrollBarVisibility="Never"
+                                x:Name="newsCollectionView"
+                                ItemsUpdatingScrollMode="KeepScrollOffset"
+                                HorizontalOptions="Center"
+                                Margin="8,0">
                     <CollectionView.Header>
                         <BoxView  Margin="0">
                             <BoxView.HeightRequest>
@@ -141,7 +141,8 @@
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
                     </CollectionView.ItemsLayout>
                     <CollectionView.EmptyView>
-                        <ContentView>
+                        <ContentView 
+                                       IsVisible="{Binding IsBusy, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}},Converter={StaticResource BoolInverseConverter}}">
 
                             <StackLayout VerticalOptions="CenterAndExpand"
                                     HorizontalOptions="CenterAndExpand">
@@ -150,20 +151,20 @@
                                          TextColor="{StaticResource Primary}"
                                          FontSize="50"
                                          HorizontalOptions="Center"
-                           />
+                                        />
                                 <Label Text="Ooopsi 😟"
-                               FontFamily="P-Bold"
-                               HorizontalOptions="Center"
-                               FontSize="Title"
-                               TextColor="{StaticResource FontColor}"
-                               />
+                                       FontFamily="P-Bold"
+                                       HorizontalOptions="Center"
+                                       FontSize="Title"
+                                       TextColor="{StaticResource FontColor}"
+                                       />
                                 <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
-                               FontFamily="P-Regular"
-                           Margin="5,0"
-                               HorizontalTextAlignment="Center"
-                               FontSize="Subtitle"
-                               TextColor="{StaticResource FontColor}"
-                               />
+                                       FontFamily="P-Regular"
+                                       Margin="5,0"
+                                       HorizontalTextAlignment="Center"
+                                       FontSize="Subtitle"
+                                       TextColor="{StaticResource FontColor}"
+                                       />
                             </StackLayout>
                         </ContentView>
                     </CollectionView.EmptyView>
