@@ -533,29 +533,59 @@ namespace AresNews.ViewModels
         /// <param name="articles">new articles</param>
         private void UpdateArticles(ObservableCollection<Article> articles)
         {
-            for (int i = 0; i < articles.Count(); ++i)
+            // Create a copy of the input ObservableCollection
+            List<Article> listArticle = new (articles);
+
+            // Lists to store articles to be added and updated
+            List<Article> articlesToAdd = new ();
+            List<Article> articlesToUpdate = new ();
+
+            // Iterate through the copied list of articles
+            foreach (var current in listArticle)
             {
-                var current = articles[i];
+                // Check if the current article already exists in the _articles collection
                 Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+
                 if (existingArticle == null)
                 {
-
-                    Article item = articles.FirstOrDefault(a => a.Id == current.Id);
-
-                    var index = articles.IndexOf(item);
-
-                    // Add article one by one for a better visual effect
-                    Articles.Insert(index == -1 ? 0 + i : index, current);
+                    // Article doesn't exist in _articles, add it to the articlesToAdd list
+                    articlesToAdd.Add(current);
                 }
                 else
                 {
-                    int index = _articles.IndexOf(existingArticle);
-                    // replace the exisiting one with the new one
-                    Articles.Remove(existingArticle);
-                    Articles.Insert(index, current);
+                    // Article exists in _articles, add it to the articlesToUpdate list
+                    articlesToUpdate.Add(current);
                 }
+            }
 
+            // Add new articles to the Articles collection
+            foreach (var articleToAdd in articlesToAdd)
+            {
+                // Find the corresponding article in the original 'articles' collection
+                Article item = articles.FirstOrDefault(a => a.Id == articleToAdd.Id);
 
+                // Find the index where the new article should be inserted
+                var index = articles.IndexOf(item);
+
+                // Insert the new article into the Articles collection
+                // If index is -1, insert at the beginning, otherwise, insert at the found index
+                Articles.Insert(index == -1 ? 0 : index, articleToAdd);
+            }
+
+            // Update existing articles in the Articles collection
+            foreach (var articleToUpdate in articlesToUpdate)
+            {
+                // Find the corresponding existing article in the _articles collection
+                Article existingArticle = _articles.FirstOrDefault(a => a.Id == articleToUpdate.Id);
+
+                // Find the index of the existing article in the Articles collection
+                int index = _articles.IndexOf(existingArticle);
+
+                // Remove the existing article from the Articles collection
+                Articles.Remove(existingArticle);
+
+                // Insert the updated article at the same index
+                Articles.Insert(index, articleToUpdate);
             }
         }
 
