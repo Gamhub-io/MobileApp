@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -212,6 +213,8 @@ namespace AresNews.ViewModels
                 SetProperty(ref _articles, value);
             }
         }
+
+        public App CurrentApp { get; }
         private NewsPage CurrentPage { get; set; } 
         // Command to add a Bookmark
         private readonly Command _addBookmark;
@@ -262,7 +265,7 @@ namespace AresNews.ViewModels
         }
         public NewsViewModel(NewsPage currentPage)
         {
-
+            CurrentApp = App.Current as App;
             CurrentPage = currentPage;
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
@@ -375,6 +378,7 @@ namespace AresNews.ViewModels
             switch (Device.RuntimePlatform)
             {
                 case Device.iOS:
+                    CurrentApp.ShowLoadingIndicator();
                     _refreshFeed.Execute(null);
                     break;
                 case Device.Android:
@@ -408,6 +412,10 @@ namespace AresNews.ViewModels
                 IsRefreshing = false;
                 IsSearchOpen = false;
                 _prevSearch = string.Empty;
+
+#if IOS
+                    CurrentApp.RemoveLoadingIndicator();
+#endif
                 return;
             }
 
@@ -440,7 +448,8 @@ namespace AresNews.ViewModels
                        {
                        });
 
-                    
+                    if (Device.RuntimePlatform == Device.iOS)
+                        Thread.Sleep(TimeSpan.FromSeconds(5));
 
                 }
                else
@@ -499,7 +508,7 @@ namespace AresNews.ViewModels
                 return;
             }
 
-            await Task.Factory.StartNew(() =>
+            await Task.Run(() =>
             {
                 // Update list of articles
                 UpdateArticles(articles);
@@ -520,7 +529,8 @@ namespace AresNews.ViewModels
 
             _isLaunching = false;
             IsRefreshing = false;
-
+            if (Device.RuntimePlatform == Device.iOS)
+                    CurrentApp.RemoveLoadingIndicator();
 
             // Register date of the refresh
             //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
@@ -561,37 +571,46 @@ namespace AresNews.ViewModels
             // Add new articles to the Articles collection
             foreach (var articleToAdd in articlesToAdd)
             {
-                // Find the corresponding article in the original 'articles' collection
+                // Find a matching article in the 'articles' collection
                 Article item = articles.FirstOrDefault(a => a.Id == articleToAdd.Id);
 
-                // Find the index where the new article should be inserted
-                var index = articles.IndexOf(item);
+                if (item != null)
+                {
+                    // If a matching article is found, get its index
+                    var index = articles.IndexOf(item);
 
-                // Insert the new article into the Articles collection
-                // If index is -1, insert at the beginning, otherwise, insert at the found index
-                Articles.Insert(index == -1 ? 0 : index, articleToAdd);
+                    // Insert the new article at the found index or at the beginning if index is -1
+                    Articles.Insert(index == -1 ? 0 : index, articleToAdd);
+                }
+                else
+                {
+                    // If no matching article is found, add the new article at the end
+                    Articles.Add(articleToAdd);
+                }
             }
 
-            // Update existing articles in the Articles collection
             foreach (var articleToUpdate in articlesToUpdate)
             {
-                // Find the corresponding existing article in the _articles collection
+                // Find the existing article to be updated in the '_articles' collection
                 Article existingArticle = _articles.FirstOrDefault(a => a.Id == articleToUpdate.Id);
 
-                // Find the index of the existing article in the Articles collection
-                int index = _articles.IndexOf(existingArticle);
+                if (existingArticle != null)
+                {
+                    // Get the index of the existing article in the 'Articles' collection
+                    int index = _articles.IndexOf(existingArticle);
 
-                // Remove the existing article from the Articles collection
-                Articles.Remove(existingArticle);
-
-                // Insert the updated article at the same index
-                Articles.Insert(index, articleToUpdate);
+                    // Remove the existing article and insert the updated one at the same index
+                    Articles.Remove(existingArticle);
+                    Articles.Insert(index, articleToUpdate);
+                }
+                // If existingArticle is null, handle the case where the article to update was not found
             }
+
         }
 
         private async Task RefreshDB()
         {
-            await Task.Factory.StartNew(async () =>
+            try
             {
                 await Task.Run(() =>
                 {
@@ -606,7 +625,11 @@ namespace AresNews.ViewModels
 
                     }
                 });
-            });
+            }
+            finally
+            {
+                //App.BackUpConn.Close();
+            };
         }
 
         /// <summary>

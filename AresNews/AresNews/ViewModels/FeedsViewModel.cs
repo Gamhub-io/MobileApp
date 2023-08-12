@@ -397,8 +397,9 @@ namespace AresNews.ViewModels
 		{
             if (IsBusy)
                 return;
-            IsBusy = true;
 
+            IsBusy = true;
+            Debug.WriteLine($"IsNotBusy: {IsNotBusy}");
             CurrentApp.ShowLoadingIndicator();
             bool isFirstLoad = feed != _selectedFeed;
             if (isFirstLoad)
