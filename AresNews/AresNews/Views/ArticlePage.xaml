@@ -243,8 +243,11 @@
                     <SwipeGestureRecognizer Direction="Down" Swiped="SwipeBackgroundDown_Swiped"/>
                 </BoxView.GestureRecognizers>
             </BoxView>
+            
+            <!-- Menu overlay -->
             <Frame HorizontalOptions="End"
                    x:Name="dropdownMenu"
+                   xct:CornerRadiusEffect.CornerRadius="0,0,8,0"
                    VerticalOptions="Start"
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
