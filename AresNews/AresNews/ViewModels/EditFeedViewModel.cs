@@ -2,6 +2,8 @@
 using AresNews.Views;
 using MvvmHelpers;
 using Rg.Plugins.Popup.Extensions;
+using System.Linq;
+using Xamarin.Forms.Internals;
 
 namespace AresNews.ViewModels
 {
@@ -58,7 +60,8 @@ namespace AresNews.ViewModels
             // Close the page
             await App.Current.MainPage.Navigation.PopAsync();
 
-            _context.CurrentFeedIndex = index = _context.Feeds.IndexOf(_feed);
+            System.Collections.ObjectModel.ObservableCollection<Feed> feeds = _context.Feeds;
+            _context.CurrentFeedIndex = index = feeds.IndexOf(feeds.FirstOrDefault(feed => feed.Id == _feed.Id));
             _context.FeedTabs[index].Title = _feed.Title;
 
             //_context.UpdateOrders.Add(new UpdateOrder

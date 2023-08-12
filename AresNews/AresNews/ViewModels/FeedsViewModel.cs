@@ -430,16 +430,23 @@ namespace AresNews.ViewModels
             int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
 
             List<Article> articles = new List<Article>();
-            //bool isUpdate = _prevSearch == SearchText;
+            
+            // Figure out if the feed deserve an update
+            string timeUpdate = string.Empty;
 
+            if (Articles?.Count != 0)
+                timeUpdate = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+
+            bool needUpdate = feed.IsLoaded && !string.IsNullOrEmpty(timeUpdate);
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
-
-                string v = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
                 
-                articles = await App.WService.Get<List<Article>>(controller:"feeds", action: feed.IsLoaded ? "update" : null, parameters: feed.IsLoaded ? new string[] { v } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
+
+                articles = await App.WService.Get<List<Article>>(controller:"feeds", action: needUpdate ? "update" : null, parameters: needUpdate ? new string[] { timeUpdate } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
                 {
+#if DEBUG
                     throw err;
+#endif
                 });
 
                 Articles?.Clear();
@@ -457,7 +464,7 @@ namespace AresNews.ViewModels
 
             }
 
-            if (feed.IsLoaded)
+            if (needUpdate)
             {
                 if (articles.Count > 0)
                     UpdateArticles(articles, feed, indexFeed);
