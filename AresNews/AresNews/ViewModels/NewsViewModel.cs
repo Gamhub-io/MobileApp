@@ -271,7 +271,7 @@ namespace AresNews.ViewModels
 
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
             
-            Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
+            //Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
             CurrentFeed = new Feed();
             _isLaunching = true;
 
