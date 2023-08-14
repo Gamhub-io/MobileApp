@@ -388,7 +388,7 @@ namespace AresNews.ViewModels
                     break;
             }
 
-            FetchArticles();
+            FetchArticles(_articles.Count >=0);
             //Articles.ForEach(article => { if (article.Source == null) article.Source = App.Sources.FirstOrDefault(s => s.MongoId == article.SourceId); });
         }
 
@@ -413,9 +413,8 @@ namespace AresNews.ViewModels
                 IsSearchOpen = false;
                 _prevSearch = string.Empty;
 
-#if IOS
+                if (Device.RuntimePlatform == Device.iOS)
                     CurrentApp.RemoveLoadingIndicator();
-#endif
                 return;
             }
 
@@ -436,6 +435,7 @@ namespace AresNews.ViewModels
                 {
 
                     Articles = await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") });
+                    
                     IsRefreshing = false;
                     _isLaunching = false;
                     await RefreshDB();
@@ -446,6 +446,9 @@ namespace AresNews.ViewModels
                    
                        articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, callbackError: (err) =>
                        {
+#if DEBUG
+                           throw err;
+#endif
                        });
 
                     if (Device.RuntimePlatform == Device.iOS)
