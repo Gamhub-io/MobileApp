@@ -245,10 +245,10 @@ namespace AresNews.ViewModels
         {
             get { return new Command(async (id) =>
             {
-                var articlePage = new ArticlePage(_articles.FirstOrDefault(art => art.Id == id.ToString()));
+                Article article = _articles.FirstOrDefault(art => art.Id == id.ToString());
 
 
-                await App.Current.MainPage.Navigation.PushAsync(articlePage);
+                await App.Current.MainPage.Navigation.PushAsync(new ArticlePage(article));
             }); ; }
         }
 
