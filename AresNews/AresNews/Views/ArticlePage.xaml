@@ -214,9 +214,16 @@
                 <mat:HtmlLabel Text="{Binding SelectedArticle.Content, Mode=OneWay}"
                                TextColor="{StaticResource FontColor}"
                                Margin="25,5"
+                               IsEnabled="True"
                                AndroidLegacyMode="True"
                                FontFamily="P-Regular"
                                Grid.Row="3"/>
+                <!--<WebView 
+                               Margin="25,5"
+                    BackgroundColor="{StaticResource LightDark}"
+                               IsEnabled="{OnPlatform Android=false, iOS=true}"
+                    x:Name="wvHtmlContent"
+                               Grid.Row="3"/>-->
 
                 <!-- Button to open to the default Browser -->
                 <Button Text="Read more"
