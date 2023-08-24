@@ -92,11 +92,9 @@
                                              ShareCommandParameter="{Binding Url}"
                                              BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=AddBookmark, Mode=OneWay}"
                                              ControlTemplate="{StaticResource ArticleTemplate}"
+                                             TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=GoToDetail}"
+                                             TapCommandParameter="{Binding Id}"
                                              >
-                        <controls:ArticlePreview.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=GoToDetail}" 
-                                                  CommandParameter="{Binding Id}" />
-                        </controls:ArticlePreview.GestureRecognizers>
                     </controls:ArticlePreview>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
