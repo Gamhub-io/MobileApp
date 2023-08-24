@@ -1,5 +1,4 @@
-﻿using AresNews.Helpers.Tools;
-using AresNews.Models;
+﻿using AresNews.Models;
 using AresNews.Services;
 using AresNews.Views;
 using MvvmHelpers;
@@ -30,13 +29,13 @@ namespace AresNews.ViewModels
         private bool _isSearching;
         public bool IsSearching
         {
-            get 
-            { 
-                return _isSearching; 
+            get
+            {
+                return _isSearching;
             }
-            set 
-            { 
-                _isSearching = value; 
+            set
+            {
+                _isSearching = value;
                 OnPropertyChanged(nameof(IsSearching));
             }
         }
@@ -44,13 +43,13 @@ namespace AresNews.ViewModels
         private bool _isSearchOpen;
         public bool IsSearchOpen
         {
-            get 
-            { 
-                return _isSearchOpen; 
-            }
-            set 
+            get
             {
-                _isSearchOpen = value; 
+                return _isSearchOpen;
+            }
+            set
+            {
+                _isSearchOpen = value;
                 OnPropertyChanged(nameof(IsSearchOpen));
             }
         }
@@ -91,7 +90,7 @@ namespace AresNews.ViewModels
                 return new Command(() =>
                 {
                     IsSearching = true;
-                    
+
                 });
             }
         }
@@ -205,21 +204,21 @@ namespace AresNews.ViewModels
         public ObservableCollection<Article> Articles
         {
             get { return _articles; }
-            set 
-            { 
+            set
+            {
                 _articles = value;
                 OnPropertyChanged(nameof(Articles));
                 SetProperty(ref _articles, value);
             }
         }
-        private NewsPage CurrentPage { get; set; } 
+        private NewsPage CurrentPage { get; set; }
         // Command to add a Bookmark
         private readonly Command _addBookmark;
 
         public Command AddBookmark
         {
-            get 
-            { 
+            get
+            {
                 return _addBookmark;
             }
         }
@@ -240,13 +239,16 @@ namespace AresNews.ViewModels
         // See detail of the article
         public Command GoToDetail
         {
-            get { return new Command(async (id) =>
+            get
             {
-                var articlePage = new ArticlePage(_articles.FirstOrDefault(art => art.Id == id.ToString()));
+                return new Command(async (id) =>
+                {
+                    var articlePage = new ArticlePage(_articles.FirstOrDefault(art => art.Id == id.ToString()));
 
 
-                await App.Current.MainPage.Navigation.PushAsync(articlePage);
-            }); ; }
+                    await App.Current.MainPage.Navigation.PushAsync(articlePage);
+                }); ;
+            }
         }
 
         private bool _isRefreshing;
@@ -254,8 +256,8 @@ namespace AresNews.ViewModels
         public bool IsRefreshing
         {
             get { return _isRefreshing; }
-            set 
-            { 
+            set
+            {
                 _isRefreshing = value;
                 OnPropertyChanged(nameof(IsRefreshing));
             }
@@ -315,36 +317,36 @@ namespace AresNews.ViewModels
             });
 
             _addBookmark = new Command((id) =>
-               {
-                   var article = new Article();
-                   // Get the article
-                   article = _articles.FirstOrDefault(art => art.Id == id.ToString());
+            {
+                var article = new Article();
+                // Get the article
+                article = _articles.FirstOrDefault(art => art.Id == id.ToString());
 
 
 
-                   // If the article is already in bookmarks
-                   bool isSaved = article.IsSaved;
+                // If the article is already in bookmarks
+                bool isSaved = article.IsSaved;
 
-                   //// Marked the article as saved
-                   article.IsSaved = !article.IsSaved;
+                //// Marked the article as saved
+                article.IsSaved = !article.IsSaved;
 
-                   if (isSaved)
-                       App.SqLiteConn.Delete(article, recursive: true);
-                   else
-                   {
-                       // Insert it in database
-                       App.SqLiteConn.InsertWithChildren(article, recursive: true);
-                   }
-                       
-
-
-                   //Articles[_articles.IndexOf(article)] = article;
-
-                   // Say the the bookmark has been updated
-                   MessagingCenter.Send<Article>(article, "SwitchBookmark");
+                if (isSaved)
+                    App.SqLiteConn.Delete(article, recursive: true);
+                else
+                {
+                    // Insert it in database
+                    App.SqLiteConn.InsertWithChildren(article, recursive: true);
+                }
 
 
-               });
+
+                //Articles[_articles.IndexOf(article)] = article;
+
+                // Say the the bookmark has been updated
+                MessagingCenter.Send<Article>(article, "SwitchBookmark");
+
+
+            });
 
             _refreshFeed = new Command<bool>( (isAll) =>
                {
@@ -358,18 +360,18 @@ namespace AresNews.ViewModels
 
             // Set command to share an article
             _shareArticle = new Command(async (id) =>
-           {
-               // Get selected article
-               var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
+            {
+                // Get selected article
+                var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
 
-               await Share.RequestAsync(new ShareTextRequest
-               {
-                   Uri = article.Url,
-                   Title = "Share this article",
-                   Subject = article.Title,
-                   Text = article.Title
-               });
-           });
+                await Share.RequestAsync(new ShareTextRequest
+                {
+                    Uri = article.Url,
+                    Title = "Share this article",
+                    Subject = article.Title,
+                    Text = article.Title
+                });
+            });
 
             //
             switch (Device.RuntimePlatform)
@@ -431,7 +433,7 @@ namespace AresNews.ViewModels
                     IsRefreshing = false;
                     _isLaunching = false;
                     await RefreshDB();
-                    return ;
+                    return;
                 }
                if (_articles?.Count() > 0)
                {
@@ -440,12 +442,12 @@ namespace AresNews.ViewModels
                        {
                        });
 
-                    
+
 
                 }
-               else
-               {
-                   if (_isLaunching)
+                else
+                {
+                    if (_isLaunching)
                     {
                         try
                         {
@@ -465,7 +467,7 @@ namespace AresNews.ViewModels
                     }
                    articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null);
 
-               }
+                }
             }
             catch (Exception ex)
             {
@@ -511,12 +513,12 @@ namespace AresNews.ViewModels
 
             }
             catch
-                {
-                }
-                //finally
-                //{
-                //    _isLaunching = false;
-                //}
+            {
+            }
+            //finally
+            //{
+            //    _isLaunching = false;
+            //}
 
             _isLaunching = false;
             IsRefreshing = false;
@@ -651,5 +653,6 @@ namespace AresNews.ViewModels
             }
 
         }
+
     }
 }
