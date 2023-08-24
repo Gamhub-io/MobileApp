@@ -19,6 +19,12 @@ namespace AresNews.Views
             InitializeComponent();
 
             BindingContext = _vm = new ArticleViewModel(article);
+
+            //if (Device.RuntimePlatform == Device.iOS)
+            //{
+            //    string htmlContent = article.Content;
+            //    wvHtmlContent.Source = new HtmlWebViewSource { Html = htmlContent };
+            //}
         }
 
         protected override void OnDisappearing()
