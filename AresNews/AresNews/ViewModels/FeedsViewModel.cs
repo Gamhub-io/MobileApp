@@ -449,8 +449,8 @@ namespace AresNews.ViewModels
                     throw err;
 #endif
                 });
-
-                Articles?.Clear();
+                //if (!needUpdate)
+                //    Articles?.Clear();
 
             }
             // Offline search
