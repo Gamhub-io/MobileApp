@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -265,13 +266,13 @@ namespace AresNews.ViewModels
         }
         public NewsViewModel(NewsPage currentPage)
         {
-
+            CurrentApp = App.Current as App;
             CurrentPage = currentPage;
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
             
-            Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
+            //Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
             CurrentFeed = new Feed();
             _isLaunching = true;
 
@@ -378,6 +379,7 @@ namespace AresNews.ViewModels
             switch (Device.RuntimePlatform)
             {
                 case Device.iOS:
+                    CurrentApp.ShowLoadingIndicator();
                     _refreshFeed.Execute(null);
                     break;
                 case Device.Android:
@@ -387,7 +389,7 @@ namespace AresNews.ViewModels
                     break;
             }
 
-            FetchArticles();
+            FetchArticles(_articles.Count >=0);
             //Articles.ForEach(article => { if (article.Source == null) article.Source = App.Sources.FirstOrDefault(s => s.MongoId == article.SourceId); });
         }
 
@@ -411,6 +413,9 @@ namespace AresNews.ViewModels
                 IsRefreshing = false;
                 IsSearchOpen = false;
                 _prevSearch = string.Empty;
+
+                if (Device.RuntimePlatform == Device.iOS)
+                    CurrentApp.RemoveLoadingIndicator();
                 return;
             }
 
@@ -431,6 +436,7 @@ namespace AresNews.ViewModels
                 {
 
                     Articles = await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") });
+                    
                     IsRefreshing = false;
                     _isLaunching = false;
                     await RefreshDB();
@@ -441,6 +447,9 @@ namespace AresNews.ViewModels
                    
                        articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, callbackError: (err) =>
                        {
+#if DEBUG
+                           throw err;
+#endif
                        });
 
 
@@ -502,7 +511,7 @@ namespace AresNews.ViewModels
                 return;
             }
 
-            await Task.Factory.StartNew(() =>
+            await Task.Run(() =>
             {
                 // Update list of articles
                 UpdateArticles(articles);
@@ -523,7 +532,8 @@ namespace AresNews.ViewModels
 
             _isLaunching = false;
             IsRefreshing = false;
-
+            if (Device.RuntimePlatform == Device.iOS)
+                    CurrentApp.RemoveLoadingIndicator();
 
             // Register date of the refresh
             //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
@@ -536,35 +546,74 @@ namespace AresNews.ViewModels
         /// <param name="articles">new articles</param>
         private void UpdateArticles(ObservableCollection<Article> articles)
         {
-            for (int i = 0; i < articles.Count(); ++i)
+            // Create a copy of the input ObservableCollection
+            List<Article> listArticle = new (articles);
+
+            // Lists to store articles to be added and updated
+            List<Article> articlesToAdd = new ();
+            List<Article> articlesToUpdate = new ();
+
+            // Iterate through the copied list of articles
+            foreach (var current in listArticle)
             {
-                var current = articles[i];
+                // Check if the current article already exists in the _articles collection
                 Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+
                 if (existingArticle == null)
                 {
-
-                    Article item = articles.FirstOrDefault(a => a.Id == current.Id);
-
-                    var index = articles.IndexOf(item);
-
-                    // Add article one by one for a better visual effect
-                    Articles.Insert(index == -1 ? 0 + i : index, current);
+                    // Article doesn't exist in _articles, add it to the articlesToAdd list
+                    articlesToAdd.Add(current);
                 }
                 else
                 {
-                    int index = _articles.IndexOf(existingArticle);
-                    // replace the exisiting one with the new one
-                    Articles.Remove(existingArticle);
-                    Articles.Insert(index, current);
+                    // Article exists in _articles, add it to the articlesToUpdate list
+                    articlesToUpdate.Add(current);
                 }
-
-
             }
+
+            // Add new articles to the Articles collection
+            foreach (var articleToAdd in articlesToAdd)
+            {
+                // Find a matching article in the 'articles' collection
+                Article item = articles.FirstOrDefault(a => a.Id == articleToAdd.Id);
+
+                if (item != null)
+                {
+                    // If a matching article is found, get its index
+                    var index = articles.IndexOf(item);
+
+                    // Insert the new article at the found index or at the beginning if index is -1
+                    Articles.Insert(index == -1 ? 0 : index, articleToAdd);
+                }
+                else
+                {
+                    // If no matching article is found, add the new article at the end
+                    Articles.Add(articleToAdd);
+                }
+            }
+
+            foreach (var articleToUpdate in articlesToUpdate)
+            {
+                // Find the existing article to be updated in the '_articles' collection
+                Article existingArticle = _articles.FirstOrDefault(a => a.Id == articleToUpdate.Id);
+
+                if (existingArticle != null)
+                {
+                    // Get the index of the existing article in the 'Articles' collection
+                    int index = _articles.IndexOf(existingArticle);
+
+                    // Remove the existing article and insert the updated one at the same index
+                    Articles.Remove(existingArticle);
+                    Articles.Insert(index, articleToUpdate);
+                }
+                // If existingArticle is null, handle the case where the article to update was not found
+            }
+
         }
 
         private async Task RefreshDB()
         {
-            await Task.Factory.StartNew(async () =>
+            try
             {
                 await Task.Run(() =>
                 {
@@ -579,7 +628,11 @@ namespace AresNews.ViewModels
 
                     }
                 });
-            });
+            }
+            finally
+            {
+                //App.BackUpConn.Close();
+            };
         }
 
         /// <summary>
