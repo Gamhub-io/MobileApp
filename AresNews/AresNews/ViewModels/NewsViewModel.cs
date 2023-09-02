@@ -213,6 +213,8 @@ namespace AresNews.ViewModels
                 SetProperty(ref _articles, value);
             }
         }
+
+        public App CurrentApp { get; }
         private NewsPage CurrentPage { get; set; }
         // Command to add a Bookmark
         private readonly Command _addBookmark;
