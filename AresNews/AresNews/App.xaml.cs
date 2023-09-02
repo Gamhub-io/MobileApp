@@ -86,7 +86,9 @@ namespace AresNews
             {
                 Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", callbackError: (e) =>
                 {
+#if DEBUG
                     throw e;
+#endif
                 });
 
 
@@ -100,7 +102,7 @@ namespace AresNews
             // Close the db
             //CloseDb();
 
-            MainPage = new AppShell();
+            MainPage =  new AppShell();
 
             
         }
