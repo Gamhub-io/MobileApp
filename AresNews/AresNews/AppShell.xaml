@@ -135,6 +135,7 @@
                                  Glyph="&#xf005;" 
                                  Size="{OnPlatform Android='26', iOS='25'}"/>
             </ShellContent.Icon>
+            
         </ShellContent>
     </FlyoutItem>
     
