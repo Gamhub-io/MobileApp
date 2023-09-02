@@ -241,7 +241,7 @@ its community's skills, knowledges and opinions.  "
                                     TextColor="{DynamicResource Dark}"
                                     Text=""
                                     Size="70"
-                                    Source="Bryce.jpg" />
+                                    Source="https://avatars.githubusercontent.com/u/37577669?v=4" />
 
                     <Grid Grid.Column="1"
                           Margin="0,20,0,0">
