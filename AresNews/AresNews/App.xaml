@@ -29,6 +29,7 @@
         <helpers:MaxLengthConverter x:Key="MaxLengthConverter"/>
         <helpers:ThumbnailConverter x:Key="ThumbnailConverter"/>
         <helpers:BoolInverseConverter x:Key="BoolInverseConverter"/>
+        <helpers:ZeroToFalseConverter x:Key="ZeroToFalseConverter"/>
         
         <ResourceDictionary>
             <OnPlatform x:Key="TitleRightMargin" 
