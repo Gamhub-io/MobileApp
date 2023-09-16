@@ -771,7 +771,8 @@ namespace AresNews.ViewModels
         private void SelectTab(int index)
         {
             _oldIndex = index;
-            //FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+
+
             FeedTabs[index].IsSelected = true;
         }
         /// <summary>
@@ -793,6 +794,8 @@ namespace AresNews.ViewModels
             else if (indexNext <= _feeds.Count -1)
                 tabIndex = indexPrev;
 
+            if (tabIndex == -1)
+                tabIndex ++;
             // Select the tab that we determined
             SelectTab(tabIndex);
 
@@ -837,6 +840,8 @@ namespace AresNews.ViewModels
         {
             if (index == -1)
                 return;
+
+
             // Deselect the previous tab
             //DeselectAll();
             if (_oldIndex <= _feeds.Count -1)
