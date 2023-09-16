@@ -141,8 +141,7 @@
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
                     </CollectionView.ItemsLayout>
                     <CollectionView.EmptyView>
-                        <ContentView 
-                                       IsVisible="{Binding IsBusy, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}},Converter={StaticResource BoolInverseConverter}}">
+                        <ContentView IsVisible="{Binding IsBusy, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}},Converter={StaticResource BoolInverseConverter}}">
 
                             <StackLayout VerticalOptions="CenterAndExpand"
                                         HorizontalOptions="CenterAndExpand"
