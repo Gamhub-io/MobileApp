@@ -145,7 +145,16 @@
                                        IsVisible="{Binding IsBusy, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}},Converter={StaticResource BoolInverseConverter}}">
 
                             <StackLayout VerticalOptions="CenterAndExpand"
-                                    HorizontalOptions="CenterAndExpand">
+                                        HorizontalOptions="CenterAndExpand"
+                                         IsVisible="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Converter={StaticResource ZeroToFalseConverter}}">
+                                <StackLayout.Triggers>
+                                    <DataTrigger Binding="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
+                                                 TargetType="StackLayout"
+                                                 Value="0">
+                                        <Setter Property="IsVisible" 
+                                                Value="false" />
+                                    </DataTrigger>
+                                </StackLayout.Triggers>
                                 <Label Text="&#xf005;"
                                          FontFamily="FaSolid"
                                          TextColor="{StaticResource Primary}"
