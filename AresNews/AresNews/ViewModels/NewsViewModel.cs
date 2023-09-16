@@ -447,10 +447,10 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, callbackError: (err) =>
+                       articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, unSuccessCallback: async (err) =>
                        {
 #if DEBUG
-                           throw err;
+                           throw new Exception (await err.Content.ReadAsStringAsync());
 #endif
                        });
 
