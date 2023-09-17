@@ -644,12 +644,13 @@ namespace AresNews.ViewModels
         private async void SearchArticles(ObservableRangeCollection<Article> articles)
         {
             bool isUpdate = _prevSearch == SearchText;
+            string timeParam = string.Empty;
 
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
-
-                string v = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
+                if (isUpdate)
+                    timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { timeParam } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
                 
             }
             // Offline search
