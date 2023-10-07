@@ -105,6 +105,9 @@ namespace AresNews.Views
         private void CloseSearchButton_Clicked(object sender, EventArgs e)
         {
             CloseSearch();
+
+            // Close the keyboard 
+            entrySearch.Unfocus();
         }
 
         /// <summary>
