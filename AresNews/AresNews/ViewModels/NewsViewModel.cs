@@ -315,8 +315,10 @@ namespace AresNews.ViewModels
                 }
                 catch (Exception ex)
                 {
-
+#if DEBUG
                     throw ex;
+
+#endif
                 }
             });
 
@@ -418,6 +420,8 @@ namespace AresNews.ViewModels
 
                 if (Device.RuntimePlatform == Device.iOS)
                     CurrentApp.RemoveLoadingIndicator();
+
+                await RefreshDB();
                 return;
             }
 
@@ -621,7 +625,7 @@ namespace AresNews.ViewModels
                 {
 
                     App.BackUpConn.DeleteAll<Article>();
-                    //_articles.ForEach(article => article.SourceId ??= article.Source?.Id.ToString());
+
                     App.BackUpConn.InsertAllWithChildren(_articles);
 
                     foreach (var source in _articles.Select(a => a.Source).Distinct().ToList())
