@@ -84,10 +84,10 @@ namespace AresNews
 
             Task.Run(async () =>
             {
-                Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", callbackError: (e) =>
+                Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", unSuccessCallback: async (e) =>
                 {
 #if DEBUG
-                    throw e;
+                    throw new Exception (await e.Content.ReadAsStringAsync());
 #endif
                 });
 

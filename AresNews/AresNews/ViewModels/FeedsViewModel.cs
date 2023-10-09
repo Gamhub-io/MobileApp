@@ -162,7 +162,6 @@ namespace AresNews.ViewModels
             {
 
                 // Set new feed
-                //SelectedFeed = feed;
                 SwitchTabs(_feeds.IndexOf(feed));
                 SelectedFeed.IsLoaded = false;
 
@@ -237,7 +236,7 @@ namespace AresNews.ViewModels
             // Instantiate definitions 
             FeedTabs = new ObservableCollection<TabButton>();
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
-
+            _articles = new ObservableCollection<Article>();
             // Organise feeds into tabs
             CopyFeedsToTabs();
 
@@ -401,13 +400,10 @@ namespace AresNews.ViewModels
             IsBusy = true;
             Debug.WriteLine($"IsNotBusy: {IsNotBusy}");
             CurrentApp.ShowLoadingIndicator();
-            bool isFirstLoad = feed != _selectedFeed;
-            if (isFirstLoad)
-            {
 
-                SelectedFeed = feed;
-                SelectedFeed.IsLoaded = false;
-            }
+            // Determine wether or not it's the first time loading the article of this feed
+            bool isFirstLoad = _articles == null || _articles.Count <= 0;
+
 
 
             await Task.Run(() =>
@@ -443,10 +439,10 @@ namespace AresNews.ViewModels
             {
                 
 
-                articles = await App.WService.Get<List<Article>>(controller:"feeds", action: needUpdate ? "update" : null, parameters: needUpdate ? new string[] { timeUpdate } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", callbackError: (err) =>
+                articles = await App.WService.Get<List<Article>>(controller:"feeds", action: needUpdate ? "update" : null, parameters: needUpdate ? new string[] { timeUpdate } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", unSuccessCallback: async (err) =>
                 {
 #if DEBUG
-                    throw err;
+                    throw new Exception(await err.Content.ReadAsStringAsync());
 #endif
                 });
                 //if (!needUpdate)
@@ -472,8 +468,10 @@ namespace AresNews.ViewModels
             }
             else
             {
+                //Articles = new ObservableCollection<Article>();
                 // Update list of articles
-                Articles = new ObservableCollection<Article>(articles);
+                InsertArticles(articles);
+                //Articles = new ObservableCollection<Article>(articles);
 
             }
             SelectedFeed.IsLoaded = true;
@@ -484,6 +482,19 @@ namespace AresNews.ViewModels
             //IsSearchOpen = true;
             //_prevSearch = SearchText;
 
+        }
+        /// <summary>
+        /// Insert a set of articles in the current list
+        /// </summary>
+        /// <param name="articles">articles to add</param>
+        private void InsertArticles(IEnumerable<Article> articles)
+        {
+            Articles?.Clear();
+            for (int i = 0; i < articles.Count(); i++)
+            {
+                if (i != -1)
+                    Articles.Add(articles.ElementAt(i));
+            }
         }
 
         // See detail of the article
@@ -557,6 +568,8 @@ namespace AresNews.ViewModels
         /// <param name="feed">feed we want to remove</param>
         public async void RemoveFeed(Feed feed)
         {
+            CurrentApp.ShowLoadingIndicator();
+            IsBusy = true;
             int feedIndex = Feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
             int indexNext = feedIndex + 1;
             
@@ -604,10 +617,7 @@ namespace AresNews.ViewModels
                 SwitchFeedAsync(feedInView);
             }));
 
-
-
-            // Switch the the next feed
-            //
+            CurrentApp.RemoveLoadingIndicator();
         }
         /// <summary>
         /// Update a feed
@@ -669,7 +679,7 @@ namespace AresNews.ViewModels
         private void RefreshFirstFeed()
         {
             if (_feeds.Count > 0)
-                Refresh(_feeds[0]);
+                SelectedFeed = _feeds[0];
         }
 
         /// <summary>
@@ -771,7 +781,8 @@ namespace AresNews.ViewModels
         private void SelectTab(int index)
         {
             _oldIndex = index;
-            //FeedTabs[index].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
+
+
             FeedTabs[index].IsSelected = true;
         }
         /// <summary>
@@ -793,11 +804,14 @@ namespace AresNews.ViewModels
             else if (indexNext <= _feeds.Count -1)
                 tabIndex = indexPrev;
 
+            if (tabIndex == -1)
+                tabIndex ++;
             // Select the tab that we determined
             SelectTab(tabIndex);
 
             // Refresh the tab
-            Refresh(_feeds[tabIndex]);
+            //Refresh(_feeds[tabIndex]);
+            SelectedFeed = _feeds[tabIndex];
         }
         /// <summary>
         /// Remove a feed using it's index
@@ -837,8 +851,9 @@ namespace AresNews.ViewModels
         {
             if (index == -1)
                 return;
+
+
             // Deselect the previous tab
-            //DeselectAll();
             if (_oldIndex <= _feeds.Count -1)
                 DeselectTab(_oldIndex);
 

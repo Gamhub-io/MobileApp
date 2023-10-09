@@ -315,8 +315,10 @@ namespace AresNews.ViewModels
                 }
                 catch (Exception ex)
                 {
-
+#if DEBUG
                     throw ex;
+
+#endif
                 }
             });
 
@@ -418,6 +420,8 @@ namespace AresNews.ViewModels
 
                 if (Device.RuntimePlatform == Device.iOS)
                     CurrentApp.RemoveLoadingIndicator();
+
+                await RefreshDB();
                 return;
             }
 
@@ -447,10 +451,10 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, callbackError: (err) =>
+                       articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, unSuccessCallback: async (err) =>
                        {
 #if DEBUG
-                           throw err;
+                           throw new Exception (await err.Content.ReadAsStringAsync());
 #endif
                        });
 
@@ -621,7 +625,7 @@ namespace AresNews.ViewModels
                 {
 
                     App.BackUpConn.DeleteAll<Article>();
-                    //_articles.ForEach(article => article.SourceId ??= article.Source?.Id.ToString());
+
                     App.BackUpConn.InsertAllWithChildren(_articles);
 
                     foreach (var source in _articles.Select(a => a.Source).Distinct().ToList())
@@ -644,12 +648,13 @@ namespace AresNews.ViewModels
         private async void SearchArticles(ObservableRangeCollection<Article> articles)
         {
             bool isUpdate = _prevSearch == SearchText;
+            string timeParam = string.Empty;
 
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
-
-                string v = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { v } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
+                if (isUpdate)
+                    timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { timeParam } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
                 
             }
             // Offline search
