@@ -34,18 +34,20 @@
                     <!-- Backgournd -->
                     <Grid BackgroundColor="{StaticResource Dark}">
                         <!-- Image -->
-                        <!--<ffimageloading:CachedImage Source="{Binding Thumnail}"
+                        <ffimageloading:CachedImage Source="{Binding Thumnail}"
                                                     Opacity="0.60"
                                                     CacheDuration="5"
                                                     RetryCount="3"
                                                     RetryDelay="600"
+                                                    
                                                     DownsampleToViewSize="true"
-                                                    Aspect="AspectFill" />-->
-                        <Image Source="{Binding Thumnail, Mode=OneWay}"
+                                                    Aspect="AspectFill" >
+                        </ffimageloading:CachedImage>
+                        <!--<Image Source="{Binding Thumnail, Mode=OneWay}"
                                Opacity="0.60"
-                               Aspect="AspectFill" />
+                               Aspect="AspectFill" />-->
                         <!-- filter -->
-                        <Frame Opacity="0.15">
+                        <Frame Opacity="0.08">
                             <Frame.Background>
                                 <LinearGradientBrush EndPoint="0,1">
 
@@ -133,7 +135,7 @@
                             </Grid.RowDefinitions>
                             <!-- Headline -->
                             <Label Grid.Row="0" 
-                                   Text="{Binding Headline}"
+                                   Text="{Binding Headline, Converter={StaticResource MaxLengthConverter}, ConverterParameter=120}}"
                                    TextColor="{StaticResource FontColor}"
                                    Margin="10,0"
                                    TextType="Html"

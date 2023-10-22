@@ -10,11 +10,21 @@ namespace AresNews.Views
     public partial class ArticlePage : ContentPage
     {
         private ArticleViewModel _vm;
+        private uint _modalHeightStart = 0;
+        private uint _modalWidthStart = 50;
+
+
         public ArticlePage(Article article)
         {
             InitializeComponent();
 
             BindingContext = _vm = new ArticleViewModel(article);
+
+            //if (Device.RuntimePlatform == Device.iOS)
+            //{
+            //    string htmlContent = article.Content;
+            //    wvHtmlContent.Source = new HtmlWebViewSource { Html = htmlContent };
+            //}
         }
 
         protected override void OnDisappearing()
@@ -40,10 +50,87 @@ namespace AresNews.Views
 
 
         }
-
-        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        /// <summary>
+        /// Function to open a the dropdrown
+        /// </summary>
+        public void OpenDropdownMenu()
         {
+            double height = 70;
+            double width = 180;
+            //_vm.ModalClose = false;
+            // Animation
+            void callbackH(double inputH) => dropdownMenu.HeightRequest = inputH;
+            void callbackW(double inputW) => dropdownMenu.WidthRequest = inputW;
 
+            uint rate = 24;
+            dropdownMenu.Animate("AnimHeightDropdownMenu", callbackH, dropdownMenu.Height, height, rate, 100, Easing.SinOut);
+            dropdownMenu.Animate("AnimWidthDropdownMenu", callbackW, dropdownMenu.Width, width, rate, 100, Easing.SinOut);
+            dropdownMenu.Padding = 3;
+
+            _vm.IsMenuOpen = true;
+        }
+        /// <summary>
+        /// Function to close a modal
+        /// </summary>
+        public void CloseDropdownMenu()
+        {
+            //_vm.ModalClose = true;
+
+            // Animation
+            void callbackH(double inputH) => dropdownMenu.HeightRequest = inputH;
+            void callbackW(double inputW) => dropdownMenu.WidthRequest = inputW;
+            uint rate = 24;
+
+            dropdownMenu.Animate("AnimWidthDropdownMenu", callbackW, dropdownMenu.Width, _modalWidthStart, rate, 500, Easing.SinOut);
+            dropdownMenu.Animate("AnimHeightDropdownMenu", callbackH, dropdownMenu.Height, _modalHeightStart, rate, 500, Easing.SinOut);
+
+            dropdownMenu.Padding = 0;
+
+            _vm.IsMenuOpen= false;
+        }
+
+        private void Menu_Clicked(object sender, EventArgs e)
+        {
+            // If dropdown is closed
+            if (dropdownMenu.Padding == 0)
+            {
+                OpenDropdownMenu();
+                return;
+            }
+
+            CloseDropdownMenu();
+        }
+
+        private void MenuItem_Tapped(object sender, EventArgs e)
+        {
+            // If dropdown is open
+            if (dropdownMenu.Padding != 0)
+            {
+                CloseDropdownMenu();
+            }
+        }
+
+        private async void SwipeBackgroundDown_Swiped(object sender, SwipedEventArgs e)
+        {
+            // If dropdown is open
+            if (dropdownMenu.Padding != 0)
+            {
+                CloseDropdownMenu();
+            }
+
+            // If dropdown is open
+            await scrollview.ScrollToAsync(scrollview.ScrollX, scrollview.ScrollY - 5, true);
+        }
+
+        private async void SwipeBackgroundUp_Swiped(object sender, SwipedEventArgs e)
+        {
+            // If dropdown is open
+            if (dropdownMenu.Padding != 0)
+            {
+                CloseDropdownMenu();
+            }
+            // If dropdown is open
+            await scrollview.ScrollToAsync(scrollview.ScrollX, scrollview.ScrollY + 5, true);
         }
     }
 }

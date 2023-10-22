@@ -1,0 +1,331 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AresNews.Views.FeedsPage"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:model="clr-namespace:AresNews.Models" 
+             xmlns:vm="clr-namespace:AresNews.ViewModels" 
+             xmlns:controls="clr-namespace:AresNews.Controls"
+             x:DataType="vm:FeedsViewModel">
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="1,1">
+            <GradientStop Color="#262626"
+                           Offset="0.1"/>
+            <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+            <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            <GradientStop Color="Black"
+                           Offset="1.0"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <Shell.TitleView>
+        <ContentView Margin="0,0,0,0" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label Text="My Feeds"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       FontSize="20"
+                       TextColor="{StaticResource FontColor}"
+                       FontFamily="P-Bold"
+                       Grid.Column="0"/>
+
+
+                <!-- edit button -->
+                <Button Text="&#xf044;" 
+                        FontFamily="FaSolid"
+                        TextColor="{StaticResource Primary}"
+                        BackgroundColor="{StaticResource LightDark}"
+                        Clicked="Menu_Clicked"
+                        Grid.Column="1"
+                        FontSize="30"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        Margin="0"
+                        >
+                    <Button.Triggers>
+                        <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="Button"
+                                 Value="0">
+                            <Setter Property="IsVisible" 
+                                Value="false" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
+            </Grid>
+
+        </ContentView>
+
+    </Shell.TitleView>
+    <ContentPage.Content>
+        <Grid RowDefinitions="60,*">
+            <!-- Empty View - If there is no feeds -->
+            <ContentView IsVisible="false"
+                         Grid.RowSpan="2">
+                <ContentView.Triggers>
+                    <DataTrigger Binding="{Binding Feeds.Count}"
+                                 TargetType="ContentView"
+                                 Value="0">
+                        <Setter Property="IsVisible" 
+                                Value="true" />
+                    </DataTrigger>
+
+                </ContentView.Triggers>
+                <StackLayout VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="CenterAndExpand">
+                    <Label Text="&#xf005;"
+                               FontFamily="FaSolid"
+                               TextColor="{StaticResource Primary}"
+                               FontSize="50"
+                               HorizontalOptions="Center"
+                           />
+                    <Label Text="No feeds saved"
+                               FontFamily="P-Bold"
+                               HorizontalOptions="Center"
+                               FontSize="Title"
+                               TextColor="{StaticResource FontColor}"
+                               />
+                    <Label Text="When performing a search, tap on the star icon to save it as a feed."
+                               FontFamily="P-Regular"
+                           Margin="5,0"
+                               HorizontalTextAlignment="Center"
+                               FontSize="Subtitle"
+                               TextColor="{StaticResource FontColor}"
+                               />
+                </StackLayout>
+            </ContentView>
+            <!---->
+            
+            <!-- Current feed - list of article of the selected feed -->
+            <RefreshView IsRefreshing="{Binding IsRefreshing, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"
+                         Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                         Grid.Row="0"
+                         Grid.RowSpan="2"
+                         Margin="0,40,0,0"
+                         x:Name="newsRefreshView"
+                         HorizontalOptions="CenterAndExpand"
+                         RefreshColor="{StaticResource Primary}">
+                <!--<RefreshView.Padding>
+                <OnPlatform x:TypeArguments="Thickness">
+                    <On Platform="iOS" Value="0,30,0,0"/>
+                </OnPlatform>
+            </RefreshView.Padding>-->
+                <RefreshView.BackgroundColor>
+                    <OnPlatform x:TypeArguments="Color">
+                        <On Platform="Android" Value="{StaticResource LightDark}"/>
+                    </OnPlatform>
+                </RefreshView.BackgroundColor>
+                <CollectionView ItemsSource="{Binding Articles, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                                x:DataType="model:Feed"
+                                VerticalScrollBarVisibility="Never"
+                                x:Name="newsCollectionView"
+                                ItemsUpdatingScrollMode="KeepScrollOffset"
+                                HorizontalOptions="Center"
+                                Margin="8,0">
+                    <CollectionView.Header>
+                        <BoxView  Margin="0">
+                            <BoxView.HeightRequest>
+                                <OnPlatform x:TypeArguments="x:Double">
+                                    <On Platform="Android" Value="0"/>
+                                    <On Platform="iOS" Value="75"/>
+                                </OnPlatform>
+                            </BoxView.HeightRequest>
+                        </BoxView>
+                    </CollectionView.Header>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.EmptyView>
+                        <ContentView IsVisible="{Binding IsBusy, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}},Converter={StaticResource BoolInverseConverter}}">
+
+                            <StackLayout VerticalOptions="CenterAndExpand"
+                                        HorizontalOptions="CenterAndExpand"
+                                         IsVisible="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Converter={StaticResource ZeroToFalseConverter}}">
+                                <StackLayout.Triggers>
+                                    <DataTrigger Binding="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
+                                                 TargetType="StackLayout"
+                                                 Value="0">
+                                        <Setter Property="IsVisible" 
+                                                Value="false" />
+                                    </DataTrigger>
+                                </StackLayout.Triggers>
+                                <Label Text="&#xf005;"
+                                         FontFamily="FaSolid"
+                                         TextColor="{StaticResource Primary}"
+                                         FontSize="50"
+                                         HorizontalOptions="Center"
+                                        />
+                                <Label Text="Ooopsi 😟"
+                                       FontFamily="P-Bold"
+                                       HorizontalOptions="Center"
+                                       FontSize="Title"
+                                       TextColor="{StaticResource FontColor}"
+                                       />
+                                <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
+                                       FontFamily="P-Regular"
+                                       Margin="5,0"
+                                       HorizontalTextAlignment="Center"
+                                       FontSize="Subtitle"
+                                       TextColor="{StaticResource FontColor}"
+                                       />
+                            </StackLayout>
+                        </ContentView>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:Article">
+                            <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
+                                                     ArticleId="{Binding Id}"
+                                                     ArticleIsSaved="{Binding IsSaved}"
+                                                     ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
+                                                     ArticleSource="{Binding Source, Mode=OneWay}"
+                                                     Thumnail="{Binding Image}"
+                                                     ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=ShareArticle, Mode=OneWay}"
+                                                     ShareCommandParameter="{Binding Url}"
+                                                     BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=AddBookmark, Mode=OneWay}"
+                                                     ControlTemplate="{StaticResource ArticleTemplate}" 
+                                                     TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=GoToDetail}"
+                                                     TapCommandParameter="{Binding Id}"
+                                                     />
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </RefreshView>
+            <!---->
+
+
+            <!-- Feeds - List of feeds -->
+            <Grid Padding="4,10,4,0"
+                  BackgroundColor="{StaticResource BgBannerColor }"
+                  Grid.Row="0"
+                  RowDefinitions="*,1">
+                
+                <Grid.Triggers>
+                    <DataTrigger Binding="{Binding FeedTabs.Count}"
+                                 TargetType="Grid"
+                                 Value="0">
+                        <Setter Property="IsVisible" 
+                                Value="false" />
+                    </DataTrigger>
+                </Grid.Triggers>
+                <BoxView HorizontalOptions="FillAndExpand"
+                         Color="{StaticResource FontColor}"
+                         Opacity="0.1"
+                         Grid.Row="1"
+                         Margin="0"/>
+                <CollectionView HorizontalScrollBarVisibility="Never"
+                                VerticalOptions="Center"
+                                Margin="0,5,0,0"
+                            ItemsSource="{Binding FeedTabs}"
+                                x:Name="collection"
+                            >
+                    <CollectionView.Triggers>
+                        <DataTrigger Binding="{Binding FeedTabs.Count}"
+                                 TargetType="CollectionView"
+                                 Value="0">
+                            <Setter Property="IsVisible" 
+                                Value="false" />
+                        </DataTrigger>
+                    </CollectionView.Triggers>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="model:TabButton">
+                            <Button Text="{Binding Title, Converter={StaticResource MaxLengthConverter}, ConverterParameter=10}"
+                                    HeightRequest="30"
+                                    WidthRequest="100"
+                                    VerticalOptions="Center"
+                                    FontFamily="P-SemiBold"
+                                    FontSize="13"
+                                    Padding="0"
+                                    CornerRadius="16"
+                                    TextColor ="{StaticResource FontColor}"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=FeedSelect}"
+                                    CommandParameter="{Binding Id}">
+                                <Button.Triggers>
+
+                                    <DataTrigger  Binding="{Binding IsSelected, Mode=TwoWay}" 
+                                                  TargetType="Button"
+                                                  Value="true">
+                                        <Setter   Property="BackgroundColor" Value="{StaticResource SelectionColor}" />
+                                        <!--<Setter   Property="TextColor" Value="{StaticResource BgBannerColor}" />-->
+                                        <Setter Property="FontFamily" Value="P-Bold" />
+                                    </DataTrigger>
+
+                                    <DataTrigger   Binding="{Binding IsSelected, Mode=TwoWay}" 
+                                                  TargetType="Button"
+                                                   Value="false">
+                                        <Setter   Property="BackgroundColor" Value="{StaticResource LightDark}" />
+                                        <!--<Setter   Property="TextColor" Value="{StaticResource FontColor}" />-->
+                                    </DataTrigger>
+                                </Button.Triggers>
+                            </Button>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+            <!---->
+            <!-- HitBox - Layer that detect touch -->
+            <BoxView BackgroundColor="Transparent"
+                     HorizontalOptions="Fill"
+                     VerticalOptions="Fill"
+                     Grid.RowSpan="2"
+                     IsVisible="{Binding IsMenuOpen}">
+                <BoxView.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
+                </BoxView.GestureRecognizers>
+            </BoxView>
+            <!-- -->
+            
+            <!-- Menu - Menu overlay-->
+            <Frame HorizontalOptions="End"
+                   x:Name="dropdownMenu"
+                   VerticalOptions="Start"
+                   BackgroundColor="{StaticResource LightDark}"
+                   HeightRequest="0"
+                   Padding="0"
+                   xct:CornerRadiusEffect.CornerRadius="0,0,8,0"
+                   
+                   Grid.RowSpan="2"
+                   CornerRadius="0"
+                   WidthRequest="50">
+                <StackLayout IsVisible="{Binding IsMenuOpen}">
+                    <Grid xct:TouchEffect.NativeAnimation="True"
+                          xct:TouchEffect.Command="{Binding Edit, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="MenuItem_Tapped"
+                                                  />
+                        </Grid.GestureRecognizers>
+                        <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
+                                   TextColor="{StaticResource FontColor}"
+                                   FontFamily="P-SemiBold"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"/>
+                    </Grid>
+                    <BoxView HeightRequest="1"
+                                 WidthRequest="30"
+                                 BackgroundColor="{StaticResource FontColor}"
+                                 Opacity="0.1"/>
+                    <Grid xct:TouchEffect.NativeAnimation="True"
+                              xct:TouchEffect.Command="{Binding Delete}">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
+                        </Grid.GestureRecognizers>
+                        <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Delete {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
+                                   TextColor="{StaticResource FontColor}"
+                                   FontFamily="P-SemiBold"
+                                   FontSize="18"
+                                   HorizontalOptions="Center"/>
+                    </Grid>
+                </StackLayout>
+            </Frame>
+            <!-- -->
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
