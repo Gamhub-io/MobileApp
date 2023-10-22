@@ -42,13 +42,8 @@ namespace AresNews.Views
         {
             base.OnAppearing();
 
-            //_vm.FetchArticles();
 
-            // Is the app connected to the internet
-            //if (Connectivity.NetworkAccess != NetworkAccess.Internet)
-            //{
-            //    this.DisplayToastAsync("You're offline", 60000);
-            //}
+            _vm.Resume();
         }
         public async void DisplayOfflineMessage(string msg = null)
         {
@@ -65,13 +60,13 @@ namespace AresNews.Views
 
         }
         /// <summary>
-        /// Method allowing the searchbar annimation
+        /// Method allowing the search bar animation
         /// </summary>
         /// <param name="startingHeight">Start size</param>
         /// <param name="endingHeight">End size</param>
         public void AnimateWidthSearchBar(double startingWidth, double endingWidth)
         {
-            // update the height of the layout with this callback
+            // update the height of the layout with this call-back
             Action<double> callback = input => { searchBar.WidthRequest = input; };
 
             // pace at which aniation proceeds
@@ -86,16 +81,35 @@ namespace AresNews.Views
 
         private void OpenSearchButton_Clicked(object sender, EventArgs e)
         {
+            OpenSearch();
+        }
+        /// <summary>
+        /// Open the search header
+        /// </summary>
+        private void OpenSearch()
+        {
             AnimateWidthSearchBar(0, 300);
 
             // Focus on the entry 
             entrySearch.Focus();
         }
+        /// <summary>
+        /// Close the search header
+        /// </summary>
+        private void CloseSearch()
+        {
+            AnimateWidthSearchBar(300, 0);
+            _vm.IsSearching = false;
+        }
 
         private void CloseSearchButton_Clicked(object sender, EventArgs e)
         {
-            AnimateWidthSearchBar(300, 0);
+            CloseSearch();
+
+            // Close the keyboard 
+            entrySearch.Unfocus();
         }
+
         /// <summary>
         /// Scroll the feed
         /// </summary>
@@ -103,6 +117,16 @@ namespace AresNews.Views
         public void ScrollFeed(int position = 0)
         {
             newsCollectionView.ScrollTo(position);
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            if (_vm.IsSearching)
+            {
+                CloseSearch();
+                return true;
+            }
+            return base.OnBackButtonPressed();
         }
     }
 }

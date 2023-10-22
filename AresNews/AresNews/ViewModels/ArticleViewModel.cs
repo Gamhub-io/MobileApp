@@ -24,6 +24,18 @@ namespace AresNews.ViewModels
                 OnPropertyChanged();
             }
         }
+        private bool _isMenuOpen;
+
+        public bool IsMenuOpen
+        {
+            get { return _isMenuOpen; }
+            set 
+            {
+                _isMenuOpen = value;
+                OnPropertyChanged(nameof(IsMenuOpen));
+            }
+        }
+
         /// <summary>
         /// Time spend reading the article
         /// </summary>
@@ -194,11 +206,11 @@ namespace AresNews.ViewModels
 
 
             // Set command to share an article
-            _shareArticle = new Command(async (url) =>
+            _shareArticle = new Command(async () =>
             {
                 await Share.RequestAsync(new ShareTextRequest
                 {
-                    Uri = url.ToString(),
+                    Uri = _selectedArticle.Url,
                     Title = "Share this article",
                     Subject =_selectedArticle.Title,
                     Text = _selectedArticle.Title

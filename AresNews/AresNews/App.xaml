@@ -6,26 +6,37 @@
     <Application.Resources>
         <ResourceDictionary>
             <Color x:Key="Primary" >#84D1AC</Color>
+            <Color x:Key="SelectionColor" >#528e70</Color>
+            <Color x:Key="PrimaryAccent" >#1DB954</Color>
             <Color x:Key="Secondary" >#666666</Color>
             <Color x:Key="Alternate">#8B8E92</Color>
-            <Color x:Key="Dark" >#1a1a1a</Color>
+            <Color x:Key="Dark" >#191414</Color>
             <Color x:Key="DarkSecondary" >#4A4A4A</Color>
             <Color x:Key="LightDark" >#404348</Color>
             <Color x:Key="Light" >#9FDBBE</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
+            <Color x:Key="BgBannerColor" >#262626</Color>
             <!--
             Potential future colour scheme:
             <Color x:Key="Light">#87afc5</Color>
             <Color x:Key="Primary">#5f94b1</Color>
             -->
         </ResourceDictionary>
+        
+        <!-- Converters-->
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
         <helpers:MultipleTOBoolConverter x:Key="MultipleTOBoolConverter"/>
+        <helpers:MaxLengthConverter x:Key="MaxLengthConverter"/>
+        <helpers:ThumbnailConverter x:Key="ThumbnailConverter"/>
+        <helpers:BoolInverseConverter x:Key="BoolInverseConverter"/>
+        <helpers:ZeroToFalseConverter x:Key="ZeroToFalseConverter"/>
+        
         <ResourceDictionary>
             <OnPlatform x:Key="TitleRightMargin" 
                         x:TypeArguments="GridLength" 
                         iOS="2*" Android="1.9*" />
         </ResourceDictionary>
+        
         <!-- Converter to convert time span to string-->
         <helpers:TimeSpanConverter x:Key="TimeSpanConverter"/>
 

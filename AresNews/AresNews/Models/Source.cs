@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
-using System;
 using System.Collections.ObjectModel;
 
 namespace AresNews.Models

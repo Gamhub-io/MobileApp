@@ -4,6 +4,11 @@ using Android.Runtime;
 using Android.Views;
 using Android.OS;
 using LabelHtml.Forms.Plugin.Droid;
+using Sharpnado.CollectionView.Droid;
+using FFImageLoading.Forms.Platform;
+using FFImageLoading;
+using FFImageLoading.Config;
+using System.Net.Http;
 
 namespace AresNews.Droid
 {
@@ -23,8 +28,14 @@ namespace AresNews.Droid
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             HtmlLabelRenderer.Initialize();
+            Rg.Plugins.Popup.Popup.Init(this);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+
+            Initializer.Initialize(enableInternalLogger: true, enableInternalDebugLogger: true);
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(true);
+            CachedImageRenderer.Init(true);
+
+            ImageService.Instance.Initialize(new FFImageLoading.Config.Configuration { HttpClient = new HttpClient() });
             LoadApplication(new App());
 
             if (Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)

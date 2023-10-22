@@ -1,8 +1,13 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
 using AresNews.Views;
+using AresNews.Views.PopUps;
 using CustardApi.Objects;
+using FFImageLoading;
 using Newtonsoft.Json;
+using Rg.Plugins.Popup.Exceptions;
+using Rg.Plugins.Popup.Extensions;
+using Rg.Plugins.Popup.Pages;
 using SQLite;
 using System;
 using System.Collections.ObjectModel;
@@ -13,6 +18,7 @@ using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+
 [assembly: ExportFont("FontAwesome6Free-Regular-400.otf", Alias = "FaRegular")]
 [assembly: ExportFont("FontAwesome6Brands-Regular-400.otf", Alias = "FaBrand")]
 [assembly: ExportFont("FontAwesome6Free-Solid-900.otf", Alias = "FaSolid")]
@@ -23,10 +29,14 @@ namespace AresNews
 {
     public partial class App : Application
     {
+        private bool _isLoading;
+
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
         public static SQLiteConnection SqLiteConn { get; set; }
         public static SQLiteConnection BackUpConn { get; set; }
+
+        public PopupPage LoadingIndicator { get; private set; }
         public static Service WService { get; set; }
         public static string ProdHost { get; } = "api.gamhub.io";
 
@@ -54,26 +64,31 @@ namespace AresNews
                                    sslCertificate: true);
 #endif
 
-
+            Sharpnado.Tabs.Initializer.Initialize(false, false);
+            Sharpnado.Shades.Initializer.Initialize(loggerEnable: false);
             Sources = new Collection<Source>();
 
             InitializeComponent();
-
-
+            Sharpnado.CollectionView.Initializer.Initialize(true, false);
 
             // Start the db
             StartDb();
 
             SqLiteConn.CreateTable<Source>();
             SqLiteConn.CreateTable<Article>();
+            SqLiteConn.CreateTable<Feed>();
             BackUpConn.CreateTable<Source>();
             BackUpConn.CreateTable<Article>();
 
+            LoadingIndicator = new LoadingPopUp();
+
             Task.Run(async () =>
             {
-                Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", callbackError: (e) =>
+                Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", unSuccessCallback: async (e) =>
                 {
-                    //throw e;
+#if DEBUG
+                    throw new Exception (await e.Content.ReadAsStringAsync());
+#endif
                 });
 
 
@@ -83,12 +98,53 @@ namespace AresNews
                     BackUpConn.InsertOrReplace(source);
                 }
             });
+
             // Close the db
             //CloseDb();
 
-            MainPage = new AppShell();
+            MainPage =  new AppShell();
 
             
+        }
+        /// <summary>
+        /// Show the popup loading indicator
+        /// </summary>
+        public async void ShowLoadingIndicator(bool longer = false)
+        {
+
+            try
+            {
+
+                if (_isLoading)
+                    return;
+                _isLoading = true;
+
+                await this.MainPage.Navigation.PushPopupAsync(this.LoadingIndicator);
+            }
+            catch (RGPageInvalidException)
+            {
+            }
+
+        }
+
+        /// <summary>
+        /// Remove the popup loading indicator
+        /// </summary>
+        public async void RemoveLoadingIndicator()
+        {
+            try 
+            {
+                if (!_isLoading)
+                    return;
+
+
+                _isLoading = false;
+                //if (this.MainPage.Navigation.ModalStack.Contains(this.LoadingIndicator))
+                await this.MainPage.Navigation.RemovePopupPageAsync(this.LoadingIndicator);
+            }
+            catch (RGPageInvalidException)
+            {
+            }
         }
         /// <summary>
         ///  Function to close the database 
@@ -101,10 +157,17 @@ namespace AresNews
         /// <summary>
         /// Function to start the data base
         /// </summary>
-        public static void StartDb()
+        public static async void StartDb()
         {
-            // Just use whatever directory SpecialFolder.Personal returns
-            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            const SQLite.SQLiteOpenFlags Flags =
+                    // open the database in read/write mode
+                    SQLite.SQLiteOpenFlags.ReadWrite |
+                    // create the database if it doesn't exist
+                    SQLite.SQLiteOpenFlags.Create |
+                    // enable multi-threaded database access
+                    SQLite.SQLiteOpenFlags.SharedCache;
+        // Just use whatever directory SpecialFolder.Personal returns
+        string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
             var path = Path.Combine(libraryPath, "ares.db3");
             var pathBackUp = Path.Combine(libraryPath, "aresBackup.db3");
@@ -118,10 +181,15 @@ namespace AresNews
             if (!File.Exists(pathBackUp))
                 // Create the folder path.
                 File.Create(pathBackUp);
+
+            
+
             
             // Sqlite connection
             SqLiteConn = new SQLiteConnection(path);
             BackUpConn = new SQLiteConnection(pathBackUp);
+
+            
 
         }
 

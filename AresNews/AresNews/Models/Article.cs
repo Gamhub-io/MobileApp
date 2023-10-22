@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿
+
+using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
@@ -31,13 +33,10 @@ namespace AresNews.Models
         public string SourceId { get; set; }
         //[ManyToOne(CascadeOperations = CascadeOperation.All), JsonProperty("source")]
         //public Source Source { get; set; }
-        public Source Source
-        {
-            get
-            {
+        public Source Source { get
+                {
                 return App.Sources.FirstOrDefault(s => s.MongoId == SourceId);
-            }
-        }
+            } }
         [JsonProperty("isoDate")]
         public DateTime FullPublishDate { get; set; }
         public string PublishDate
