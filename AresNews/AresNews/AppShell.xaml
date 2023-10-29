@@ -189,6 +189,13 @@
                        Grid.Column="1" 
                    />
             </Grid>
+            <Label Text="© 2023 Brice Friha"
+                   FontSize="12"
+                   Grid.Row="2"
+                   FontFamily="P-regular"
+                   TextColor="{StaticResource FontColor}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
 
             <!-- Logout -->
             <!--<Grid Grid.Row="2" 
