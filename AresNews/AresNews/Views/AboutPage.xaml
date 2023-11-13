@@ -265,7 +265,7 @@ its community's skills, knowledges and opinions.  "
                         <StackLayout Orientation="Horizontal"
                                      Grid.Row="1">
                             <!-- Twitter logo -->
-                            <Label Text="&#xf099;"
+                                <Label Text="&#xe61a;"
                                    FontSize="15"
                                    FontFamily="FaBrand"
                                    TextColor="#1DA1F2"
