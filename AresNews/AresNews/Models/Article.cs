@@ -31,6 +31,8 @@ namespace AresNews.Models
         public int SourceIdFk { get; set; }
         [JsonProperty("sourceId")]
         public string SourceId { get; set; }
+        [JsonProperty("blocked")]
+        public bool? Blocked { get; set; }
         //[ManyToOne(CascadeOperations = CascadeOperation.All), JsonProperty("source")]
         //public Source Source { get; set; }
         public Source Source { get
