@@ -411,7 +411,7 @@ namespace AresNews.ViewModels
                 
                 _isLaunching = false;
                 Articles.Clear();
-                Articles = new ObservableRangeCollection<Article>(articles);
+                Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
                 // Register date of the refresh
                 //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                 IsRefreshing = false;
@@ -441,7 +441,7 @@ namespace AresNews.ViewModels
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
 
-                    Articles = await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") });
+                    Articles = new ObservableCollection<Article>((await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") })).Where(article => article.Blocked == null || article.Blocked == false));
                     
                     IsRefreshing = false;
                     _isLaunching = false;
@@ -451,12 +451,12 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, unSuccessCallback: async (err) =>
+                       articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, unSuccessCallback: async (err) =>
                        {
 #if DEBUG
                            throw new Exception (await err.Content.ReadAsStringAsync());
 #endif
-                       });
+                       })).Where(article => article.Blocked == null || article.Blocked == false));
 
 
 
@@ -467,7 +467,7 @@ namespace AresNews.ViewModels
                     {
                         try
                         {
-                            Articles = await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null);
+                            Articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
 
                             // Manage backuo
                             await RefreshDB();
@@ -481,7 +481,7 @@ namespace AresNews.ViewModels
                         IsRefreshing = false;
                         return;
                     }
-                   articles = await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null);
+                   articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
 
                 }
             }
@@ -550,7 +550,7 @@ namespace AresNews.ViewModels
         /// Update the curent article feed by adding new elements
         /// </summary>
         /// <param name="articles">new articles</param>
-        private void UpdateArticles(ObservableCollection<Article> articles)
+        private void UpdateArticles(IEnumerable<Article> articles)
         {
             // Create a copy of the input ObservableCollection
             List<Article> listArticle = new (articles);
@@ -672,12 +672,12 @@ namespace AresNews.ViewModels
             if (isUpdate)
             {
                 if (articles.Count > 0)
-                    UpdateArticles(articles);
+                    UpdateArticles(articles.Where(article => article.Blocked == null || article.Blocked == false));
             }
             else
             {
                 // Update list of articles
-                Articles = new ObservableRangeCollection<Article>(articles);
+                Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
 
             }
 
@@ -689,7 +689,7 @@ namespace AresNews.ViewModels
         }
         private static IEnumerable<Article> GetBackupFromDb()
         {
-            return App.BackUpConn.GetAllWithChildren<Article>(recursive: true).Reverse<Article>();
+            return App.BackUpConn.GetAllWithChildren<Article>(recursive: true).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
         }
         void ObservableCollectionCallback(IEnumerable collection, object context, Action accessMethod, bool writeAccess)
         {
