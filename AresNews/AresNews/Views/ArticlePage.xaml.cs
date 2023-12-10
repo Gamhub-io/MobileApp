@@ -1,6 +1,10 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
+using Plugin.StoreReview;
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -9,6 +13,13 @@ namespace AresNews.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ArticlePage : ContentPage
     {
+        private const string TimeSpentKey = "timeSpentOnArticles";
+#if DEBUG
+
+        private const double TimeMaxArticles = 0;
+#else
+        private const double TimeMaxArticles = 30;
+#endif
         private ArticleViewModel _vm;
         private uint _modalHeightStart = 0;
         private uint _modalWidthStart = 50;
@@ -30,7 +41,9 @@ namespace AresNews.Views
         protected override void OnDisappearing()
         {
             // Stop the timer
-            _vm.TimeSpent.Stop();
+            StopTimer();
+
+
 
             // Stop all text to speech
             _vm.StopTtS();
@@ -50,6 +63,30 @@ namespace AresNews.Views
 
 
         }
+        /// <summary>
+        /// Stop the timer that count the time spent on reading article pages
+        /// </summary>
+        private async void StopTimer()
+        {
+
+            // Register the time spent in total
+            double timeSpentSoFar = Preferences.Get(TimeSpentKey, TimeSpan.Zero.TotalMinutes);
+
+            // Stop the timer
+            _vm.TimeSpent.Stop();
+
+            double timeSpentOnArticles = timeSpentSoFar + _vm.TimeSpent.Elapsed.TotalMilliseconds;
+
+            // Save the Time spent
+            Preferences.Set(TimeSpentKey, timeSpentOnArticles);
+
+            if (timeSpentOnArticles >= TimeMaxArticles)
+                await CrossStoreReview.Current.RequestReview(false);;
+
+
+
+        }
+
         /// <summary>
         /// Function to open a the dropdrown
         /// </summary>
