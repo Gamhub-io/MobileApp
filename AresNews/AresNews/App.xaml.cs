@@ -55,8 +55,8 @@ namespace AresNews
         {
 #if __LOCAL__
             // Set webservice
-            WService = new Service(host: "192.168.1.18",
-                                    port: 3000,
+            WService = new Service(host: "gamhubdev.ddns.net",
+                                    port: 255,
                                    sslCertificate: false);
 #else
         // Set webservice
