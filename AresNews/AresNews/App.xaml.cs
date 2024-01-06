@@ -39,6 +39,7 @@ namespace AresNews
         public PopupPage LoadingIndicator { get; private set; }
         public static Service WService { get; set; }
         public static string ProdHost { get; } = "api.gamhub.io";
+        public static string LocalHost { get; } = "gamhubdev.ddns.net";
 
 
         public enum PageType
@@ -60,7 +61,7 @@ namespace AresNews
                                    sslCertificate: false);
 #else
         // Set webservice
-            WService = new Service(host: "api.gamhub.io",
+            WService = new Service(host: ProdHost,
                                    sslCertificate: true);
 #endif
 
