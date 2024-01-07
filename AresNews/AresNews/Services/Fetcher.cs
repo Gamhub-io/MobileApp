@@ -1,7 +1,8 @@
-﻿using CustardApi.Objects;
+﻿using AresNews.Models;
+using CustardApi.Objects;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace AresNews.Services
 {
@@ -23,6 +24,10 @@ namespace AresNews.Services
             WebService = new Service(host: ProdHost,
                                    sslCertificate: true);
 #endif
+        }
+        public async Task<Collection<Article>> GetMainFeedUpdate(string lastUpdate)
+        {
+            return await App.WService.Get<Collection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(lastUpdate) }, jsonBody: null);
         }
     }
 }

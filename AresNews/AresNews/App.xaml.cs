@@ -1,4 +1,5 @@
 ﻿using AresNews.Models;
+using AresNews.Services;
 using AresNews.ViewModels;
 using AresNews.Views;
 using AresNews.Views.PopUps;
@@ -38,6 +39,7 @@ namespace AresNews
 
         public PopupPage LoadingIndicator { get; private set; }
         public static Service WService { get; set; }
+        public Fetcher DataFetcher { get; set; }
         public static string ProdHost { get; } = "api.gamhub.io";
         public static string LocalHost { get; } = "gamhubdev.ddns.net";
 
@@ -64,6 +66,7 @@ namespace AresNews
             WService = new Service(host: ProdHost,
                                    sslCertificate: true);
 #endif
+            DataFetcher = new Fetcher();
 
             Sharpnado.Tabs.Initializer.Initialize(false, false);
             Sharpnado.Shades.Initializer.Initialize(loggerEnable: false);
