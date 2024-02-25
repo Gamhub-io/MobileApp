@@ -44,7 +44,6 @@ namespace AresNews.Views
             StopTimer();
 
 
-
             // Stop all text to speech
             _vm.StopTtS();
 

@@ -21,9 +21,14 @@
         </LinearGradientBrush>
     </ContentPage.Background>
     <Shell.TitleView>
-        <ContentView Margin="0,0,0,0" >
-            <Grid>
-                <Grid.ColumnDefinitions>
+        <Grid>
+
+            <Grid.HeightRequest>
+                <OnPlatform x:TypeArguments="x:Double">
+                    <On Platform="iOS" Value="44"/>
+                </OnPlatform>
+            </Grid.HeightRequest>
+            <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="4*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
@@ -59,7 +64,6 @@
                 </Button>
             </Grid>
 
-        </ContentView>
 
     </Shell.TitleView>
     <ContentPage.Content>
