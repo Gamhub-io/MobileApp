@@ -16,7 +16,12 @@
     </ContentPage.Resources>
 
     <Shell.TitleView>
-        <Grid>
+        <Grid >
+            <Grid.HeightRequest>
+                <OnPlatform x:TypeArguments="x:Double">
+                    <On Platform="iOS" Value="44"/>
+                </OnPlatform>
+            </Grid.HeightRequest>
             <Grid IsVisible="{Binding IsSearching, Converter={StaticResource InvertedBoolConverter} }">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -26,13 +31,12 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Text="News"
-                   Grid.Column="1"
-                   FontSize="30"
-                   VerticalOptions="Center"
-                   TextColor="{StaticResource FontColor}"
-                       
-                   FontFamily="P-Bold"
-                   Margin="{OnPlatform Android='0,0,0,5', iOS='30,0,0,5'}"/>
+                       Grid.Column="1"
+                       FontSize="30"
+                       VerticalOptions="Center"
+                       TextColor="{StaticResource FontColor}"
+                       FontFamily="P-Bold"
+                       Margin="{OnPlatform Android='0,0,0,5', iOS='30,0,0,5'}"/>
                 <Button Text="&#xf002;"
                         FontFamily="FaSolid"
                         FontSize="27"
