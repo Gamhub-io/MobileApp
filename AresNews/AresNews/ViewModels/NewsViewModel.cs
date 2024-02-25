@@ -407,8 +407,9 @@ namespace AresNews.ViewModels
             if (isFullRefresh)
             {
 
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") }, jsonBody: null);
-                
+                //articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") }, jsonBody: null);
+
+                articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate("dd-MM-yyy_HH:mm:ss"));
                 _isLaunching = false;
                 Articles.Clear();
                 Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
