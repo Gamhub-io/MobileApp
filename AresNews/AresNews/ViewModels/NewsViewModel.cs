@@ -410,10 +410,10 @@ namespace AresNews.ViewModels
                 // the articles of the last 2 months
                 articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate());
 
-                var oldFeed = new Collection<Article>(_articles.Where(ats => ats.FullPublishDate > DateTime.Now.AddMonths(-2)).ToList());
+                // Get only the new articles
+                var newArticles = FeedToolkit.ExtractNewArticles(articles, 
+                                                                 _articles.Where(ats => ats.FullPublishDate > DateTime.Now.AddMonths(-2)));
 
-                // Get just only the new articles
-                //
 
                 _isLaunching = false;
                 Articles.Clear();
@@ -428,7 +428,7 @@ namespace AresNews.ViewModels
                     CurrentApp.RemoveLoadingIndicator();
 
                 // Check if we have new articles before refreshing the DB
-                if (oldFeed.Count != articles.Count)
+                if (newArticles.Count > 0)
                     await RefreshDB();
                 return;
             }

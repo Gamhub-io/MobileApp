@@ -40,5 +40,20 @@ namespace AresNews.Helpers.Tools
 
             return equal;
         }
+        /// <summary>
+        /// Get the most recent articles between a old and updated list
+        /// </summary>
+        /// <param name="recentArticles">updated list</param>
+        /// <param name="formerArticles">old list</param>
+        /// <returns></returns>
+        public static List<Article> ExtractNewArticles(IEnumerable<Article> recentArticles, IEnumerable<Article> formerArticles)
+        {
+            var newArticlesDictionary = recentArticles.ToDictionary(x => x.Id);
+            var currentArticlesDictionary = formerArticles.ToDictionary(x => x.Id);
+
+            return newArticlesDictionary.Where(x => !currentArticlesDictionary.ContainsKey(x.Key))
+                                                   .Select(x => x.Value)
+                                                   .ToList();
+        }
     }
 }
