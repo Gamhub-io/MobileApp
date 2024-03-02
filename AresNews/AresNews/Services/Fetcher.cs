@@ -2,6 +2,7 @@
 using CustardApi.Objects;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -33,11 +34,12 @@ namespace AresNews.Services
         /// <returns>last 2 months worth of feed</returns>
         public async Task<Collection<Article>> GetMainFeedUpdate()
         {
-            return await App.WService.Get<Collection<Article>>(controller: "feeds", 
-                                                               action: "update", 
-                                                               parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) }, 
-                                                               jsonBody: null,
-                                                               unSuccessCallback: e => HandleHttpException(e));
+            return new((await App.WService.Get<Collection<Article>>(controller: "feeds", 
+                                                                    action: "update", 
+                                                                    parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) }, 
+                                                                    jsonBody: null,
+                                                                    unSuccessCallback: e => HandleHttpException(e)))
+                                                                   .Where(article => article.Blocked == null || article.Blocked == false).ToList());
         }
         /// <summary>
         /// Get the lastest articles since given date
@@ -46,11 +48,23 @@ namespace AresNews.Services
         /// <returns>lastest articles the date provided</returns>
         public async Task<Collection<Article>> GetMainFeedUpdate(string dateUpdate)
         {
-            return await App.WService.Get<Collection<Article>>(controller: "feeds", 
-                                                               action: "update", 
-                                                               parameters: new string[] { dateUpdate }, 
+            return new ((await App.WService.Get<Collection<Article>>(controller: "feeds", 
+                                                                   action: "update", 
+                                                                   parameters: new string[] { dateUpdate }, 
+                                                                   jsonBody: null,
+                                                                   unSuccessCallback: e => HandleHttpException(e)))
+                                                                   .Where(article => article.Blocked == null || article.Blocked == false).ToList());
+        }
+        /// <summary>
+        /// Get all the articles of the main feed
+        /// </summary>
+        /// <returns>the articles</returns>
+        public async Task<Collection<Article>> GetMainFeed()
+        {
+            return new ((await App.WService.Get<Collection<Article>>(controller: "feeds", 
                                                                jsonBody: null,
-                                                               unSuccessCallback: e => HandleHttpException(e));
+                                                               unSuccessCallback: e => HandleHttpException(e)))
+                                                               .Where(article => article.Blocked == null || article.Blocked == false).ToList());
         }
 
         private async void HandleHttpException(HttpResponseMessage err)
