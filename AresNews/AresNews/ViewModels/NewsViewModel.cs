@@ -3,6 +3,7 @@ using AresNews.Models;
 using AresNews.Services;
 using AresNews.Views;
 using MvvmHelpers;
+using SQLite;
 using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections;
@@ -27,7 +28,7 @@ namespace AresNews.ViewModels
 
         private int _wifiRestartCount = 0;
         private bool _isInCustomFeed;
-
+        private static object collisionLock = new();
         private bool _isSearching;
         public bool IsSearching
         {
@@ -617,22 +618,29 @@ namespace AresNews.ViewModels
             }
 
         }
-
+        /// <summary>
+        /// Sync the local db
+        /// </summary>
+        /// <returns></returns>
         private async Task RefreshDB()
         {
             try
             {
                 await Task.Run(() =>
                 {
-
-                    App.BackUpConn.DeleteAll<Article>();
-
-                    App.BackUpConn.InsertAllWithChildren(_articles);
-
-                    foreach (var source in _articles.Select(a => a.Source).Distinct().ToList())
+                    lock (collisionLock)
                     {
-                        App.BackUpConn.InsertOrReplace(source);
+                        using var conn = new SQLiteConnection(App.BackUpConn.DatabasePath);
 
+                        conn.DeleteAll<Article>();
+
+                        conn.InsertAllWithChildren(_articles);
+
+                        foreach (var source in _articles.Select(a => a.Source).Distinct().ToList())
+                        {
+                            conn.InsertOrReplace(source);
+
+                        }
                     }
                 });
             }
@@ -688,6 +696,10 @@ namespace AresNews.ViewModels
             _prevSearch = SearchText;
 
         }
+        /// <summary>
+        /// Get all the articles from the db
+        /// </summary>
+        /// <returns></returns>
         private static IEnumerable<Article> GetBackupFromDb()
         {
             return App.BackUpConn.GetAllWithChildren<Article>(recursive: true).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
