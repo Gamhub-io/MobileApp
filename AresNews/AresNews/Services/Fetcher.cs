@@ -37,8 +37,7 @@ namespace AresNews.Services
         {
             return new((await App.WService.Get<Collection<Article>>(controller: "feeds", 
                                                                     action: "update", 
-                                                                    parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) }, 
-                                                                    jsonBody: null,
+                                                                    parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) },
                                                                     unSuccessCallback: e => HandleHttpException(e)))
                                                                    .Where(article => article.Blocked == null || article.Blocked == false).ToList());
         }
@@ -51,8 +50,7 @@ namespace AresNews.Services
         {
             return new ((await App.WService.Get<Collection<Article>>(controller: "feeds", 
                                                                    action: "update", 
-                                                                   parameters: new string[] { dateUpdate }, 
-                                                                   jsonBody: null,
+                                                                   parameters: new string[] { dateUpdate },
                                                                    unSuccessCallback: e => HandleHttpException(e)))
                                                                    .Where(article => article.Blocked == null || article.Blocked == false).ToList());
         }
@@ -62,10 +60,10 @@ namespace AresNews.Services
         /// <returns>the articles</returns>
         public async Task<Collection<Article>> GetMainFeed()
         {
-            return new ((await App.WService.Get<Collection<Article>>(controller: "feeds", 
-                                                               jsonBody: null,
-                                                               unSuccessCallback: e => HandleHttpException(e)))
-                                                               .Where(article => article.Blocked == null || article.Blocked == false).ToList());
+            return new ((await App.WService.Get<Collection<Article>>(controller: "feeds",
+                                                                     action: null,
+                                                                     unSuccessCallback: e => HandleHttpException(e)))
+                                                                     .Where(article => article.Blocked == null || article.Blocked == false).ToList());
         }
         /// <summary>
         /// Get article from a search
