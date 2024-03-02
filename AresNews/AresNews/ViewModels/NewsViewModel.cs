@@ -395,7 +395,6 @@ namespace AresNews.ViewModels
             }
 
             FetchArticles(_articles.Count >=0);
-            //Articles.ForEach(article => { if (article.Source == null) article.Source = App.Sources.FirstOrDefault(s => s.MongoId == article.SourceId); });
         }
 
         /// <summary>
@@ -408,9 +407,11 @@ namespace AresNews.ViewModels
             if (isFullRefresh)
             {
 
-                //articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") }, jsonBody: null);
+                // the articles of the last 2 months
+                articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate());
 
-                articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate("dd-MM-yyy_HH:mm:ss"));
+                var oldFeed = new Collection<Article>(_articles.Where(ats => ats.FullPublishDate > DateTime.Now.AddMonths(-2)).ToList());
+
                 _isLaunching = false;
                 Articles.Clear();
                 Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
@@ -423,11 +424,11 @@ namespace AresNews.ViewModels
                 if (Device.RuntimePlatform == Device.iOS)
                     CurrentApp.RemoveLoadingIndicator();
 
-                await RefreshDB();
+                // Check if we have new articles before refreshing the DB
+                if (oldFeed.Count != articles.Count)
+                    await RefreshDB();
                 return;
             }
-
-
 
             try
             {
@@ -443,7 +444,7 @@ namespace AresNews.ViewModels
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
 
-                    Articles = new ObservableCollection<Article>((await App.WService.Get<ObservableCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { DateTime.Now.AddMonths(-2).ToString("dd-MM-yyy_HH:mm:ss") })).Where(article => article.Blocked == null || article.Blocked == false));
+                    Articles = new ObservableCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate()).Where(article => article.Blocked == null || article.Blocked == false));
                     
                     IsRefreshing = false;
                     _isLaunching = false;
@@ -453,16 +454,8 @@ namespace AresNews.ViewModels
                if (_articles?.Count() > 0)
                {
                    
-                       articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>(controller: "feeds", action: "update", parameters: new string[] { _lastCallDateTime }, unSuccessCallback: async (err) =>
-                       {
-#if DEBUG
-                           throw new Exception (await err.Content.ReadAsStringAsync());
-#endif
-                       })).Where(article => article.Blocked == null || article.Blocked == false));
-
-
-
-                }
+                       articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime)).Where(article => article.Blocked == null || article.Blocked == false));
+               }
                 else
                 {
                     if (_isLaunching)
@@ -622,11 +615,11 @@ namespace AresNews.ViewModels
         /// Sync the local db
         /// </summary>
         /// <returns></returns>
-        private async Task RefreshDB()
+        private Task RefreshDB()
         {
             try
             {
-                await Task.Run(() =>
+                return Task.Run(() =>
                 {
                     lock (collisionLock)
                     {
