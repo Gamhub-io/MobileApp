@@ -237,6 +237,7 @@ namespace AresNews.ViewModels
             FeedTabs = new ObservableCollection<TabButton>();
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             _articles = new ObservableCollection<Article>();
+
             // Organise feeds into tabs
             CopyFeedsToTabs();
 
@@ -435,6 +436,8 @@ namespace AresNews.ViewModels
                 timeUpdate = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
 
             bool needUpdate = feed.IsLoaded && !string.IsNullOrEmpty(timeUpdate);
+
+            // Make sure we have internet connection
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
             {
                 
