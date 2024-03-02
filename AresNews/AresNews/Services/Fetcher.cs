@@ -1,5 +1,6 @@
 ﻿using AresNews.Models;
 using CustardApi.Objects;
+using MvvmHelpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -65,6 +66,24 @@ namespace AresNews.Services
                                                                jsonBody: null,
                                                                unSuccessCallback: e => HandleHttpException(e)))
                                                                .Where(article => article.Blocked == null || article.Blocked == false).ToList());
+        }
+        /// <summary>
+        /// Get article from a search
+        /// </summary>
+        /// <param name="text">input of the search</param>
+        /// <param name="isUpdate">wether or not it's an update of an existing search</param>
+        /// <param name="timeParam">time of the last uppdate</param>
+        /// <returns></returns>
+        public async Task<ObservableRangeCollection<Article>> GetSearchValues(string text, bool isUpdate, string timeParam = "")
+        {
+            if (string.IsNullOrEmpty(timeParam))
+                isUpdate = false;
+
+            return new ObservableRangeCollection<Article>(( await App.WService.Get<Collection<Article>>(controller: "feeds",
+                                                                                                        action: isUpdate ? "update" : null,
+                                                                                                        parameters: isUpdate ? new string[] { timeParam } : null,
+                                                                                                        jsonBody: $"{{\"search\": \"{text}\"}}",
+                                                                                                        unSuccessCallback: e => HandleHttpException(e))));
         }
 
         private async void HandleHttpException(HttpResponseMessage err)

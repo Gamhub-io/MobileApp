@@ -659,7 +659,8 @@ namespace AresNews.ViewModels
             {
                 if (isUpdate)
                     timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { timeParam } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
+                
+                articles = await CurrentApp.DataFetcher.GetSearchValues(SearchText, isUpdate, timeParam);
                 
             }
             // Offline search
