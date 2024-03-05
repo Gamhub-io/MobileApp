@@ -68,12 +68,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Android Bundle|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Android Bundle\</OutputPath>
+    <OutputPath>bin\AndroidBundle\</OutputPath>
     <Optimize>true</Optimize>
     <DebugType>portable</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
