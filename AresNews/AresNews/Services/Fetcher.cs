@@ -33,11 +33,22 @@ namespace AresNews.Services
         /// <returns>last 2 months worth of feed</returns>
         public async Task<Collection<Article>> GetMainFeedUpdate()
         {
-            return await App.WService.Get<Collection<Article>>(controller: "feeds", 
-                                                               action: "update", 
-                                                               parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) }, 
-                                                               jsonBody: null,
-                                                               unSuccessCallback: e => HandleHttpException(e));
+            try
+            {
+
+                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                                                                   action: "update",
+                                                                   parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) },
+                                                                   jsonBody: null,
+                                                                   unSuccessCallback: e => HandleHttpException(e));
+            }
+            catch (Exception ex)
+            {
+
+#if DEBUG
+                throw ex;
+#endif
+            }
         }
         /// <summary>
         /// Get the lastest articles since given date
@@ -46,11 +57,22 @@ namespace AresNews.Services
         /// <returns>lastest articles the date provided</returns>
         public async Task<Collection<Article>> GetMainFeedUpdate(string dateUpdate)
         {
-            return await App.WService.Get<Collection<Article>>(controller: "feeds", 
-                                                               action: "update", 
-                                                               parameters: new string[] { dateUpdate }, 
-                                                               jsonBody: null,
-                                                               unSuccessCallback: e => HandleHttpException(e));
+            try
+            {
+
+                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                                                                   action: "update",
+                                                                   parameters: new string[] { dateUpdate },
+                                                                   jsonBody: null,
+                                                                   unSuccessCallback: e => HandleHttpException(e));
+            }
+            catch (Exception ex)
+            {
+
+#if DEBUG
+                throw ex;
+#endif
+            }
         }
 
         private async void HandleHttpException(HttpResponseMessage err)
