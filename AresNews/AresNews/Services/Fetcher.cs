@@ -47,6 +47,8 @@ namespace AresNews.Services
 
 #if DEBUG
                 throw ex;
+#else
+                return null;
 #endif
             }
         }
@@ -71,6 +73,8 @@ namespace AresNews.Services
 
 #if DEBUG
                 throw ex;
+#else
+                return null; 
 #endif
             }
         }
