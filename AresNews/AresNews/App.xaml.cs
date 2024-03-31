@@ -199,6 +199,7 @@ namespace AresNews
 
         protected override void OnStart()
         {
+            
         }
 
         protected override void OnSleep()
@@ -233,6 +234,26 @@ namespace AresNews
             //}
 
             StartDb();
+        }
+        /// <summary>
+        /// Open a popup
+        /// </summary>
+        /// <param name="popUp">pop up to open</param>
+        public async void OpenPopUp(PopupPage popUp, Page page = null)
+        {
+            if (page == null)
+                page = GetCurrentPage();
+
+            await page.Navigation.PushPopupAsync(popUp);
+        }
+        /// <summary>
+        /// Get the current page from the shell
+        /// </summary>
+        /// <returns></returns>
+        private Page GetCurrentPage ()
+        {
+            AppShell mainPage = ((AppShell)MainPage);
+            return mainPage.CurrentPage;
         }
     }
 }
