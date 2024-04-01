@@ -96,8 +96,9 @@ namespace AresNews.ViewModels
                 }
                 catch (Exception ex)
                 {
-
+#if DEBUG
                     throw ex;
+#endif
                 }
                 finally
                 {
