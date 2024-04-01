@@ -33,18 +33,20 @@ namespace AresNews.ViewModels.PopUps
                 OnPropertyChanged(nameof(Feed));
             }
         }
-        private RenameFeedPopUp _page;
+        private RenameFeedPopUp _popUp;
 
-        public RenameFeedPopUp Page
+        public RenameFeedPopUp PopUp
         {
-            get { return _page; }
+            get { return _popUp; }
             set
             {
-                _page = value;
-                OnPropertyChanged(nameof(Feed));
+                _popUp = value;
+                OnPropertyChanged(nameof(PopUp));
             }
         }
-        public Xamarin.Forms.Command Validate => new Xamarin.Forms.Command(async () =>
+
+        public App CurrentApp { get; }
+        public Xamarin.Forms.Command Validate => new Xamarin.Forms.Command(() =>
         {
 
             // Remove feed
@@ -52,22 +54,22 @@ namespace AresNews.ViewModels.PopUps
             // update the feed
             App.SqLiteConn.Update(_feed);
 
-
-
             // Close the popup
-            await App.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
+            CurrentApp.ClosePopUp (_popUp);
         });
 
-        public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(async () =>
+        public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(() =>
         {
             // Close the popup
-            await App.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
+            CurrentApp.ClosePopUp (_popUp);
         });
         public RenameFeedPopUpViewModel(RenameFeedPopUp page, Feed feed, FeedsViewModel vm )
         {
             _feed = feed;
-            _page = page;
+            _popUp = page;
             _context = vm;
+
+            CurrentApp = App.Current as App;
         }
     }
 }
