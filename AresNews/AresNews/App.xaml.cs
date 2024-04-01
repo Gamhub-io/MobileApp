@@ -240,6 +240,7 @@ namespace AresNews
         /// Open any popup
         /// </summary>
         /// <param name="popUp">pop up to open</param>
+        /// <param name="page">parent page</param>
         public async void OpenPopUp(PopupPage popUp, Page page = null)
         {
             try
@@ -264,6 +265,7 @@ namespace AresNews
         /// Close any popup
         /// </summary>
         /// <param name="popUp">pop up to open</param>
+        /// <param name="page">parent page</param>
         public async void ClosePopUp(PopupPage popUp, Page page = null)
         {
             try
