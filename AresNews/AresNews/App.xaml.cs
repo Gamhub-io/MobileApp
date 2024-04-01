@@ -113,7 +113,7 @@ namespace AresNews
         /// <summary>
         /// Show the popup loading indicator
         /// </summary>
-        public async void ShowLoadingIndicator(bool longer = false)
+        public void ShowLoadingIndicator(bool longer = false)
         {
 
             try
@@ -123,7 +123,7 @@ namespace AresNews
                     return;
                 _isLoading = true;
 
-                await this.MainPage.Navigation.PushPopupAsync(this.LoadingIndicator);
+                OpenPopUp(this.LoadingIndicator);
             }
             catch (RGPageInvalidException)
             {
@@ -134,7 +134,7 @@ namespace AresNews
         /// <summary>
         /// Remove the popup loading indicator
         /// </summary>
-        public async void RemoveLoadingIndicator()
+        public void RemoveLoadingIndicator()
         {
             try 
             {
@@ -143,8 +143,9 @@ namespace AresNews
 
 
                 _isLoading = false;
-                //if (this.MainPage.Navigation.ModalStack.Contains(this.LoadingIndicator))
-                await this.MainPage.Navigation.RemovePopupPageAsync(this.LoadingIndicator);
+                
+                // Close the popup
+                ClosePopUp (this.LoadingIndicator);
             }
             catch (RGPageInvalidException)
             {
@@ -236,15 +237,52 @@ namespace AresNews
             StartDb();
         }
         /// <summary>
-        /// Open a popup
+        /// Open any popup
         /// </summary>
         /// <param name="popUp">pop up to open</param>
         public async void OpenPopUp(PopupPage popUp, Page page = null)
         {
-            if (page == null)
-                page = GetCurrentPage();
+            try
+            {
 
-            await page.Navigation.PushPopupAsync(popUp);
+                if (popUp == null)
+                    return;
+
+                if (page == null)
+                    page = GetCurrentPage();
+
+                await page.Navigation.PushPopupAsync(popUp);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#endif
+            }
+        }
+        /// <summary>
+        /// Close any popup
+        /// </summary>
+        /// <param name="popUp">pop up to open</param>
+        public async void ClosePopUp(PopupPage popUp, Page page = null)
+        {
+            try
+            {
+
+                if (popUp == null)
+                    return;
+
+                if (page == null)
+                    page = GetCurrentPage();
+
+                await page.Navigation.RemovePopupPageAsync(popUp);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#endif
+            }
         }
         /// <summary>
         /// Get the current page from the shell
