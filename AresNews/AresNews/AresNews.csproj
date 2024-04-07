@@ -121,4 +121,10 @@
   <ItemGroup>
     <Folder Include="Helpers\Tools\NewFolder\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\PopUps\AuthPopUp.xaml.cs">
+      <DependentUpon>AuthPopUp.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

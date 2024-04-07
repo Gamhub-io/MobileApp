@@ -95,7 +95,8 @@
     </Shell.MenuItemTemplate>
     <Shell.FlyoutHeader  x:DataType="viewmodels:AppShellViewModel">
         <Grid BackgroundColor="{StaticResource Alternate}"
-              HeightRequest="80">
+              HeightRequest="80"
+              xct:TouchEffect.Command="{Binding OpenAuth}">
             <Image Source="GamHubLogo.png"/>
         </Grid>
     </Shell.FlyoutHeader>
