@@ -18,6 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Config\AppSettings.json" />
+    <None Remove="Config\AppSettings_temp.json" />
     <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
     <None Remove="Resources\FontAwesome5Brands-Regular-400.otf" />
     <None Remove="Resources\FontAwesome5Free-Solid-900.otf" />
@@ -41,6 +43,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Config\AppSettings_temp.json" />
+    <EmbeddedResource Include="Config\AppSettings.json">
+      <CustomToolNamespace></CustomToolNamespace>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />

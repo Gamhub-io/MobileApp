@@ -2,10 +2,9 @@
 using AresNews.Services;
 using AresNews.ViewModels;
 using AresNews.Views;
+using AresNews.Core;
 using AresNews.Views.PopUps;
 using CustardApi.Objects;
-using FFImageLoading;
-using Newtonsoft.Json;
 using Rg.Plugins.Popup.Exceptions;
 using Rg.Plugins.Popup.Extensions;
 using Rg.Plugins.Popup.Pages;
@@ -13,12 +12,8 @@ using SQLite;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace AresNews
 {
@@ -52,13 +47,18 @@ namespace AresNews
         {
 #if __LOCAL__
             // Set webservice
-            WService = new Service(host: "gamhubdev.ddns.net",
+            WService = new Service(host: LocalHost,
                                     port: 255,
                                    sslCertificate: false);
 #else
-        // Set webservice
+            // Set webservice
             WService = new Service(host: ProdHost,
                                    sslCertificate: true);
+#endif
+
+#if DEBUG
+            // Run the debug setup
+            EnvironementSetup.DebugSetup();
 #endif
             DataFetcher = new Fetcher();
 
