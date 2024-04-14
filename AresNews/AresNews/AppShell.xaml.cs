@@ -17,7 +17,7 @@ namespace AresNews
         public AppShell()
         {
             InitializeComponent();
-            BindingContext = new AppShellViewModel();
+            BindingContext = new AppShellViewModel(this);
         }
     }
 }
