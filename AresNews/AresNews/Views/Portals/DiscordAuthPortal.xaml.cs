@@ -1,6 +1,7 @@
 ﻿using AresNews.Core;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,11 +23,13 @@ namespace AresNews.Views.Portals
             BindingContext = this;
         }
 
-        private void DiscordPortal_Navigated(object sender, WebNavigatedEventArgs e)
+        private async void DiscordPortal_Navigated(object sender, WebNavigatedEventArgs e)
         {
             // Catch the navigation to the api
             if (e.Url.Contains($"//{AppConstant.ApiHost}/auth/discord"))
             {
+                // Get data returned
+                Debug.WriteLine(await DiscordPortal.EvaluateJavaScriptAsync("document.getElementsByTagName(\"pre\")[0].innerHTML"));
                 // Navigate back
                 (App.Current as App).MainPage.Navigation.RemovePage(this);
             }
