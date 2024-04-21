@@ -7,6 +7,9 @@
         <WebView Source="{Binding Url}"
                  VerticalOptions="Fill"
                  HorizontalOptions="Fill"
+                 Navigated="DiscordPortal_Navigated"
+                 Navigating="DiscordPortal_Navigating"
+                 x:Name="DiscordPortal"
                  />
     </ContentPage.Content>
 </ContentPage>
