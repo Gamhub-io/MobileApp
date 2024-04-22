@@ -1,9 +1,12 @@
 ﻿using AresNews.Core;
+using AresNews.Models.Http.Responses;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -29,7 +32,9 @@ namespace AresNews.Views.Portals
             if (e.Url.Contains($"//{AppConstant.ApiHost}/auth/discord"))
             {
                 // Get data returned
-                Debug.WriteLine(await DiscordPortal.EvaluateJavaScriptAsync("document.getElementsByTagName(\"pre\")[0].innerHTML"));
+                string value = Regex.Unescape(await DiscordPortal.EvaluateJavaScriptAsync("document.getElementsByTagName(\"pre\")[0].innerHTML"));
+                var res = JsonConvert.DeserializeObject<DiscordAuthResponse>(value);
+                
                 // Navigate back
                 (App.Current as App).MainPage.Navigation.RemovePage(this);
             }
