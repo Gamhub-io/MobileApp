@@ -14,6 +14,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Essentials;
+using Newtonsoft.Json;
 
 namespace AresNews
 {
@@ -31,7 +33,7 @@ namespace AresNews
         public Fetcher DataFetcher { get; set; }
         public static string ProdHost { get; } = "api.gamhub.io";
         public static string LocalHost { get; } = "gamhubdev.ddns.net";
-
+        public User SaveInfo { get; private set; }
 
         public enum PageType
         {
@@ -288,6 +290,16 @@ namespace AresNews
         {
             AppShell mainPage = ((AppShell)MainPage);
             return mainPage.CurrentPage;
+        }
+        /// <summary>
+        /// Save the info relevant to the user
+        /// </summary>
+        public void SaveUserInfo(User user)
+        {
+            SaveInfo = user;
+
+            // Save preferences
+            Preferences.Set(nameof(SaveInfo), JsonConvert.SerializeObject(SaveInfo));
         }
     }
 }
