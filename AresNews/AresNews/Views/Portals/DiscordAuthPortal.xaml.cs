@@ -18,6 +18,7 @@ namespace AresNews.Views.Portals
     public partial class DiscordAuthPortal : ContentPage
     {
         public string Url { get; set; }
+        public static readonly App CurrentApp = (App.Current as App);
         public DiscordAuthPortal()
         {
             InitializeComponent();
@@ -34,9 +35,12 @@ namespace AresNews.Views.Portals
                 // Get data returned
                 string value = Regex.Unescape(await DiscordPortal.EvaluateJavaScriptAsync("document.getElementsByTagName(\"pre\")[0].innerHTML"));
                 var res = JsonConvert.DeserializeObject<DiscordAuthResponse>(value);
-                
+
+                // Save user info
+                CurrentApp.SaveUserInfo(res.UserData);
+
                 // Navigate back
-                (App.Current as App).MainPage.Navigation.RemovePage(this);
+                CurrentApp.MainPage.Navigation.RemovePage(this);
             }
         }
 
