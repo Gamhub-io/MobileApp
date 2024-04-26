@@ -1,6 +1,7 @@
 ﻿
 using AresNews.Views.Portals;
 using Rg.Plugins.Popup.Pages;
+using System.Threading.Tasks;
 using Xamarin.Forms.Xaml;
 
 namespace AresNews.Views
@@ -30,7 +31,17 @@ namespace AresNews.Views
         {
             // Close this popup
             CurrentApp.ClosePopUp(this);
-            await App.Current.MainPage.Navigation.PushAsync(new DiscordAuthPortal());
+            DiscordAuthPortal discordAuthPortal = new DiscordAuthPortal();
+
+            while (discordAuthPortal.Result == null)
+            {
+                await Task.Delay(100);
+            }
+
+            //if ((discordAuthPortal.Result ?? false))
+               
+
+            await App.Current.MainPage.Navigation.PushAsync(discordAuthPortal);
         }
     }
 }

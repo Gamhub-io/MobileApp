@@ -18,6 +18,7 @@ namespace AresNews.Views.Portals
     public partial class DiscordAuthPortal : ContentPage
     {
         public string Url { get; set; }
+        public bool? Result { get; set; } = null;
         public static readonly App CurrentApp = (App.Current as App);
         public DiscordAuthPortal()
         {
@@ -35,6 +36,9 @@ namespace AresNews.Views.Portals
                 // Get data returned
                 string value = Regex.Unescape(await DiscordPortal.EvaluateJavaScriptAsync("document.getElementsByTagName(\"pre\")[0].innerHTML"));
                 var res = JsonConvert.DeserializeObject<DiscordAuthResponse>(value);
+
+                // Indicate a result is being returned
+                Result = true;
 
                 // Save user info
                 CurrentApp.SaveUserInfo(res.UserData);
