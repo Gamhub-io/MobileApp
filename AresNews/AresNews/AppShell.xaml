@@ -14,7 +14,7 @@
        xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
        xmlns:viewmodels="clr-namespace:AresNews.ViewModels">
     <!-- Template for the shell content-->
-    53
+    
     <Shell.ItemTemplate>
         <DataTemplate>
             <Grid HorizontalOptions="Center"
@@ -150,7 +150,7 @@
 
 
     <Shell.FlyoutFooter  x:DataType="viewmodels:AppShellViewModel">
-        74<Grid>
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="35"/>
                 <RowDefinition Height="35"/>

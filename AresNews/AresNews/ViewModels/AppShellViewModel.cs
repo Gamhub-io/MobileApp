@@ -33,7 +33,14 @@ namespace AresNews.ViewModels
                         MainShell.FlyoutIsPresented = false;
 
                         // Open the login pop up
-                        CurrenApp.OpenPopUp(new AuthPopUp());
+                        CurrentApp.OpenPopUp(new AuthPopUp((res) =>
+                        {
+                            // Save user info
+                            CurrentApp.SaveUserInfo(res.UserData);
+
+                            // Save the session
+                            CurrentApp.DataFetcher.SaveSession(res.Session);
+                        }));
                     }
 
 
@@ -41,12 +48,12 @@ namespace AresNews.ViewModels
             }
         }
 
-        public App CurrenApp { get; private set; }
+        public App CurrentApp { get; private set; }
         public AppShell MainShell { get; }
 
         public AppShellViewModel(AppShell shell)
         {
-            CurrenApp = (App)App.Current;
+            CurrentApp = (App)App.Current;
             MainShell = shell;
         }
 
