@@ -1,5 +1,7 @@
 ﻿using AresNews.Models;
+using AresNews.Models.Http.Payloads;
 using CustardApi.Objects;
+using Newtonsoft.Json;
 using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
@@ -41,7 +43,7 @@ namespace AresNews.Services
                                                                    action: "update",
                                                                    parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) },
                                                                    jsonBody: null,
-                                                                   unSuccessCallback: e => HandleHttpException(e));
+                                                                   unSuccessCallback: e => _ = HandleHttpException(e));
             }
             catch (Exception ex)
             {
@@ -50,6 +52,34 @@ namespace AresNews.Services
                 throw ex;
 #else
                 return null;
+#endif
+            }
+        }
+        /// <summary>
+        /// Get a brand new discord session from a resfresh token
+        /// </summary>
+        /// <param name="refreshToken">refreshToken given by discord auth</param>
+        /// <returns></returns>
+        public async Task<Session> RefreshDiscordSession(string refreshToken)
+        {
+            try
+            {
+                RefreshDiscordPayload payload = new()
+                {
+                    RefreshToken = refreshToken
+                };
+                return await App.WService.Get<Session>(controller: "discord",
+                                                       action: "refresh_token",
+                                                       jsonBody: JsonConvert.SerializeObject(payload),
+                                                       unSuccessCallback: e => _ = HandleHttpException(e));
+            }
+            catch (Exception ex)
+            {
+
+#if DEBUG
+                throw ex;
+#else
+                return null; 
 #endif
             }
         }
@@ -97,6 +127,7 @@ namespace AresNews.Services
 
             // Save regular data about the session
             Preferences.Set(nameof(Session.ExpiresIn), newSession.ExpiresIn);
+            Preferences.Set(nameof(Session.Created), newSession.Created);
         }
         /// <summary>
         /// Restore the last session
@@ -107,8 +138,16 @@ namespace AresNews.Services
             // Save regular data about the session
             int exp = Preferences.Get(nameof(Session.ExpiresIn), Int16.MinValue);
             var refreshToken = await SecureStorage.GetAsync(nameof(Session.RefreshToken)).ConfigureAwait(false);
+            DateTime dt = Preferences.Get(nameof(Session.Created), DateTime.MinValue);
 
-            // Refresh the token
+            // Check if the token expired
+            if ((DateTime.UtcNow - dt).TotalSeconds >= exp)
+            {
+                // Refresh the token
+                CurrentSession = await RefreshDiscordSession(refreshToken);
+
+                return;
+            }
 
             // Save sensitive data
             var accessTask = SecureStorage.GetAsync(nameof(Session.AccessToken));
@@ -116,7 +155,7 @@ namespace AresNews.Services
 
             await Task.WhenAll(accessTask, tokenTypeTask);
 
-            // Fill up teh current session with the data gathered from the previous one
+            // Fill up the current session with the data gathered from the previous one
             CurrentSession = new()
             {
                 AccessToken = accessTask.Result,
