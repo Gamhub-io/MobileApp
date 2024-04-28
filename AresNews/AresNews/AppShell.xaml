@@ -191,7 +191,7 @@
                        Grid.Column="1" 
                    />
             </Grid>
-            <Label Text="© 2023 Brice Friha"
+            <Label Text="© 2024 Brice Friha"
                    FontSize="12"
                    Grid.Row="2"
                    FontFamily="P-regular"
