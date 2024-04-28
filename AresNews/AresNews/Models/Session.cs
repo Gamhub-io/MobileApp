@@ -21,6 +21,8 @@ namespace AresNews.Models
 
         [JsonProperty("scope")]
         public string Scope { get; set; }
+        [JsonIgnore]
+        public DateTime Created { get; set; } = DateTime.UtcNow;
     }
 
 }
