@@ -196,7 +196,8 @@ namespace AresNews
 
         protected override void OnStart()
         {
-            
+            // Restore session
+            _ = DataFetcher.RestoreSession();   
         }
 
         protected override void OnSleep()

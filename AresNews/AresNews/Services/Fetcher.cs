@@ -1,5 +1,6 @@
 ﻿using AresNews.Models;
 using AresNews.Models.Http.Payloads;
+using AresNews.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System;
@@ -68,10 +69,16 @@ namespace AresNews.Services
                 {
                     RefreshToken = refreshToken
                 };
-                return await App.WService.Get<Session>(controller: "discord",
-                                                       action: "refresh_token",
-                                                       jsonBody: JsonConvert.SerializeObject(payload),
-                                                       unSuccessCallback: e => _ = HandleHttpException(e));
+                RefreshSessionResponse res = await App.WService.Post<RefreshSessionResponse>(controller: "auth",
+                                                                                            action: "discord/refresh_token",
+                                                                                            jsonBody: JsonConvert.SerializeObject(payload),
+                                                                                            unSuccessCallback: e => _ = HandleHttpException(e));
+
+                if (res == null)
+                {
+                    return null;
+                }
+                return res.Session;
             }
             catch (Exception ex)
             {
@@ -130,21 +137,24 @@ namespace AresNews.Services
             Preferences.Set(nameof(Session.Created), newSession.Created);
         }
         /// <summary>
-        /// Restore the last session
+        /// Restore the last session if any
         /// </summary>
-        /// <returns></returns>
         public async Task RestoreSession ()
         {
             // Save regular data about the session
             int exp = Preferences.Get(nameof(Session.ExpiresIn), Int16.MinValue);
-            var refreshToken = await SecureStorage.GetAsync(nameof(Session.RefreshToken)).ConfigureAwait(false);
+            string refreshToken = await SecureStorage.GetAsync(nameof(Session.RefreshToken)).ConfigureAwait(false);
+
+            // If there was no session just leave
+            if (string.IsNullOrEmpty(refreshToken)) return;
+
             DateTime dt = Preferences.Get(nameof(Session.Created), DateTime.MinValue);
 
             // Check if the token expired
             if ((DateTime.UtcNow - dt).TotalSeconds >= exp)
             {
                 // Refresh the token
-                CurrentSession = await RefreshDiscordSession(refreshToken);
+                SaveSession(await RefreshDiscordSession(refreshToken));
 
                 return;
             }
