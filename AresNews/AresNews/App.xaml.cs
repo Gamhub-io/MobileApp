@@ -102,8 +102,6 @@ namespace AresNews
             // Close the db
             //CloseDb();
 
-            MainPage =  new AppShell();
-
             
         }
         /// <summary>
@@ -197,7 +195,10 @@ namespace AresNews
         protected override void OnStart()
         {
             // Restore session
-            _ = DataFetcher.RestoreSession();   
+            _ = DataFetcher.RestoreSession();
+
+
+            MainPage = new AppShell();
         }
 
         protected override void OnSleep()
@@ -301,6 +302,22 @@ namespace AresNews
 
             // Save preferences
             Preferences.Set(nameof(SaveInfo), JsonConvert.SerializeObject(SaveInfo));
+        }
+        /// <summary>
+        /// Recover the info relevant to the user
+        /// </summary>
+        /// <returns>true: data found | false: data not found</returns>
+        public bool RecoverUserInfo()
+        {
+
+            // Get preferences
+            string userDataStr = Preferences.Get(nameof(SaveInfo), string.Empty);
+
+            if (string.IsNullOrEmpty(userDataStr))
+                return false;
+
+            // Set Userdata object
+            return (SaveInfo = DataFetcher.UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
         }
     }
 }
