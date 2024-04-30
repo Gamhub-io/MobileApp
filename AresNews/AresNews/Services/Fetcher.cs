@@ -7,6 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Xamarin.CommunityToolkit.Effects;
 using Xamarin.Essentials;
 
 namespace AresNews.Services
@@ -18,6 +19,7 @@ namespace AresNews.Services
         private static string _dateFormat = "dd-MM-yyy_HH:mm:ss";
         private Session CurrentSession { get; set; }
         public Service WebService { get; private set; }
+        public User UserData { get; set; }
         public Fetcher()
         {
 #if __LOCAL__
@@ -158,7 +160,13 @@ namespace AresNews.Services
 
                 return;
             }
+            if (!(App.Current as App).RecoverUserInfo())
+            {
+                // Kill the previous session
+                KillSession();
+                return;
 
+            }
             // Save sensitive data
             var accessTask = SecureStorage.GetAsync(nameof(Session.AccessToken));
             var tokenTypeTask = SecureStorage.GetAsync(nameof(Session.TokenType));
@@ -173,6 +181,20 @@ namespace AresNews.Services
                 TokenType = tokenTypeTask.Result,
                 ExpiresIn = exp
             };
+
+
+        }
+        /// <summary>
+        /// Kill a session
+        /// </summary>
+        private void KillSession()
+        {
+            // Empty the property
+            CurrentSession = null;
+
+            // Clear all data stored
+            SecureStorage.Remove(nameof(Session.AccessToken));
+            SecureStorage.Remove(nameof(Session.TokenType));
 
 
         }

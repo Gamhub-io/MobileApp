@@ -95,10 +95,27 @@
         </DataTemplate>
     </Shell.MenuItemTemplate>
     <Shell.FlyoutHeader  x:DataType="viewmodels:AppShellViewModel">
-        <Grid BackgroundColor="{StaticResource Alternate}"
-              HeightRequest="80"
-              xct:TouchEffect.Command="{Binding OpenAuth}">
-            <Image Source="GamHubLogo.png"/>
+        <Grid>
+            <Grid BackgroundColor="{StaticResource Alternate}"
+                  HeightRequest="80"
+                  IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
+                  xct:TouchEffect.Command="{Binding OpenAuth}">
+                <Image Source="GamHubLogo.png"/>
+            </Grid>
+            <Grid BackgroundColor="{StaticResource BgBannerColor}"
+                  IsVisible="{Binding Authenticated}"
+                  xct:TouchEffect.Command="{Binding OpenAuth}"
+                  ColumnDefinitions="50,*">
+                <Image Source="{Binding UserProfile.Avatar}"
+                       Grid.Column="0"/>
+                <Label Grid.Column="1" 
+                       Text="{Binding UserProfile.PublicName}" 
+                       FontSize="20"
+                       TextColor="{StaticResource FontColor}" 
+                       FontFamily="P-SemiBold"
+                       HorizontalOptions="Start"  />
+            </Grid>
+            
         </Grid>
     </Shell.FlyoutHeader>
     <!-- Feed Page -->

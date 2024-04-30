@@ -1,4 +1,5 @@
-﻿using AresNews.Views;
+﻿using AresNews.Models;
+using AresNews.Views;
 using MvvmHelpers;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -40,21 +41,51 @@ namespace AresNews.ViewModels
 
                             // Save the session
                             CurrentApp.DataFetcher.SaveSession(res.Session);
+
+                            // Set user data
+                            UserProfile = res.UserData;
                         }));
                     }
-
-
                 });
             }
         }
 
         public App CurrentApp { get; private set; }
         public AppShell MainShell { get; }
+        private bool _authenticated;
+
+        public bool Authenticated
+        {
+            get { return _authenticated; }
+            set 
+            {
+                _authenticated = value;
+                OnPropertyChanged(nameof(Authenticated));
+            }
+        }
+
+        private User _userProfile;
+        public User UserProfile
+        {
+            get { return _userProfile; }
+            set 
+            {
+                _userProfile = value;
+
+                // Enable the profile view
+                Authenticated = value != null;
+
+                OnPropertyChanged(nameof(UserProfile));
+            }
+        }
+
 
         public AppShellViewModel(AppShell shell)
         {
             CurrentApp = (App)App.Current;
             MainShell = shell;
+
+            UserProfile = CurrentApp.DataFetcher.UserData;
         }
 
     }
