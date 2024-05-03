@@ -187,7 +187,7 @@ namespace AresNews.Services
         /// <summary>
         /// Kill a session
         /// </summary>
-        private void KillSession()
+        public void KillSession()
         {
             // Empty the property
             CurrentSession = null;
