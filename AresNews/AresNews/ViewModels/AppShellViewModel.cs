@@ -22,13 +22,17 @@ namespace AresNews.ViewModels
         {
             get
             {
-                return new Command(() => 
+                return new Command(async () => 
                 {
-                    // Remove the authenticated flag
-                    Authenticated = false;
 
-                    // Logout the user
-                    CurrentApp.LogoutCurrentAccount();
+                    if (await CurrentApp.ShowLogoutConfirmation())
+                    {
+                        // Remove the authenticated flag
+                        Authenticated = false;
+                        // Logout the user
+                        CurrentApp.LogoutCurrentAccount();
+
+                    }
                 });
             }
         }

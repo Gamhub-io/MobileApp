@@ -136,5 +136,8 @@
     <Compile Update="Views\PopUps\AuthPopUp.xaml.cs">
       <DependentUpon>AuthPopUp.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PopUps\LogoutConfirmationPopUp.xaml.cs">
+      <DependentUpon>LogoutConfirmationPopUp.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
