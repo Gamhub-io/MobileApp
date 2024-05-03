@@ -338,5 +338,27 @@ namespace AresNews
             // Close the current session
             DataFetcher.KillSession();
         }
+        /// <summary>
+        /// Show a pop up to confirm wether or not the user wants to logout
+        /// </summary>
+        /// <param name="user">user</param>
+        /// <returns>true: confirm | false: cancel</returns>
+        public async Task<bool> ShowLogoutConfirmation(User user = null)
+        {
+            if (user == null)
+                user = SaveInfo;
+
+            LogoutConfirmationPopUp popUp = new(user);
+            OpenPopUp(popUp);
+
+            // Wait for a response
+            while (popUp.Result == null)
+                await Task.Delay(10);
+
+            // in any case close the pop up after receiving a response
+            ClosePopUp(popUp);
+
+            return popUp.Result ?? false;
+        }
     }
 }
