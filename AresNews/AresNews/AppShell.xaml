@@ -14,7 +14,28 @@
        xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
        xmlns:viewmodels="clr-namespace:AresNews.ViewModels">
     <!-- Template for the shell content-->
-    
+    <Shell.Resources>
+        <Style TargetType="Label"
+               x:Key="MenuIcon">
+            <Setter Property="FontFamily" Value="FaSolid" />
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="FontSize" Value="23" />
+            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+            <Setter Property="Grid.Column" Value="0" />
+        </Style>
+        <Style TargetType="Label"
+               x:Key="MenuLabel">
+            <Setter Property="FontFamily" Value="P-Regular" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+            <Setter Property="Grid.Column" Value="1" />
+        </Style>
+    </Shell.Resources>
     <Shell.ItemTemplate>
         <DataTemplate>
             <Grid HorizontalOptions="Center"
@@ -187,63 +208,45 @@
                 </Grid.ColumnDefinitions>
 
 
-                <!-- Button to log out -->
+                <!-- Button to contact support -->
                 <Label Text="&#xf590;"
-                       FontFamily="FaSolid"
-                       Margin="10,0,0,0"
-                       VerticalOptions="Center"
-                       HorizontalTextAlignment="Center"
-                       HorizontalOptions="Center"
-                       FontSize="23"
-                       TextColor="{StaticResource Primary}"
-                       Grid.Column="0"/>
+                       Style="{StaticResource MenuIcon}"/>
 
                 <!-- label -->
                 <Label Text="Contact support"
-                       FontFamily="P-Regular"
-                       FontSize="18" 
-                       VerticalOptions="Center"
-                       VerticalTextAlignment="Center"
-                       TextColor="{StaticResource FontColor}"
-                       Grid.Column="1" 
+                       
+                       Style="{StaticResource MenuLabel}"
                    />
             </Grid>
+
+            <!-- Logout -->
+            <Grid Grid.Row="2" 
+                  xct:TouchEffect.NativeAnimation="True"
+                  xct:TouchEffect.Command="{Binding Logout}"
+                  IsVisible="{Binding Authenticated}"
+                  VerticalOptions="End" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!--Button to log out-->
+                <Label 
+                    Text="&#xf2f5;"
+                    Style="{StaticResource MenuIcon}"/>
+                <!--label-->
+                <Label Text="Log out"
+                       Style="{StaticResource MenuLabel}"
+                   />
+            </Grid>
+            
             <Label Text="© 2024 Brice Friha"
                    FontSize="12"
-                   Grid.Row="2"
+                   Grid.Row="3"
+                   Margin="0,10,0,0"
                    FontFamily="P-regular"
                    TextColor="{StaticResource FontColor}"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"/>
-
-            <!-- Logout -->
-            <!--<Grid Grid.Row="2" 
-              xct:TouchEffect.NativeAnimation="True"
-              VerticalOptions="End" >
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding LogOut}"/>
-                </Grid.GestureRecognizers>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="35"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-
-                -->
-            <!-- Button to log out -->
-            <!--
-                <Label 
-                    Text="&#xf2f5;"
-                    Style="{StaticResource Logo}"/>
-
-                -->
-            <!-- label -->
-            <!--
-                <Label Text="Log out"
-                   FontFamily="{StaticResource Bold}"
-                   Style="{StaticResource TextMode}"
-                   />
-            </Grid>-->
         </Grid>
 
     </Shell.FlyoutFooter>
