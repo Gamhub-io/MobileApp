@@ -14,7 +14,17 @@ namespace AresNews.ViewModels
         {
             get
             {
-                return new Command<string>(async (address) => await Email.ComposeAsync(subject: "", body: "", to: new string[] { address }));
+                return new Command<string>((address) => _ = Email.ComposeAsync(subject: "", body: "", to: new string[] { address }));
+            }
+        }
+
+        public Command Logout
+        {
+            get
+            {
+                return new Command(() => 
+                {
+                });
             }
         }
         public Command OpenAuth
