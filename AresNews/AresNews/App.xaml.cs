@@ -304,6 +304,14 @@ namespace AresNews
             Preferences.Set(nameof(SaveInfo), JsonConvert.SerializeObject(SaveInfo));
         }
         /// <summary>
+        /// Save the info relevant to the user
+        /// </summary>
+        public void DeleteUserInfo()
+        {
+            // Save preferences
+            Preferences.Remove(nameof(SaveInfo));
+        }
+        /// <summary>
         /// Recover the info relevant to the user
         /// </summary>
         /// <returns>true: data found | false: data not found</returns>
@@ -318,6 +326,17 @@ namespace AresNews
 
             // Set Userdata object
             return (SaveInfo = DataFetcher.UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
+        }
+        /// <summary>
+        /// Log out the current active user
+        /// </summary>
+        public void LogoutCurrentAccount()
+        {
+            // Delete user data
+            DeleteUserInfo();
+
+            // Close the current session
+            DataFetcher.KillSession();
         }
     }
 }

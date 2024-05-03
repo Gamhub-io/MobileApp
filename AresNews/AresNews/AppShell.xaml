@@ -195,7 +195,7 @@
                 <RowDefinition Height="35"/>
             </Grid.RowDefinitions>
             <!-- Support -->
-            <Grid Grid.Row="1" 
+            <Grid Grid.Row="2" 
                   xct:TouchEffect.NativeAnimation="True"
                   VerticalOptions="End" >
                 <Grid.GestureRecognizers>
@@ -220,7 +220,7 @@
             </Grid>
 
             <!-- Logout -->
-            <Grid Grid.Row="2" 
+            <Grid Grid.Row="1" 
                   xct:TouchEffect.NativeAnimation="True"
                   xct:TouchEffect.Command="{Binding Logout}"
                   IsVisible="{Binding Authenticated}"
