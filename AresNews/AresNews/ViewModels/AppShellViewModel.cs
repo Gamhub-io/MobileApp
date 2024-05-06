@@ -63,7 +63,7 @@ namespace AresNews.ViewModels
 
                             // Set user data
                             UserProfile = res.UserData;
-                        }));
+                        }), MainShell);
                     }
                 });
             }
