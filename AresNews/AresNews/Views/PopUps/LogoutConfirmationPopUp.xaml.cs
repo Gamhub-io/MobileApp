@@ -39,7 +39,6 @@ namespace AresNews.Views
 
         private void Confirm_Clicked(object sender, System.EventArgs e)
         {
-
             Result = true;
         }
     }

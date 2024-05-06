@@ -5,7 +5,7 @@
              x:Class="AresNews.App">
     <Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="Primary" >#84D1AC</Color>
+            <Color x:Key="Primary" >#4AC776</Color>
             <Color x:Key="SelectionColor" >#528e70</Color>
             <Color x:Key="PrimaryAccent" >#1DB954</Color>
             <Color x:Key="Secondary" >#666666</Color>
@@ -13,15 +13,11 @@
             <Color x:Key="Dark" >#191414</Color>
             <Color x:Key="DarkSecondary" >#4A4A4A</Color>
             <Color x:Key="LightDark" >#404348</Color>
-            <Color x:Key="Light" >#9FDBBE</Color>
+            <Color x:Key="Light" >#8EDCA9</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
             <Color x:Key="BgBannerColor" >#262626</Color>
             <Color x:Key="DiscordPurple" >#5865f2</Color>
-            <!--
-            Potential future colour scheme:
-            <Color x:Key="Light">#87afc5</Color>
-            <Color x:Key="Primary">#5f94b1</Color>
-            -->
+            
         </ResourceDictionary>
         
         <!-- Converters-->
