@@ -25,7 +25,7 @@
     <Frame
            VerticalOptions="Center" 
            HorizontalOptions="Center"
-           Margin="20, 200"
+           Margin="20, 100"
            CornerRadius="20">
         <Frame.Background>
             <LinearGradientBrush StartPoint="0,0"
@@ -50,12 +50,25 @@
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-SemiBold"/>
             <Grid HorizontalOptions="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Button Text="Log me out"
+                        BackgroundColor="{StaticResource PrimaryAccent}"
+                        TextColor="{StaticResource FontColor}"
+                        FontFamily="P-Bold"
+                        FontSize="20"
+                        Padding="1"
+                        HeightRequest="40"
+                        WidthRequest="200"
+                        Clicked="Confirm_Clicked"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Row="0"/>
                 <Button Text="Nevermind"
-                        BackgroundColor="{StaticResource LightDark}"
+                        BackgroundColor="Transparent"
                         TextColor="{StaticResource Primary}"
                         FontFamily="P-Bold"
                         HeightRequest="40"
@@ -65,19 +78,7 @@
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         CornerRadius="12"
-                        Grid.Column="0"/>
-                <Button Text="Log me out"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="{StaticResource LightDark}"
-                        FontFamily="P-Bold"
-                        FontSize="15"
-                        Padding="1"
-                        HeightRequest="40"
-                        Clicked="Confirm_Clicked"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        CornerRadius="12"
-                        Grid.Column="1"/>
+                        Grid.Row="1"/>
             </Grid>
         </StackLayout>
 
