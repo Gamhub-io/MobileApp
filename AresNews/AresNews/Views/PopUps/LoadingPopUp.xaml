@@ -38,7 +38,7 @@
                    x:Name="lblLoading"
                    FontSize="18"
                    HorizontalTextAlignment="Center"
-                    TextColor="{StaticResource Primary}"
+                    TextColor="{StaticResource FontColor}"
                     FontFamily="FontBold"/>
         </StackLayout>
     </Frame>
