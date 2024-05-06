@@ -29,14 +29,16 @@ namespace AresNews.Views
             HasSystemPadding = false;
         }
 
-        private void Discord_Clicked(object sender, System.EventArgs e)
+        private async void Discord_Clicked(object sender, System.EventArgs e)
         {
+            CurrentApp.ShowLoadingIndicator();
+            DiscordAuthPortal discordAuthPortal = new(CallBack);
+
+
+            await App.Current.MainPage.Navigation.PushAsync(discordAuthPortal);
+
             // Close this popup
             CurrentApp.ClosePopUp(this);
-            DiscordAuthPortal discordAuthPortal = new (CallBack);
-               
-
-            _ = App.Current.MainPage.Navigation.PushAsync(discordAuthPortal);
         }
     }
 }

@@ -31,12 +31,31 @@ namespace AresNews.Views.Portals
             CallBack = callBack;
             BindingContext = this;
         }
+        protected override void OnAppearing()
+        {
+            if (!CurrentApp.IsLoading)
+                CurrentApp.ShowLoadingIndicator();
 
+            base.OnAppearing();
+        }
         private async void DiscordPortal_Navigated(object sender, WebNavigatedEventArgs e)
         {
+
+            
+
+            // Remove loding indicator
+            if (e.Url.Contains("discord.com/oauth2/authorize"))
+            {
+                CurrentApp.RemoveLoadingIndicator();
+
+                return;
+            }
+
+
             // Catch the navigation to the api
             if (e.Url.Contains($"//{AppConstant.ApiHost}/auth/discord"))
             {
+
                 // Get data returned
                 string value = Regex.Unescape(await DiscordPortal.EvaluateJavaScriptAsync("document.getElementsByTagName(\"pre\")[0].innerHTML"));
                 var res = JsonConvert.DeserializeObject<AuthResponse>(value);
@@ -47,6 +66,9 @@ namespace AresNews.Views.Portals
 
                 // Navigate back
                 CurrentApp.MainPage.Navigation.RemovePage(this);
+
+                CurrentApp.RemoveLoadingIndicator();
+                return;
             }
         }
 
@@ -55,6 +77,9 @@ namespace AresNews.Views.Portals
             // Catch the navigation to the api
             if (e.Url.Contains($"//{AppConstant.ApiHost}/auth/discord"))
             {
+
+                if (!CurrentApp.IsLoading)
+                    CurrentApp.ShowLoadingIndicator();
                 DiscordPortal.IsVisible = false;
             }
         }

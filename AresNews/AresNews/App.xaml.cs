@@ -21,7 +21,7 @@ namespace AresNews
 {
     public partial class App : Application
     {
-        private bool _isLoading;
+        public bool IsLoading { get; private set; }
 
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
@@ -42,8 +42,6 @@ namespace AresNews
             bookmark,
             news,
             source
-
-
         }
         public App()
         {
@@ -107,17 +105,17 @@ namespace AresNews
         /// <summary>
         /// Show the popup loading indicator
         /// </summary>
-        public void ShowLoadingIndicator(bool longer = false)
+        public void ShowLoadingIndicator()
         {
 
             try
             {
 
-                if (_isLoading)
+                if (IsLoading)
                     return;
-                _isLoading = true;
+                IsLoading = true;
 
-                OpenPopUp(this.LoadingIndicator);
+                OpenPopUp (this.LoadingIndicator);
             }
             catch (RGPageInvalidException)
             {
@@ -132,11 +130,11 @@ namespace AresNews
         {
             try 
             {
-                if (!_isLoading)
+                if (!IsLoading)
                     return;
 
 
-                _isLoading = false;
+                IsLoading = false;
                 
                 // Close the popup
                 ClosePopUp (this.LoadingIndicator);
@@ -239,7 +237,7 @@ namespace AresNews
         /// </summary>
         /// <param name="popUp">pop up to open</param>
         /// <param name="page">parent page</param>
-        public async void OpenPopUp(PopupPage popUp, Page page = null)
+        public void OpenPopUp(PopupPage popUp, Page page = null)
         {
             try
             {
@@ -250,7 +248,7 @@ namespace AresNews
                 if (page == null)
                     page = GetCurrentPage();
 
-                await page.Navigation.PushPopupAsync(popUp);
+                _ = page.Navigation.PushPopupAsync(popUp);
             }
             catch (Exception ex)
             {
@@ -264,7 +262,7 @@ namespace AresNews
         /// </summary>
         /// <param name="popUp">pop up to open</param>
         /// <param name="page">parent page</param>
-        public async void ClosePopUp(PopupPage popUp, Page page = null)
+        public void ClosePopUp(PopupPage popUp, Page page = null)
         {
             try
             {
@@ -275,7 +273,7 @@ namespace AresNews
                 if (page == null)
                     page = GetCurrentPage();
 
-                await page.Navigation.RemovePopupPageAsync(popUp);
+                _ = page.Navigation.RemovePopupPageAsync(popUp);
             }
             catch (Exception ex)
             {
