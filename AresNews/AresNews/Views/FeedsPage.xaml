@@ -81,7 +81,7 @@
 
                 </ContentView.Triggers>
                 <StackLayout VerticalOptions="CenterAndExpand"
-                                    HorizontalOptions="CenterAndExpand">
+                             HorizontalOptions="CenterAndExpand">
                     <Label Text="&#xf005;"
                                FontFamily="FaSolid"
                                TextColor="{StaticResource Primary}"
@@ -114,11 +114,6 @@
                          x:Name="newsRefreshView"
                          HorizontalOptions="CenterAndExpand"
                          RefreshColor="{StaticResource Primary}">
-                <!--<RefreshView.Padding>
-                <OnPlatform x:TypeArguments="Thickness">
-                    <On Platform="iOS" Value="0,30,0,0"/>
-                </OnPlatform>
-            </RefreshView.Padding>-->
                 <RefreshView.BackgroundColor>
                     <OnPlatform x:TypeArguments="Color">
                         <On Platform="Android" Value="{StaticResource LightDark}"/>
