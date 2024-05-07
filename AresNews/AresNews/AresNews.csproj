@@ -44,10 +44,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Config\AppSettings_temp.json" />
-    <EmbeddedResource Include="Config\AppSettings.json">
-      <CustomToolNamespace></CustomToolNamespace>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Condition=" '$(Configuration)' == 'Debug' " Include="Config\AppSettings.json" />
+    <EmbeddedResource Condition=" '$(Configuration)' == 'LocalServ' " Include="Config\AppSettings.json" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
