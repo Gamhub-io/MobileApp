@@ -175,15 +175,15 @@ namespace AresNews.ViewModels
         public App CurrentApp { get; }
         private FeedsPage CurrentPage { get; set; }
 
-        public Xamarin.Forms.Command<Feed> Delete => new Xamarin.Forms.Command<Feed>(async (feed) =>
+        public Xamarin.Forms.Command<Feed> Delete => new Xamarin.Forms.Command<Feed>( (feed) =>
         {
-            await CurrentPage.Navigation.PushPopupAsync(new DeleteFeedPopUp(_selectedFeed, this));
+            CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this), CurrentPage);
 
         });
 
-        public Xamarin.Forms.Command<Feed> Rename => new Xamarin.Forms.Command<Feed>(async (feed) =>
+        public Xamarin.Forms.Command<Feed> Rename => new Xamarin.Forms.Command<Feed>( (feed) =>
         {
-            await CurrentPage.Navigation.PushPopupAsync(new RenameFeedPopUp(_selectedFeed, this));
+            CurrentApp.OpenPopUp (new RenameFeedPopUp(_selectedFeed, this), CurrentPage);
 
         });
 
