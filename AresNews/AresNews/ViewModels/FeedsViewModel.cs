@@ -1,24 +1,17 @@
-﻿using AresNews.Helpers.Tools;
+﻿
 using AresNews.Models;
 using AresNews.Views;
 using MvvmHelpers;
 using Newtonsoft.Json;
-using Rg.Plugins.Popup.Extensions;
 using SQLiteNetExtensions.Extensions;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.PancakeView;
-using static AresNews.Models.UpdateOrder;
 using Command = Xamarin.Forms.Command;
 
 namespace AresNews.ViewModels
@@ -135,28 +128,25 @@ namespace AresNews.ViewModels
         public Xamarin.Forms.Command<Feed> RefreshAll => new Command<Feed>((feed) =>
         {
             IsRefreshing = true;
-            Task.Run(() =>
-            {
-                this.Refresh(feed);
-            });
+            Refresh(feed);
 
         });
 
-        public Xamarin.Forms.Command<Feed> SwitchFeed => new Command<Feed>(async (feed) =>
+        public Xamarin.Forms.Command<Feed> SwitchFeed => new Command<Feed>((feed) =>
         {
             if (IsBusy)
                 return;
             //IsRefreshing = true;
 
             CurrentApp.ShowLoadingIndicator();
-            SwitchFeedAsync(feed);
+            _ = SwitchFeedAsync(feed);
 
             RefreshArticles.Execute(null);
             CurrentApp.RemoveLoadingIndicator();
 
         });
 
-        private async void SwitchFeedAsync(Feed feed)
+        private async Task SwitchFeedAsync(Feed feed)
         {
             await Task.Run(() =>
             {
@@ -164,11 +154,6 @@ namespace AresNews.ViewModels
                 // Set new feed
                 SwitchTabs(_feeds.IndexOf(feed));
                 SelectedFeed.IsLoaded = false;
-
-                //// Load articles
-                //
-
-
             });
         }
 
@@ -216,7 +201,7 @@ namespace AresNews.ViewModels
                             SelectedFeed = _feeds[0];
 
                         }
-                        this.Refresh(SelectedFeed);
+                       Refresh(SelectedFeed);
                     }
                     catch
                     {
@@ -258,13 +243,7 @@ namespace AresNews.ViewModels
 
 
             MessagingCenter.Subscribe<Feed>(this, "AddFeed", (sender) =>
-            {
-
-                //UpdateOrders.Add(new UpdateOrder
-                //{
-                //    Update= UpdateOrder.FeedUpdate.Add,
-                //    Feed= sender
-                //});
+            {;
 
                 AddFeed(sender);
 
@@ -275,12 +254,7 @@ namespace AresNews.ViewModels
 
                 if (sender == null)
                     return;
-                RemoveFeed(sender);
-                //UpdateOrders.Add(new UpdateOrder
-                //{
-                //    Update = UpdateOrder.FeedUpdate.Remove,
-                //    Feed = sender
-                //});
+                _ = RemoveFeed(sender);
 
 
             });
@@ -306,7 +280,7 @@ namespace AresNews.ViewModels
                 // Get selected article
                 var article = Articles.FirstOrDefault(art => art.Id == id.ToString());
 
-                await Share.RequestAsync(new ShareTextRequest
+                _ = Share.RequestAsync(new ShareTextRequest
                 {
                     Uri = article.Url,
                     Title = "Share this article",
@@ -336,10 +310,6 @@ namespace AresNews.ViewModels
                     App.SqLiteConn.InsertWithChildren(article, recursive: true);
                 }
 
-
-
-                //Articles[_articles.IndexOf(article)] = article;
-
                 // Say the the bookmark has been updated
                 MessagingCenter.Send<Article>(article, "SwitchBookmark");
 
@@ -361,7 +331,7 @@ namespace AresNews.ViewModels
                     return;
 
                 //Feed nextFeed = Feeds.FirstOrDefault(feed => feed.Id == feedId);
-                int nextIndex = _feeds.IndexOf(_feeds.FirstOrDefault(feed => feed.Id == feedId));//_feeds.IndexOf(nextFeed);
+                int nextIndex = _feeds.IndexOf(_feeds.FirstOrDefault(feed => feed.Id == feedId));
 
                 if (nextIndex == -1)
                     return;
@@ -374,7 +344,6 @@ namespace AresNews.ViewModels
                     if (i != nextIndex)
                     {
                         _feeds[i].IsLoaded = false;
-                        //FeedTabs[i].IsSelected = false;
 
                     }
                 }
@@ -393,13 +362,16 @@ namespace AresNews.ViewModels
                 return _addBookmark;
             }
         }
-        public async void Refresh(Feed feed)
+        public void Refresh(Feed feed)
 		{
             if (IsBusy)
                 return;
 
             IsBusy = true;
+#if DEBUG
+
             Debug.WriteLine($"IsNotBusy: {IsNotBusy}");
+#endif
             CurrentApp.ShowLoadingIndicator();
 
             // Determine wether or not it's the first time loading the article of this feed
@@ -407,23 +379,19 @@ namespace AresNews.ViewModels
 
 
 
-            await Task.Run(() =>
+            _ = AggregateFeed(feed, isFirstLoad).ContinueWith(res =>
             {
-                //SelectedFeed.Keywords = feed.Keywords;
-                AggregateFeed(feed, isFirstLoad);
-
                 // End the loading indicator
                 IsRefreshing = false;
                 IsBusy = false;
                 CurrentApp.RemoveLoadingIndicator();
-
-             });
+            });
         }
         /// <summary>
         /// Load articles via search
         /// </summary>
         /// <param name="feed">feed we are searching</param>
-        private async void AggregateFeed(Feed feed, bool firstLoad = true)
+        private async Task AggregateFeed(Feed feed, bool firstLoad = true)
         {
             int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
 
@@ -505,12 +473,12 @@ namespace AresNews.ViewModels
         {
             get
             {
-                return new Command(async (id) =>
+                return new Command( (id) =>
                 {
                     var articlePage = new ArticlePage(Articles.FirstOrDefault(art => art.Id == id.ToString()));
 
 
-                    await App.Current.MainPage.Navigation.PushAsync(articlePage);
+                    _ = App.Current.MainPage.Navigation.PushAsync(articlePage);
                 }); ;
             }
         }
@@ -569,7 +537,7 @@ namespace AresNews.ViewModels
         /// Remove a feed from the list
         /// </summary>
         /// <param name="feed">feed we want to remove</param>
-        public async void RemoveFeed(Feed feed)
+        public async Task RemoveFeed(Feed feed)
         {
             CurrentApp.ShowLoadingIndicator();
             IsBusy = true;
@@ -617,10 +585,13 @@ namespace AresNews.ViewModels
             .ContinueWith((Action<Task>)((e) =>
             {
                 // Load selected feed
-                SwitchFeedAsync(feedInView);
-            }));
+                _ = SwitchFeedAsync(feedInView).ContinueWith((res) =>
+                {
 
-            CurrentApp.RemoveLoadingIndicator();
+                    CurrentApp.RemoveLoadingIndicator();
+
+                });
+            }));
         }
         /// <summary>
         /// Update a feed
