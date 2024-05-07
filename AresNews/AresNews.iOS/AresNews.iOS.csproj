@@ -103,6 +103,7 @@
     <Compile Include="Renderers\CustomShellTabLayoutAppearanceTracker.cs" />
     <Compile Include="Renderers\HtmlLabelRenderer.cs" />
     <Compile Include="Renderers\IShellTabLayoutAppearanceTracker.cs" />
+    <None Include="appcenter-pre-build.sh" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
