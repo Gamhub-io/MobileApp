@@ -60,7 +60,7 @@
             <Setter Property="FontSize" Value="20" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0" />
-            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+            <Setter Property="TextColor" Value="{StaticResource Light}" />
 
         </Style>
         <Style TargetType="Label"
@@ -73,7 +73,7 @@
             <Setter Property="HorizontalOptions" Value="Center" />
             <Setter Property="VerticalOptions" Value="Center" />
             
-            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+            <Setter Property="TextColor" Value="{StaticResource Light}" />
 
         </Style>
     </Application.Resources>
