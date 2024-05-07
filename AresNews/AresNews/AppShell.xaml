@@ -9,7 +9,7 @@
        Shell.TabBarTitleColor="{StaticResource Primary}"
        Shell.BackgroundColor="{StaticResource LightDark}"
        FlyoutBackgroundColor="{StaticResource LightDark}"
-       Shell.ForegroundColor="{StaticResource Primary}"
+       Shell.ForegroundColor="{StaticResource Light}"
        FlyoutWidth="270"
        xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
        xmlns:viewmodels="clr-namespace:AresNews.ViewModels">
@@ -61,7 +61,7 @@
                             Text="{Binding Icon}" 
                             FontFamily="FaSolid" 
                             FontSize="23"
-                            TextColor="{StaticResource Primary}"/>
+                            TextColor="{StaticResource Light}"/>
                     <!-- Title -->
                     <Label Grid.Column="1" 
                            Text="{Binding Title}" 

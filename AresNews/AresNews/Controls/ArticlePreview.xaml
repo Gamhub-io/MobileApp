@@ -51,7 +51,7 @@
                             <Frame.Background>
                                 <LinearGradientBrush EndPoint="0,1">
 
-                                    <GradientStop Color="{StaticResource Light}"
+                                    <GradientStop Color="{StaticResource Primary}"
                                                           Offset="0.1" />
                                     <GradientStop Color="{StaticResource Light}"
                                                           Offset="0.0" />
@@ -135,7 +135,7 @@
                             </Grid.RowDefinitions>
                             <!-- Headline -->
                             <Label Grid.Row="0" 
-                                   Text="{Binding Headline, Converter={StaticResource MaxLengthConverter}, ConverterParameter=120}}"
+                                   Text="{Binding Headline, Converter={StaticResource MaxLengthConverter}, ConverterParameter=120}"
                                    TextColor="{StaticResource FontColor}"
                                    Margin="10,0"
                                    TextType="Html"

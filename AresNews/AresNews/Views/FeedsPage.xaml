@@ -113,7 +113,7 @@
                          Margin="0,40,0,0"
                          x:Name="newsRefreshView"
                          HorizontalOptions="CenterAndExpand"
-                         RefreshColor="{StaticResource Primary}">
+                         RefreshColor="{StaticResource PrimaryAccent}">
                 <RefreshView.BackgroundColor>
                     <OnPlatform x:TypeArguments="Color">
                         <On Platform="Android" Value="{StaticResource LightDark}"/>
