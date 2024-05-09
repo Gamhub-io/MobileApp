@@ -128,5 +128,11 @@ namespace AresNews.Views
             }
             return base.OnBackButtonPressed();
         }
+
+        private void newsCollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+        {
+            // FIguring out if the scroll is on top of the screen
+            _vm.OnTopScroll = e.FirstVisibleItemIndex == 0;
+        }
     }
 }
