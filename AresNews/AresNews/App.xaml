@@ -8,6 +8,7 @@
             <Color x:Key="Primary" >#4AC776</Color>
             <Color x:Key="SelectionColor" >#528e70</Color>
             <Color x:Key="PrimaryAccent" >#1DB954</Color>
+            <Color x:Key="DarkPrimary" >#14813A</Color>
             <Color x:Key="Secondary" >#666666</Color>
             <Color x:Key="Alternate">#8B8E92</Color>
             <Color x:Key="Dark" >#191414</Color>
@@ -26,6 +27,7 @@
         <helpers:ThumbnailConverter x:Key="ThumbnailConverter"/>
         <helpers:BoolInverseConverter x:Key="BoolInverseConverter"/>
         <helpers:ZeroToFalseConverter x:Key="ZeroToFalseConverter"/>
+        <helpers:ZeroToTrueConverter x:Key="ZeroToTrueConverter"/>
         
         <ResourceDictionary>
             <OnPlatform x:Key="TitleRightMargin" 
