@@ -221,10 +221,10 @@
                 </CollectionView>
                 
                 <Button Text="{Binding UnnoticedArticles.Count, StringFormat='{0} new articles'}"
-                        BackgroundColor="{StaticResource DarkPrimary}"
+                        BackgroundColor="{StaticResource PrimaryAccent}"
                         TextColor="{StaticResource FontColor}"
-                        IsVisible="{Binding UnnoticedArticles.Count, Converter={StaticResource ZeroToFalseConverter}, Mode=TwoWay}"
-                        FontFamily="P-SemiBold"
+                        IsVisible="true"
+                        FontFamily="P-Bold"
                         FontSize="15"
                         Padding="1"
                         HeightRequest="30"
@@ -235,6 +235,9 @@
                         VerticalOptions="Start"
                         CornerRadius="12"
                         Grid.Row="0"/>
+                <!--
+                IsVisible="{Binding UnnoticedArticles.Count, Converter={StaticResource ZeroToFalseConverter}, Mode=TwoWay}"
+                -->
             </Grid>
         </RefreshView>
     </ContentPage.Content>
