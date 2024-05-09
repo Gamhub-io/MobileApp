@@ -284,6 +284,9 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(IsRefreshing));
             }
         }
+
+        public bool IsFirstLoad { get; private set; } = true;
+
         public NewsViewModel(NewsPage currentPage)
         {
             CurrentApp = App.Current as App;
@@ -383,11 +386,11 @@ namespace AresNews.ViewModels
                    if (IsSearchOpen)
                    {
                        // Fetch the article
-                       _ = FetchArticles(false);
+                       _ = FetchArticles();
                        return;
                    }
                    // Fetch the article
-                   _ = FetchArticles(isAll);
+                   _ = FetchArticles();
                });
             LoadSearch = new Command(async () =>
             {
@@ -413,20 +416,18 @@ namespace AresNews.ViewModels
             });
 
             //
-            switch (Device.RuntimePlatform)
-            {
-                case Device.iOS:
-                    CurrentApp.ShowLoadingIndicator();
-                    _refreshFeed.Execute(null);
-                    break;
-                case Device.Android:
-                      IsRefreshing = true;
-                    break; 
-                default:
-                    break;
-            }
-
-            _ = FetchArticles(_articles?.Count <=0);
+            //switch (Device.RuntimePlatform)
+            //{
+            //    case Device.iOS:
+            //        CurrentApp.ShowLoadingIndicator();
+            //        _refreshFeed.Execute(null);
+            //        break;
+            //    case Device.Android:
+            //          IsRefreshing = true;
+            //        break; 
+            //    default:
+            //        break;
+            //}
         }
 
         /// <summary>
@@ -489,29 +490,29 @@ namespace AresNews.ViewModels
                    
                        articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
                }
-                else
-                {
-                    if (_isLaunching)
-                    {
-                        try
-                        {
-                            Articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
+               else
+               {
+                   if (_isLaunching)
+                   {
+                       try
+                       {
+                           Articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
 
-                            // Manage backuo
-                            _ = RefreshDB();
+                           // Manage backuo
+                           _ = RefreshDB();
 
-                        }
-                        catch
-                        {
-                        }
+                       }
+                       catch
+                       {
+                       }
 
-                        _isLaunching = false;
-                        IsRefreshing = false;
-                        return;
-                    }
-                   articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
+                       _isLaunching = false;
+                       IsRefreshing = false;
+                       return;
+                   }
+                  articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
 
-                }
+               }
             }
             catch (Exception ex)
             {
@@ -552,7 +553,7 @@ namespace AresNews.ViewModels
                     UpdateArticles(articles);
                 else
                 {
-                    UnnoticedArticles = new ObservableRangeCollection<Article>(articles);
+                    UnnoticedArticles = new ObservableCollection<Article>(articles);
                 }
             });
             try
@@ -747,6 +748,15 @@ namespace AresNews.ViewModels
          /// </summary>
         public void Resume()
         {
+            if (IsFirstLoad)
+            {
+                CurrentApp.ShowLoadingIndicator();
+                _ = FetchArticles(_articles?.Count <= 0).ContinueWith(res =>
+                    CurrentApp.RemoveLoadingIndicator());
+
+                IsFirstLoad = false;
+
+            }
             // Get all the feeds regestered
             var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 
