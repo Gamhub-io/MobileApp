@@ -1,16 +1,6 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
-using MvvmHelpers;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.CommunityToolkit.Extensions;
@@ -57,7 +47,7 @@ namespace AresNews.Views
             }
             await this.DisplayToastAsync($"You're offline, please check if you're connected to the internet", 60000);
 
-
+          
         }
         /// <summary>
         /// Method allowing the search bar animation
