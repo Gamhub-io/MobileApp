@@ -210,7 +210,7 @@ namespace AresNews.ViewModels
             set
             {
                 _unnoticedArticles = value;
-                SetProperty(ref _unnoticedArticles, value);
+                OnPropertyChanged(nameof(UnnoticedArticles));
             }
         }
         private bool _onTopScroll;
@@ -296,11 +296,17 @@ namespace AresNews.ViewModels
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
             UncoverNewArticles = new Command(() =>
             {
+                if (UnnoticedArticles == null)
+                    return;
+                if (UnnoticedArticles.Count >= 0)
+                    return;
                 // Scroll up
                 CurrentPage.ScrollFeed();
 
                 // Add the unnoticed articles
                 UpdateArticles(UnnoticedArticles);
+
+                UnnoticedArticles.Clear();
 
             });
 
@@ -565,10 +571,10 @@ namespace AresNews.ViewModels
             catch
             {
             }
-            //finally
-            //{
-            //    _isLaunching = false;
-            //}
+            finally
+            {
+                _isLaunching = false;
+            }
 
             _isLaunching = false;
             IsRefreshing = false;

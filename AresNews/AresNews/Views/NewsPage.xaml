@@ -223,7 +223,7 @@
                 <Button Text="{Binding UnnoticedArticles.Count, StringFormat='{0} new articles'}"
                         BackgroundColor="{StaticResource PrimaryAccent}"
                         TextColor="{StaticResource FontColor}"
-                        IsVisible="true"
+                        IsVisible="{Binding UnnoticedArticles.Count, Converter={StaticResource ZeroToFalseConverter}, Mode=TwoWay}"
                         FontFamily="P-Bold"
                         FontSize="15"
                         Padding="1"
@@ -234,10 +234,7 @@
                         HorizontalOptions="Center"
                         VerticalOptions="Start"
                         CornerRadius="12"
-                        Grid.Row="0"/>
-                <!--
-                IsVisible="{Binding UnnoticedArticles.Count, Converter={StaticResource ZeroToFalseConverter}, Mode=TwoWay}"
-                -->
+                        Grid.Row="0" />
             </Grid>
         </RefreshView>
     </ContentPage.Content>
