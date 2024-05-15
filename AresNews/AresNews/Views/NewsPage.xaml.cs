@@ -12,6 +12,7 @@ namespace AresNews.Views
     public partial class NewsPage : ContentPage
     {
         private NewsViewModel _vm;
+        private double refreshButtonYPos;
         public NewsPage()
         {
             InitializeComponent();
@@ -26,6 +27,8 @@ namespace AresNews.Views
                 // Scroll to the top of the collection view
                 newsCollectionView.ScrollTo(0);
             });
+            refreshButtonYPos = refreshButton.Y;
+            refreshButton.TranslationY = -10;
 
         }
         protected override void OnAppearing()
@@ -123,6 +126,14 @@ namespace AresNews.Views
         {
             // FIguring out if the scroll is on top of the screen
             _vm.OnTopScroll = e.FirstVisibleItemIndex == 0;
+        }
+        public void ShowRefreshButton()
+        {
+            refreshButton.TranslateTo(refreshButton.X, refreshButtonYPos, easing: Easing.BounceOut);
+        }
+        public void RemoveRefreshButton()
+        {
+            refreshButton.TranslateTo(refreshButton.X, -10);
         }
     }
 }
