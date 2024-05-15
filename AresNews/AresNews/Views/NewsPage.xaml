@@ -234,6 +234,7 @@
                         HorizontalOptions="Center"
                         VerticalOptions="Start"
                         CornerRadius="12"
+                        x:Name="refreshButton"
                         Grid.Row="0" />
             </Grid>
         </RefreshView>

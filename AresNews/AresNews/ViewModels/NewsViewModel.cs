@@ -210,6 +210,11 @@ namespace AresNews.ViewModels
             set
             {
                 _unnoticedArticles = value;
+                if (_unnoticedArticles?.Count >0)
+                    CurrentPage.ShowRefreshButton();
+                else
+                    CurrentPage.RemoveRefreshButton();
+
                 OnPropertyChanged(nameof(UnnoticedArticles));
             }
         }
@@ -298,19 +303,24 @@ namespace AresNews.ViewModels
             {
                 if (UnnoticedArticles == null)
                     return;
-                if (UnnoticedArticles.Count >= 0)
+                if (UnnoticedArticles.Count <= 0)
                     return;
-                // Scroll up
-                CurrentPage.ScrollFeed();
 
-                // Add the unnoticed articles
-                UpdateArticles(UnnoticedArticles);
+                CurrentApp.ShowLoadingIndicator();
+                _ = Task.Run(() =>
+                {
+                    // Scroll up
+                    CurrentPage.ScrollFeed();
 
-                UnnoticedArticles.Clear();
+                    // Add the unnoticed articles
+                    UpdateArticles(UnnoticedArticles);
+
+                    UnnoticedArticles.Clear();
+
+                }).ContinueWith(res => CurrentApp.RemoveLoadingIndicator());
 
             });
 
-            //Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
             CurrentFeed = new Feed();
             _isLaunching = true;
 
