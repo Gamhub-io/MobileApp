@@ -119,65 +119,67 @@
                         <On Platform="Android" Value="{StaticResource LightDark}"/>
                     </OnPlatform>
                 </RefreshView.BackgroundColor>
-                <CollectionView ItemsSource="{Binding Articles, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
-                                x:DataType="model:Feed"
-                                VerticalScrollBarVisibility="Never"
-                                x:Name="newsCollectionView"
-                                ItemsUpdatingScrollMode="KeepScrollOffset"
-                                HorizontalOptions="Center"
-                                Margin="8,0">
-                    <CollectionView.Header>
-                        <BoxView  Margin="0">
-                            <BoxView.HeightRequest>
-                                <OnPlatform x:TypeArguments="x:Double">
-                                    <On Platform="Android" Value="0"/>
-                                    <On Platform="iOS" Value="75"/>
-                                </OnPlatform>
-                            </BoxView.HeightRequest>
-                        </BoxView>
-                    </CollectionView.Header>
-                    <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
-                    </CollectionView.ItemsLayout>
-                    <CollectionView.EmptyView>
-                        <ContentView IsVisible="{Binding IsBusy, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}},Converter={StaticResource BoolInverseConverter}}">
+                <Grid>
+                    <CollectionView ItemsSource="{Binding Articles, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                                    x:DataType="model:Feed"
+                                    VerticalScrollBarVisibility="Never"
+                                    x:Name="newsCollectionView"
+                                    Scrolled="newsCollectionView_Scrolled"
+                                    ItemsUpdatingScrollMode="KeepScrollOffset"
+                                    HorizontalOptions="Center"
+                                    Margin="8,0">
+                        <CollectionView.Header>
+                            <BoxView  Margin="0">
+                                <BoxView.HeightRequest>
+                                    <OnPlatform x:TypeArguments="x:Double">
+                                        <On Platform="Android" Value="0"/>
+                                        <On Platform="iOS" Value="75"/>
+                                    </OnPlatform>
+                                </BoxView.HeightRequest>
+                            </BoxView>
+                        </CollectionView.Header>
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.EmptyView>
+                            <ContentView IsVisible="{Binding IsBusy, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}},Converter={StaticResource BoolInverseConverter}}">
 
-                            <StackLayout VerticalOptions="CenterAndExpand"
+                                <StackLayout VerticalOptions="CenterAndExpand"
                                         HorizontalOptions="CenterAndExpand"
                                          IsVisible="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Converter={StaticResource ZeroToFalseConverter}}">
-                                <StackLayout.Triggers>
-                                    <DataTrigger Binding="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
+                                    <StackLayout.Triggers>
+                                        <DataTrigger Binding="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
                                                  TargetType="StackLayout"
                                                  Value="0">
-                                        <Setter Property="IsVisible" 
+                                            <Setter Property="IsVisible" 
                                                 Value="false" />
-                                    </DataTrigger>
-                                </StackLayout.Triggers>
-                                <Label Text="&#xf005;"
+                                        </DataTrigger>
+                                    </StackLayout.Triggers>
+                                    <Label Text="&#xf005;"
                                          FontFamily="FaSolid"
                                          TextColor="{StaticResource Primary}"
                                          FontSize="50"
                                          HorizontalOptions="Center"
                                         />
-                                <Label Text="Ooopsi 😟"
+                                    <Label Text="Ooopsi 😟"
                                        FontFamily="P-Bold"
                                        HorizontalOptions="Center"
                                        FontSize="Title"
                                        TextColor="{StaticResource FontColor}"
                                        />
-                                <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
+                                    <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
                                        FontFamily="P-Regular"
                                        Margin="5,0"
                                        HorizontalTextAlignment="Center"
                                        FontSize="Subtitle"
                                        TextColor="{StaticResource FontColor}"
                                        />
-                            </StackLayout>
-                        </ContentView>
-                    </CollectionView.EmptyView>
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="model:Article">
-                            <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
+                                </StackLayout>
+                            </ContentView>
+                        </CollectionView.EmptyView>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="model:Article">
+                                <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
                                                      ArticleId="{Binding Id}"
                                                      ArticleIsSaved="{Binding IsSaved}"
                                                      ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
@@ -190,9 +192,26 @@
                                                      TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=GoToDetail}"
                                                      TapCommandParameter="{Binding Id}"
                                                      />
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                    <Button Text="{Binding UnnoticedArticles.Count, StringFormat='{0} new articles'}"
+                            BackgroundColor="{StaticResource PrimaryAccent}"
+                            TextColor="{StaticResource FontColor}"
+                            IsVisible="{Binding UnnoticedArticles.Count, Converter={StaticResource ZeroToFalseConverter}, Mode=TwoWay}"
+                            FontFamily="P-Bold"
+                            FontSize="15"
+                            Padding="1"
+                            HeightRequest="30"
+                            WidthRequest="150"
+                            Margin="10"
+                            Command="{Binding UncoverNewArticles}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Start"
+                            CornerRadius="12"
+                            x:Name="refreshButton"
+                            Grid.Row="0" />
+                </Grid>
             </RefreshView>
             <!---->
 
@@ -202,7 +221,7 @@
                   BackgroundColor="{StaticResource BgBannerColor }"
                   Grid.Row="0"
                   RowDefinitions="*,1">
-                
+
                 <Grid.Triggers>
                     <DataTrigger Binding="{Binding FeedTabs.Count}"
                                  TargetType="Grid"
@@ -268,6 +287,7 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
+
             </Grid>
             <!---->
             <!-- HitBox - Layer that detect touch -->
@@ -325,6 +345,7 @@
                 </StackLayout>
             </Frame>
             <!-- -->
+        
         </Grid>
     </ContentPage.Content>
 </ContentPage>
