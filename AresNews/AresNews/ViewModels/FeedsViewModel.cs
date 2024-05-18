@@ -150,7 +150,7 @@ namespace AresNews.ViewModels
         {
             await Task.Run(() =>
             {
-
+                UnnoticedArticles.Clear();
                 // Set new feed
                 SwitchTabs(_feeds.IndexOf(feed));
                 SelectedFeed.IsLoaded = false;
@@ -158,6 +158,8 @@ namespace AresNews.ViewModels
         }
 
         public App CurrentApp { get; }
+
+        public Command UncoverNewArticles { get; private set; }
         private FeedsPage CurrentPage { get; set; }
 
         public Xamarin.Forms.Command<Feed> Delete => new Xamarin.Forms.Command<Feed>( (feed) =>
@@ -180,6 +182,18 @@ namespace AresNews.ViewModels
 
         });
 
+        private bool _onTopScroll;
+
+        public bool OnTopScroll
+        {
+            get { return _onTopScroll; }
+            set
+            {
+                _onTopScroll = value;
+                OnPropertyChanged(nameof(OnTopScroll));
+            }
+        }
+
         public Xamarin.Forms.Command RefreshArticles => new Xamarin.Forms.Command(() =>
         {
 
@@ -201,7 +215,7 @@ namespace AresNews.ViewModels
                             SelectedFeed = _feeds[0];
 
                         }
-                       Refresh(SelectedFeed);
+                        Refresh(SelectedFeed);
                     }
                     catch
                     {
@@ -228,8 +242,29 @@ namespace AresNews.ViewModels
 
             // Select first item
             CurrentFeedIndex = 0;
+            UncoverNewArticles = new Command(() =>
+            {
+                if (UnnoticedArticles == null)
+                    return;
+                if (UnnoticedArticles.Count <= 0)
+                    return;
 
-            
+                CurrentApp.ShowLoadingIndicator();
+                int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == SelectedFeed.Id));
+                _ = Task.Run(() =>
+                {
+                    // Scroll up
+                    CurrentPage.ScrollFeed();
+
+                    // Add the unnoticed articles
+                    UpdateArticles(UnnoticedArticles.ToList(), SelectedFeed, indexFeed);
+
+                    UnnoticedArticles.Clear();
+
+                }).ContinueWith(res => CurrentApp.RemoveLoadingIndicator());
+
+            });
+
 
             UpdateOrders = new List<UpdateOrder>();
 
@@ -322,7 +357,22 @@ namespace AresNews.ViewModels
         {
             get { return _shareArticle; }
         }
+        private ObservableCollection<Article> _unnoticedArticles;
 
+        public ObservableCollection<Article> UnnoticedArticles
+        {
+            get { return _unnoticedArticles; }
+            set
+            {
+                _unnoticedArticles = value;
+                if (_unnoticedArticles?.Count > 0)
+                    CurrentPage.ShowRefreshButton();
+                else
+                    CurrentPage.RemoveRefreshButton();
+
+                OnPropertyChanged(nameof(UnnoticedArticles));
+            }
+        }
         public Command<string> FeedSelect
         {
             get { return new Command<string> ((feedId) =>
@@ -435,23 +485,20 @@ namespace AresNews.ViewModels
             if (needUpdate)
             {
                 if (articles.Count > 0)
-                    UpdateArticles(articles, feed, indexFeed);
+                    if (OnTopScroll)
+                        UpdateArticles(articles, feed, indexFeed);
+                    else
+                        UnnoticedArticles = new ObservableCollection<Article>( articles);
             }
             else
             {
-                //Articles = new ObservableCollection<Article>();
                 // Update list of articles
                 InsertArticles(articles);
-                //Articles = new ObservableCollection<Article>(articles);
 
             }
             SelectedFeed.IsLoaded = true;
-            //Feeds[indexFeed] = feed;
 
             IsRefreshing = false;
-            //_isInCustomFeed = true;
-            //IsSearchOpen = true;
-            //_prevSearch = SearchText;
 
         }
         /// <summary>
@@ -679,7 +726,7 @@ namespace AresNews.ViewModels
             // Remove the outdated feeds
             foreach (var feed in removedFeeds)
             {
-                RemoveFeed(feed);
+                _ =RemoveFeed(feed);
             }
         }
 

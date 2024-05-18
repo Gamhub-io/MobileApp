@@ -12,6 +12,7 @@ namespace AresNews.Views
     public partial class NewsPage : ContentPage
     {
         private NewsViewModel _vm;
+        private const int rButtonYStart = -10;
         private double refreshButtonYPos;
         public NewsPage()
         {
@@ -28,7 +29,7 @@ namespace AresNews.Views
                 newsCollectionView.ScrollTo(0);
             });
             refreshButtonYPos = refreshButton.Y;
-            refreshButton.TranslationY = -10;
+            refreshButton.TranslationY = rButtonYStart;
 
         }
         protected override void OnAppearing()
@@ -127,13 +128,19 @@ namespace AresNews.Views
             // FIguring out if the scroll is on top of the screen
             _vm.OnTopScroll = e.FirstVisibleItemIndex == 0;
         }
+        /// <summary>
+        /// Method to display the refresh button
+        /// </summary>
         public void ShowRefreshButton()
         {
             refreshButton.TranslateTo(refreshButton.X, refreshButtonYPos, easing: Easing.BounceOut);
         }
+        /// <summary>
+        /// Method to remove the refresh button
+        /// </summary>
         public void RemoveRefreshButton()
         {
-            refreshButton.TranslateTo(refreshButton.X, -10);
+            refreshButton.TranslateTo(refreshButton.X, rButtonYStart);
         }
     }
 }
