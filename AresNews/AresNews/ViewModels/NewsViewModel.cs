@@ -168,11 +168,11 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
-                    CurrentApp.ShowLoadingIndicator();
                     IsSearching = false;
 
                     if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
 
+                    CurrentApp.ShowLoadingIndicator();
 
                     // Scroll up before fetching the items
                     CurrentPage.ScrollFeed();
@@ -183,7 +183,6 @@ namespace AresNews.ViewModels
                     SearchText = string.Empty;
 
                     IsSearchProcessed = false;
-                    CurrentApp.RemoveLoadingIndicator();
 
                 });
             }
@@ -401,8 +400,10 @@ namespace AresNews.ViewModels
                    
                    if (IsSearchOpen)
                    {
+                       if (string.IsNullOrEmpty(SearchText))
+                           return;
                        // Fetch the article
-                       _ = FetchArticles();
+                       _ = FetchArticles(true);
                        return;
                    }
                    // Fetch the article
@@ -455,28 +456,21 @@ namespace AresNews.ViewModels
             var articles = new ObservableRangeCollection<Article>();
             if (isFullRefresh)
             {
-
+                CurrentApp.ShowLoadingIndicator();
                 // the articles of the last 2 months
                 articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false));
-
-                var oldFeed = new Collection<Article>(_articles.Where(ats => ats.FullPublishDate > DateTime.Now.AddMonths(-2)).ToList());
-
                 _isLaunching = false;
-                List<Article> filteredArticles = articles.Where(article => article.Blocked == null || article.Blocked == false).ToList();
+                
+                // Reload the feed
                 Articles.Clear();
                 Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
+                
 
                 // Register date of the refresh
                 IsRefreshing = false;
                 IsSearchOpen = false;
                 _prevSearch = string.Empty;
-
-                if (Device.RuntimePlatform == Device.iOS)
-                    CurrentApp.RemoveLoadingIndicator();
-
-                // Check if we have new articles before refreshing the DB
-                if (oldFeed.Count != articles.Count)
-                    _ = RefreshDB();
+                CurrentApp.RemoveLoadingIndicator();
                 return;
             }
 
@@ -768,7 +762,7 @@ namespace AresNews.ViewModels
             {
                 CurrentApp.ShowLoadingIndicator();
                 _ = FetchArticles(_articles?.Count <= 0).ContinueWith(res =>
-                    CurrentApp.RemoveLoadingIndicator());
+                  CurrentApp.RemoveLoadingIndicator());
 
                 IsFirstLoad = false;
 
