@@ -9,7 +9,7 @@ namespace AresNews.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class FeedsPage : ContentPage
     {
-        private const int rButtonYStart = -22;
+        private const int rButtonYStart = -43;
         private const uint _modalHeightStart = 0;
         private readonly uint _modalWidthStart = 50;
         private readonly FeedsViewModel _vm;
