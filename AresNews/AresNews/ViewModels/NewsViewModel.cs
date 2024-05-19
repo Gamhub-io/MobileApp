@@ -290,6 +290,7 @@ namespace AresNews.ViewModels
         }
 
         public bool IsFirstLoad { get; private set; } = true;
+        public bool IsSearchLoading { get; private set; }
 
         public NewsViewModel(NewsPage currentPage)
         {
@@ -411,14 +412,20 @@ namespace AresNews.ViewModels
                });
             LoadSearch = new Command(async () =>
             {
+                if (IsSearchLoading)
+                    return;
                 CurrentApp.ShowLoadingIndicator();
                 IsSearchProcessed = true;
+                IsSearchLoading = true;
 
                 await FetchArticles().ContinueWith((res) =>
-                    CurrentApp.RemoveLoadingIndicator());
+                {
+                    CurrentApp.RemoveLoadingIndicator();
+                    IsSearchLoading = false;
+                });
             });
             // Set command to share an article
-            _shareArticle = new Command(async (id) =>
+            _shareArticle = new Command((id) =>
             {
                 // Get selected article
                 var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
