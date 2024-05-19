@@ -92,7 +92,7 @@
                                                   TextColor="{StaticResource FontColor}"
                                                   x:Name="entrySearch"
                                                   ReturnType="Search"
-                                                  ReturnCommand="{Binding Search, Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}}"/>
+                                                  ReturnCommand="{Binding LoadSearch, Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}}"/>
 
                         <!-- Button to close the search -->
                         <Button Text="&#xf057;"
@@ -167,7 +167,7 @@
                      CommandParameter="{Binding IsSearching, Converter={StaticResource BoolInverseConverter}}"
                      x:Name="newsRefreshView"
                      HorizontalOptions="CenterAndExpand"
-                     RefreshColor="{StaticResource Primary}"
+                     RefreshColor="{StaticResource PrimaryAccent}"
                      >
             <!--<RefreshView.Padding>
                 <OnPlatform x:TypeArguments="Thickness">
@@ -179,54 +179,64 @@
                     <On Platform="Android" Value="{StaticResource LightDark}"/>
                 </OnPlatform>
             </RefreshView.BackgroundColor>
-            <CollectionView ItemsSource="{Binding Articles, Mode=OneWay}"
-                            VerticalScrollBarVisibility="Never"
-                            x:Name="newsCollectionView"
-                            ItemsUpdatingScrollMode="KeepScrollOffset"
-                            HorizontalOptions="Center"
-                            Margin="8,0"
-                            >
-                <CollectionView.Header>
-                    <BoxView  Margin="0">
-                        <BoxView.HeightRequest>
-                            <OnPlatform x:TypeArguments="x:Double">
-                                <On Platform="Android" Value="0"/>
-                                <On Platform="iOS" Value="75"/>
-                            </OnPlatform>
-                        </BoxView.HeightRequest>
-                    </BoxView>
-                </CollectionView.Header>
-                <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="models:Article">
-                        <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
-                                                 ArticleId="{Binding Id}"
-                                                 ArticleIsSaved="{Binding IsSaved}"
-                                                 ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
-                                                 ArticleSource="{Binding Source, Mode=OneWay}"
-                                                 Thumnail="{Binding Image}"
-                                                 ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle, Mode=OneWay}"
-                                                 ShareCommandParameter="{Binding Url}"
-                                                 BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark, Mode=OneWay}"
-                                                 ControlTemplate="{StaticResource ArticleTemplate}" 
-                                                 TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
-                                                 TapCommandParameter="{Binding Id}"
-                                                 >
-                            <!--
-                            TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
-                                                 TapCommandParameter="{Binding Id}"
-                            -->
-                            <!--<controls:ArticlePreview.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}" 
-                                                      CommandParameter="{Binding Id}" />
-                            </controls:ArticlePreview.GestureRecognizers>-->
-                            
-                        </controls:ArticlePreview>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <Grid>
+                <CollectionView ItemsSource="{Binding Articles, Mode=OneWay}"
+                                VerticalScrollBarVisibility="Never"
+                                x:Name="newsCollectionView"
+                                ItemsUpdatingScrollMode="KeepScrollOffset"
+                                HorizontalOptions="Center"
+                                Scrolled="newsCollectionView_Scrolled"
+                                
+                                Margin="8,0"
+                                >
+                    <CollectionView.Header>
+                        <BoxView  Margin="0">
+                            <BoxView.HeightRequest>
+                                <OnPlatform x:TypeArguments="x:Double">
+                                    <On Platform="Android" Value="0"/>
+                                    <On Platform="iOS" Value="75"/>
+                                </OnPlatform>
+                            </BoxView.HeightRequest>
+                        </BoxView>
+                    </CollectionView.Header>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:Article">
+                            <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
+                                                     ArticleId="{Binding Id}"
+                                                     ArticleIsSaved="{Binding IsSaved}"
+                                                     ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
+                                                     ArticleSource="{Binding Source, Mode=OneWay}"
+                                                     Thumnail="{Binding Image}"
+                                                     ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle, Mode=OneWay}"
+                                                     ShareCommandParameter="{Binding Url}"
+                                                     BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark, Mode=OneWay}"
+                                                     ControlTemplate="{StaticResource ArticleTemplate}" 
+                                                     TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
+                                                     TapCommandParameter="{Binding Id}"/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                
+                <Button Text="{Binding UnnoticedArticles.Count, StringFormat='{0} new articles'}"
+                        BackgroundColor="{StaticResource PrimaryAccent}"
+                        TextColor="{StaticResource FontColor}"
+                        IsVisible="{Binding UnnoticedArticles.Count, Converter={StaticResource ZeroToFalseConverter}, Mode=TwoWay}"
+                        FontFamily="P-Bold"
+                        FontSize="15"
+                        Padding="1"
+                        HeightRequest="30"
+                        WidthRequest="150"
+                        Margin="10"
+                        Command="{Binding UncoverNewArticles}"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Start"
+                        CornerRadius="12"
+                        x:Name="refreshButton"
+                        Grid.Row="0" />
+            </Grid>
         </RefreshView>
     </ContentPage.Content>
 </ContentPage>

@@ -23,47 +23,20 @@
                                      Value="true">
                             <Setter Property="FontFamily"
                                     Value="FaSolid" />
+                            <Setter Property="TextColor" 
+                                    Value="{StaticResource Primary}" />
                         </DataTrigger>
                         <DataTrigger TargetType="Button"
                                      Binding="{Binding IsSaved}"
                                      Value="false">
                             <Setter Property="FontFamily"
                                     Value="FaRegular" />
+                            <Setter Property="TextColor" 
+                                    Value="{StaticResource Light}" />
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
             </Frame>
-            
-            <!--
-            <Frame 
-                   Style="{StaticResource ButtonFrame}"
-                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
-                   xct:TouchEffect.Command="{Binding Command}"
-                   xct:TouchEffect.NativeAnimation="True"
-                   xct:TouchEffect.CommandParameter="{Binding CommandParameter}">
-
-                <Label Text="&#xf02e;"
-                        Style="{StaticResource LabelButtonStyle}">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="Button_Clicked"/>
-                    </Label.GestureRecognizers>
-                    <Label.Triggers>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding IsSaved}"
-                                     Value="true">
-                            <Setter Property="FontFamily"
-                                    Value="FaSolid" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding IsSaved}"
-                                     Value="false">
-                            <Setter Property="FontFamily"
-                                    Value="FaRegular" />
-                        </DataTrigger>
-                    </Label.Triggers>
-                </Label>
-            </Frame>
-            -->
         </ControlTemplate>
   </ContentView.Resources>
 </ContentView>

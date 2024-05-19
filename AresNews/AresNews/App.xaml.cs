@@ -154,7 +154,7 @@ namespace AresNews
         /// <summary>
         /// Function to start the data base
         /// </summary>
-        public static async void StartDb()
+        public static void StartDb()
         {
             const SQLite.SQLiteOpenFlags Flags =
                     // open the database in read/write mode
@@ -163,8 +163,8 @@ namespace AresNews
                     SQLite.SQLiteOpenFlags.Create |
                     // enable multi-threaded database access
                     SQLite.SQLiteOpenFlags.SharedCache;
-        // Just use whatever directory SpecialFolder.Personal returns
-        string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            // Just use whatever directory SpecialFolder.Personal returns
+            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
             var path = Path.Combine(libraryPath, "ares.db3");
             var pathBackUp = Path.Combine(libraryPath, "aresBackup.db3");
