@@ -2,7 +2,6 @@
 using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Xamarin.CommunityToolkit.UI.Views;
 
 namespace AresNews.Views
 {
