@@ -1,5 +1,6 @@
 ﻿using AresNews.ViewModels;
 using System;
+using System.Diagnostics;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -27,7 +28,6 @@ namespace AresNews.Views
         {
             base.OnAppearing();
 
-            
             _vm.Resume();
 
         }/// <summary>
@@ -119,7 +119,7 @@ namespace AresNews.Views
         private void newsCollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
         {
 
-            // FIguring out if the scroll is on top of the screen
+            // Figuring out if the scroll is on top of the screen
             _vm.OnTopScroll = e.FirstVisibleItemIndex == 0;
         }
         /// <summary>
