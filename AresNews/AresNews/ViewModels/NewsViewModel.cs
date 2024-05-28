@@ -314,7 +314,7 @@ namespace AresNews.ViewModels
                     CurrentPage.ScrollFeed();
 
                     // Add the unnoticed articles
-                    await UpdateArticles(UnnoticedArticles);
+                    UpdateArticles(UnnoticedArticles);
 
                     UnnoticedArticles.Clear();
 
@@ -550,35 +550,35 @@ namespace AresNews.ViewModels
                 return;
             }
 
-            MainThread.BeginInvokeOnMainThread(async() =>
-            {
+            //MainThread.BeginInvokeOnMainThread(() =>
+            //{
                 
                     if (OnTopScroll)
+                    {
                         // Update list of articles
-                        await UpdateArticles(articles).ContinueWith(job =>
+                        UpdateArticles(articles);
+                        try
                         {
-            
-                            try
-                            {
-                                // Manage backup
-                                _ = RefreshDB();
+                            // Manage backup
+                            _ = RefreshDB();
 
-                            }
-                            catch
-                            {
-                            }
-                            finally
-                            {
-                                _isLaunching = false;
-                            }
+                        }
+                        catch
+                        {
+                        }
+                        finally
+                        {
+                            _isLaunching = false;
+                        }
 
-                            IsRefreshing = false;
-                        }) ;
+                        IsRefreshing = false;
+                    }
+                        
                     else
                     {
                         UnnoticedArticles = new ObservableCollection<Article>(articles);
                     }
-            });
+            //});
 
 
         }
@@ -586,17 +586,14 @@ namespace AresNews.ViewModels
         /// Update the current article feed by adding new elements
         /// </summary>
         /// <param name="articles">new articles</param>
-        private async Task UpdateArticles(IEnumerable<Article> articles)
+        private void UpdateArticles(IEnumerable<Article> articles)
         {
             // Create a copy of the input ObservableCollection
             Collection<Article> listArticle = new (articles.ToList());
 
             // Lists to store articles to be added and updated
-            Collection<Article> articlesToAdd = new ();
             Collection<Article> articlesToUpdate = new ();
 
-
-            Collection<Article> articlesCopy = new();
             // Iterate through the copied list of articles
             foreach (var current in listArticle)
             {
@@ -604,49 +601,27 @@ namespace AresNews.ViewModels
                 Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
 
                 if (existingArticle == null)
-                {
                     // Article doesn't exist in _articles, add it to the articlesToAdd list
-                    articlesToAdd.Add(current);
-                }
-                if (!existingArticle.IsEqualTo(current))
-                {
+                    Articles.Add(current);
+                else if (!existingArticle.IsEqualTo(current))
                     // Article exists in _articles, add it to the articlesToUpdate list
                     articlesToUpdate.Add(current);
-                }
             }
-            MainThread.BeginInvokeOnMainThread(() => _ = Task.Run(async() =>
+            foreach (var articleToUpdate in articlesToUpdate)
             {
-                if (articlesToAdd.Count > 0)
+                // Find the existing article to be updated in the '_articles' collection
+                Article existingArticle = _articles.FirstOrDefault(a => a.Id == articleToUpdate.Id);
+                if (existingArticle != null)
                 {
-                    Collection<Article> articles = new(_articles);
-                    Articles.Clear();
+                    // Get the index of the existing article in the 'Articles' collection
+                    int index = _articles.IndexOf(existingArticle);
 
-                    Articles.AddRange(articlesToAdd);
-                    Articles.AddRange(articles);
-
+                    // Remove the existing article and insert the updated one at the same index
+                    Articles.Remove(existingArticle);
+                    Articles.Insert(index, articleToUpdate);
                 }
+                // If existingArticle is null, handle the case where the article to update was not found
             }
-            ).ContinueWith(job =>
-            {
-                Collection<Article> articlesCopy = new (articlesToUpdate);
-                foreach (var articleToUpdate in articlesCopy)
-                {
-                    // Find the existing article to be updated in the '_articles' collection
-                    Article existingArticle = _articles.FirstOrDefault(a => a.Id == articleToUpdate.Id);
-                    Debug.WriteLine($"existingArticle | {existingArticle.Id} - {existingArticle.Title}");
-                    if (existingArticle != null)
-                    {
-                        // Get the index of the existing article in the 'Articles' collection
-                        int index = _articles.IndexOf(existingArticle);
-
-                        // Remove the existing article and insert the updated one at the same index
-                        Articles.Remove(existingArticle);
-                        Articles.Insert(index, articleToUpdate);
-                    }
-                    // If existingArticle is null, handle the case where the article to update was not found
-                }
-            }));
-            
         }
         /// <summary>
         /// Sync the local db
@@ -711,7 +686,7 @@ namespace AresNews.ViewModels
             if (isUpdate)
             {
                 if (articles.Count > 0)
-                    await UpdateArticles(articles.Where(article => article.Blocked == null || article.Blocked == false));
+                    UpdateArticles(articles.Where(article => article.Blocked == null || article.Blocked == false));
             }
             else
             {
