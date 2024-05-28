@@ -75,5 +75,27 @@ namespace AresNews.Models
             }
             set { _isSaved = value; }
         }
+        /// <summary>
+        /// Compare this article to another
+        /// </summary>
+        /// <param name="otherArticle">the other article you want to compare</param>
+        /// <returns></returns>
+        public bool IsEqualTo(Article otherArticle)
+        {
+            if (this == null || otherArticle == null)
+            {
+                return this == otherArticle;
+            }
+            foreach (var property in typeof(Article).GetProperties())
+            {
+                var value1 = property.GetValue(this);
+                var value2 = property.GetValue(otherArticle);
+                if (!Equals(value1, value2))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }
