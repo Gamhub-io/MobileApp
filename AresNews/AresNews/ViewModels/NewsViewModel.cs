@@ -10,6 +10,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
@@ -189,9 +190,9 @@ namespace AresNews.ViewModels
         }
 
         // Property list of articles
-        private ObservableCollection<Article> _articles;
+        private ObservableRangeCollection<Article> _articles;
 
-        public ObservableCollection<Article> Articles
+        public ObservableRangeCollection<Article> Articles
         {
             get { return _articles; }
             set
@@ -217,7 +218,7 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(UnnoticedArticles));
             }
         }
-        private bool _onTopScroll;
+        private bool _onTopScroll = true;
 
         public bool OnTopScroll
         {
@@ -307,7 +308,7 @@ namespace AresNews.ViewModels
                     return;
 
                 CurrentApp.ShowLoadingIndicator();
-                _ = Task.Run(() =>
+                _ = Task.Run(async () =>
                 {
                     // Scroll up
                     CurrentPage.ScrollFeed();
@@ -438,20 +439,6 @@ namespace AresNews.ViewModels
                     Text = article.Title
                 });
             });
-
-            //
-            //switch (Device.RuntimePlatform)
-            //{
-            //    case Device.iOS:
-            //        CurrentApp.ShowLoadingIndicator();
-            //        _refreshFeed.Execute(null);
-            //        break;
-            //    case Device.Android:
-            //          IsRefreshing = true;
-            //        break; 
-            //    default:
-            //        break;
-            //}
         }
 
         /// <summary>
@@ -495,7 +482,7 @@ namespace AresNews.ViewModels
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
 
-                    Articles = new ObservableCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+                    Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
                     
                     IsRefreshing = false;
                     _isLaunching = false;
@@ -533,7 +520,7 @@ namespace AresNews.ViewModels
             }
             catch (Exception ex)
             {
-                // BLAME: the folowing lines are disgusting but it works 
+                // BLAME: the following lines are disgusting but it works 
                 // TODO: change this if possible
                 if (ex.Message.Contains("Network subsystem is down") && Device.RuntimePlatform == Device.Android && _wifiRestartCount < 3)
                 {
@@ -556,59 +543,56 @@ namespace AresNews.ViewModels
                 page.DisplayOfflineMessage(ex.Message);
             }
 
-            // To avoid crashs: if this number is out of range we end the process
+            // To avoid crashes: if this number is out of range we end the process
             if (articles == null || articles.Count() <= 0)
             {
                 IsRefreshing = false;
                 return;
             }
 
-            _=  Task.Run(() =>
-            {
-                if (OnTopScroll)
-                    // Update list of articles
-                    UpdateArticles(articles);
-                else
-                {
-                    UnnoticedArticles = new ObservableCollection<Article>(articles);
-                }
-            });
-            try
-            {
-                // Manage backuo
-                _ = RefreshDB();
+            //MainThread.BeginInvokeOnMainThread(() =>
+            //{
+                
+                    if (OnTopScroll)
+                    {
+                        // Update list of articles
+                        UpdateArticles(articles);
+                        try
+                        {
+                            // Manage backup
+                            _ = RefreshDB();
 
-            }
-            catch
-            {
-            }
-            finally
-            {
-                _isLaunching = false;
-            }
+                        }
+                        catch
+                        {
+                        }
+                        finally
+                        {
+                            _isLaunching = false;
+                        }
 
-            _isLaunching = false;
-            IsRefreshing = false;
-            if (Device.RuntimePlatform == Device.iOS)
-                    CurrentApp.RemoveLoadingIndicator();
-
-            // Register date of the refresh
-            //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
+                        IsRefreshing = false;
+                    }
+                        
+                    else
+                    {
+                        UnnoticedArticles = new ObservableCollection<Article>(articles);
+                    }
+            //});
 
 
         }
         /// <summary>
-        /// Update the curent article feed by adding new elements
+        /// Update the current article feed by adding new elements
         /// </summary>
         /// <param name="articles">new articles</param>
         private void UpdateArticles(IEnumerable<Article> articles)
         {
             // Create a copy of the input ObservableCollection
-            List<Article> listArticle = new (articles);
+            Collection<Article> listArticle = new (articles.ToList());
 
             // Lists to store articles to be added and updated
-            List<Article> articlesToAdd = new ();
-            List<Article> articlesToUpdate = new ();
+            Collection<Article> articlesToUpdate = new ();
 
             // Iterate through the copied list of articles
             foreach (var current in listArticle)
@@ -617,43 +601,16 @@ namespace AresNews.ViewModels
                 Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
 
                 if (existingArticle == null)
-                {
                     // Article doesn't exist in _articles, add it to the articlesToAdd list
-                    articlesToAdd.Add(current);
-                }
-                else
-                {
+                    Articles.Add(current);
+                else if (!existingArticle.IsEqualTo(current))
                     // Article exists in _articles, add it to the articlesToUpdate list
                     articlesToUpdate.Add(current);
-                }
             }
-
-            // Add new articles to the Articles collection
-            foreach (var articleToAdd in articlesToAdd)
-            {
-                // Find a matching article in the 'articles' collection
-                Article item = articles.FirstOrDefault(a => a.Id == articleToAdd.Id);
-
-                if (item != null)
-                {
-                    // If a matching article is found, get its index
-                    var index = articles.IndexOf(item);
-
-                    // Insert the new article at the found index or at the beginning if index is -1
-                    Articles.Insert(index == -1 ? 0 : index, articleToAdd);
-                }
-                else
-                {
-                    // If no matching article is found, add the new article at the end
-                    Articles.Add(articleToAdd);
-                }
-            }
-
             foreach (var articleToUpdate in articlesToUpdate)
             {
                 // Find the existing article to be updated in the '_articles' collection
                 Article existingArticle = _articles.FirstOrDefault(a => a.Id == articleToUpdate.Id);
-
                 if (existingArticle != null)
                 {
                     // Get the index of the existing article in the 'Articles' collection
@@ -665,7 +622,6 @@ namespace AresNews.ViewModels
                 }
                 // If existingArticle is null, handle the case where the article to update was not found
             }
-
         }
         /// <summary>
         /// Sync the local db
