@@ -66,9 +66,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Custard" Version="0.3.2.1-rc" />
+    <PackageReference Include="Custard" Version="0.3.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Plugin.StoreReview" Version="6.0.0" />
+    <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.1.0" />
     <PackageReference Include="Sharpnado.CollectionView" Version="2.1.0" />
