@@ -184,6 +184,9 @@ namespace AresNews.ViewModels
             _ttsIcon = "\uf028";
             _ttsColour = "#36383c";
 
+            // Register Hook
+            _ =(App.Current as App).DataFetcher.RegisterHook(article);
+
             _addBookmark = new Command((id) =>
             {
                 // If the article is already in bookmarks

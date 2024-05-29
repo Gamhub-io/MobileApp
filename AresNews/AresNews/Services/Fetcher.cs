@@ -1,9 +1,11 @@
-﻿using AresNews.Models;
+﻿using AresNews.Core;
+using AresNews.Models;
 using AresNews.Models.Http.Payloads;
 using AresNews.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -184,6 +186,24 @@ namespace AresNews.Services
 
 
         }
+        /// <summary>
+        /// Adding a hook to an article
+        /// </summary>
+        /// <param name="article">article hooked</param>
+        public async Task RegisterHook(Article article)
+        {
+            var headers = new Dictionary<string, string>
+            {
+                { "x-api-key", AppConstant.MonitoringKey},
+            };
+            var paramss = new string[] { article.MongooseId };
+
+            string test = await WebService.Post(controller: "monitor",
+                                                action: "register",
+                                                singleUseHeaders: headers,
+                                                parameters: paramss);
+        }
+
         /// <summary>
         /// Kill a session
         /// </summary>
