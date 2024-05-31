@@ -300,6 +300,7 @@ namespace AresNews.ViewModels
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             UnnoticedArticles = new();
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+            Articles = new ObservableRangeCollection<Article>(collection);
             UncoverNewArticles = new Command(() =>
             {
                 if (UnnoticedArticles == null)
@@ -458,8 +459,9 @@ namespace AresNews.ViewModels
                 // Reload the feed
                 Articles.Clear();
                 Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
-                
 
+
+                _ = RefreshDB();
                 // Register date of the refresh
                 IsRefreshing = false;
                 IsSearchOpen = false;
