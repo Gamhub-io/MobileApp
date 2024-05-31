@@ -5,6 +5,7 @@ using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -41,6 +42,8 @@ namespace AresNews.Models
             } }
         [JsonProperty("isoDate")]
         public DateTime FullPublishDate { get; set; }
+        [JsonProperty("categories"), Ignore]
+        public string[] Categories { get; set; }
         public string PublishDate
         {
             get
