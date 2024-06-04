@@ -538,7 +538,6 @@ namespace AresNews.ViewModels
 
                     }
                 }
-                //articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time).ToList()) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
@@ -550,36 +549,32 @@ namespace AresNews.ViewModels
                 IsRefreshing = false;
                 return;
             }
-
-            //MainThread.BeginInvokeOnMainThread(() =>
-            //{
                 
-                    if (OnTopScroll)
-                    {
-                        // Update list of articles
-                        UpdateArticles(articles);
-                        try
-                        {
-                            // Manage backup
-                            _ = RefreshDB();
+              if (OnTopScroll)
+              {
+                  // Update list of articles
+                  UpdateArticles(articles);
+                  try
+                  {
+                      // Manage backup
+                      _ = RefreshDB();
 
-                        }
-                        catch
-                        {
-                        }
-                        finally
-                        {
-                            _isLaunching = false;
-                        }
+                  }
+                  catch
+                  {
+                  }
+                  finally
+                  {
+                      _isLaunching = false;
+                  }
 
-                        IsRefreshing = false;
-                    }
-                        
-                    else
-                    {
-                        UnnoticedArticles = new ObservableCollection<Article>(articles);
-                    }
-            //});
+                  IsRefreshing = false;
+              }
+                  
+              else
+              {
+                  UnnoticedArticles = new ObservableCollection<Article>(articles);
+              }
 
 
         }
