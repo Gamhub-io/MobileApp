@@ -300,7 +300,6 @@ namespace AresNews.ViewModels
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             UnnoticedArticles = new();
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
-            Articles = new ObservableRangeCollection<Article>(collection);
             UncoverNewArticles = new Command(() =>
             {
                 if (UnnoticedArticles == null)
