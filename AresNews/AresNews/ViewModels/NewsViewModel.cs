@@ -599,11 +599,11 @@ namespace AresNews.ViewModels
             foreach (var current in listArticle)
             {
                 // Check if the current article already exists in the _articles collection
-                Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+                Article existingArticle = _articles.FirstOrDefault(a => a.MongooseId == current.MongooseId);
 
                 if (existingArticle == null)
                     // Article doesn't exist in _articles, add it to the articlesToAdd list
-                    Articles.Add(current);
+                    Articles.Insert(0,current);
                 else if (!existingArticle.IsEqualTo(current))
                     // Article exists in _articles, add it to the articlesToUpdate list
                     articlesToUpdate.Add(current);

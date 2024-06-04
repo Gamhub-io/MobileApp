@@ -59,7 +59,7 @@ namespace AresNews.Views
             //    Thread.Sleep(Convert.ToInt32((timeToWait - totalSeconds)* 1000));
             //}
             base.OnDisappearing();
-
+             
 
         }
         /// <summary>
