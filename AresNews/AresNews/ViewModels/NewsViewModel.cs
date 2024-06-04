@@ -538,7 +538,6 @@ namespace AresNews.ViewModels
 
                     }
                 }
-                //articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time).ToList()) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
@@ -550,36 +549,32 @@ namespace AresNews.ViewModels
                 IsRefreshing = false;
                 return;
             }
-
-            //MainThread.BeginInvokeOnMainThread(() =>
-            //{
                 
-                    if (OnTopScroll)
-                    {
-                        // Update list of articles
-                        UpdateArticles(articles);
-                        try
-                        {
-                            // Manage backup
-                            _ = RefreshDB();
+              if (OnTopScroll)
+              {
+                  // Update list of articles
+                  UpdateArticles(articles);
+                  try
+                  {
+                      // Manage backup
+                      _ = RefreshDB();
 
-                        }
-                        catch
-                        {
-                        }
-                        finally
-                        {
-                            _isLaunching = false;
-                        }
+                  }
+                  catch
+                  {
+                  }
+                  finally
+                  {
+                      _isLaunching = false;
+                  }
 
-                        IsRefreshing = false;
-                    }
-                        
-                    else
-                    {
-                        UnnoticedArticles = new ObservableCollection<Article>(articles);
-                    }
-            //});
+                  IsRefreshing = false;
+              }
+                  
+              else
+              {
+                  UnnoticedArticles = new ObservableCollection<Article>(articles);
+              }
 
 
         }
@@ -599,11 +594,11 @@ namespace AresNews.ViewModels
             foreach (var current in listArticle)
             {
                 // Check if the current article already exists in the _articles collection
-                Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+                Article existingArticle = _articles.FirstOrDefault(a => a.MongooseId == current.MongooseId);
 
                 if (existingArticle == null)
                     // Article doesn't exist in _articles, add it to the articlesToAdd list
-                    Articles.Add(current);
+                    Articles.Insert(0,current);
                 else if (!existingArticle.IsEqualTo(current))
                     // Article exists in _articles, add it to the articlesToUpdate list
                     articlesToUpdate.Add(current);
