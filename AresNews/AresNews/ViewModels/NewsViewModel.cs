@@ -585,7 +585,7 @@ namespace AresNews.ViewModels
         private void UpdateArticles(IEnumerable<Article> articles)
         {
             // Create a copy of the input ObservableCollection
-            Collection<Article> listArticle = new (articles.ToList());
+            Collection<Article> listArticle = new (articles.Reverse().ToList());
 
             // Lists to store articles to be added and updated
             Collection<Article> articlesToUpdate = new ();
