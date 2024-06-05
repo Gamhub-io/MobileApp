@@ -550,31 +550,30 @@ namespace AresNews.ViewModels
                 return;
             }
                 
-              if (OnTopScroll)
-              {
-                  // Update list of articles
-                  UpdateArticles(articles);
-                  try
-                  {
-                      // Manage backup
-                      _ = RefreshDB();
+            if (OnTopScroll)
+            {
+                // Update list of articles
+                UpdateArticles(articles);
+                try
+                {
+                    // Manage backup
+                    _ = RefreshDB();
 
-                  }
-                  catch
-                  {
-                  }
-                  finally
-                  {
-                      _isLaunching = false;
-                  }
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    _isLaunching = false;
+                }
 
-                  IsRefreshing = false;
-              }
-                  
-              else
-              {
-                  UnnoticedArticles = new ObservableCollection<Article>(articles);
-              }
+                IsRefreshing = false;
+            }
+                
+            else
+                UnnoticedArticles = new ObservableCollection<Article>(articles);
+            IsRefreshing = false;
 
 
         }
