@@ -550,31 +550,30 @@ namespace AresNews.ViewModels
                 return;
             }
                 
-              if (OnTopScroll)
-              {
-                  // Update list of articles
-                  UpdateArticles(articles);
-                  try
-                  {
-                      // Manage backup
-                      _ = RefreshDB();
+            if (OnTopScroll)
+            {
+                // Update list of articles
+                UpdateArticles(articles);
+                try
+                {
+                    // Manage backup
+                    _ = RefreshDB();
 
-                  }
-                  catch
-                  {
-                  }
-                  finally
-                  {
-                      _isLaunching = false;
-                  }
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    _isLaunching = false;
+                }
 
-                  IsRefreshing = false;
-              }
-                  
-              else
-              {
-                  UnnoticedArticles = new ObservableCollection<Article>(articles);
-              }
+                IsRefreshing = false;
+            }
+                
+            else
+                UnnoticedArticles = new ObservableCollection<Article>(articles);
+            IsRefreshing = false;
 
 
         }
@@ -585,7 +584,7 @@ namespace AresNews.ViewModels
         private void UpdateArticles(IEnumerable<Article> articles)
         {
             // Create a copy of the input ObservableCollection
-            Collection<Article> listArticle = new (articles.ToList());
+            Collection<Article> listArticle = new (articles.Reverse().ToList());
 
             // Lists to store articles to be added and updated
             Collection<Article> articlesToUpdate = new ();
