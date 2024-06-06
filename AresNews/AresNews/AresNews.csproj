@@ -18,6 +18,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Config\AppSettings.json" />
+    <None Remove="Config\AppSettings_temp.json" />
     <None Remove="Resources\Font Awesome 5 Free-Regular-400.otf" />
     <None Remove="Resources\FontAwesome5Brands-Regular-400.otf" />
     <None Remove="Resources\FontAwesome5Free-Solid-900.otf" />
@@ -41,6 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Config\AppSettings_temp.json" />
+    <EmbeddedResource Condition=" '$(Configuration)' == 'Debug' " Include="Config\AppSettings.json" />
+    <EmbeddedResource Condition=" '$(Configuration)' == 'LocalServ' " Include="Config\AppSettings.json" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
     <EmbeddedResource Include="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
@@ -61,9 +66,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Custard" Version="0.3.2.1-rc" />
+    <PackageReference Include="Custard" Version="0.3.7" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Plugin.StoreReview" Version="6.0.0" />
+    <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.1.0" />
     <PackageReference Include="Sharpnado.CollectionView" Version="2.1.0" />
@@ -116,9 +121,21 @@
     <EmbeddedResource Update="Views\PopUps\RenameFeedPopUp.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\Portals\DiscordAuthPortal.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Helpers\Tools\NewFolder\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\PopUps\AuthPopUp.xaml.cs">
+      <DependentUpon>AuthPopUp.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PopUps\LogoutConfirmationPopUp.xaml.cs">
+      <DependentUpon>LogoutConfirmationPopUp.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -1,10 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <pages:PopupPage 
-    xmlns="http://xamarin.com/schemas/2014/forms"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" xmlns:popups="clr-namespace:AresNews.ViewModels.PopUps" x:DataType="popups:RenameFeedPopUpViewModel"
-    x:Class="AresNews.Views.RenameFeedPopUp"
+        xmlns="http://xamarin.com/schemas/2014/forms"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+        xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" 
+        xmlns:views="clr-namespace:AresNews.Views" 
+        x:DataType="views:LogoutConfirmationPopUp"
+        x:Class="AresNews.Views.LogoutConfirmationPopUp"
+       xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
      HasKeyboardOffset="False">
     <!--You can set an animation in the xaml file or in the csharp code behind-->
     <pages:PopupPage.Animation>
@@ -22,7 +25,7 @@
     <Frame
            VerticalOptions="Center" 
            HorizontalOptions="Center"
-           Margin="20, 230"
+           Margin="20, 100"
            CornerRadius="20">
         <Frame.Background>
             <LinearGradientBrush StartPoint="0,0"
@@ -37,40 +40,45 @@
         </Frame.Background>
 
         <StackLayout >
-            <Entry Text="{Binding Feed.Title}"
-                   FontSize="15"
+            <xct:AvatarView Source="{Binding Profile.Avatar}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Size="50"
+                            />
+            <Label Text="Are you use you want to logout?"
+                   FontSize="20"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-SemiBold"/>
             <Grid HorizontalOptions="Center">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <Button Text="Cancel"
-                        BackgroundColor="{StaticResource LightDark}"
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Button Text="Log me out"
+                        BackgroundColor="{StaticResource PrimaryAccent}"
+                        TextColor="{StaticResource FontColor}"
+                        FontFamily="P-Bold"
+                        FontSize="20"
+                        Padding="1"
+                        HeightRequest="40"
+                        WidthRequest="200"
+                        Clicked="Confirm_Clicked"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Row="0"/>
+                <Button Text="Nevermind"
+                        BackgroundColor="Transparent"
                         TextColor="{StaticResource Primary}"
                         FontFamily="P-Bold"
                         HeightRequest="40"
                         FontSize="15"
                         Padding="1"
-                        Command="{Binding Cancel}"
+                        Clicked="Cancel_Clicked"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
                         CornerRadius="12"
-                        Grid.Column="0"/>
-                <Button Text="Confirm"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="{StaticResource LightDark}"
-                        FontFamily="P-Bold"
-                        FontSize="15"
-                        Padding="1"
-                        
-                        HeightRequest="40"
-                        Command="{Binding Validate}"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        CornerRadius="12"
-                        Grid.Column="1"/>
+                        Grid.Row="1"/>
             </Grid>
         </StackLayout>
 

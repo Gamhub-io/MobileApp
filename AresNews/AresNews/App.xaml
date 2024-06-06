@@ -5,22 +5,19 @@
              x:Class="AresNews.App">
     <Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="Primary" >#84D1AC</Color>
+            <Color x:Key="Primary" >#4AC776</Color>
             <Color x:Key="SelectionColor" >#528e70</Color>
             <Color x:Key="PrimaryAccent" >#1DB954</Color>
+            <Color x:Key="DarkPrimary" >#14813A</Color>
             <Color x:Key="Secondary" >#666666</Color>
             <Color x:Key="Alternate">#8B8E92</Color>
             <Color x:Key="Dark" >#191414</Color>
             <Color x:Key="DarkSecondary" >#4A4A4A</Color>
             <Color x:Key="LightDark" >#404348</Color>
-            <Color x:Key="Light" >#9FDBBE</Color>
+            <Color x:Key="Light" >#8EDCA9</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
             <Color x:Key="BgBannerColor" >#262626</Color>
-            <!--
-            Potential future colour scheme:
-            <Color x:Key="Light">#87afc5</Color>
-            <Color x:Key="Primary">#5f94b1</Color>
-            -->
+            <Color x:Key="DiscordPurple" >#5d6af2</Color>
         </ResourceDictionary>
         
         <!-- Converters-->
@@ -30,6 +27,7 @@
         <helpers:ThumbnailConverter x:Key="ThumbnailConverter"/>
         <helpers:BoolInverseConverter x:Key="BoolInverseConverter"/>
         <helpers:ZeroToFalseConverter x:Key="ZeroToFalseConverter"/>
+        <helpers:ZeroToTrueConverter x:Key="ZeroToTrueConverter"/>
         
         <ResourceDictionary>
             <OnPlatform x:Key="TitleRightMargin" 
@@ -64,7 +62,7 @@
             <Setter Property="FontSize" Value="20" />
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0" />
-            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+            <Setter Property="TextColor" Value="{StaticResource Light}" />
 
         </Style>
         <Style TargetType="Label"
@@ -77,7 +75,7 @@
             <Setter Property="HorizontalOptions" Value="Center" />
             <Setter Property="VerticalOptions" Value="Center" />
             
-            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+            <Setter Property="TextColor" Value="{StaticResource Light}" />
 
         </Style>
     </Application.Resources>

@@ -46,8 +46,9 @@ namespace AresNews.ViewModels.PopUps
                 OnPropertyChanged(nameof(Feed));
             }
         }
+        public App CurrentApp { get; }
 
-        public Xamarin.Forms.Command Delete => new Xamarin.Forms.Command(async() =>
+        public Xamarin.Forms.Command Delete => new Xamarin.Forms.Command(() =>
         {
 
             // Delete the feed
@@ -62,13 +63,13 @@ namespace AresNews.ViewModels.PopUps
             _context.RemoveFeedByIndex(index);
 
             // Close the popup
-            await Application.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
+            CurrentApp.ClosePopUp (_page, Page);
         });
 
-        public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(async() =>
+        public Xamarin.Forms.Command Cancel => new Xamarin.Forms.Command(() =>
         {
             // Close the popup
-            await App.Current.MainPage.Navigation.RemovePopupPageAsync(_page);
+            CurrentApp.ClosePopUp (_page, Page);
         });
 
         public DeleteFeedPopUpViewModel(DeleteFeedPopUp page, Feed feed, FeedsViewModel ctx)
@@ -76,6 +77,7 @@ namespace AresNews.ViewModels.PopUps
             Context = ctx;
             Page = page;
             Feed = feed;
+            CurrentApp = App.Current as App;
 
 
         }

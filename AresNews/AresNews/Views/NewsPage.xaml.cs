@@ -1,16 +1,6 @@
 ﻿using AresNews.Models;
 using AresNews.ViewModels;
-using MvvmHelpers;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.CommunityToolkit.Extensions;
@@ -22,6 +12,8 @@ namespace AresNews.Views
     public partial class NewsPage : ContentPage
     {
         private NewsViewModel _vm;
+        private const int rButtonYStart = -10;
+        private double refreshButtonYPos;
         public NewsPage()
         {
             InitializeComponent();
@@ -36,6 +28,8 @@ namespace AresNews.Views
                 // Scroll to the top of the collection view
                 newsCollectionView.ScrollTo(0);
             });
+            refreshButtonYPos = refreshButton.Y;
+            refreshButton.TranslationY = rButtonYStart;
 
         }
         protected override void OnAppearing()
@@ -57,7 +51,7 @@ namespace AresNews.Views
             }
             await this.DisplayToastAsync($"You're offline, please check if you're connected to the internet", 60000);
 
-
+          
         }
         /// <summary>
         /// Method allowing the search bar animation
@@ -127,6 +121,26 @@ namespace AresNews.Views
                 return true;
             }
             return base.OnBackButtonPressed();
+        }
+
+        private void newsCollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+        {
+            // FIguring out if the scroll is on top of the screen
+            _vm.OnTopScroll = e.FirstVisibleItemIndex == 0;
+        }
+        /// <summary>
+        /// Method to display the refresh button
+        /// </summary>
+        public void ShowRefreshButton()
+        {
+            refreshButton.TranslateTo(refreshButton.X, refreshButtonYPos, easing: Easing.BounceOut);
+        }
+        /// <summary>
+        /// Method to remove the refresh button
+        /// </summary>
+        public void RemoveRefreshButton()
+        {
+            refreshButton.TranslateTo(refreshButton.X, rButtonYStart);
         }
     }
 }
