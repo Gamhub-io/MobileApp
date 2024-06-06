@@ -1,42 +1,33 @@
 ﻿using AresNews.ViewModels;
-using AresNews.Controls;
-using Sharpnado.CollectionView.RenderedViews;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Xamarin.CommunityToolkit.UI.Views;
-using System.Drawing;
-using System.Collections.ObjectModel;
 
 namespace AresNews.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class FeedsPage : ContentPage
     {
-
-        private uint _modalHeightStart = 0;
-        private uint _modalWidthStart = 50;
-        private FeedsViewModel _vm;
-        private bool _appeared = false;
-        private Button _previousSelectedButton;
-        private Button firstButton;
+        private const int rButtonYStart = -43;
+        private const uint _modalHeightStart = 0;
+        private readonly uint _modalWidthStart = 50;
+        private readonly FeedsViewModel _vm;
+        private readonly Button _firstButton;
+        private readonly double _refreshButtonYPos;
 
         public bool IsFromDetail { get; set; }
         public FeedsPage()
         {
             InitializeComponent();
             BindingContext = _vm = new FeedsViewModel(this);
+            _refreshButtonYPos = refreshButton.Y;
+            refreshButton.TranslationY = rButtonYStart;
         }
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            
             _vm.Resume();
 
         }/// <summary>
@@ -65,7 +56,7 @@ namespace AresNews.Views
         private void ChangeFirstButtonColor(Xamarin.Forms.Color colour)
         {
 
-            firstButton.BackgroundColor = colour;
+            _firstButton.BackgroundColor = colour;
         }
 
         /// <summary>
@@ -108,73 +99,36 @@ namespace AresNews.Views
                 CloseDropdownMenu();
             }
         }
-        public void ResetTabs ()
-        {
-            //TabView.TabItems.Clear();
-            //TabView.TabItems = new();
 
-            //foreach (var item in _vm.Feeds)
-            //{
-            //    TabView.TabItems.Add(new()
-            //    {
-            //        Text = item.Title
-            //    });
-            //}
-            //TabView.SelectedIndex = 0;
+
+        /// <summary>
+        /// Method to display the refresh button
+        /// </summary>
+        public void ShowRefreshButton()
+        {
+            refreshButton.TranslateTo(refreshButton.X, _refreshButtonYPos, easing: Easing.BounceOut);
         }
         /// <summary>
-        /// Remove a tab organically 
+        /// Method to remove the refresh button
         /// </summary>
-        /// <param name="index">index of the tab you want to remove</param>
-        //public void RemoveTab (int index)
-        //{
-        //    TabView.TabItems.RemoveAt(index);
-        //}
-
-        //private void TabView_ChildRemoved(object sender, ElementEventArgs e)
-        //{
-
-        //}
-        //private void SwitchItem(int index)
-        //{
-        //    if (index != -1 && index < TabView.TabItems.Count)
-        //    {
-        //        // See: https://github.com/xamarin/XamarinCommunityToolkit/issues/595
-        //        MethodInfo dynMethod = TabView.GetType().GetMethod("UpdateSelectedIndex", BindingFlags.NonPublic | BindingFlags.Instance);
-        //        dynMethod?.Invoke(TabView, new object[] { index, false });
-        //    }
-        //}
-
-        private void TabView_SelectionChanged(object sender, TabSelectionChangedEventArgs e)
+        public void RemoveRefreshButton()
         {
-            //var s = (sender as TabViewWorkaround);
-            //if (_vm.IsFromDetail && (s.SelectedIndexWorkaround != _vm.CurrentFocusIndex))
-            //{
-            //    s.SelectedIndexWorkaround = _vm.CurrentFocusIndex;
-            //    return;
-            //};
-            //_vm.CurrentFocusIndex = s.SelectedIndexWorkaround;
-
-           // _vm.IsFromDetail = false;
-
-
+            refreshButton.TranslateTo(refreshButton.X, rButtonYStart);
         }
 
-        private void Feed_Clicked(object sender, EventArgs e)
+        private void newsCollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
         {
-            //Button feedButton = (Button)sender;
 
-            //feedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["PrimaryAccent"];
-
-            //if (_previousSelectedButton != feedButton && _previousSelectedButton != null)
-            //{
-            //    _previousSelectedButton.BackgroundColor = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
-                
-
-            //}
-            //_previousSelectedButton = feedButton;
-
-
+            // Figuring out if the scroll is on top of the screen
+            _vm.OnTopScroll = e.FirstVisibleItemIndex == 0;
+        }
+        /// <summary>
+        /// Scroll the feed
+        /// </summary>
+        /// <param name="position">Position you order the feed to be. default 0 (all the way up)</param>
+        public void ScrollFeed(int position = 0)
+        {
+            newsCollectionView.ScrollTo(position);
         }
     }
 }

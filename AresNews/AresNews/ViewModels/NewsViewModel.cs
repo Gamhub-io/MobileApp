@@ -1,4 +1,5 @@
-﻿using AresNews.Helpers.Tools;
+﻿using AresNews.Helpers.Comparers;
+using AresNews.Helpers.Tools;
 using AresNews.Models;
 using AresNews.Services;
 using AresNews.Views;
@@ -9,9 +10,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -152,7 +152,6 @@ namespace AresNews.ViewModels
 
                     if (feedTarget?.Keywords == null)
                         feedTarget = Feeds.FirstOrDefault(f => f.Keywords.ToLower() == SearchText.ToLower());
-                    /// TODO: For now we disable the ability to delete a feed
 
                     App.SqLiteConn.Delete(feedTarget);
                     Feeds.Remove(feedTarget);
@@ -170,11 +169,11 @@ namespace AresNews.ViewModels
             {
                 return new Command(() =>
                 {
-
                     IsSearching = false;
 
                     if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
 
+                    CurrentApp.ShowLoadingIndicator();
 
                     // Scroll up before fetching the items
                     CurrentPage.ScrollFeed();
@@ -189,22 +188,11 @@ namespace AresNews.ViewModels
                 });
             }
         }
-        public Command Search
-        {
-            get
-            {
-                return new Command(() =>
-                {
-
-                    IsRefreshing = IsSearchProcessed = true;
-                });
-            }
-        }
 
         // Property list of articles
-        private ObservableCollection<Article> _articles;
+        private ObservableRangeCollection<Article> _articles;
 
-        public ObservableCollection<Article> Articles
+        public ObservableRangeCollection<Article> Articles
         {
             get { return _articles; }
             set
@@ -214,6 +202,34 @@ namespace AresNews.ViewModels
                 SetProperty(ref _articles, value);
             }
         }
+        private ObservableCollection<Article> _unnoticedArticles;
+
+        public ObservableCollection<Article> UnnoticedArticles
+        {
+            get { return _unnoticedArticles; }
+            set
+            {
+                _unnoticedArticles = value;
+                if (_unnoticedArticles?.Count >0)
+                    CurrentPage.ShowRefreshButton();
+                else
+                    CurrentPage.RemoveRefreshButton();
+
+                OnPropertyChanged(nameof(UnnoticedArticles));
+            }
+        }
+        private bool _onTopScroll = true;
+
+        public bool OnTopScroll
+        {
+            get { return _onTopScroll; }
+            set 
+            {
+                _onTopScroll = value;
+                OnPropertyChanged(nameof(OnTopScroll));
+            }
+        }
+
 
         public App CurrentApp { get; }
         private NewsPage CurrentPage { get; set; }
@@ -234,6 +250,11 @@ namespace AresNews.ViewModels
         {
             get { return _refreshFeed; }
         }
+
+        public Command LoadSearch
+        {
+            get; private set;
+        }
         // Command to add a Bookmark
         private readonly Command _shareArticle;
 
@@ -246,15 +267,16 @@ namespace AresNews.ViewModels
         {
             get
             {
-                return new Command(async (id) =>
+                return new Command( (id) =>
                 {
                     var articlePage = new ArticlePage(_articles.FirstOrDefault(art => art.Id == id.ToString()));
 
 
-                    await App.Current.MainPage.Navigation.PushAsync(articlePage);
+                    _= App.Current.MainPage.Navigation.PushAsync(articlePage);
                 }); ;
             }
         }
+        public Command UncoverNewArticles { get; private set; }
 
         private bool _isRefreshing;
 
@@ -267,15 +289,39 @@ namespace AresNews.ViewModels
                 OnPropertyChanged(nameof(IsRefreshing));
             }
         }
+
+        public bool IsFirstLoad { get; private set; } = true;
+        public bool IsSearchLoading { get; private set; }
+
         public NewsViewModel(NewsPage currentPage)
         {
             CurrentApp = App.Current as App;
             CurrentPage = currentPage;
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
-
+            UnnoticedArticles = new();
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
-            
-            //Xamarin.Forms.BindingBase.EnableCollectionSynchronization(Articles,null, ObservableCollectionCallback);
+            UncoverNewArticles = new Command(() =>
+            {
+                if (UnnoticedArticles == null)
+                    return;
+                if (UnnoticedArticles.Count <= 0)
+                    return;
+
+                CurrentApp.ShowLoadingIndicator();
+                _ = Task.Run(async () =>
+                {
+                    // Scroll up
+                    CurrentPage.ScrollFeed();
+
+                    // Add the unnoticed articles
+                    UpdateArticles(UnnoticedArticles);
+
+                    UnnoticedArticles.Clear();
+
+                }).ContinueWith(res => CurrentApp.RemoveLoadingIndicator());
+
+            });
+
             CurrentFeed = new Feed();
             _isLaunching = true;
 
@@ -345,10 +391,6 @@ namespace AresNews.ViewModels
                     App.SqLiteConn.InsertWithChildren(article, recursive: true);
                 }
 
-
-
-                //Articles[_articles.IndexOf(article)] = article;
-
                 // Say the the bookmark has been updated
                 MessagingCenter.Send<Article>(article, "SwitchBookmark");
 
@@ -357,21 +399,39 @@ namespace AresNews.ViewModels
 
             _refreshFeed = new Command<bool>( (isAll) =>
                {
+                   
                    if (IsSearchOpen)
                    {
-                       Search.Execute(null);
+                       if (string.IsNullOrEmpty(SearchText))
+                           return;
+                       // Fetch the article
+                       _ = FetchArticles(true);
+                       return;
                    }
                    // Fetch the article
-                   FetchArticles(isAll);
+                   _ = FetchArticles();
                });
+            LoadSearch = new Command(async () =>
+            {
+                if (IsSearchLoading)
+                    return;
+                CurrentApp.ShowLoadingIndicator();
+                IsSearchProcessed = true;
+                IsSearchLoading = true;
 
+                await FetchArticles().ContinueWith((res) =>
+                {
+                    CurrentApp.RemoveLoadingIndicator();
+                    IsSearchLoading = false;
+                });
+            });
             // Set command to share an article
-            _shareArticle = new Command(async (id) =>
+            _shareArticle = new Command((id) =>
             {
                 // Get selected article
                 var article = _articles.FirstOrDefault(art => art.Id == id.ToString());
 
-                await Share.RequestAsync(new ShareTextRequest
+                _= Share.RequestAsync(new ShareTextRequest
                 {
                     Uri = article.Url,
                     Title = "Share this article",
@@ -379,54 +439,33 @@ namespace AresNews.ViewModels
                     Text = article.Title
                 });
             });
-
-            //
-            switch (Device.RuntimePlatform)
-            {
-                case Device.iOS:
-                    CurrentApp.ShowLoadingIndicator();
-                    _refreshFeed.Execute(null);
-                    break;
-                case Device.Android:
-                      IsRefreshing = true;
-                    break; 
-                default:
-                    break;
-            }
-
-            FetchArticles(_articles.Count >=0);
         }
 
         /// <summary>
         /// Fetch all the articles
         /// </summary>
-        public async void FetchArticles(bool isFullRefresh = false)
+        public async Task FetchArticles(bool isFullRefresh = false)
         {
 
             var articles = new ObservableRangeCollection<Article>();
             if (isFullRefresh)
             {
-
+                CurrentApp.ShowLoadingIndicator();
                 // the articles of the last 2 months
-                articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate());
-
-                var oldFeed = new Collection<Article>(_articles.Where(ats => ats.FullPublishDate > DateTime.Now.AddMonths(-2)).ToList());
-
+                articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false));
                 _isLaunching = false;
+                
+                // Reload the feed
                 Articles.Clear();
                 Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
+
+
+                _ = RefreshDB();
                 // Register date of the refresh
-                //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
                 IsRefreshing = false;
                 IsSearchOpen = false;
                 _prevSearch = string.Empty;
-
-                if (Device.RuntimePlatform == Device.iOS)
-                    CurrentApp.RemoveLoadingIndicator();
-
-                // Check if we have new articles before refreshing the DB
-                if (oldFeed.Count != articles.Count)
-                    await RefreshDB();
+                CurrentApp.RemoveLoadingIndicator();
                 return;
             }
 
@@ -434,170 +473,139 @@ namespace AresNews.ViewModels
             {
                 if (_articles?.Count() > 0)
                     _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                ;
+                
                 // If we want to fetch the articles via search
                 if (!string.IsNullOrEmpty(SearchText) && IsSearching == true )
                 {
-                    SearchArticles(articles);
+                    await SearchArticles(articles);
                     return;
                 }
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
 
-                    Articles = new ObservableCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate()).Where(article => article.Blocked == null || article.Blocked == false));
+                    Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
                     
                     IsRefreshing = false;
                     _isLaunching = false;
-                    await RefreshDB();
+                    _= RefreshDB();
                     return;
                 }
                if (_articles?.Count() > 0)
                {
                    
-                       articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime)).Where(article => article.Blocked == null || article.Blocked == false));
+                       articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
                }
-                else
-                {
-                    if (_isLaunching)
-                    {
-                        try
-                        {
-                            Articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
+               else
+               {
+                   if (_isLaunching)
+                   {
+                       try
+                       {
+                           Articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
 
-                            // Manage backuo
-                            await RefreshDB();
+                           // Manage backuo
+                           _ = RefreshDB();
 
-                        }
-                        catch
-                        {
-                        }
+                       }
+                       catch
+                       {
+                       }
 
-                        _isLaunching = false;
-                        IsRefreshing = false;
-                        return;
-                    }
-                   articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
+                       _isLaunching = false;
+                       IsRefreshing = false;
+                       return;
+                   }
+                  articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
 
-                }
+               }
             }
             catch (Exception ex)
             {
-                // BLAME: the folowing lines are disgusting but it works 
+                // BLAME: the following lines are disgusting but it works 
                 // TODO: change this if possible
                 if (ex.Message.Contains("Network subsystem is down") && Device.RuntimePlatform == Device.Android && _wifiRestartCount < 3)
                 {
                     // Restart wifi: only works with android < Q
                     if (DependencyService.Get<IInternetManagement>().TurnWifi(false))
                     {
-                        DependencyService.Get<IInternetManagement>().TurnWifi(true);
+                        _ = DependencyService.Get<IInternetManagement>().TurnWifi(true);
 
                         _wifiRestartCount++;
 
                         // call the thing again
-                        FetchArticles();
+                        _ = FetchArticles();
                         return;
 
                     }
                 }
-                //articles = new ObservableCollection<Article> (GetBackupFromDb().OrderBy(a => a.Time).ToList()) ;
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
                 page.DisplayOfflineMessage(ex.Message);
             }
 
-            // To avoid crashs: if this number is out of range we end the process
+            // To avoid crashes: if this number is out of range we end the process
             if (articles == null || articles.Count() <= 0)
             {
                 IsRefreshing = false;
                 return;
             }
-
-            await Task.Run(() =>
+                
+            if (OnTopScroll)
             {
                 // Update list of articles
                 UpdateArticles(articles);
-            });
-            try
-            {
-                // Manage backuo
-                await RefreshDB();
+                try
+                {
+                    // Manage backup
+                    _ = RefreshDB();
 
-            }
-            catch
-            {
-            }
-            //finally
-            //{
-            //    _isLaunching = false;
-            //}
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    _isLaunching = false;
+                }
 
-            _isLaunching = false;
+                IsRefreshing = false;
+            }
+                
+            else
+                UnnoticedArticles = new ObservableCollection<Article>(articles);
             IsRefreshing = false;
-            if (Device.RuntimePlatform == Device.iOS)
-                    CurrentApp.RemoveLoadingIndicator();
-
-            // Register date of the refresh
-            //Preferences.Set("lastRefresh", _articles[0].FullPublishDate.ToString("dd-MM-yyy_HH:mm"));
 
 
         }
         /// <summary>
-        /// Update the curent article feed by adding new elements
+        /// Update the current article feed by adding new elements
         /// </summary>
         /// <param name="articles">new articles</param>
         private void UpdateArticles(IEnumerable<Article> articles)
         {
             // Create a copy of the input ObservableCollection
-            List<Article> listArticle = new (articles);
+            Collection<Article> listArticle = new (articles.Reverse().ToList());
 
             // Lists to store articles to be added and updated
-            List<Article> articlesToAdd = new ();
-            List<Article> articlesToUpdate = new ();
+            Collection<Article> articlesToUpdate = new ();
 
             // Iterate through the copied list of articles
             foreach (var current in listArticle)
             {
                 // Check if the current article already exists in the _articles collection
-                Article existingArticle = _articles.FirstOrDefault(a => a.Id == current.Id);
+                Article existingArticle = _articles.FirstOrDefault(a => a.MongooseId == current.MongooseId);
 
                 if (existingArticle == null)
-                {
                     // Article doesn't exist in _articles, add it to the articlesToAdd list
-                    articlesToAdd.Add(current);
-                }
-                else
-                {
+                    Articles.Insert(0,current);
+                else if (!existingArticle.IsEqualTo(current))
                     // Article exists in _articles, add it to the articlesToUpdate list
                     articlesToUpdate.Add(current);
-                }
             }
-
-            // Add new articles to the Articles collection
-            foreach (var articleToAdd in articlesToAdd)
-            {
-                // Find a matching article in the 'articles' collection
-                Article item = articles.FirstOrDefault(a => a.Id == articleToAdd.Id);
-
-                if (item != null)
-                {
-                    // If a matching article is found, get its index
-                    var index = articles.IndexOf(item);
-
-                    // Insert the new article at the found index or at the beginning if index is -1
-                    Articles.Insert(index == -1 ? 0 : index, articleToAdd);
-                }
-                else
-                {
-                    // If no matching article is found, add the new article at the end
-                    Articles.Add(articleToAdd);
-                }
-            }
-
             foreach (var articleToUpdate in articlesToUpdate)
             {
                 // Find the existing article to be updated in the '_articles' collection
                 Article existingArticle = _articles.FirstOrDefault(a => a.Id == articleToUpdate.Id);
-
                 if (existingArticle != null)
                 {
                     // Get the index of the existing article in the 'Articles' collection
@@ -609,7 +617,6 @@ namespace AresNews.ViewModels
                 }
                 // If existingArticle is null, handle the case where the article to update was not found
             }
-
         }
         /// <summary>
         /// Sync the local db
@@ -647,7 +654,7 @@ namespace AresNews.ViewModels
         /// Load articles via search
         /// </summary>
         /// <param name="articles"></param>
-        private async void SearchArticles(ObservableRangeCollection<Article> articles)
+        private async Task SearchArticles(ObservableRangeCollection<Article> articles)
         {
             bool isUpdate = _prevSearch == SearchText;
             string timeParam = string.Empty;
@@ -656,7 +663,7 @@ namespace AresNews.ViewModels
             {
                 if (isUpdate)
                     timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { timeParam } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}");
+                articles = await App.WService.Get<ObservableRangeCollection<Article>>(controller:"feeds", action: isUpdate ? "update": null, parameters: isUpdate?  new string[] { timeParam } : null, jsonBody: $"{{\"search\": \"{SearchText}\"}}").ConfigureAwait(false);
                 
             }
             // Offline search
@@ -709,6 +716,15 @@ namespace AresNews.ViewModels
          /// </summary>
         public void Resume()
         {
+            if (IsFirstLoad)
+            {
+                CurrentApp.ShowLoadingIndicator();
+                _ = FetchArticles(_articles?.Count <= 0).ContinueWith(res =>
+                  CurrentApp.RemoveLoadingIndicator());
+
+                IsFirstLoad = false;
+
+            }
             // Get all the feeds regestered
             var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
 

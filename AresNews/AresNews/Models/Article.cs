@@ -5,6 +5,7 @@ using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -41,6 +42,8 @@ namespace AresNews.Models
             } }
         [JsonProperty("isoDate")]
         public DateTime FullPublishDate { get; set; }
+        [JsonProperty("categories"), Ignore]
+        public string[] Categories { get; set; }
         public string PublishDate
         {
             get
@@ -74,6 +77,28 @@ namespace AresNews.Models
                 return (bool)_isSaved;
             }
             set { _isSaved = value; }
+        }
+        /// <summary>
+        /// Compare this article to another
+        /// </summary>
+        /// <param name="otherArticle">the other article you want to compare</param>
+        /// <returns></returns>
+        public bool IsEqualTo(Article otherArticle)
+        {
+            if (this == null || otherArticle == null)
+            {
+                return this == otherArticle;
+            }
+            foreach (var property in typeof(Article).GetProperties())
+            {
+                var value1 = property.GetValue(this);
+                var value2 = property.GetValue(otherArticle);
+                if (!Equals(value1, value2))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

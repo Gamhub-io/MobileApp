@@ -2,10 +2,9 @@
 using AresNews.Services;
 using AresNews.ViewModels;
 using AresNews.Views;
+using AresNews.Core;
 using AresNews.Views.PopUps;
 using CustardApi.Objects;
-using FFImageLoading;
-using Newtonsoft.Json;
 using Rg.Plugins.Popup.Exceptions;
 using Rg.Plugins.Popup.Extensions;
 using Rg.Plugins.Popup.Pages;
@@ -13,24 +12,16 @@ using SQLite;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+using Xamarin.Essentials;
+using Newtonsoft.Json;
 
-[assembly: ExportFont("FontAwesome6Free-Regular-400.otf", Alias = "FaRegular")]
-[assembly: ExportFont("FontAwesome6Brands-Regular-400.otf", Alias = "FaBrand")]
-[assembly: ExportFont("FontAwesome6Free-Solid-900.otf", Alias = "FaSolid")]
-[assembly: ExportFont("Ubuntu-Regular.ttf", Alias = "P-Regular")]
-[assembly: ExportFont("Ubuntu-Bold.ttf", Alias = "P-Bold")]
-[assembly: ExportFont("Ubuntu-Medium.otf", Alias = "P-SemiBold")]
 namespace AresNews
 {
     public partial class App : Application
     {
-        private bool _isLoading;
+        public bool IsLoading { get; private set; }
 
         public static Collection<Source> Sources { get; private set; }
         // Property SqlLite Connection
@@ -42,7 +33,7 @@ namespace AresNews
         public Fetcher DataFetcher { get; set; }
         public static string ProdHost { get; } = "api.gamhub.io";
         public static string LocalHost { get; } = "gamhubdev.ddns.net";
-
+        public User SaveInfo { get; private set; }
 
         public enum PageType
         {
@@ -51,20 +42,23 @@ namespace AresNews
             bookmark,
             news,
             source
-
-
         }
         public App()
         {
 #if __LOCAL__
             // Set webservice
-            WService = new Service(host: "gamhubdev.ddns.net",
+            WService = new Service(host: LocalHost,
                                     port: 255,
                                    sslCertificate: false);
 #else
-        // Set webservice
+            // Set webservice
             WService = new Service(host: ProdHost,
                                    sslCertificate: true);
+#endif
+
+#if DEBUG
+            // Run the debug setup
+            EnvironementSetup.DebugSetup();
 #endif
             DataFetcher = new Fetcher();
 
@@ -106,24 +100,22 @@ namespace AresNews
             // Close the db
             //CloseDb();
 
-            MainPage =  new AppShell();
-
             
         }
         /// <summary>
         /// Show the popup loading indicator
         /// </summary>
-        public async void ShowLoadingIndicator(bool longer = false)
+        public void ShowLoadingIndicator()
         {
 
             try
             {
 
-                if (_isLoading)
+                if (IsLoading)
                     return;
-                _isLoading = true;
+                IsLoading = true;
 
-                await this.MainPage.Navigation.PushPopupAsync(this.LoadingIndicator);
+                OpenPopUp (this.LoadingIndicator);
             }
             catch (RGPageInvalidException)
             {
@@ -134,17 +126,18 @@ namespace AresNews
         /// <summary>
         /// Remove the popup loading indicator
         /// </summary>
-        public async void RemoveLoadingIndicator()
+        public void RemoveLoadingIndicator()
         {
             try 
             {
-                if (!_isLoading)
+                if (!IsLoading)
                     return;
 
 
-                _isLoading = false;
-                //if (this.MainPage.Navigation.ModalStack.Contains(this.LoadingIndicator))
-                await this.MainPage.Navigation.RemovePopupPageAsync(this.LoadingIndicator);
+                IsLoading = false;
+                
+                // Close the popup
+                ClosePopUp (this.LoadingIndicator);
             }
             catch (RGPageInvalidException)
             {
@@ -161,7 +154,7 @@ namespace AresNews
         /// <summary>
         /// Function to start the data base
         /// </summary>
-        public static async void StartDb()
+        public static void StartDb()
         {
             const SQLite.SQLiteOpenFlags Flags =
                     // open the database in read/write mode
@@ -170,8 +163,8 @@ namespace AresNews
                     SQLite.SQLiteOpenFlags.Create |
                     // enable multi-threaded database access
                     SQLite.SQLiteOpenFlags.SharedCache;
-        // Just use whatever directory SpecialFolder.Personal returns
-        string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            // Just use whatever directory SpecialFolder.Personal returns
+            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
 
             var path = Path.Combine(libraryPath, "ares.db3");
             var pathBackUp = Path.Combine(libraryPath, "aresBackup.db3");
@@ -199,6 +192,11 @@ namespace AresNews
 
         protected override void OnStart()
         {
+            // Restore session
+            _ = DataFetcher.RestoreSession();
+
+
+            MainPage = new AppShell();
         }
 
         protected override void OnSleep()
@@ -233,6 +231,132 @@ namespace AresNews
             //}
 
             StartDb();
+        }
+        /// <summary>
+        /// Open any popup
+        /// </summary>
+        /// <param name="popUp">pop up to open</param>
+        /// <param name="page">parent page</param>
+        public void OpenPopUp(PopupPage popUp, Page page = null)
+        {
+            try
+            {
+
+                if (popUp == null)
+                    return;
+
+                if (page == null)
+                    page = GetCurrentPage();
+
+                _ = page.Navigation.PushPopupAsync(popUp);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#endif
+            }
+        }
+        /// <summary>
+        /// Close any popup
+        /// </summary>
+        /// <param name="popUp">pop up to open</param>
+        /// <param name="page">parent page</param>
+        public void ClosePopUp(PopupPage popUp, Page page = null)
+        {
+            try
+            {
+
+                if (popUp == null)
+                    return;
+
+                if (page == null)
+                    page = GetCurrentPage();
+
+                _ = page.Navigation.RemovePopupPageAsync(popUp);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#endif
+            }
+        }
+        /// <summary>
+        /// Get the current page from the shell
+        /// </summary>
+        /// <returns></returns>
+        private Page GetCurrentPage ()
+        {
+            AppShell mainPage = ((AppShell)MainPage);
+            return mainPage.CurrentPage;
+        }
+        /// <summary>
+        /// Save the info relevant to the user
+        /// </summary>
+        public void SaveUserInfo(User user)
+        {
+            SaveInfo = user;
+
+            // Save preferences
+            Preferences.Set(nameof(SaveInfo), JsonConvert.SerializeObject(SaveInfo));
+        }
+        /// <summary>
+        /// Save the info relevant to the user
+        /// </summary>
+        public void DeleteUserInfo()
+        {
+            // Save preferences
+            Preferences.Remove(nameof(SaveInfo));
+        }
+        /// <summary>
+        /// Recover the info relevant to the user
+        /// </summary>
+        /// <returns>true: data found | false: data not found</returns>
+        public bool RecoverUserInfo()
+        {
+
+            // Get preferences
+            string userDataStr = Preferences.Get(nameof(SaveInfo), string.Empty);
+
+            if (string.IsNullOrEmpty(userDataStr))
+                return false;
+
+            // Set Userdata object
+            return (SaveInfo = DataFetcher.UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
+        }
+        /// <summary>
+        /// Log out the current active user
+        /// </summary>
+        public void LogoutCurrentAccount()
+        {
+            // Delete user data
+            DeleteUserInfo();
+
+            // Close the current session
+            DataFetcher.KillSession();
+        }
+        /// <summary>
+        /// Show a pop up to confirm wether or not the user wants to logout
+        /// </summary>
+        /// <param name="user">user</param>
+        /// <returns>true: confirm | false: cancel</returns>
+        public async Task<bool> ShowLogoutConfirmation(User user = null)
+        {
+            if (user == null)
+                user = SaveInfo;
+
+            LogoutConfirmationPopUp popUp = new(user);
+            OpenPopUp(popUp);
+
+            // Wait for a response
+            while (popUp.Result == null)
+                await Task.Delay(10);
+
+            // in any case close the pop up after receiving a response
+            ClosePopUp(popUp);
+
+            return popUp.Result ?? false;
         }
     }
 }

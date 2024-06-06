@@ -47,19 +47,8 @@ namespace AresNews.Views
             // Stop all text to speech
             _vm.StopTtS();
 
-
-            //const int timeToWait = 4;
-            //_vm.SelectedArticle.Content = null;
-
-            //// For sefty it's better to wait 4 seconds before navigating back from this page
-            //double totalSeconds = _vm.timeSpent.Elapsed.TotalSeconds;
-
-            //if (totalSeconds < timeToWait)
-            //{
-            //    Thread.Sleep(Convert.ToInt32((timeToWait - totalSeconds)* 1000));
-            //}
             base.OnDisappearing();
-
+             
 
         }
         /// <summary>
@@ -93,7 +82,7 @@ namespace AresNews.Views
         {
             double height = 70;
             double width = 180;
-            //_vm.ModalClose = false;
+
             // Animation
             void callbackH(double inputH) => dropdownMenu.HeightRequest = inputH;
             void callbackW(double inputW) => dropdownMenu.WidthRequest = inputW;
@@ -110,7 +99,6 @@ namespace AresNews.Views
         /// </summary>
         public void CloseDropdownMenu()
         {
-            //_vm.ModalClose = true;
 
             // Animation
             void callbackH(double inputH) => dropdownMenu.HeightRequest = inputH;
