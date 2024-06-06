@@ -26,7 +26,7 @@
 	<key>UIApplicationSceneManifest</key>
 	<dict/>
 	<key>MinimumOSVersion</key>
-	<string>16.2</string>
+	<string>16.4</string>
 	<key>CFBundleDisplayName</key>
 	<string>GamHub</string>
 	<key>CFBundleIdentifier</key>
@@ -40,7 +40,7 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3.3</string>
+	<string>1.3.5</string>
 	<key>UIMainStoryboardFile</key>
 	<string>LaunchScreen</string>
 </dict>
