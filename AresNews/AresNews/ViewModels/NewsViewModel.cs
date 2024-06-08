@@ -176,7 +176,7 @@ namespace AresNews.ViewModels
 
                         // Scroll up before fetching the items
                         CurrentPage.ScrollFeed();
-                        //IsRefreshing = true;
+
                         _prevSearch = null;
 
                         // Empty the search bar
