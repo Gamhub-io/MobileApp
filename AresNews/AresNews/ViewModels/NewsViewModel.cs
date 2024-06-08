@@ -145,7 +145,6 @@ namespace AresNews.ViewModels
                         Feeds.Add(_currentFeed);
 
                         // Update the feeds remotely
-                        //MessagingCenter.Send<Feed>(_currentFeed, "AddFeed");
                         return;
 
                     }
@@ -155,7 +154,6 @@ namespace AresNews.ViewModels
 
                     App.SqLiteConn.Delete(feedTarget);
                     Feeds.Remove(feedTarget);
-                    //MessagingCenter.Send<Feed>(feedTarget, "RemoveFeed");
 
 
 
@@ -167,23 +165,28 @@ namespace AresNews.ViewModels
         {
             get
             {
-                return new Command(() =>
+                return new Command(async () =>
                 {
                     IsSearching = false;
+                    await Task.Run(() =>
+                    {
 
-                    if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
+                        if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
 
-                    CurrentApp.ShowLoadingIndicator();
 
-                    // Scroll up before fetching the items
-                    CurrentPage.ScrollFeed();
-                    IsRefreshing = true;
-                    _prevSearch = null;
+                        // Scroll up before fetching the items
+                        CurrentPage.ScrollFeed();
+                        //IsRefreshing = true;
+                        _prevSearch = null;
 
-                    // Empty the search bar
-                    SearchText = string.Empty;
+                        // Empty the search bar
+                        SearchText = string.Empty;
 
-                    IsSearchProcessed = false;
+                        // Get former feed from memory
+                        Articles = new(_feedMemory);
+
+                        IsSearchProcessed = false;
+                    }).ConfigureAwait(false) ;
 
                 });
             }
@@ -198,6 +201,9 @@ namespace AresNews.ViewModels
             set
             {
                 _articles = value;
+                if (IsSearching != true)
+                    _feedMemory = new (_articles);
+
                 OnPropertyChanged(nameof(Articles));
                 SetProperty(ref _articles, value);
             }
@@ -279,6 +285,7 @@ namespace AresNews.ViewModels
         public Command UncoverNewArticles { get; private set; }
 
         private bool _isRefreshing;
+        private ObservableRangeCollection<Article> _feedMemory;
 
         public bool IsRefreshing
         {
@@ -308,7 +315,7 @@ namespace AresNews.ViewModels
                     return;
 
                 CurrentApp.ShowLoadingIndicator();
-                _ = Task.Run(async () =>
+                _ = Task.Run( () =>
                 {
                     // Scroll up
                     CurrentPage.ScrollFeed();
@@ -409,7 +416,6 @@ namespace AresNews.ViewModels
                        return;
                    }
                    // Fetch the article
-                   //_ = FetchArticles();
                    await SearchArticles();
                });
             LoadSearch = new Command(async () =>
@@ -420,7 +426,7 @@ namespace AresNews.ViewModels
                 IsSearchProcessed = true;
                 IsSearchLoading = true;
 
-                await FetchArticlesV0().ContinueWith((res) =>
+                await SearchArticles().ContinueWith((res) =>
                 {
                     CurrentApp.RemoveLoadingIndicator();
                     IsSearchLoading = false;
@@ -460,7 +466,6 @@ namespace AresNews.ViewModels
                 Articles.Clear();
                 Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
 
-
                 _ = RefreshDB();
                 // Register date of the refresh
                 IsRefreshing = false;
@@ -474,13 +479,7 @@ namespace AresNews.ViewModels
             {
                 if (_articles?.Count() > 0)
                     _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                
-                // If we want to fetch the articles via search
-                if (!string.IsNullOrEmpty(SearchText) && IsSearching == true )
-                {
-                    await SearchArticles();
-                    return;
-                }
+
                 if (string.IsNullOrEmpty(_lastCallDateTime))
                 {
 
