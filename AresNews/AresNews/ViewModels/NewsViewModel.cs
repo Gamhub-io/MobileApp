@@ -397,7 +397,7 @@ namespace AresNews.ViewModels
 
             });
 
-            _refreshFeed = new Command<bool>( (isAll) =>
+            _refreshFeed = new Command<bool>( async (isAll) =>
                {
                    
                    if (IsSearchOpen)
@@ -405,11 +405,12 @@ namespace AresNews.ViewModels
                        if (string.IsNullOrEmpty(SearchText))
                            return;
                        // Fetch the article
-                       _ = FetchArticles(true);
+                       _ = FetchArticlesV0(true);
                        return;
                    }
                    // Fetch the article
-                   _ = FetchArticles();
+                   //_ = FetchArticles();
+                   await SearchArticles();
                });
             LoadSearch = new Command(async () =>
             {
@@ -419,7 +420,7 @@ namespace AresNews.ViewModels
                 IsSearchProcessed = true;
                 IsSearchLoading = true;
 
-                await FetchArticles().ContinueWith((res) =>
+                await FetchArticlesV0().ContinueWith((res) =>
                 {
                     CurrentApp.RemoveLoadingIndicator();
                     IsSearchLoading = false;
@@ -444,7 +445,7 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Fetch all the articles
         /// </summary>
-        public async Task FetchArticles(bool isFullRefresh = false)
+        public async Task FetchArticlesV0(bool isFullRefresh = false)
         {
 
             var articles = new ObservableRangeCollection<Article>();
@@ -477,7 +478,7 @@ namespace AresNews.ViewModels
                 // If we want to fetch the articles via search
                 if (!string.IsNullOrEmpty(SearchText) && IsSearching == true )
                 {
-                    await SearchArticles(articles);
+                    await SearchArticles();
                     return;
                 }
                 if (string.IsNullOrEmpty(_lastCallDateTime))
@@ -533,7 +534,7 @@ namespace AresNews.ViewModels
                         _wifiRestartCount++;
 
                         // call the thing again
-                        _ = FetchArticles();
+                        _ = FetchArticlesV0();
                         return;
 
                     }
@@ -653,9 +654,9 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Load articles via search
         /// </summary>
-        /// <param name="articles"></param>
-        private async Task SearchArticles(ObservableRangeCollection<Article> articles)
+        private async Task SearchArticles()
         {
+            ObservableRangeCollection<Article> articles = new ();
             bool isUpdate = _prevSearch == SearchText;
             string timeParam = string.Empty;
 
@@ -719,7 +720,7 @@ namespace AresNews.ViewModels
             if (IsFirstLoad)
             {
                 CurrentApp.ShowLoadingIndicator();
-                _ = FetchArticles(_articles?.Count <= 0).ContinueWith(res =>
+                _ = FetchArticlesV0(_articles?.Count <= 0).ContinueWith(res =>
                   CurrentApp.RemoveLoadingIndicator());
 
                 IsFirstLoad = false;
