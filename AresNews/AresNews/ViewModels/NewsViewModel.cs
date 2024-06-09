@@ -406,19 +406,19 @@ namespace AresNews.ViewModels
             });
 
             _refreshFeed = new Command<bool>( async (isAll) =>
-               {
-                   
-                   if (IsSearchOpen)
-                   {
-                       if (string.IsNullOrEmpty(SearchText))
-                           return;
-                       // Fetch the article
-                       _ = FetchArticlesV0(true);
-                       return;
-                   }
-                   // Fetch the article
-                   await SearchArticles();
-               });
+            {
+                
+                if (IsSearchOpen)
+                {
+                    if (string.IsNullOrEmpty(SearchText))
+                        return;
+                    // Fetch the article
+                    _ = FetchArticlesV0(true);
+                    return;
+                }
+                // Fetch the article
+                await FetchNewerArticles().ContinueWith(res => IsRefreshing = false );
+            });
             LoadSearch = new Command(async () =>
             {
                 if (IsSearchLoading)
@@ -451,9 +451,51 @@ namespace AresNews.ViewModels
 
         }
         /// <summary>
+        /// Fetch the newest articles
+        /// </summary>
+        /// <returns></returns>
+        public async Task FetchNewerArticles()
+        {
+            if (_articles.Count <= 0)
+                return;
+
+            // Get time of the last article in date
+            _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+
+            // Get all the aricles from this date
+            var articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+
+            if (articles.Count == 0)
+                return;
+
+            if (OnTopScroll)
+            {
+                // Update list of articles
+                UpdateArticles(articles);
+                try
+                {
+                    // Manage backup
+                    _ = RefreshDB();
+
+                }
+                catch
+                {
+                }
+                finally
+                {
+                    _isLaunching = false;
+                }
+
+            }
+
+            else
+                UnnoticedArticles = new ObservableCollection<Article>(articles);
+
+        }
+        /// <summary>
         /// Fetch all the articles
         /// </summary>
-        public async Task FetchArticles()
+        public async Task FetchExistingArticles()
         {
             // Check internet
             if (Connectivity.NetworkAccess != NetworkAccess.Internet)
@@ -465,8 +507,15 @@ namespace AresNews.ViewModels
                 return;
             }
 
-            // for now just use the regular reload
-            await FetchArticlesV0();
+            if (_articles.Count > 0)
+            {
+                // get articles of the next 24hours after that
+                Articles.AddRange((await CurrentApp.DataFetcher.GetMainFeedUpdate(_articles.LastOrDefault().FullPublishDate.AddHours(-24).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+                return;
+            }
+            // Load the artcles of the last 24hrs
+            Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-24).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+
         }
         /// <summary>
         /// Fetch all the articles
@@ -738,8 +787,10 @@ namespace AresNews.ViewModels
         {
             if (IsFirstLoad)
             {
+
+                Articles.Clear();
                 CurrentApp.ShowLoadingIndicator();
-                _ = FetchArticles().ContinueWith(res =>
+                _ = FetchExistingArticles().ContinueWith(res =>
                   CurrentApp.RemoveLoadingIndicator());
 
                 IsFirstLoad = false;
