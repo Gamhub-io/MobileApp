@@ -307,6 +307,7 @@ namespace AresNews.ViewModels
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             UnnoticedArticles = new();
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+
             UncoverNewArticles = new Command(() =>
             {
                 if (UnnoticedArticles == null)
@@ -446,8 +447,27 @@ namespace AresNews.ViewModels
                     Text = article.Title
                 });
             });
-        }
 
+
+        }
+        /// <summary>
+        /// Fetch all the articles
+        /// </summary>
+        public async Task FetchArticles()
+        {
+            // Check internet
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+
+                var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
+                _= page.DisplayMessage($"You're offline, please make sure you're connected to the internet");
+
+                return;
+            }
+
+            // for now just use the regular reload
+            await FetchArticlesV0();
+        }
         /// <summary>
         /// Fetch all the articles
         /// </summary>
@@ -719,7 +739,7 @@ namespace AresNews.ViewModels
             if (IsFirstLoad)
             {
                 CurrentApp.ShowLoadingIndicator();
-                _ = FetchArticlesV0(_articles?.Count <= 0).ContinueWith(res =>
+                _ = FetchArticles().ContinueWith(res =>
                   CurrentApp.RemoveLoadingIndicator());
 
                 IsFirstLoad = false;

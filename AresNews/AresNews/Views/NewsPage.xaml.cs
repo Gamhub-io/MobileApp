@@ -5,6 +5,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.CommunityToolkit.Extensions;
 using Xamarin.Forms.Xaml;
+using System.Threading.Tasks;
 
 namespace AresNews.Views
 {
@@ -50,6 +51,16 @@ namespace AresNews.Views
                 return;
             }
             await this.DisplayToastAsync($"You're offline, please check if you're connected to the internet", 60000);
+
+          
+        }
+        /// <summary>
+        /// Display any message
+        /// </summary>
+        /// <param name="msg">message to display</param>
+        public async Task DisplayMessage(string msg = null)
+        {
+            await this.DisplayToastAsync(msg, 60000);
 
           
         }
