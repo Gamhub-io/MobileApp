@@ -1,7 +1,5 @@
-﻿using AresNews.Helpers.Comparers;
-using AresNews.Helpers.Tools;
+﻿using AresNews.Helpers.Tools;
 using AresNews.Models;
-using AresNews.Services;
 using AresNews.Views;
 using MvvmHelpers;
 using SQLite;
@@ -10,12 +8,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace AresNews.ViewModels
 {
@@ -532,135 +528,7 @@ namespace AresNews.ViewModels
             Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
 
         }
-        /// <summary>
-        /// Fetch all the articles
-        /// </summary>
-        public async Task FetchArticlesV0(bool isFullRefresh = false)
-        {
-
-            var articles = new ObservableRangeCollection<Article>();
-            if (isFullRefresh)
-            {
-                CurrentApp.ShowLoadingIndicator();
-                // the articles of the last 2 months
-                articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false));
-                _isLaunching = false;
-                
-                // Reload the feed
-                Articles.Clear();
-                Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
-
-                _ = RefreshDB();
-                // Register date of the refresh
-                IsRefreshing = false;
-                IsSearchOpen = false;
-                _prevSearch = string.Empty;
-                CurrentApp.RemoveLoadingIndicator();
-                return;
-            }
-
-            try
-            {
-                if (_articles?.Count() > 0)
-                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-
-                if (string.IsNullOrEmpty(_lastCallDateTime))
-                {
-
-                    Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
-                    
-                    IsRefreshing = false;
-                    _isLaunching = false;
-                    _= RefreshDB();
-                    return;
-                }
-               if (_articles?.Count() > 0)
-               {
-                   
-                       articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
-               }
-               else
-               {
-                   if (_isLaunching)
-                   {
-                       try
-                       {
-                           Articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
-
-                           // Manage backuo
-                           _ = RefreshDB();
-
-                       }
-                       catch
-                       {
-                       }
-
-                       _isLaunching = false;
-                       IsRefreshing = false;
-                       return;
-                   }
-                  articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
-
-               }
-            }
-            catch (Exception ex)
-            {
-                // BLAME: the following lines are disgusting but it works 
-                // TODO: change this if possible
-                if (ex.Message.Contains("Network subsystem is down") && Device.RuntimePlatform == Device.Android && _wifiRestartCount < 3)
-                {
-                    // Restart wifi: only works with android < Q
-                    if (DependencyService.Get<IInternetManagement>().TurnWifi(false))
-                    {
-                        _ = DependencyService.Get<IInternetManagement>().TurnWifi(true);
-
-                        _wifiRestartCount++;
-
-                        // call the thing again
-                        _ = FetchArticlesV0();
-                        return;
-
-                    }
-                }
-
-                var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
-                page.DisplayOfflineMessage(ex.Message);
-            }
-
-            // To avoid crashes: if this number is out of range we end the process
-            if (articles == null || articles.Count() <= 0)
-            {
-                IsRefreshing = false;
-                return;
-            }
-                
-            if (OnTopScroll)
-            {
-                // Update list of articles
-                UpdateArticles(articles);
-                try
-                {
-                    // Manage backup
-                    _ = RefreshDB();
-
-                }
-                catch
-                {
-                }
-                finally
-                {
-                    _isLaunching = false;
-                }
-
-                IsRefreshing = false;
-            }
-                
-            else
-                UnnoticedArticles = new ObservableCollection<Article>(articles);
-            IsRefreshing = false;
-
-
-        }
+        
         /// <summary>
         /// Update the current article feed by adding new elements
         /// </summary>
