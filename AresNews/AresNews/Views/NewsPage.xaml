@@ -181,7 +181,8 @@
                                 ItemsUpdatingScrollMode="KeepScrollOffset"
                                 HorizontalOptions="Center"
                                 Scrolled="newsCollectionView_Scrolled"
-                                
+                                RemainingItemsThreshold="15"
+                                RemainingItemsThresholdReachedCommand="{Binding RefreshBottomCommand}"
                                 Margin="8,0"
                                 >
                     <CollectionView.Header>
@@ -225,7 +226,7 @@
                         HeightRequest="30"
                         WidthRequest="150"
                         Margin="10"
-                        Command="{Binding UncoverNewArticles}"
+                        Command="{Binding UncoverNewArticlesCommand}"
                         HorizontalOptions="Center"
                         VerticalOptions="Start"
                         CornerRadius="12"

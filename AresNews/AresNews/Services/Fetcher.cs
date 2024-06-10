@@ -121,6 +121,37 @@ namespace AresNews.Services
             }
         }
         /// <summary>
+        /// Get the chunk articles from given date
+        /// </summary>
+        /// <param name="dateFrom">date from which the last article was published as "dd-MM-yyy_HH:mm:ss"</param>
+        /// <param name="length">length of the chunk in hour</param>
+        /// <returns>chunk articles the date provided</returns>
+        public async Task<Collection<Article>> GetFeedChunk(DateTime dateFrom, int length)
+        {
+            try
+            {
+
+                string[] parameters = new string[]
+                {
+                   dateFrom.AddHours(-length).ToString("dd-MM-yyy_HH:mm:ss"),
+                   dateFrom.ToString("dd-MM-yyy_HH:mm:ss"),
+                };
+                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                                                                   parameters: parameters,
+                                                                   jsonBody: null,
+                                                                   unSuccessCallback: e => _ = HandleHttpException(e));
+            }
+            catch (Exception ex)
+            {
+
+#if DEBUG
+                throw ex;
+#else
+                return null; 
+#endif
+            }
+        }
+        /// <summary>
         /// Save all the tokens of a session and expiration
         /// </summary>
         /// <param name="newSession"></param>

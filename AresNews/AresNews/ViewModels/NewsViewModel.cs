@@ -1,7 +1,5 @@
-﻿using AresNews.Helpers.Comparers;
-using AresNews.Helpers.Tools;
+﻿using AresNews.Helpers.Tools;
 using AresNews.Models;
-using AresNews.Services;
 using AresNews.Views;
 using MvvmHelpers;
 using SQLite;
@@ -10,18 +8,17 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
-
+        // Hour interval
+        private const int _refreshInterval = 12;
         private bool _isLaunching = true;
         private string _prevSearch;
         private string _lastCallDateTime;
@@ -145,7 +142,6 @@ namespace AresNews.ViewModels
                         Feeds.Add(_currentFeed);
 
                         // Update the feeds remotely
-                        //MessagingCenter.Send<Feed>(_currentFeed, "AddFeed");
                         return;
 
                     }
@@ -155,7 +151,6 @@ namespace AresNews.ViewModels
 
                     App.SqLiteConn.Delete(feedTarget);
                     Feeds.Remove(feedTarget);
-                    //MessagingCenter.Send<Feed>(feedTarget, "RemoveFeed");
 
 
 
@@ -167,23 +162,28 @@ namespace AresNews.ViewModels
         {
             get
             {
-                return new Command(() =>
+                return new Command(async () =>
                 {
                     IsSearching = false;
+                    await Task.Run(() =>
+                    {
 
-                    if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
+                        if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
 
-                    CurrentApp.ShowLoadingIndicator();
 
-                    // Scroll up before fetching the items
-                    CurrentPage.ScrollFeed();
-                    IsRefreshing = true;
-                    _prevSearch = null;
+                        // Scroll up before fetching the items
+                        CurrentPage.ScrollFeed();
 
-                    // Empty the search bar
-                    SearchText = string.Empty;
+                        _prevSearch = null;
 
-                    IsSearchProcessed = false;
+                        // Empty the search bar
+                        SearchText = string.Empty;
+
+                        // Get former feed from memory
+                        Articles = new(_feedMemory);
+
+                        IsSearchProcessed = false;
+                    }).ConfigureAwait(false) ;
 
                 });
             }
@@ -198,6 +198,9 @@ namespace AresNews.ViewModels
             set
             {
                 _articles = value;
+                if (IsSearching != true)
+                    _feedMemory = new (_articles);
+
                 OnPropertyChanged(nameof(Articles));
                 SetProperty(ref _articles, value);
             }
@@ -276,9 +279,11 @@ namespace AresNews.ViewModels
                 }); ;
             }
         }
-        public Command UncoverNewArticles { get; private set; }
+        public Command RefreshBottomCommand { get; private set; }
+        public Command UncoverNewArticlesCommand { get; private set; }
 
         private bool _isRefreshing;
+        private ObservableRangeCollection<Article> _feedMemory;
 
         public bool IsRefreshing
         {
@@ -292,6 +297,7 @@ namespace AresNews.ViewModels
 
         public bool IsFirstLoad { get; private set; } = true;
         public bool IsSearchLoading { get; private set; }
+        public bool IsLoadingChunks { get; private set; }
 
         public NewsViewModel(NewsPage currentPage)
         {
@@ -300,7 +306,13 @@ namespace AresNews.ViewModels
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             UnnoticedArticles = new();
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
-            UncoverNewArticles = new Command(() =>
+            RefreshBottomCommand = new(() =>
+            {
+                if (IsFirstLoad || IsLoadingChunks)
+                    return;
+                _ = LoadChunks().ConfigureAwait(false);
+            });
+            UncoverNewArticlesCommand = new Command(() =>
             {
                 if (UnnoticedArticles == null)
                     return;
@@ -308,7 +320,7 @@ namespace AresNews.ViewModels
                     return;
 
                 CurrentApp.ShowLoadingIndicator();
-                _ = Task.Run(async () =>
+                _ = Task.Run( () =>
                 {
                     // Scroll up
                     CurrentPage.ScrollFeed();
@@ -397,20 +409,20 @@ namespace AresNews.ViewModels
 
             });
 
-            _refreshFeed = new Command<bool>( (isAll) =>
-               {
-                   
-                   if (IsSearchOpen)
-                   {
-                       if (string.IsNullOrEmpty(SearchText))
-                           return;
-                       // Fetch the article
-                       _ = FetchArticles(true);
-                       return;
-                   }
-                   // Fetch the article
-                   _ = FetchArticles();
-               });
+            _refreshFeed = new Command<bool>( async (isAll) =>
+            {
+                
+                if (IsSearchOpen)
+                {
+                    if (string.IsNullOrEmpty(SearchText))
+                        return;
+                    // Fetch the article
+                    await SearchArticles();
+                    return;
+                }
+                // Fetch the article
+                await FetchNewerArticles().ContinueWith(res => IsRefreshing = false );
+            });
             LoadSearch = new Command(async () =>
             {
                 if (IsSearchLoading)
@@ -419,7 +431,7 @@ namespace AresNews.ViewModels
                 IsSearchProcessed = true;
                 IsSearchLoading = true;
 
-                await FetchArticles().ContinueWith((res) =>
+                await SearchArticles().ContinueWith((res) =>
                 {
                     CurrentApp.RemoveLoadingIndicator();
                     IsSearchLoading = false;
@@ -439,117 +451,27 @@ namespace AresNews.ViewModels
                     Text = article.Title
                 });
             });
+
+
         }
-
         /// <summary>
-        /// Fetch all the articles
+        /// Fetch the newest articles
         /// </summary>
-        public async Task FetchArticles(bool isFullRefresh = false)
+        /// <returns></returns>
+        public async Task FetchNewerArticles()
         {
-
-            var articles = new ObservableRangeCollection<Article>();
-            if (isFullRefresh)
-            {
-                CurrentApp.ShowLoadingIndicator();
-                // the articles of the last 2 months
-                articles = new (await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false));
-                _isLaunching = false;
-                
-                // Reload the feed
-                Articles.Clear();
-                Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
-
-
-                _ = RefreshDB();
-                // Register date of the refresh
-                IsRefreshing = false;
-                IsSearchOpen = false;
-                _prevSearch = string.Empty;
-                CurrentApp.RemoveLoadingIndicator();
+            if (_articles.Count <= 0)
                 return;
-            }
 
-            try
-            {
-                if (_articles?.Count() > 0)
-                    _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-                
-                // If we want to fetch the articles via search
-                if (!string.IsNullOrEmpty(SearchText) && IsSearching == true )
-                {
-                    await SearchArticles(articles);
-                    return;
-                }
-                if (string.IsNullOrEmpty(_lastCallDateTime))
-                {
+            // Get time of the last article in date
+            _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
 
-                    Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate().ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
-                    
-                    IsRefreshing = false;
-                    _isLaunching = false;
-                    _= RefreshDB();
-                    return;
-                }
-               if (_articles?.Count() > 0)
-               {
-                   
-                       articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
-               }
-               else
-               {
-                   if (_isLaunching)
-                   {
-                       try
-                       {
-                           Articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
+            // Get all the aricles from this date
+            var articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
 
-                           // Manage backuo
-                           _ = RefreshDB();
-
-                       }
-                       catch
-                       {
-                       }
-
-                       _isLaunching = false;
-                       IsRefreshing = false;
-                       return;
-                   }
-                  articles = new ObservableRangeCollection<Article>((await App.WService.Get<ObservableRangeCollection<Article>>("feeds", jsonBody: null)).Where(article => article.Blocked == null || article.Blocked == false));
-
-               }
-            }
-            catch (Exception ex)
-            {
-                // BLAME: the following lines are disgusting but it works 
-                // TODO: change this if possible
-                if (ex.Message.Contains("Network subsystem is down") && Device.RuntimePlatform == Device.Android && _wifiRestartCount < 3)
-                {
-                    // Restart wifi: only works with android < Q
-                    if (DependencyService.Get<IInternetManagement>().TurnWifi(false))
-                    {
-                        _ = DependencyService.Get<IInternetManagement>().TurnWifi(true);
-
-                        _wifiRestartCount++;
-
-                        // call the thing again
-                        _ = FetchArticles();
-                        return;
-
-                    }
-                }
-
-                var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
-                page.DisplayOfflineMessage(ex.Message);
-            }
-
-            // To avoid crashes: if this number is out of range we end the process
-            if (articles == null || articles.Count() <= 0)
-            {
-                IsRefreshing = false;
+            if (articles.Count == 0)
                 return;
-            }
-                
+
             if (OnTopScroll)
             {
                 // Update list of articles
@@ -568,15 +490,50 @@ namespace AresNews.ViewModels
                     _isLaunching = false;
                 }
 
-                IsRefreshing = false;
             }
-                
+
             else
                 UnnoticedArticles = new ObservableCollection<Article>(articles);
-            IsRefreshing = false;
-
 
         }
+        /// <summary>
+        /// Fetch all the articles
+        /// </summary>
+        public async Task FetchExistingArticles()
+        {
+            // Check internet
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+
+                var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
+                _ = page.DisplayMessage($"You're offline, please make sure you're connected to the internet");
+
+                return;
+            }
+            
+            // Load the artcles of the last 24hrs
+            Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+
+            // Refresh the db
+            await RefreshDB().ConfigureAwait(false);
+        }
+        // Load the next chunk of articles
+        private async Task LoadChunks()
+        {
+            if (_articles.Count <= 0)
+                return;
+                    
+            IsLoadingChunks = true;
+            await Task.Run(async () =>
+            {
+                // get articles of the next 24hours after that
+                var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 1)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
+                Articles.AddRange(collection);
+
+            }).ContinueWith(res => IsLoadingChunks = false);
+            return;
+        }
+
         /// <summary>
         /// Update the current article feed by adding new elements
         /// </summary>
@@ -653,9 +610,9 @@ namespace AresNews.ViewModels
         /// <summary>
         /// Load articles via search
         /// </summary>
-        /// <param name="articles"></param>
-        private async Task SearchArticles(ObservableRangeCollection<Article> articles)
+        private async Task SearchArticles()
         {
+            ObservableRangeCollection<Article> articles = new ();
             bool isUpdate = _prevSearch == SearchText;
             string timeParam = string.Empty;
 
@@ -718,11 +675,15 @@ namespace AresNews.ViewModels
         {
             if (IsFirstLoad)
             {
-                CurrentApp.ShowLoadingIndicator();
-                _ = FetchArticles(_articles?.Count <= 0).ContinueWith(res =>
-                  CurrentApp.RemoveLoadingIndicator());
 
-                IsFirstLoad = false;
+                CurrentApp.ShowLoadingIndicator();
+                _ = FetchExistingArticles().ContinueWith(res =>
+                {
+                    CurrentApp.RemoveLoadingIndicator();
+                    IsFirstLoad = false;
+
+                });
+
 
             }
             // Get all the feeds regestered
