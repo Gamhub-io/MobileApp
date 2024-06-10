@@ -310,8 +310,7 @@ namespace AresNews.ViewModels
             {
                 if (IsFirstLoad || IsLoadingChunks)
                     return;
-                IsLoadingChunks = true;
-                _ = FetchExistingArticles().ConfigureAwait(false);
+                _ = LoadChunks().ConfigureAwait(false);
             });
             UncoverNewArticlesCommand = new Command(() =>
             {
@@ -507,28 +506,34 @@ namespace AresNews.ViewModels
             {
 
                 var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
-                _= page.DisplayMessage($"You're offline, please make sure you're connected to the internet");
+                _ = page.DisplayMessage($"You're offline, please make sure you're connected to the internet");
 
                 return;
             }
-
-            if (_articles.Count > 0)
-            {
-                await Task.Run(async () =>
-                {
-                    // get articles of the next 24hours after that
-                    var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 1)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
-                    Articles.AddRange(collection);
-
-                }).ContinueWith(res => IsLoadingChunks = false);
-                return;
-            }
-
+            
             // Load the artcles of the last 24hrs
             Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
 
+            // Refresh the db
+            await RefreshDB().ConfigureAwait(false);
         }
-        
+        // Load the next chunk of articles
+        private async Task LoadChunks()
+        {
+            if (_articles.Count <= 0)
+                return;
+                    
+            IsLoadingChunks = true;
+            await Task.Run(async () =>
+            {
+                // get articles of the next 24hours after that
+                var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 1)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
+                Articles.AddRange(collection);
+
+            }).ContinueWith(res => IsLoadingChunks = false);
+            return;
+        }
+
         /// <summary>
         /// Update the current article feed by adding new elements
         /// </summary>
@@ -672,8 +677,6 @@ namespace AresNews.ViewModels
             {
 
                 CurrentApp.ShowLoadingIndicator();
-
-                Articles.Clear();
                 _ = FetchExistingArticles().ContinueWith(res =>
                 {
                     CurrentApp.RemoveLoadingIndicator();
