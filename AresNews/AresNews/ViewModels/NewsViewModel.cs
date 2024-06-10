@@ -422,7 +422,7 @@ namespace AresNews.ViewModels
                     if (string.IsNullOrEmpty(SearchText))
                         return;
                     // Fetch the article
-                    _ = FetchArticlesV0(true);
+                    await SearchArticles();
                     return;
                 }
                 // Fetch the article
@@ -527,6 +527,7 @@ namespace AresNews.ViewModels
                 }).ContinueWith(res => IsLoadingChunks = false);
                 return;
             }
+
             // Load the artcles of the last 24hrs
             Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
 
