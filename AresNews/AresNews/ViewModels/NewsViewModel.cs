@@ -21,7 +21,8 @@ namespace AresNews.ViewModels
 {
     public class NewsViewModel : BaseViewModel
     {
-
+        // Hour interval
+        private const int _refreshInterval = 12;
         private bool _isLaunching = true;
         private string _prevSearch;
         private string _lastCallDateTime;
@@ -282,7 +283,8 @@ namespace AresNews.ViewModels
                 }); ;
             }
         }
-        public Command UncoverNewArticles { get; private set; }
+        public Command RefreshBottomCommand { get; private set; }
+        public Command UncoverNewArticlesCommand { get; private set; }
 
         private bool _isRefreshing;
         private ObservableRangeCollection<Article> _feedMemory;
@@ -299,6 +301,7 @@ namespace AresNews.ViewModels
 
         public bool IsFirstLoad { get; private set; } = true;
         public bool IsSearchLoading { get; private set; }
+        public bool IsLoadingChunks { get; private set; }
 
         public NewsViewModel(NewsPage currentPage)
         {
@@ -307,8 +310,14 @@ namespace AresNews.ViewModels
             Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
             UnnoticedArticles = new();
             Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
-
-            UncoverNewArticles = new Command(() =>
+            RefreshBottomCommand = new(() =>
+            {
+                if (IsFirstLoad || IsLoadingChunks)
+                    return;
+                IsLoadingChunks = true;
+                _ = FetchExistingArticles().ConfigureAwait(false);
+            });
+            UncoverNewArticlesCommand = new Command(() =>
             {
                 if (UnnoticedArticles == null)
                     return;
@@ -509,12 +518,17 @@ namespace AresNews.ViewModels
 
             if (_articles.Count > 0)
             {
-                // get articles of the next 24hours after that
-                Articles.AddRange((await CurrentApp.DataFetcher.GetMainFeedUpdate(_articles.LastOrDefault().FullPublishDate.AddHours(-24).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+                await Task.Run(async () =>
+                {
+                    // get articles of the next 24hours after that
+                    var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 1)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
+                    Articles.AddRange(collection);
+
+                }).ContinueWith(res => IsLoadingChunks = false);
                 return;
             }
             // Load the artcles of the last 24hrs
-            Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-24).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+            Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
 
         }
         /// <summary>
@@ -788,12 +802,16 @@ namespace AresNews.ViewModels
             if (IsFirstLoad)
             {
 
-                Articles.Clear();
                 CurrentApp.ShowLoadingIndicator();
-                _ = FetchExistingArticles().ContinueWith(res =>
-                  CurrentApp.RemoveLoadingIndicator());
 
-                IsFirstLoad = false;
+                Articles.Clear();
+                _ = FetchExistingArticles().ContinueWith(res =>
+                {
+                    CurrentApp.RemoveLoadingIndicator();
+                    IsFirstLoad = false;
+
+                });
+
 
             }
             // Get all the feeds regestered
