@@ -181,7 +181,7 @@
                                 ItemsUpdatingScrollMode="KeepScrollOffset"
                                 HorizontalOptions="Center"
                                 Scrolled="newsCollectionView_Scrolled"
-                                RemainingItemsThreshold="15"
+                                RemainingItemsThreshold="20"
                                 RemainingItemsThresholdReachedCommand="{Binding RefreshBottomCommand}"
                                 Margin="8,0"
                                 >
