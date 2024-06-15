@@ -130,11 +130,11 @@ namespace AresNews.Services
         {
             try
             {
-
+                //dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, 0);
                 string[] parameters = new string[]
                 {
                    dateFrom.AddHours(-length).ToString("dd-MM-yyy_HH:mm:ss"),
-                   dateFrom.ToString("dd-MM-yyy_HH:mm:ss"),
+                   dateFrom.AddMinutes(-1).ToString("dd-MM-yyy_HH:mm:ss"),
                 };
                 return await App.WService.Get<Collection<Article>>(controller: "feeds",
                                                                    parameters: parameters,
