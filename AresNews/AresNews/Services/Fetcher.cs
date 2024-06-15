@@ -130,7 +130,7 @@ namespace AresNews.Services
         {
             try
             {
-                dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, 0);
+                //dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, 0);
                 string[] parameters = new string[]
                 {
                    dateFrom.AddHours(-length).ToString("dd-MM-yyy_HH:mm:ss"),
