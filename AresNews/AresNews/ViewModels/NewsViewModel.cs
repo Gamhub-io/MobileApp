@@ -18,7 +18,7 @@ namespace AresNews.ViewModels
     public class NewsViewModel : BaseViewModel
     {
         // Hour interval
-        private const int _refreshInterval = 12;
+        private const int _refreshInterval = 24;
         private bool _isLaunching = true;
         private string _prevSearch;
         private string _lastCallDateTime;
@@ -531,7 +531,8 @@ namespace AresNews.ViewModels
             await Task.Run(async () =>
             {
                 // get articles of the next 24hours after that
-                var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 2)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
+                var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 12)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
+                
                 Articles.AddRange(collection);
 
             }).ContinueWith(res => IsLoadingChunks = false);
