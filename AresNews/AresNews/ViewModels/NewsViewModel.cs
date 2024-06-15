@@ -517,17 +517,21 @@ namespace AresNews.ViewModels
             // Refresh the db
             await RefreshDB().ConfigureAwait(false);
         }
-        // Load the next chunk of articles
+        /// <summary>
+        /// Load the next chunk of articles
+        /// </summary>
+        /// <returns></returns>
         private async Task LoadChunks()
         {
-            if (_articles.Count <= 0)
+            
+            if (_articles.Count <= 0 || IsLoadingChunks)
                 return;
                     
             IsLoadingChunks = true;
             await Task.Run(async () =>
             {
                 // get articles of the next 24hours after that
-                var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 1)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
+                var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 2)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
                 Articles.AddRange(collection);
 
             }).ContinueWith(res => IsLoadingChunks = false);
