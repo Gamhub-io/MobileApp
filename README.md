@@ -60,6 +60,6 @@ From the [list of issues](https://github.com/bricefriha/AresNews/issues), you ca
 
 |  <img width="100px" style="border-radius:150px"  src="https://avatars.githubusercontent.com/u/37577669?v=4" />|
 |---|
-| **Bryce Friha** |
+| **Brice Friha** |
 | [![twitter](https://img.shields.io/twitter/follow/BriceFriha?label=Follow%20on%20Twitter&style=social)](https://twitter.com/BriceFriha?ref_src=twsrc%5Etfw) |
 | [![Github](https://img.shields.io/github/followers/bricefriha?label=Follow%20on%20Github&style=social)](https://github.com/bricefriha) |
