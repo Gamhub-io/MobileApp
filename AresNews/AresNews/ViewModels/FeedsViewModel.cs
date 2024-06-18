@@ -71,9 +71,9 @@ namespace AresNews.ViewModels
 				OnPropertyChanged(nameof(IsRefreshing));
 			}
 		}
-		private ObservableCollection<Article> _articles;
+		private ObservableRangeCollection<Article> _articles;
 
-		public ObservableCollection<Article> Articles
+		public ObservableRangeCollection<Article> Articles
 		{
 			get { return _articles; }
 			set 
@@ -233,9 +233,9 @@ namespace AresNews.ViewModels
             CurrentPage = page;
             
             // Instantiate definitions 
-            FeedTabs = new ObservableCollection<TabButton>();
+            FeedTabs = new ObservableRangeCollection<TabButton>();
             Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
-            _articles = new ObservableCollection<Article>();
+            _articles = new ObservableRangeCollection<Article>();
 
             // Organise feeds into tabs
             CopyFeedsToTabs();
@@ -460,14 +460,16 @@ namespace AresNews.ViewModels
             {
                 
 
-                articles = await App.WService.Get<List<Article>>(controller:"feeds", action: needUpdate ? "update" : null, parameters: needUpdate ? new string[] { timeUpdate } : null, jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", unSuccessCallback: async (err) =>
+                articles = await App.WService.Get<List<Article>>(controller:"feeds", 
+                                                                 action: needUpdate ? "update" : null, 
+                                                                 parameters: needUpdate ? 
+                                                                 new string[] { timeUpdate } : null, 
+                                                                 jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", unSuccessCallback: async (err) =>
                 {
 #if DEBUG
                     throw new Exception(await err.Content.ReadAsStringAsync());
 #endif
                 });
-                //if (!needUpdate)
-                //    Articles?.Clear();
 
             }
             // Offline search
@@ -491,11 +493,8 @@ namespace AresNews.ViewModels
                         UnnoticedArticles = new ObservableCollection<Article>( articles);
             }
             else
-            {
                 // Update list of articles
                 InsertArticles(articles);
-
-            }
             SelectedFeed.IsLoaded = true;
 
             IsRefreshing = false;
@@ -507,12 +506,12 @@ namespace AresNews.ViewModels
         /// <param name="articles">articles to add</param>
         private void InsertArticles(IEnumerable<Article> articles)
         {
-            Articles?.Clear();
-            for (int i = 0; i < articles.Count(); i++)
-            {
-                if (i != -1)
-                    Articles.Add(articles.ElementAt(i));
-            }
+            ObservableRangeCollection<Article> articlesOld = new (_articles);
+            Articles = new ObservableRangeCollection<Article>();
+
+            Articles.AddRange(articles);
+            if (articlesOld.Any())
+                Articles.AddRange(articlesOld);
         }
 
         // See detail of the article
