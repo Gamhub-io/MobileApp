@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.CommunityToolkit.Effects;
 using Xamarin.Essentials;
+using static AresNews.Models.UpdateOrder;
 
 namespace AresNews.Services
 {
@@ -49,6 +50,38 @@ namespace AresNews.Services
                                                                    parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) },
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
+            }
+            catch (Exception ex)
+            {
+
+#if DEBUG
+                throw ex;
+#else
+                return null;
+#endif
+            }
+        }
+        /// <summary>
+        /// Get thye feed of an artile
+        /// </summary>
+        /// <param name="keywords">keywords of the feed</param>
+        /// <param name="timeUpdate">time of the last update (if applicable)</param>
+        /// <param name="needUpdate">does the feed need an update</param>
+        /// <returns></returns>
+        public async Task<Collection<Article>> GetFeedArticles(string keywords, string timeUpdate = null, bool needUpdate = false)
+        {
+            try
+            {
+
+                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                                                                   action: needUpdate ? "update" : null,
+                                                                   parameters: needUpdate ? new string[] { timeUpdate } : null,
+                                                                   jsonBody: $"{{\"search\": \"{keywords}\"}}", unSuccessCallback: async (err) =>
+                                                                   {
+#if DEBUG                                                          
+                                                                       throw new Exception(await err.Content.ReadAsStringAsync());
+#endif                                                             
+                                                                   });
             }
             catch (Exception ex)
             {

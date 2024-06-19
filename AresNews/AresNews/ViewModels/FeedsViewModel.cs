@@ -457,21 +457,10 @@ namespace AresNews.ViewModels
 
             // Make sure we have internet connection
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
-            {
-                
+                articles = (await CurrentApp.DataFetcher.GetFeedArticles(feed.Keywords, 
+                                                                         timeUpdate, 
+                                                                         needUpdate)).ToList();
 
-                articles = await App.WService.Get<List<Article>>(controller:"feeds", 
-                                                                 action: needUpdate ? "update" : null, 
-                                                                 parameters: needUpdate ? 
-                                                                 new string[] { timeUpdate } : null, 
-                                                                 jsonBody: $"{{\"search\": \"{feed.Keywords}\"}}", unSuccessCallback: async (err) =>
-                {
-#if DEBUG
-                    throw new Exception(await err.Content.ReadAsStringAsync());
-#endif
-                });
-
-            }
             // Offline search
             else
             {
