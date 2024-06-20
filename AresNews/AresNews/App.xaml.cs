@@ -34,7 +34,10 @@ namespace AresNews
         public static string ProdHost { get; } = "api.gamhub.io";
         public static string LocalHost { get; } = "gamhubdev.ddns.net";
         public User SaveInfo { get; private set; }
-
+        /// <summary>
+        /// Date first registered to determin when is the best time to ask for user review
+        /// </summary>
+        public DateTime DateFirstRun { get; set; }
         public enum PageType
         {
             about,
@@ -195,6 +198,18 @@ namespace AresNews
             // Restore session
             _ = DataFetcher.RestoreSession();
 
+            // Register the date of the first run
+            DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
+            if (DateFirstRun == DateTime.MinValue)
+            {
+
+                // Set the property
+                DateFirstRun = DateTime.Now;
+
+                // Register this date as the first date
+                Preferences.Set("date", DateFirstRun);
+
+            }
 
             MainPage = new AppShell();
         }
