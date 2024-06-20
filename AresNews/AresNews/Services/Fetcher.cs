@@ -45,7 +45,7 @@ namespace AresNews.Services
             try
             {
 
-                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                    action: "update",
                                                                    parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) },
                                                                    jsonBody: null,
@@ -73,7 +73,7 @@ namespace AresNews.Services
             try
             {
 
-                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                return await WebService.Get<Collection<Article>>(controller: "feeds",
                                                                    action: needUpdate ? "update" : null,
                                                                    parameters: needUpdate ? new string[] { timeUpdate } : null,
                                                                    jsonBody: $"{{\"search\": \"{keywords}\"}}", unSuccessCallback: async (err) =>
@@ -137,7 +137,7 @@ namespace AresNews.Services
             try
             {
 
-                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                    action: "update",
                                                                    parameters: new string[] { dateUpdate },
                                                                    jsonBody: null,
@@ -169,7 +169,7 @@ namespace AresNews.Services
                    dateFrom.AddHours(-length).ToString("dd-MM-yyy_HH:mm:ss"),
                    dateFrom.AddMinutes(-1).ToString("dd-MM-yyy_HH:mm:ss"),
                 };
-                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                    parameters: parameters,
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
