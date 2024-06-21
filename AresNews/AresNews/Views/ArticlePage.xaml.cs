@@ -20,7 +20,7 @@ namespace AresNews.Views
         private const bool _isTest = true;
 #else
         private const double TimeMaxArticles = 30;
-        private const bool isTest = false;
+        private const bool _isTest = false;
 #endif
         private ArticleViewModel _vm;
         private uint _modalHeightStart = 0;
