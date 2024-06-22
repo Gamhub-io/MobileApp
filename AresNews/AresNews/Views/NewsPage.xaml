@@ -181,7 +181,8 @@
                                 ItemsUpdatingScrollMode="KeepScrollOffset"
                                 HorizontalOptions="Center"
                                 Scrolled="newsCollectionView_Scrolled"
-                                
+                                RemainingItemsThreshold="20"
+                                RemainingItemsThresholdReachedCommand="{Binding RefreshBottomCommand}"
                                 Margin="8,0"
                                 >
                     <CollectionView.Header>
@@ -194,6 +195,14 @@
                             </BoxView.HeightRequest>
                         </BoxView>
                     </CollectionView.Header>
+                    <CollectionView.Footer>
+                        <Grid>
+                            <ActivityIndicator Color="{StaticResource Primary}"
+                                               HeightRequest="20"
+                                               WidthRequest="20"/>
+                            
+                        </Grid>
+                    </CollectionView.Footer>
                     <CollectionView.ItemsLayout>
                         <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
                     </CollectionView.ItemsLayout>
@@ -225,7 +234,7 @@
                         HeightRequest="30"
                         WidthRequest="150"
                         Margin="10"
-                        Command="{Binding UncoverNewArticles}"
+                        Command="{Binding UncoverNewArticlesCommand}"
                         HorizontalOptions="Center"
                         VerticalOptions="Start"
                         CornerRadius="12"
