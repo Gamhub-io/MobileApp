@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xamarin.CommunityToolkit.Effects;
 using Xamarin.Essentials;
+using static AresNews.Models.UpdateOrder;
 
 namespace AresNews.Services
 {
@@ -44,11 +45,43 @@ namespace AresNews.Services
             try
             {
 
-                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                    action: "update",
                                                                    parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) },
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
+            }
+            catch (Exception ex)
+            {
+
+#if DEBUG
+                throw ex;
+#else
+                return null;
+#endif
+            }
+        }
+        /// <summary>
+        /// Get thye feed of an artile
+        /// </summary>
+        /// <param name="keywords">keywords of the feed</param>
+        /// <param name="timeUpdate">time of the last update (if applicable)</param>
+        /// <param name="needUpdate">does the feed need an update</param>
+        /// <returns></returns>
+        public async Task<Collection<Article>> GetFeedArticles(string keywords, string timeUpdate = null, bool needUpdate = false)
+        {
+            try
+            {
+
+                return await WebService.Get<Collection<Article>>(controller: "feeds",
+                                                                   action: needUpdate ? "update" : null,
+                                                                   parameters: needUpdate ? new string[] { timeUpdate } : null,
+                                                                   jsonBody: $"{{\"search\": \"{keywords}\"}}", unSuccessCallback: async (err) =>
+                                                                   {
+#if DEBUG                                                          
+                                                                       throw new Exception(await err.Content.ReadAsStringAsync());
+#endif                                                             
+                                                                   });
             }
             catch (Exception ex)
             {
@@ -104,9 +137,40 @@ namespace AresNews.Services
             try
             {
 
-                return await App.WService.Get<Collection<Article>>(controller: "feeds",
+                return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                    action: "update",
                                                                    parameters: new string[] { dateUpdate },
+                                                                   jsonBody: null,
+                                                                   unSuccessCallback: e => _ = HandleHttpException(e));
+            }
+            catch (Exception ex)
+            {
+
+#if DEBUG
+                throw ex;
+#else
+                return null; 
+#endif
+            }
+        }
+        /// <summary>
+        /// Get the chunk articles from given date
+        /// </summary>
+        /// <param name="dateFrom">date from which the last article was published as "dd-MM-yyy_HH:mm:ss"</param>
+        /// <param name="length">length of the chunk in hour</param>
+        /// <returns>chunk articles the date provided</returns>
+        public async Task<Collection<Article>> GetFeedChunk(DateTime dateFrom, int length)
+        {
+            try
+            {
+                //dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, 0);
+                string[] parameters = new string[]
+                {
+                   dateFrom.AddHours(-length).ToString("dd-MM-yyy_HH:mm:ss"),
+                   dateFrom.AddMinutes(-1).ToString("dd-MM-yyy_HH:mm:ss"),
+                };
+                return await this.WebService.Get<Collection<Article>>(controller: "feeds",
+                                                                   parameters: parameters,
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }

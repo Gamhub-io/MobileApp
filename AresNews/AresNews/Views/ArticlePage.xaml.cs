@@ -17,8 +17,10 @@ namespace AresNews.Views
 #if DEBUG
 
         private const double TimeMaxArticles = 0;
+        private const bool _isTest = true;
 #else
         private const double TimeMaxArticles = 30;
+        private const bool _isTest = false;
 #endif
         private ArticleViewModel _vm;
         private uint _modalHeightStart = 0;
@@ -30,12 +32,6 @@ namespace AresNews.Views
             InitializeComponent();
 
             BindingContext = _vm = new ArticleViewModel(article);
-
-            //if (Device.RuntimePlatform == Device.iOS)
-            //{
-            //    string htmlContent = article.Content;
-            //    wvHtmlContent.Source = new HtmlWebViewSource { Html = htmlContent };
-            //}
         }
 
         protected override void OnDisappearing()
@@ -68,8 +64,8 @@ namespace AresNews.Views
             // Save the Time spent
             Preferences.Set(TimeSpentKey, timeSpentOnArticles);
 
-            if (timeSpentOnArticles >= TimeMaxArticles)
-                await CrossStoreReview.Current.RequestReview(false);;
+            if (TimeSpan.FromMilliseconds(timeSpentOnArticles) >= TimeSpan.FromMinutes(TimeMaxArticles) && (App.Current as App).DateFirstRun.Date < DateTime.Now.Date)
+                await CrossStoreReview.Current.RequestReview(_isTest);;
 
 
 
