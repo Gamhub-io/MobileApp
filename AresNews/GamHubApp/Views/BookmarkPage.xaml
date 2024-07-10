@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:GamHub.Controls"
+             xmlns:vm="clr-namespace:GamHub.ViewModels"
+             x:Class="GamHub.Views.BookmarkPage"
+             BackgroundColor="{StaticResource Dark}">
+    <Shell.TitleView>
+        <Grid>
+            <Grid.HeightRequest>
+                <OnPlatform x:TypeArguments="x:Double">
+                    <On Platform="iOS" Value="44"/>
+                </OnPlatform>
+            </Grid.HeightRequest>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="{StaticResource TitleRightMargin}"/>
+
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Bookmarks"
+                   Grid.Column="1"
+                   FontSize="30"
+                   VerticalOptions="Center"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"/>
+        </Grid>
+
+    </Shell.TitleView>
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="1,1">
+            <GradientStop Color="#262626"
+                           Offset="0.1"/>
+            <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+            <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            <GradientStop Color="Black"
+                           Offset="1.0"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <ContentPage.Content>
+        <CollectionView ItemsSource="{Binding Bookmarks}" 
+                        Margin="8,0" 
+                        >
+            <CollectionView.Header>
+                <BoxView  Margin="0">
+                    <BoxView.HeightRequest>
+                        <OnPlatform x:TypeArguments="x:Double">
+                            <On Platform="Android" Value="0"/>
+                            <On Platform="iOS" Value="30"/>
+                        </OnPlatform>
+                    </BoxView.HeightRequest>
+                </BoxView>
+            </CollectionView.Header>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.EmptyView>
+
+                <ContentView>
+                    <StackLayout VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="CenterAndExpand">
+                        <Label Text="&#xf02e;"
+                               FontFamily="FaRegular"
+                               TextColor="{StaticResource Primary}"
+                               FontSize="50"
+                               HorizontalOptions="Center"
+                           />
+                        <Label Text="No article saved"
+                               FontFamily="P-Bold"
+                               HorizontalOptions="Center"
+                               FontSize="Title"
+                               TextColor="{StaticResource FontColor}"
+                               />
+                        <Label Text="Tap on the bookmark icon on the articles you want to save."
+                               FontFamily="P-Regular"
+                               HorizontalTextAlignment="Center"
+                               FontSize="Subtitle"
+                               TextColor="{StaticResource FontColor}"
+                               />
+                    </StackLayout>
+                </ContentView>
+
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
+                                             ArticleId="{Binding Id}"
+                                             ArticleIsSaved="True"
+                                             ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
+                                             ArticleSource="{Binding Source, Mode=OneWay}"
+                                             Thumnail="{Binding Image}"
+                                             ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=ShareArticle, Mode=OneWay}"
+                                             ShareCommandParameter="{Binding Url}"
+                                             BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=AddBookmark, Mode=OneWay}"
+                                             ControlTemplate="{StaticResource ArticleTemplate}"
+                                             TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=GoToDetail}"
+                                             TapCommandParameter="{Binding Id}"
+                                             />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </ContentPage.Content>
+</ContentPage>

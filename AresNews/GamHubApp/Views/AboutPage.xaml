@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodels="clr-namespace:GamHub.ViewModels" 
+             x:DataType="viewmodels:AboutViewModel"
+             x:Class="GamHub.Views.AboutPage">
+    <Shell.TitleView>
+        <Grid>
+            <Grid.HeightRequest>
+                <OnPlatform x:TypeArguments="x:Double">
+                    <On Platform="iOS" Value="44"/>
+                </OnPlatform>
+            </Grid.HeightRequest>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="{StaticResource TitleRightMargin}"/>
+
+            </Grid.ColumnDefinitions>
+
+            <Label Text="About"
+                   Grid.Column="1"
+                   FontSize="30"
+                   VerticalOptions="Center"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"/>
+        </Grid>
+
+    </Shell.TitleView>
+    <ContentPage.Resources>
+        <!-- Style of the title -->
+        <Style x:Key="TitleStyle"
+               TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="Margin" Value="0,20,0,0" />
+            <Setter Property="FontFamily" Value="P-Bold" />
+            <Setter Property="FontSize" Value="23" />
+            <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+        </Style>
+        
+        <!-- Separator -->
+        <Style x:Key="SeparatorStyle" 
+               TargetType="BoxView">
+            <Setter Property="BackgroundColor" Value="{StaticResource FontColor}" />
+            <Setter Property="Margin" Value="20,0" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+            <Setter Property="HeightRequest" Value="1" />
+            <Setter Property="Opacity" Value="0.1" />
+        </Style>
+        
+        <!-- Paragraph -->
+        <Style x:Key="ParagraphStyle"
+               TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            <Setter Property="WidthRequest" Value="350" />
+            <Setter Property="FontFamily" Value="P-Regular" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        
+        <ScrollView>
+            <ScrollView.Background>
+                <LinearGradientBrush StartPoint="0,0"
+                             EndPoint="1,1">
+                    <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                    <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                    <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+                    <GradientStop Color="Black"
+                           Offset="1.0"/>
+                </LinearGradientBrush>
+            </ScrollView.Background>
+            <Grid>
+            <Grid.RowDefinitions>
+                <!-- Image -->
+                <RowDefinition Height="100" />
+                <!-- Repo link -->
+                <RowDefinition Height="auto" />
+                <!-- Description -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <!-- Economic model -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <!-- Message for the half baked playstore reviewers -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <!-- Creator -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <!-- footer -->
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Image -->
+            <Image Source="GamHubLogo"
+                   VerticalOptions="Center"
+                   Grid.Row="0"
+                   Aspect="AspectFit" 
+                   />
+                <StackLayout Grid.Row="1"
+                             Orientation="Horizontal"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center">
+                    <Frame CornerRadius="12"
+                           Padding="7"
+                           BackgroundColor="{StaticResource Dark}"
+                           xct:TouchEffect.Command="{Binding ViewGithub}">
+                        <Frame.Behaviors>
+                            <xct:Touch
+                        </Frame.Behaviors>
+                        <StackLayout Orientation="Horizontal">
+                            <!-- Github icon -->
+                            <Label Text="&#xf09b;"
+                                   FontSize="20"
+                                   FontFamily="FaBrand"
+                                   TextColor="#fafafa"
+                                   VerticalOptions="Center" />
+                            <Label Text="View on Github"
+                                   FontSize="12"
+                                   FontFamily="P-SemiBold"
+                                   TextColor="#fafafa"
+                                   VerticalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+                    <Frame CornerRadius="12"
+                           Padding="7"
+                           BackgroundColor="#1DA1F2"
+                           xct:TouchEffect.Command="{Binding ViewTwitter}"
+                           xct:TouchEffect.CommandParameter="gamhub_io">
+                        <StackLayout Orientation="Horizontal">
+                            <!-- Github icon -->
+                            <Label Text="&#xf099;"
+                           FontSize="20"
+                           FontFamily="FaBrand"
+                           TextColor="#fafafa"
+                           VerticalOptions="Center" />
+                            <Label Text="Follow on Twitter"
+                           FontSize="12"
+                           FontFamily="P-SemiBold"
+                           TextColor="#fafafa"
+                           VerticalOptions="Center" />
+                        </StackLayout>
+                    </Frame>
+
+                </StackLayout>
+
+            <!-- Description --> 
+            <Label Text="Project description"
+                   Grid.Row="2"
+                   Style="{StaticResource TitleStyle}" />
+            <BoxView Grid.Row="3"
+                     Style="{StaticResource SeparatorStyle}"/>
+            <Label Text="The purpose of GamHub is to keep gamers 
+up-to-date on everything game-related, for free, 
+with no ads or any other type of annoyance. &#10; &#10;
+
+As the app is open-source, the app evolve using
+its community's skills, knowledges and opinions.  "
+                   Grid.Row="4"
+                   Style="{StaticResource ParagraphStyle}"/>
+            
+            <!-- Profit -->
+            <Label Text="How is it profitable?"
+                   Grid.Row="5"
+                   Style="{StaticResource TitleStyle}" />
+            <BoxView Grid.Row="6"
+                     Style="{StaticResource SeparatorStyle}"/>
+            <Label Text="It's not."
+                   Grid.Row="7"
+                   Style="{StaticResource ParagraphStyle}"/>
+            
+            <!-- reviewer message -->
+            <Label Text="Contact us"
+                   Grid.Row="8"
+                   Style="{StaticResource TitleStyle}" />
+            <BoxView Grid.Row="9"
+                     Style="{StaticResource SeparatorStyle}"/>
+            <!--<Label Text="Email: Contact@gamhub.io"
+                   Grid.Row="10"
+                   Style="{StaticResource ParagraphStyle}"/>-->
+                <Grid Grid.Row="10"
+                      HorizontalOptions="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="Support"
+                            Grid.Column="0"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            CornerRadius="15"
+                            BackgroundColor="{StaticResource LightDark}"
+                            TextColor="{StaticResource FontColor}"
+                            Padding="10,0"
+                            FontFamily="P-Bold"
+                            Command="{Binding MailTo}"
+                            CommandParameter="support@gamhub.io"/>
+
+                    <Button Text="Business"
+                            BackgroundColor="{StaticResource LightDark}"
+                            TextColor="{StaticResource FontColor}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            CornerRadius="15"
+                            Padding="10,0"
+                            FontFamily="P-Bold"
+                            Command="{Binding MailTo}"
+                            CommandParameter="contact@gamhub.io"
+                            Grid.Column="1"/>
+                </Grid>
+
+            <!-- Creator -->
+            <Label Text="Founder"
+                   Grid.Row="11"
+                   Style="{StaticResource TitleStyle}" 
+                   />
+
+            <BoxView Grid.Row="12"
+                     Style="{StaticResource SeparatorStyle}"/>
+            
+            <!-- Card creator -->
+            <Frame Grid.Row="13"
+                   BackgroundColor="{StaticResource LightDark}"
+                   CornerRadius="15"
+                   WidthRequest="265"
+                   HeightRequest="108"
+                   Margin="0,20"
+                   HorizontalOptions="Center"
+                   Padding="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Profile pic -->
+                    <xct:AvatarView Grid.Column="0" 
+                                    HorizontalOptions="CenterAndExpand"
+                                    VerticalOptions="CenterAndExpand"
+                                    Color="{DynamicResource Dark}"
+                                    TextColor="{DynamicResource Dark}"
+                                    Text=""
+                                    Size="70"
+                                    Source="https://avatars.githubusercontent.com/u/37577669?v=4" />
+
+                    <Grid Grid.Column="1"
+                          Margin="0,20,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Name -->
+                        <Label Text="Brice Friha"
+                               FontSize="18"
+                               Grid.Row="0"
+                               FontFamily="P-Bold"
+                               TextColor="{StaticResource FontColor}"
+                               VerticalOptions="Center"/>
+
+                        <!-- Twitter -->
+                        <StackLayout Orientation="Horizontal"
+                                     Grid.Row="1">
+                            <!-- Twitter logo -->
+                                <Label Text="&#xe61a;"
+                                   FontSize="15"
+                                   FontFamily="FaBrand"
+                                   TextColor="#1DA1F2"
+                                   VerticalOptions="Center"/>
+                            
+                            <!-- Name -->
+                            <Label Text="@BriceFriha"
+                                   FontSize="14"
+                                   FontFamily="P-Bold"
+                                   VerticalOptions="Center"
+                                   TextColor="{StaticResource FontColor}"
+                                   xct:TouchEffect.Command="{Binding ViewTwitter}"
+                                   xct:TouchEffect.CommandParameter="bricefriha"/>
+                        </StackLayout>
+                    </Grid>
+                    
+                </Grid>
+            </Frame>
+                <Label Text="© 2024 Brice Friha"
+                       FontSize="12"
+                       Grid.Row="15"
+                       FontFamily="P-regular"
+                       TextColor="{StaticResource FontColor}"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"/>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
