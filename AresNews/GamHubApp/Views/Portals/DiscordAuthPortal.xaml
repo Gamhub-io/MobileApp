@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GamHub.Views.Portals.DiscordAuthPortal"
+             xmlns:Core="GamHub.Core"
+                 BackgroundColor="{StaticResource BgBannerColor}">
+    <ContentPage.Content>
+        <WebView Source="{Binding Url}"
+                 VerticalOptions="Fill"
+                 HorizontalOptions="Fill"
+                 Navigated="DiscordPortal_Navigated"
+                 Navigating="DiscordPortal_Navigating"
+                 x:Name="DiscordPortal"
+                 BackgroundColor="{StaticResource BgBannerColor}"
+                 />
+    </ContentPage.Content>
+</ContentPage>
+    

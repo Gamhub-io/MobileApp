@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:GamHub.Views"
+       x:Class="GamHub.AppShell"
+       xmlns:control="clr-namespace:GamHub.Controls"
+       Shell.TabBarBackgroundColor="{StaticResource LightDark}"
+       Shell.TabBarUnselectedColor="{StaticResource Light}"
+       Shell.TabBarTitleColor="{StaticResource Primary}"
+       Shell.BackgroundColor="{StaticResource LightDark}"
+       FlyoutBackgroundColor="{StaticResource LightDark}"
+       Shell.ForegroundColor="{StaticResource Light}"
+       FlyoutWidth="270"
+       xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+       xmlns:viewmodels="clr-namespace:GamHub.ViewModels">
+    <!-- Template for the shell content-->
+    <Shell.Resources>
+        <Style TargetType="Label"
+               x:Key="MenuIcon">
+            <Setter Property="FontFamily" Value="FaSolid" />
+            <Setter Property="Margin" Value="10,0,0,0" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="FontSize" Value="23" />
+            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+            <Setter Property="Grid.Column" Value="0" />
+        </Style>
+        <Style TargetType="Label"
+               x:Key="MenuLabel">
+            <Setter Property="FontFamily" Value="P-Regular" />
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalTextAlignment" Value="Start" />
+            <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+            <Setter Property="Grid.Column" Value="1" />
+        </Style>
+    </Shell.Resources>
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid HorizontalOptions="Center"
+                  Padding="0,10,0,0"
+                  >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <!-- Icon -->
+                        <ColumnDefinition Width="60"/>
+                        <!-- Title-->
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <!-- Icon -->
+                    <Label  Grid.Column="0"
+                            Margin="10,0,0,0"
+                            VerticalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            HorizontalOptions="Center"
+                            Text="{Binding Icon}" 
+                            FontFamily="FaSolid" 
+                            FontSize="23"
+                            TextColor="{StaticResource Light}"/>
+                    <!-- Title -->
+                    <Label Grid.Column="1" 
+                           Text="{Binding Title}" 
+                           FontSize="18" 
+                           VerticalOptions="Center"
+                           VerticalTextAlignment="Center"
+                           TextColor="{StaticResource FontColor}" 
+                           FontFamily="P-Regular"
+                           HorizontalOptions="Start"  />
+                </Grid>
+                
+
+                <BoxView BackgroundColor="Gray" 
+                         Grid.Row="1"
+                         HorizontalOptions="CenterAndExpand"
+                         VerticalOptions="Center"
+                         Margin="0,10,0,0"
+                         HeightRequest="1"
+                         Opacity="0.1"
+                         WidthRequest="320"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <Grid HorizontalOptions="Center"
+                  Padding="0,10"
+                  Margin="0,10"
+                  >
+                <Grid.ColumnDefinitions>
+                    <!-- Icon -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- Title-->
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <!-- Icon -->
+                <Label  Grid.Column="0"
+                        Margin="50,20,0,0"
+                        VerticalOptions="Center"
+                        Text="{Binding Icon}" 
+                        FontFamily="FaSolid" 
+                        FontSize="23"
+                        TextColor="{StaticResource Primary}"/>
+                <!-- Title -->
+                <Label Grid.Column="1" 
+                       Text="{Binding Title}" 
+                       FontSize="20" 
+                       TextColor="{StaticResource FontColor}" 
+                       FontFamily="P-SemiBold"
+                       HorizontalOptions="Start"  />
+            </Grid>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+    <Shell.FlyoutHeader  x:DataType="viewmodels:AppShellViewModel">
+        <Grid>
+            <Grid BackgroundColor="{StaticResource Alternate}"
+                  HeightRequest="80"
+                  IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
+                  xct:TouchEffect.Command="{Binding OpenAuth}">
+                <Image Source="GamHubLogo.png"/>
+            </Grid>
+            <Grid BackgroundColor="{StaticResource BgBannerColor}"
+                  IsVisible="{Binding Authenticated}"
+                  xct:TouchEffect.Command="{Binding OpenAuth}"
+                  ColumnDefinitions="50,*">
+                <Image Source="{Binding UserProfile.Avatar}"
+                       Grid.Column="0"/>
+                <Label Grid.Column="1" 
+                       Text="{Binding UserProfile.PublicName}" 
+                       FontSize="20"
+                       TextColor="{StaticResource FontColor}" 
+                       FontFamily="P-SemiBold"
+                       HorizontalOptions="Start"  />
+            </Grid>
+            
+        </Grid>
+    </Shell.FlyoutHeader>
+    <!-- Feed Page -->
+    <FlyoutItem Title="Feed"
+                Icon="&#xf00b;"
+                >
+        <ShellContent FlyoutItemIsVisible="False"
+                      Route="NewsPage"
+                      Title="News Feed"
+                      
+                      ContentTemplate="{DataTemplate views:NewsPage}">
+            <ShellContent.Icon Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,-30'}"
+                               >
+                <FontImageSource FontFamily="FaSolid" 
+                                 Glyph="&#xf00b;" 
+                                 Size="{OnPlatform Android='26', iOS='25'}"
+                                 />
+            </ShellContent.Icon>
+        </ShellContent>
+        <ShellContent FlyoutItemIsVisible="False"
+                      Route="BookmarkPage"
+                      Title="Bookmarks"
+                      ContentTemplate="{DataTemplate views:BookmarkPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FaSolid" 
+                                 Glyph="&#xf5fd;" 
+                                 Size="{OnPlatform Android='26', iOS='25'}"/>
+            </ShellContent.Icon>
+        </ShellContent>
+        <ShellContent FlyoutItemIsVisible="False"
+                      Route="MyFeedsPage"
+                      Title="My Feeds"
+                      ContentTemplate="{DataTemplate views:FeedsPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FaSolid" 
+                                 Glyph="&#xf005;" 
+                                 Size="{OnPlatform Android='26', iOS='25'}"/>
+            </ShellContent.Icon>
+            
+        </ShellContent>
+    </FlyoutItem>
+    
+    <!-- About Page -->
+    <FlyoutItem Title="About"
+                Icon="&#xf05a;">
+        <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
+    </FlyoutItem>
+
+
+
+    <Shell.FlyoutFooter  x:DataType="viewmodels:AppShellViewModel">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+                <RowDefinition Height="35"/>
+            </Grid.RowDefinitions>
+            <!-- Support -->
+            <Grid Grid.Row="2" 
+                  xct:TouchEffect.NativeAnimation="True"
+                  VerticalOptions="End" >
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding MailTo}"
+                                          CommandParameter="support@gamhub.io"/>
+                </Grid.GestureRecognizers>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+                <!-- Button to contact support -->
+                <Label Text="&#xf590;"
+                       Style="{StaticResource MenuIcon}"/>
+
+                <!-- label -->
+                <Label Text="Contact support"
+                       
+                       Style="{StaticResource MenuLabel}"
+                   />
+            </Grid>
+
+            <!-- Logout -->
+            <Grid Grid.Row="1" 
+                  xct:TouchEffect.NativeAnimation="True"
+                  xct:TouchEffect.Command="{Binding Logout}"
+                  IsVisible="{Binding Authenticated}"
+                  VerticalOptions="End" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <!--Button to log out-->
+                <Label 
+                    Text="&#xf2f5;"
+                    Style="{StaticResource MenuIcon}"/>
+                <!--label-->
+                <Label Text="Log out"
+                       Style="{StaticResource MenuLabel}"
+                   />
+            </Grid>
+            
+            <Label Text="© 2024 Brice Friha"
+                   FontSize="12"
+                   Grid.Row="3"
+                   Margin="0,10,0,0"
+                   FontFamily="P-regular"
+                   TextColor="{StaticResource FontColor}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"/>
+        </Grid>
+
+    </Shell.FlyoutFooter>
+</Shell>
