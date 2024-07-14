@@ -3,6 +3,7 @@
     <UseMaui>true</UseMaui>
     <TargetFrameworks>net8.0-ios;net8.0-android;net8.0</TargetFrameworks>
     <OutputType>Library</OutputType>
+    <UseMauiEssentials>false</UseMauiEssentials>
     <ImplicitUsings>enable</ImplicitUsings>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
@@ -12,14 +13,22 @@
     <SingleProject>true</SingleProject>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Config\AppSettings_temp.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Config\AppSettings_temp.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.0.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Custard" Version="0.3.7" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.7" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.70" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.7" />
+    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.70" />
   </ItemGroup>
 </Project>
