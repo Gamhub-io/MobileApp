@@ -7,6 +7,7 @@ using GamHub.Views.PopUps;
 using CustardApi.Objects;
 using System.Collections.ObjectModel;
 using SQLite;
+using Newtonsoft.Json;
 
 namespace GamHub
 {
