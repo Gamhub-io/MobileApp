@@ -1,12 +1,5 @@
 ﻿using GamHub.Models;
 using GamHub.Views;
-using MvvmHelpers;
-using Rg.Plugins.Popup.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
 
 namespace GamHub.ViewModels.PopUps
 {
@@ -56,13 +49,13 @@ namespace GamHub.ViewModels.PopUps
             App.SqLiteConn.Update(_feed);
 
             // Close the popup
-            CurrentApp.ClosePopUp (_popUp);
+            _popUp.Close();
         });
 
         public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(() =>
         {
             // Close the popup
-            CurrentApp.ClosePopUp (_popUp);
+            _popUp.Close();
         });
         public RenameFeedPopUpViewModel(RenameFeedPopUp page, Feed feed, FeedsViewModel vm )
         {

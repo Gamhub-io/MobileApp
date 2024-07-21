@@ -8,9 +8,7 @@
             <!-- Bookmark button-->
             <Frame 
                    Style="{StaticResource ButtonFrame}"
-                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
-                   xct:TouchEffect.NativeAnimation="True"
-                    xct:TouchEffect.ShouldMakeChildrenInputTransparent="False">
+                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
 
                 <Button Text="&#xf02e;"
                         Style="{StaticResource ButtonStyle}"

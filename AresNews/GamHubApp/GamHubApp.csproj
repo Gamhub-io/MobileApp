@@ -23,7 +23,10 @@
     <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.0.2" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Custard" Version="0.3.7" />
+    <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
+    <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.70" />

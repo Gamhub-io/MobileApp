@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:viewmodels="clr-namespace:GamHub.ViewModels" 
              x:DataType="viewmodels:AboutViewModel"
              x:Class="GamHub.Views.AboutPage">
@@ -115,10 +115,10 @@
                              VerticalOptions="Center">
                     <Frame CornerRadius="12"
                            Padding="7"
-                           BackgroundColor="{StaticResource Dark}"
-                           xct:TouchEffect.Command="{Binding ViewGithub}">
+                           BackgroundColor="{StaticResource Dark}">
                         <Frame.Behaviors>
-                            <xct:Touch
+                            <mct:TouchBehavior 
+                                Command="{Binding ViewGithub}"/>
                         </Frame.Behaviors>
                         <StackLayout Orientation="Horizontal">
                             <!-- Github icon -->
@@ -136,21 +136,25 @@
                     </Frame>
                     <Frame CornerRadius="12"
                            Padding="7"
-                           BackgroundColor="#1DA1F2"
-                           xct:TouchEffect.Command="{Binding ViewTwitter}"
-                           xct:TouchEffect.CommandParameter="gamhub_io">
+                           BackgroundColor="#1DA1F2">
+                        <Frame.Behaviors>
+                            <mct:TouchBehavior 
+                                            Command="{Binding ViewTwitter}"
+                                            CommandParameter="gamhub_io"
+                                            />
+                        </Frame.Behaviors>
                         <StackLayout Orientation="Horizontal">
-                            <!-- Github icon -->
+                            <!-- Twitter icon -->
                             <Label Text="&#xf099;"
-                           FontSize="20"
-                           FontFamily="FaBrand"
-                           TextColor="#fafafa"
-                           VerticalOptions="Center" />
+                                   FontSize="20"
+                                   FontFamily="FaBrand"
+                                   TextColor="#fafafa"
+                                   VerticalOptions="Center" />
                             <Label Text="Follow on Twitter"
-                           FontSize="12"
-                           FontFamily="P-SemiBold"
-                           TextColor="#fafafa"
-                           VerticalOptions="Center" />
+                                   FontSize="12"
+                                   FontFamily="P-SemiBold"
+                                   TextColor="#fafafa"
+                                   VerticalOptions="Center" />
                         </StackLayout>
                     </Frame>
 
@@ -247,14 +251,15 @@ its community's skills, knowledges and opinions.  "
                     </Grid.ColumnDefinitions>
                     
                     <!-- Profile pic -->
-                    <xct:AvatarView Grid.Column="0" 
+                    <mct:AvatarView Grid.Column="0" 
                                     HorizontalOptions="CenterAndExpand"
                                     VerticalOptions="CenterAndExpand"
-                                    Color="{DynamicResource Dark}"
+                                    BackgroundColor="{DynamicResource Dark}"
                                     TextColor="{DynamicResource Dark}"
                                     Text=""
-                                    Size="70"
-                                    Source="https://avatars.githubusercontent.com/u/37577669?v=4" />
+                                    HeightRequest="70"
+                                    WidthRequest="70"
+                                    ImageSource="https://avatars.githubusercontent.com/u/37577669?v=4" />
 
                     <Grid Grid.Column="1"
                           Margin="0,20,0,0">
@@ -275,7 +280,7 @@ its community's skills, knowledges and opinions.  "
                         <StackLayout Orientation="Horizontal"
                                      Grid.Row="1">
                             <!-- Twitter logo -->
-                                <Label Text="&#xe61a;"
+                            <Label Text="&#xe61a;"
                                    FontSize="15"
                                    FontFamily="FaBrand"
                                    TextColor="#1DA1F2"
@@ -286,9 +291,12 @@ its community's skills, knowledges and opinions.  "
                                    FontSize="14"
                                    FontFamily="P-Bold"
                                    VerticalOptions="Center"
-                                   TextColor="{StaticResource FontColor}"
-                                   xct:TouchEffect.Command="{Binding ViewTwitter}"
-                                   xct:TouchEffect.CommandParameter="bricefriha"/>
+                                   TextColor="{StaticResource FontColor}">
+                                <Label.Behaviors>
+                                    <mct:TouchBehavior Command="{Binding ViewTwitter}"
+                                                       CommandParameter="bricefriha"/>
+                                </Label.Behaviors>
+                            </Label>
                         </StackLayout>
                     </Grid>
                     

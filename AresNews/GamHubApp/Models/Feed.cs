@@ -1,12 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿
 using SQLite;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Drawing;
-using System.Text;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using Color = Microsoft.Maui.Graphics.Color;
 
 namespace GamHub.Models
 {
@@ -33,7 +28,7 @@ namespace GamHub.Models
         [Ignore]
         public bool IsLoaded { get; set; }
         [Ignore]
-        public Xamarin.Forms.Color ButtonColor { get; set; } = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
+        public Color ButtonColor { get; set; } = (Color)Application.Current.Resources["LightDark"];
         [Ignore]
         public ObservableCollection<Article> Articles { get; set; }
 

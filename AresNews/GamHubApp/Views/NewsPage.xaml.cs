@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 using Microsoft.Maui.Networking;
+using CommunityToolkit.Maui.Alerts;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 
 namespace GamHub.Views
 {
@@ -44,14 +46,11 @@ namespace GamHub.Views
         public async void DisplayOfflineMessage(string msg = null)
         {
             var current = Connectivity.NetworkAccess;
-
+            string message = "You're offline, please check if you're connected to the internet";
             if (current == NetworkAccess.Internet)
-            {
+                message = $"You're offline: {msg.Replace("[Issue Handler]: ", string.Empty)}";
 
-                await this.DisplayToastAsync($"You're offline: {msg.Replace("[Issue Handler]: ", string.Empty)}", 60000);
-                return;
-            }
-            await this.DisplayToastAsync($"You're offline, please check if you're connected to the internet", 60000);
+            await Snackbar.Make(message).Show();
 
           
         }
@@ -61,15 +60,13 @@ namespace GamHub.Views
         /// <param name="msg">message to display</param>
         public async Task DisplayMessage(string msg = null)
         {
-            await this.DisplayToastAsync(msg, 60000);
-
-          
+            await Snackbar.Make(msg).Show();
         }
         /// <summary>
         /// Method allowing the search bar animation
         /// </summary>
-        /// <param name="startingHeight">Start size</param>
-        /// <param name="endingHeight">End size</param>
+        /// <param name="startingWidth">Start size</param>
+        /// <param name="endingWidth">End size</param>
         public void AnimateWidthSearchBar(double startingWidth, double endingWidth)
         {
             // update the height of the layout with this call-back

@@ -1,7 +1,6 @@
 ﻿
 using GamHub.Models;
 using GamHub.Views;
-using MvvmHelpers;
 using Newtonsoft.Json;
 using SQLiteNetExtensions.Extensions;
 using System;
@@ -10,11 +9,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Command = Xamarin.Forms.Command;
+using Command = Microsoft.Maui.Controls.Command;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui;
 using Microsoft.Maui.Networking;
 using Microsoft.Maui.ApplicationModel.DataTransfer;
+using MvvmHelpers;
 
 namespace GamHub.ViewModels
 {
@@ -164,19 +164,19 @@ namespace GamHub.ViewModels
         public Command UncoverNewArticles { get; private set; }
         private FeedsPage CurrentPage { get; set; }
 
-        public Xamarin.Forms.Command<Feed> Delete => new Xamarin.Forms.Command<Feed>( (feed) =>
+        public Command<Feed> Delete => new Command<Feed>( (feed) =>
         {
             CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this), CurrentPage);
 
         });
 
-        public Xamarin.Forms.Command<Feed> Rename => new Xamarin.Forms.Command<Feed>( (feed) =>
+        public Command<Feed> Rename => new Command<Feed>( (feed) =>
         {
             CurrentApp.OpenPopUp (new RenameFeedPopUp(_selectedFeed, this), CurrentPage);
 
         });
 
-        public Xamarin.Forms.Command<Feed> Edit => new Xamarin.Forms.Command<Feed>(async (feed) =>
+        public Command<Feed> Edit => new Command<Feed>(async (feed) =>
         {
             IsFromDetail = true;
             CurrentFocusIndex = _feeds.IndexOf(_selectedFeed);
@@ -202,7 +202,7 @@ namespace GamHub.ViewModels
 
             if (IsBusy)
                 return;
-            Device.BeginInvokeOnMainThread(async () =>
+            MainThread.BeginInvokeOnMainThread(async () =>
             {
                 if (_feeds.Count <= 0)
                     return;
@@ -422,7 +422,7 @@ namespace GamHub.ViewModels
             IsBusy = true;
 #if DEBUG
 
-            Debug.WriteLine($"IsNotBusy: {IsNotBusy}");
+            //Debug.WriteLine($"IsNotBusy: {IsNotBusy}");
 #endif
             CurrentApp.ShowLoadingIndicator();
 

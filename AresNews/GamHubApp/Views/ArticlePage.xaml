@@ -5,11 +5,9 @@
              xmlns:helpers="clr-namespace:GamHub.Helpers"
              xmlns:ctrls="clr-namespace:GamHub.Controls"
              BackgroundColor="{StaticResource Dark}"
-             xmlns:mat="clr-namespace:LabelHtml.Forms.Plugin.Abstractions;assembly=HtmlLabel.Forms.Plugin"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:viewmodels="clr-namespace:GamHub.ViewModels"
              x:DataType="viewmodels:ArticleViewModel"
-             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              Shell.TabBarIsVisible="False"
              >
     <Shell.TitleView>
@@ -194,10 +192,11 @@
                         <Frame Grid.Column="2"
                                Style="{StaticResource ButtonFrame}"
                                Padding="0"
-                               xct:TouchEffect.NativeAnimation="True"
-                               xct:TouchEffect.Command="{Binding PlayTextToSpeech}"
                                BackgroundColor="{Binding TtsColour}"
                                >
+                                <Frame.Behaviors>
+                                    <mct:TouchBehavior Command="{Binding PlayTextToSpeech}"/>
+                                </Frame.Behaviors>
 
                             <Label TextColor="{StaticResource Primary}"
                                     Text="{Binding TtsIcon}"
@@ -211,14 +210,18 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
-                <mat:HtmlLabel Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                <!--<mat:HtmlLabel Text="{Binding SelectedArticle.Content, Mode=OneWay}"
                                TextColor="{StaticResource FontColor}"
                                Margin="25,5"
                                IsEnabled="True"
                                AndroidLegacyMode="True"
                                FontFamily="P-Regular"
-                               Grid.Row="3"/>
-                <!--<WebView 
+                               Grid.Row="3"/>-->
+                    <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                           FontFamily="P-Regular"
+                           TextType="Html"
+                           />
+                    <!--<WebView 
                                Margin="25,5"
                     BackgroundColor="{StaticResource LightDark}"
                                IsEnabled="{OnPlatform Android=false, iOS=true}"
@@ -254,16 +257,17 @@
             <!-- Menu overlay -->
             <Frame HorizontalOptions="End"
                    x:Name="dropdownMenu"
-                   xct:CornerRadiusEffect.CornerRadius="0,0,8,0"
+                   CornerRadius="0"
                    VerticalOptions="Start"
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
                    Padding="0"
-                   CornerRadius="0"
                    WidthRequest="50">
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
-                    <Grid xct:TouchEffect.NativeAnimation="True"
-                          xct:TouchEffect.Command="{Binding Browse}">
+                    <Grid >
+                        <Grid.Behaviors>
+                            <mct:TouchBehavior Command="{Binding Browse}"/>
+                        </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
@@ -277,8 +281,10 @@
                                  WidthRequest="30"
                                  BackgroundColor="{StaticResource FontColor}"
                                  Opacity="0.1"/>
-                    <Grid xct:TouchEffect.NativeAnimation="True"
-                              xct:TouchEffect.Command="{Binding ShareArticle}">
+                    <Grid>
+                        <Grid.Behaviors>
+                            <mct:TouchBehavior Command="{Binding ShareArticle}"/>
+                        </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>

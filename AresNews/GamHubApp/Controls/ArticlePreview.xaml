@@ -4,9 +4,8 @@
              xmlns:helpers="clr-namespace:GamHub.Helpers"
              xmlns:ctrs="clr-namespace:GamHub.Controls"
              x:Class="GamHub.Controls.ArticlePreview"
-             xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
              xmlns:viewmodels="clr-namespace:GamHub.ViewModels" 
-             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              x:DataType="ctrs:ArticlePreview"
              x:Name="preview">
 
@@ -20,29 +19,25 @@
                    BorderColor="{StaticResource Dark}"
                    HeightRequest="221"
                    IsClippedToBounds="True"
-                   Padding="0"
-                   xct:TouchEffect.NativeAnimation="True"
-                   xct:TouchEffect.ShouldMakeChildrenInputTransparent="False"
-                   >
+                   Padding="0">
+                <Frame.Behaviors>
+                    <mct:TouchBehavior Command="{Binding TapCommand}" 
+                                       CommandParameter="{Binding TapCommandParameter}"/>
+                </Frame.Behaviors>
 
-                <Frame.GestureRecognizers>
+                <!--<Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding TapCommand}" 
                                                       CommandParameter="{Binding TapCommandParameter}" />
-                </Frame.GestureRecognizers>
+                </Frame.GestureRecognizers>-->
                 <Grid >
 
                     <!-- Backgournd -->
                     <Grid BackgroundColor="{StaticResource Dark}">
                         <!-- Image -->
-                        <ffimageloading:CachedImage Source="{Binding Thumnail}"
-                                                    Opacity="0.60"
-                                                    CacheDuration="5"
-                                                    RetryCount="3"
-                                                    RetryDelay="600"
-                                                    
-                                                    DownsampleToViewSize="true"
-                                                    Aspect="AspectFill" >
-                        </ffimageloading:CachedImage>
+                        <Image Source="{Binding Thumnail}"
+                               Opacity="0.60"
+                               Aspect="AspectFill" >
+                        </Image>
                         <!--<Image Source="{Binding Thumnail, Mode=OneWay}"
                                Opacity="0.60"
                                Aspect="AspectFill" />-->
@@ -104,10 +99,11 @@
                                 <!-- Share button-->
                                 <Frame Grid.Row="0"
                                        Style="{StaticResource ButtonFrame}" 
-                                       BackgroundColor="{StaticResource LightDark}"
-                                        xct:TouchEffect.Command="{Binding ShareCommand}"
-                                        xct:TouchEffect.NativeAnimation="True"
-                                        xct:TouchEffect.CommandParameter="{Binding ArticleId}" >
+                                       BackgroundColor="{StaticResource LightDark}" >
+                                    <Frame.Behaviors>
+                                        <mct:TouchBehavior Command="{Binding ShareCommand}"
+                                                           CommandParameter="{Binding ArticleId}"/>
+                                    </Frame.Behaviors>
                                     <Label Style="{StaticResource LabelButtonStyle}"
                                             Text="&#xf1e0;"
                                         />

@@ -8,6 +8,7 @@ using CustardApi.Objects;
 using System.Collections.ObjectModel;
 using SQLite;
 using Newtonsoft.Json;
+using CommunityToolkit.Maui.Views;
 
 namespace GamHub
 {
@@ -16,11 +17,10 @@ namespace GamHub
         public bool IsLoading { get; private set; }
 
         public static Collection<Source> Sources { get; private set; }
-        // Property SqlLite Connection
         public static SQLiteConnection SqLiteConn { get; set; }
         public static SQLiteConnection BackUpConn { get; set; }
 
-        public PopupPage LoadingIndicator { get; private set; }
+        public Popup LoadingIndicator { get; private set; }
         public static Service WService { get; set; }
         public Fetcher DataFetcher { get; set; }
         public static string ProdHost { get; } = "api.gamhub.io";
@@ -103,18 +103,11 @@ namespace GamHub
         public void ShowLoadingIndicator()
         {
 
-            try
-            {
+           if (IsLoading)
+               return;
+           IsLoading = true;
 
-                if (IsLoading)
-                    return;
-                IsLoading = true;
-
-                OpenPopUp (this.LoadingIndicator);
-            }
-            catch (RGPageInvalidException)
-            {
-            }
+           OpenPopUp (this.LoadingIndicator);
 
         }
 
@@ -123,20 +116,14 @@ namespace GamHub
         /// </summary>
         public void RemoveLoadingIndicator()
         {
-            try 
-            {
-                if (!IsLoading)
-                    return;
+           if (!IsLoading)
+               return;
 
 
-                IsLoading = false;
-                
-                // Close the popup
-                ClosePopUp (this.LoadingIndicator);
-            }
-            catch (RGPageInvalidException)
-            {
-            }
+           IsLoading = false;
+           
+           // Close the popup
+           this.LoadingIndicator.Close();
         }
         /// <summary>
         ///  Function to close the database 
@@ -244,7 +231,7 @@ namespace GamHub
         /// </summary>
         /// <param name="popUp">pop up to open</param>
         /// <param name="page">parent page</param>
-        public void OpenPopUp(PopupPage popUp, Page page = null)
+        public void OpenPopUp(Popup popUp, Page page = null)
         {
             try
             {
@@ -255,32 +242,7 @@ namespace GamHub
                 if (page == null)
                     page = GetCurrentPage();
 
-                _ = page.Navigation.PushPopupAsync(popUp);
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                throw ex;
-#endif
-            }
-        }
-        /// <summary>
-        /// Close any popup
-        /// </summary>
-        /// <param name="popUp">pop up to open</param>
-        /// <param name="page">parent page</param>
-        public void ClosePopUp(PopupPage popUp, Page page = null)
-        {
-            try
-            {
-
-                if (popUp == null)
-                    return;
-
-                if (page == null)
-                    page = GetCurrentPage();
-
-                _ = page.Navigation.RemovePopupPageAsync(popUp);
+                page.ShowPopup(popUp);
             }
             catch (Exception ex)
             {
@@ -361,7 +323,7 @@ namespace GamHub
                 await Task.Delay(10);
 
             // in any case close the pop up after receiving a response
-            ClosePopUp(popUp);
+            popUp.Close();
 
             return popUp.Result ?? false;
         }

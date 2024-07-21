@@ -54,7 +54,7 @@ namespace GamHub.Views
         /// Method to change the color of the first button in the CollectionView
         /// </summary>
         /// <param name="colour"></param>
-        private void ChangeFirstButtonColor(Xamarin.Forms.Color colour)
+        private void ChangeFirstButtonColor(Color colour)
         {
 
             _firstButton.BackgroundColor = colour;
