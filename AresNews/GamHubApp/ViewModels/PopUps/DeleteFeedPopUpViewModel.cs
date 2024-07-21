@@ -1,14 +1,5 @@
 ﻿using GamHub.Models;
 using GamHub.Views;
-using MvvmHelpers;
-using Rg.Plugins.Popup.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Xamarin.Forms.PancakeView;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
 
 namespace GamHub.ViewModels.PopUps
 {
@@ -64,13 +55,13 @@ namespace GamHub.ViewModels.PopUps
             _context.RemoveFeedByIndex(index);
 
             // Close the popup
-            CurrentApp.ClosePopUp (_page, Page);
+            _page.Close();
         });
 
         public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(() =>
         {
             // Close the popup
-            CurrentApp.ClosePopUp (_page, Page);
+            _page.Close();
         });
 
         public DeleteFeedPopUpViewModel(DeleteFeedPopUp page, Feed feed, FeedsViewModel ctx)

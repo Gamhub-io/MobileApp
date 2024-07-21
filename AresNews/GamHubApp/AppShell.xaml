@@ -11,7 +11,7 @@
        FlyoutBackgroundColor="{StaticResource LightDark}"
        Shell.ForegroundColor="{StaticResource Light}"
        FlyoutWidth="270"
-       xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+       xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
        xmlns:viewmodels="clr-namespace:GamHub.ViewModels">
     <!-- Template for the shell content-->
     <Shell.Resources>
@@ -119,14 +119,18 @@
         <Grid>
             <Grid BackgroundColor="{StaticResource Alternate}"
                   HeightRequest="80"
-                  IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
-                  xct:TouchEffect.Command="{Binding OpenAuth}">
+                  IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}">
+                <Grid.Behaviors>
+                    <mct:TouchBehavior Command="{Binding OpenAuth}"/>
+                </Grid.Behaviors>
                 <Image Source="GamHubLogo.png"/>
             </Grid>
             <Grid BackgroundColor="{StaticResource BgBannerColor}"
                   IsVisible="{Binding Authenticated}"
-                  xct:TouchEffect.Command="{Binding OpenAuth}"
                   ColumnDefinitions="50,*">
+                <Grid.Behaviors>
+                    <mct:TouchBehavior Command="{Binding OpenAuth}"/>
+                </Grid.Behaviors>
                 <Image Source="{Binding UserProfile.Avatar}"
                        Grid.Column="0"/>
                 <Label Grid.Column="1" 
@@ -195,8 +199,7 @@
                 <RowDefinition Height="35"/>
             </Grid.RowDefinitions>
             <!-- Support -->
-            <Grid Grid.Row="2" 
-                  xct:TouchEffect.NativeAnimation="True"
+            <Grid Grid.Row="2"
                   VerticalOptions="End" >
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding MailTo}"
@@ -220,11 +223,12 @@
             </Grid>
 
             <!-- Logout -->
-            <Grid Grid.Row="1" 
-                  xct:TouchEffect.NativeAnimation="True"
-                  xct:TouchEffect.Command="{Binding Logout}"
+            <Grid Grid.Row="1"
                   IsVisible="{Binding Authenticated}"
                   VerticalOptions="End" >
+                <Grid.Behaviors>
+                    <mct:TouchBehavior Command="{Binding Logout}"/>
+                </Grid.Behaviors>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="*"/>

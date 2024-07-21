@@ -1,14 +1,6 @@
 ﻿using GamHub.Models;
 using SQLiteNetExtensions.Extensions;
-using System;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
-using Microsoft.Maui.Media;
-using Microsoft.Maui.ApplicationModel;
 
 namespace GamHub.ViewModels
 {

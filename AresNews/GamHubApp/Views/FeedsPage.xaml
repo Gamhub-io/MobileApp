@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GamHub.Views.FeedsPage"
-             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              xmlns:model="clr-namespace:GamHub.Models" 
              xmlns:vm="clr-namespace:GamHub.ViewModels" 
              xmlns:controls="clr-namespace:GamHub.Controls"
@@ -309,14 +309,15 @@
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
                    Padding="0"
-                   xct:CornerRadiusEffect.CornerRadius="0,0,8,0"
-                   
-                   Grid.RowSpan="2"
                    CornerRadius="0"
+                   Grid.RowSpan="2"
                    WidthRequest="50">
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
-                    <Grid xct:TouchEffect.NativeAnimation="True"
-                          xct:TouchEffect.Command="{Binding Edit, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}">
+                    <Grid>
+
+                        <Grid.Behaviors>
+                            <mct:TouchBehavior Command="{Binding Edit, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"/>
+                        </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"
                                                   />
@@ -331,8 +332,10 @@
                                  WidthRequest="30"
                                  BackgroundColor="{StaticResource FontColor}"
                                  Opacity="0.1"/>
-                    <Grid xct:TouchEffect.NativeAnimation="True"
-                              xct:TouchEffect.Command="{Binding Delete}">
+                    <Grid>
+                        <Grid.Behaviors>
+                            <mct:TouchBehavior Command="{Binding Delete}"/>
+                        </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>

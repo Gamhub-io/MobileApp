@@ -1,9 +1,5 @@
 ﻿using GamHub.Models;
 using GamHub.Views;
-using MvvmHelpers;
-using Rg.Plugins.Popup.Extensions;
-using System.Linq;
-
 namespace GamHub.ViewModels
 {
     public class EditFeedViewModel : BaseViewModel
