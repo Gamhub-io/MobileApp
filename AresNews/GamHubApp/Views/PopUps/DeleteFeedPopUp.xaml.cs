@@ -1,13 +1,12 @@
-﻿using GamHub.Models;
+﻿using CommunityToolkit.Maui.Views;
+using GamHub.Models;
 using GamHub.ViewModels;
 using GamHub.ViewModels.PopUps;
-using Rg.Plugins.Popup.Pages;
-using Microsoft.Maui.Controls.Xaml;
 
 namespace GamHub.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class DeleteFeedPopUp : PopupPage
+    public partial class DeleteFeedPopUp : Popup
     {
         public DeleteFeedPopUp(Feed feed, FeedsViewModel vm)
         {

@@ -1,24 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<pages:PopupPage 
+<toolkit:Popup 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
      x:Class="GamHub.Views.PopUps.LoadingPopUp"
-    CloseWhenBackgroundIsClicked="False">
-    <!--You can set an animation in the xaml file or in the csharp code behind-->
-    <pages:PopupPage.Animation>
-        <animations:ScaleAnimation 
-            PositionIn="Center"
-            PositionOut="Center"
-            ScaleIn="1.2"
-            ScaleOut="0.8"
-            DurationIn="400"
-            DurationOut="300"
-            EasingIn="SinOut"
-            EasingOut="SinIn"
-            HasBackgroundAnimation="True"/>
-    </pages:PopupPage.Animation>
+    CanBeDismissedByTappingOutsideOfPopup="False">
     <Frame HeightRequest="150"
            WidthRequest="140"
            x:Name="popUpFrame"
@@ -42,4 +28,4 @@
                     FontFamily="FontBold"/>
         </StackLayout>
     </Frame>
-</pages:PopupPage>
+</toolkit:Popup>
