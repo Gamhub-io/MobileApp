@@ -1,27 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<pages:PopupPage 
+<xct:Popup 
         xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-        xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
-        xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup" 
         xmlns:views="clr-namespace:GamHub.Views" 
         x:DataType="views:LogoutConfirmationPopUp"
         x:Class="GamHub.Views.LogoutConfirmationPopUp"
-       xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
-     HasKeyboardOffset="False">
-    <!--You can set an animation in the xaml file or in the csharp code behind-->
-    <pages:PopupPage.Animation>
-        <animations:ScaleAnimation 
-            PositionIn="Center"
-            PositionOut="Center"
-            ScaleIn="1.2"
-            ScaleOut="0.8"
-            DurationIn="400"
-            DurationOut="300"
-            EasingIn="SinOut"
-            EasingOut="SinIn"
-            HasBackgroundAnimation="True"/>
-    </pages:PopupPage.Animation>
+       xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
     <Frame
            VerticalOptions="Center" 
            HorizontalOptions="Center"
@@ -40,10 +24,11 @@
         </Frame.Background>
 
         <StackLayout >
-            <xct:AvatarView Source="{Binding Profile.Avatar}"
+            <xct:AvatarView ImageSource="{Binding Profile.Avatar}"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
-                            Size="50"
+                            HeightRequest="50"
+                            WidthRequest="50"
                             />
             <Label Text="Are you use you want to logout?"
                    FontSize="20"
@@ -83,4 +68,4 @@
         </StackLayout>
 
     </Frame>
-</pages:PopupPage>
+</xct:Popup>

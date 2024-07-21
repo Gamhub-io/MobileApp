@@ -1,17 +1,9 @@
-﻿using Rg.Plugins.Popup.Pages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls.Xaml;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+﻿using CommunityToolkit.Maui.Views;
 
 namespace GamHub.Views.PopUps
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LoadingPopUp : PopupPage
+    public partial class LoadingPopUp : Popup
     {
         public LoadingPopUp(string message = null)
         {

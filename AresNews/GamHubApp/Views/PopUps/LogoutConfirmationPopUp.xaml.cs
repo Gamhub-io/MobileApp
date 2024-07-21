@@ -1,11 +1,10 @@
-﻿using GamHub.Models;
-using Rg.Plugins.Popup.Pages;
-using Microsoft.Maui.Controls.Xaml;
+﻿using CommunityToolkit.Maui.Views;
+using GamHub.Models;
 
 namespace GamHub.Views
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class LogoutConfirmationPopUp : PopupPage
+	public partial class LogoutConfirmationPopUp : Popup
     {
         public User Profile { get; set; }
         public App CurrentApp { get; }
@@ -22,15 +21,6 @@ namespace GamHub.Views
             Profile = user;
 			BindingContext = this;
 		}
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-
-            // prevent the page from collapsing when the keyboard appears
-            HasSystemPadding = false;
-
-
-        }
 
         private void Cancel_Clicked(object sender, System.EventArgs e)
         {
