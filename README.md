@@ -46,11 +46,12 @@ Platform | Testing | Production |
 As the app is open-source, the app evolve using
 its community's skills, knowledges and opinions.  
 
-### Contribute with skills! 💪
+#### Contribute with skills! 💪
 If you are a software developer skilled in C# and Xamarin. The most obvious way you can contribute is with your coding skills.
 Regarless of your experience, you contribution will always be welcome here. Take a look at the [list of issues](https://github.com/bricefriha/AresNews/issues), pick one, let us know you want to work on it, create a Fork of the project and here you go!
 
 ### Contribute with your opinions! 🗣
+> ⚠️ we are currently closing contributions as we are working on migrating the project to .NET MAUI
 Your opinions always matters as the GamHub is a product built around his user. 
 Indeed, you don't need to be a coder to be actor in this project!
 From the [list of issues](https://github.com/bricefriha/AresNews/issues), you can participate to conversations around a current issue or create a new one if you want to report a bug or give some new ideas.
