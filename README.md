@@ -55,6 +55,9 @@ Your opinions always matters as the GamHub is a product built around his user.
 Indeed, you don't need to be a coder to be actor in this project!
 From the [list of issues](https://github.com/bricefriha/AresNews/issues), you can participate to conversations around a current issue or create a new one if you want to report a bug or give some new ideas.
 
+### Contribution guide
+> for now we are temporarily closing outsise contribution as we are working on a migration to dotnet MAUI
+
 ## Authors
 
 
