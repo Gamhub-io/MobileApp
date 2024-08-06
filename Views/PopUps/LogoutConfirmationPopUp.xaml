@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xct:Popup 
+        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+        xmlns:views="clr-namespace:GamHubApp.Views" 
+        x:DataType="views:LogoutConfirmationPopUp"
+        x:Class="GamHubApp.Views.LogoutConfirmationPopUp"
+       xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    <Frame
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"
+           Margin="20, 100"
+           CornerRadius="20">
+        <Frame.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="1,1">
+                <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            </LinearGradientBrush>
+        </Frame.Background>
+
+        <StackLayout >
+            <xct:AvatarView ImageSource="{Binding Profile.Avatar}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            HeightRequest="50"
+                            WidthRequest="50"
+                            />
+            <Label Text="Are you use you want to logout?"
+                   FontSize="20"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-SemiBold"/>
+            <Grid HorizontalOptions="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Button Text="Log me out"
+                        BackgroundColor="{StaticResource PrimaryAccent}"
+                        TextColor="{StaticResource FontColor}"
+                        FontFamily="P-Bold"
+                        FontSize="20"
+                        Padding="1"
+                        HeightRequest="40"
+                        WidthRequest="200"
+                        Clicked="Confirm_Clicked"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Row="0"/>
+                <Button Text="Nevermind"
+                        BackgroundColor="Transparent"
+                        TextColor="{StaticResource Primary}"
+                        FontFamily="P-Bold"
+                        HeightRequest="40"
+                        FontSize="15"
+                        Padding="1"
+                        Clicked="Cancel_Clicked"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Row="1"/>
+            </Grid>
+        </StackLayout>
+
+    </Frame>
+</xct:Popup>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GamHubApp.Views.PopUps.RenameFeedPopUp">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Welcome to Xamarin.Forms!"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>-->
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:popups="clr-namespace:GamHubApp.ViewModels.PopUps" 
+    x:DataType="popups:RenameFeedPopUpViewModel"
+    x:Class="GamHubApp.Views.AuthPopUp">
+    <Frame
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"
+           Margin="20, 230"
+           CornerRadius="20">
+        <Frame.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="1,1">
+                <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            </LinearGradientBrush>
+        </Frame.Background>
+
+        <StackLayout >
+            <Label Text="&#xf392;"
+                   FontSize="60"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource DiscordPurple}"
+                   FontFamily="FaBrand"/>
+            <Label Text="Wow you find out that trick... so yeah you can login with Discord now"
+                   FontSize="20"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-SemiBold"/>
+            <Button Text="Sign In with Discord"
+                    BackgroundColor="{StaticResource DiscordPurple}"
+                    TextColor="{StaticResource FontColor}"
+                    FontFamily="P-Bold"
+                    FontSize="15"
+                    Padding="1"
+                    HeightRequest="40"
+                    WidthRequest="200"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    CornerRadius="12"
+                    Clicked="Discord_Clicked"/>
+        </StackLayout>
+
+    </Frame>
+</toolkit:Popup>
