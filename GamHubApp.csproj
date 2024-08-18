@@ -39,6 +39,30 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="Config\AppSettings.json" />
+	  <None Remove="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
+	  <None Remove="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
+	  <None Remove="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Bold.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-BoldItalic.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Italic.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Light.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-LightItalic.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Medium.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Regular.ttf" />
+	</ItemGroup>
+	<ItemGroup>
+	  <MauiFont Include="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
+	  <MauiFont Include="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
+	  <MauiFont Include="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Bold.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-BoldItalic.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Italic.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Light.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-LightItalic.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Medium.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Regular.ttf" />
 	</ItemGroup>
 	<ItemGroup>
 	  <EmbeddedResource Include="Config\AppSettings.json" />
