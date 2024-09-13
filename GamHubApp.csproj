@@ -50,7 +50,6 @@
 	  <None Remove="Resources\Fonts\Ubuntu-Medium.ttf" />
 	  <None Remove="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
 	  <None Remove="Resources\Fonts\Ubuntu-Regular.ttf" />
-	  <None Remove="Resources\Images\Ares.png" />
 	</ItemGroup>
 	<ItemGroup>
 	  <MauiFont Include="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
@@ -89,9 +88,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.70" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="8.0.82" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.70" />
+    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.82" />
   </ItemGroup>
 </Project>
