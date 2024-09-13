@@ -1,14 +1,6 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.ViewModels;
-using System;
-using CommunityToolkit.Maui.Extensions;
-using Microsoft.Maui.Controls.Xaml;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.Networking;
 using CommunityToolkit.Maui.Alerts;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 
 namespace GamHubApp.Views
 {
@@ -17,6 +9,7 @@ namespace GamHubApp.Views
     {
         private NewsViewModel _vm;
         private const int rButtonYStart = -10;
+        private const int _searchbarEndingWidth = 270;
         private double refreshButtonYPos;
         public NewsPage()
         {
@@ -91,7 +84,7 @@ namespace GamHubApp.Views
         /// </summary>
         private void OpenSearch()
         {
-            AnimateWidthSearchBar(0, 300);
+            AnimateWidthSearchBar(0, _searchbarEndingWidth);
 
             // Focus on the entry 
             entrySearch.Focus();
@@ -101,7 +94,7 @@ namespace GamHubApp.Views
         /// </summary>
         private void CloseSearch()
         {
-            AnimateWidthSearchBar(300, 0);
+            AnimateWidthSearchBar(_searchbarEndingWidth, 0);
             _vm.IsSearching = false;
         }
 
