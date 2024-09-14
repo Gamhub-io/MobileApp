@@ -13,10 +13,7 @@
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="4*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                
                 <Label Text="{Binding SelectedArticle.Source.Name}"
                        VerticalOptions="Center"
                        HorizontalOptions="Center"
