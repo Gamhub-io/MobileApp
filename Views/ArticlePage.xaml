@@ -9,6 +9,7 @@
              x:DataType="viewmodels:ArticleViewModel"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              Shell.TabBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
              >
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
@@ -128,25 +129,6 @@
                                    TextColor="{StaticResource FontColor}"/>
 
                         </Grid>
-                        <!--<Label 
-                               FontFamily="P-SemiBold"
-                               FontSize="13">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span Text="Website: "
-                                          TextColor="{StaticResource FontColor}" />
-                                    <Span Text="{Binding SelectedArticle.Source.Domain, StringFormat='https://{0}/'}"
-                                          TextColor="{StaticResource Primary}" 
-                                          TextDecorations="Underline"
-                                          FontSize="12"
-                                          
-                                          />
-                                </FormattedString>
-                            </Label.FormattedText>
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding Browse}"/>
-                            </Label.GestureRecognizers>
-                        </Label>-->
                         <Label Text="{Binding SelectedArticle.Author, StringFormat='by {0}'}"
                                TextType="Html"
                                IsVisible="{Binding SelectedArticle.Author, Converter={StaticResource EmptyToBoolConverter}}"
@@ -207,25 +189,15 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
-                <!--<mat:HtmlLabel Text="{Binding SelectedArticle.Content, Mode=OneWay}"
-                               TextColor="{StaticResource FontColor}"
-                               Margin="25,5"
-                               IsEnabled="True"
-                               AndroidLegacyMode="True"
-                               FontFamily="P-Regular"
-                               Grid.Row="3"/>-->
-                    <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
-                           FontFamily="P-Regular"
-                           TextType="Html"
-                           />
-                    <!--<WebView 
-                               Margin="25,5"
-                    BackgroundColor="{StaticResource LightDark}"
-                               IsEnabled="{OnPlatform Android=false, iOS=true}"
-                    x:Name="wvHtmlContent"
-                               Grid.Row="3"/>-->
+                <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                       FontFamily="P-Regular"
+                       TextColor="{StaticResource FontColor}"
+                       Margin="10"
+                       TextType="Html"
+                       Grid.Row="3"
+                       />
 
-                <!-- Button to open to the default Browser -->
+                    <!-- Button to open to the default Browser -->
                 <Button Text="Read more"
                         BackgroundColor="{StaticResource LightDark}"
                         TextColor="{StaticResource Primary}"
