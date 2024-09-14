@@ -22,12 +22,6 @@
     </ContentPage.Background>
     <Shell.TitleView>
         <Grid>
-
-            <Grid.HeightRequest>
-                <OnPlatform x:TypeArguments="x:Double">
-                    <On Platform="iOS" Value="44"/>
-                </OnPlatform>
-            </Grid.HeightRequest>
             <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="4*" />
                     <ColumnDefinition Width="*" />

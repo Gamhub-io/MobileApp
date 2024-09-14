@@ -27,11 +27,6 @@
 
     <Shell.TitleView>
         <Grid >
-            <!--<HorizontalStackLayout.HeightRequest>
-                <OnPlatform x:TypeArguments="x:Double">
-                    <On Platform="iOS" Value="44"/>
-                </OnPlatform>
-            </HorizontalStackLayout.HeightRequest>-->
             <Grid IsVisible="{Binding IsSearching, Converter={StaticResource InvertedBoolConverter} }">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
