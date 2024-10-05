@@ -1,9 +1,4 @@
 ﻿using GamHubApp.ViewModels;
-using System;
-using System.Diagnostics;
-using Microsoft.Maui.Controls.Xaml;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
 
 namespace GamHubApp.Views
 {
