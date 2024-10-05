@@ -31,7 +31,14 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition Width="{StaticResource TitleRightMargin}"/>
+                    <ColumnDefinition >
+                        <ColumnDefinition.Width>
+                            <OnPlatform>
+                                <On Platform="iOS" Value="2*" />
+                                <On Platform="Android" Value="1.9*" />
+                            </OnPlatform>
+                        </ColumnDefinition.Width>
+                    </ColumnDefinition>
 
                 </Grid.ColumnDefinitions>
 

@@ -30,7 +30,7 @@
         <helpers:ZeroToTrueConverter x:Key="ZeroToTrueConverter"/>
         
         <ResourceDictionary>
-            <OnPlatform x:Key="TitleRightMargin" x:TypeArguments="GridLength">
+            <OnPlatform x:Key="TitleRightMargin" x:TypeArguments="x:Double">
                 <On Platform="iOS" Value="2*" />
                 <On Platform="Android" Value="1.9*" />
             </OnPlatform>
