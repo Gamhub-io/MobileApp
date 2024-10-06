@@ -46,9 +46,10 @@
                        Grid.Column="1"
                        FontSize="30"
                        VerticalOptions="Center"
+                       HorizontalOptions="Center"
                        TextColor="{StaticResource FontColor}"
                        FontFamily="P-Bold"
-                       Margin="{OnPlatform Android='0,0,0,5', iOS='30,0,0,5'}"/>
+                       Margin="{OnPlatform Android='0,0,40,5', iOS='30,0,40,5'}"/>
                 <Button Text="&#xf002;"
                         FontFamily="FaSolid"
                         FontSize="27"
