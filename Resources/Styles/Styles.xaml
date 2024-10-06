@@ -64,4 +64,6 @@
         <Setter Property="TextColor" Value="{StaticResource Light}" />
 
     </Style>
+    <x:Double x:Key="iOSTitleMargin">2*</x:Double>
+    <x:Double x:Key="AndroidTitleMargin">1.9*</x:Double>
 </ResourceDictionary>

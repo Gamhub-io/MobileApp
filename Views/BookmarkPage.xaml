@@ -13,8 +13,8 @@
                 <ColumnDefinition >
                     <ColumnDefinition.Width>
                         <OnPlatform>
-                            <On Platform="iOS" Value="2*" />
-                            <On Platform="Android" Value="1.9*" />
+                            <On Platform="iOS" Value="{StaticResource iOSTitleMargin}" />
+                            <On Platform="Android" Value="{StaticResource AndroidTitleMargin}" />
                         </OnPlatform>
                     </ColumnDefinition.Width>
                 </ColumnDefinition>
