@@ -4,14 +4,7 @@ using GamHubApp.Models.Http.Payloads;
 using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Net.Http;
-using System.Threading.Tasks;
-using CommunityToolkit.Maui.Core;
-using static GamHubApp.Models.UpdateOrder;
-using Microsoft.Maui.Storage;
 
 namespace GamHubApp.Services
 {
