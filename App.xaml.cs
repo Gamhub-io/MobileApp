@@ -1,14 +1,14 @@
-﻿using GamHubApp.Models;
+﻿using CommunityToolkit.Maui.Views;
+using CustardApi.Objects;
+using GamHubApp.Core;
+using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
-using GamHubApp.Core;
 using GamHubApp.Views.PopUps;
-using CustardApi.Objects;
-using System.Collections.ObjectModel;
-using SQLite;
 using Newtonsoft.Json;
-using CommunityToolkit.Maui.Views;
+using SQLite;
+using System.Collections.ObjectModel;
 
 namespace GamHubApp
 {
@@ -83,7 +83,6 @@ namespace GamHubApp
                     throw new Exception (await e.Content.ReadAsStringAsync());
 #endif
                 });
-
 
                 foreach (var source in Sources)
                 {
@@ -161,15 +160,9 @@ namespace GamHubApp
                 // Create the folder path.
                 File.Create(pathBackUp);
 
-            
-
-            
             // Sqlite connection
             SqLiteConn = new SQLiteConnection(path);
             BackUpConn = new SQLiteConnection(pathBackUp);
-
-            
-
         }
 
         protected override void OnStart()
@@ -181,7 +174,6 @@ namespace GamHubApp
             DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
             if (DateFirstRun == DateTime.MinValue)
             {
-
                 // Set the property
                 DateFirstRun = DateTime.Now;
 
@@ -227,10 +219,6 @@ namespace GamHubApp
 
                 ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
             }
-            //else if (currentPage.ToString() == "GamHubApp.Views.NewPage")
-            //{
-            //    ((NewsViewModel)((ArticlePage)currentPage).BindingContext).FetchArticles();
-            //}
 
             StartDb();
         }
