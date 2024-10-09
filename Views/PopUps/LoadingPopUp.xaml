@@ -25,7 +25,7 @@
                    FontSize="18"
                    HorizontalTextAlignment="Center"
                     TextColor="{StaticResource FontColor}"
-                    FontFamily="FontBold"/>
+                    FontFamily="P-SemiBold"/>
         </StackLayout>
     </Frame>
 </toolkit:Popup>
