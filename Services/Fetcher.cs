@@ -99,7 +99,7 @@ namespace GamHubApp.Services
                 {
                     RefreshToken = refreshToken
                 };
-                RefreshSessionResponse res = await App.WService.Post<RefreshSessionResponse>(controller: "auth",
+                RefreshSessionResponse res = await WebService.Post<RefreshSessionResponse>(controller: "auth",
                                                                                             action: "discord/refresh_token",
                                                                                             jsonBody: JsonConvert.SerializeObject(payload),
                                                                                             unSuccessCallback: e => _ = HandleHttpException(e));

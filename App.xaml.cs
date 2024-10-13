@@ -21,7 +21,6 @@ namespace GamHubApp
         public static SQLiteConnection BackUpConn { get; set; }
 
         public Popup LoadingIndicator { get; private set; }
-        public static Service WService { get; set; }
         public Fetcher DataFetcher { get; set; }
         public static string ProdHost { get; } = "api.gamhub.io";
         public static string LocalHost { get; } = "gamhubdev.ddns.net";
@@ -77,7 +76,7 @@ namespace GamHubApp
 
             Task.Run(async () =>
             {
-                Sources = await WService.Get<Collection<Source>>(controller: "sources", action: "getAll", unSuccessCallback: async (e) =>
+                Sources = await DataFetcher.WebService.Get<Collection<Source>>(controller: "sources", action: "getAll", unSuccessCallback: async (e) =>
                 {
 #if DEBUG
                     throw new Exception (await e.Content.ReadAsStringAsync());
@@ -237,6 +236,8 @@ namespace GamHubApp
 
                 if (page == null)
                     page = GetCurrentPage();
+                if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp?.Id))
+                    return;
 
                 page.ShowPopup(popUp);
             }
