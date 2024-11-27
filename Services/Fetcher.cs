@@ -56,6 +56,7 @@ namespace GamHubApp.Services
         }
         /// <summary>
         /// Get thye feed of an artile
+        /// Get the feed of an article
         /// </summary>
         /// <param name="keywords">keywords of the feed</param>
         /// <param name="timeUpdate">time of the last update (if applicable)</param>
@@ -65,25 +66,27 @@ namespace GamHubApp.Services
         {
             try
             {
-
                 return await WebService.Get<Collection<Article>>(controller: "feeds",
-                                                                   action: needUpdate ? "update" : null,
-                                                                   parameters: needUpdate ? new string[] { timeUpdate } : null,
-                                                                   jsonBody: $"{{\"search\": \"{keywords}\"}}", unSuccessCallback: async (err) =>
-                                                                   {
-#if DEBUG                                                          
-                                                                       throw new Exception(await err.Content.ReadAsStringAsync());
-#endif                                                             
-                                                                   });
+                                                                 action: needUpdate ? "update" : null,
+                                                                 parameters: needUpdate ? [timeUpdate] : [timeUpdate, keywords],
+                                                                 unSuccessCallback: async (err) =>
+                                                                 {
+                                                                     string call = err.RequestMessage.RequestUri.OriginalString;
+                                                                     string content = await err.RequestMessage.Content.ReadAsStringAsync();
+#if DEBUG
+                                                                     throw new Exception(await err.Content.ReadAsStringAsync());
+#endif                                                           
+                                                                 });
             }
             catch (Exception ex)
             {
 
 #if DEBUG
-                throw ex;
-#else
-                return null;
+                Debug.WriteLine(ex);
+
 #endif
+
+                return null;
             }
         }
         /// <summary>
