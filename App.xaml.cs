@@ -76,12 +76,7 @@ namespace GamHubApp
 
             Task.Run(async () =>
             {
-                Sources = await DataFetcher.WebService.Get<Collection<Source>>(controller: "sources", action: "getAll", unSuccessCallback: async (e) =>
-                {
-#if DEBUG
-                    throw new Exception (await e.Content.ReadAsStringAsync());
-#endif
-                });
+                Sources = await DataFetcher.GetSources();
 
                 foreach (var source in Sources)
                 {

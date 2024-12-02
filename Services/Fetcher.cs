@@ -55,6 +55,20 @@ namespace GamHubApp.Services
             }
         }
         /// <summary>
+        /// Get all the sources
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Collection<Source>> GetSources()
+        {
+            return await WebService.Get<Collection<Source>>(controller: "sources", action: "getAll", unSuccessCallback: async (e) =>
+            {
+#if DEBUG || DEBUG_LOCALHOST
+                throw new Exception(await e.Content.ReadAsStringAsync());
+#endif
+            });
+        }
+        /// <summary>
         /// Get thye feed of an artile
         /// Get the feed of an article
         /// </summary>
