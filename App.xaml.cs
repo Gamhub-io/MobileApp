@@ -181,22 +181,17 @@ namespace GamHubApp
 
             }
 
-            MainPage = new AppShell();
+            this.CreateWindow(null);
         }
-        protected override Window CreateWindow(IActivationState activationState)
-        {
-            if (this.MainPage == null)
+        protected override Window CreateWindow(IActivationState? activationState)
             {
-                MainPage = new AppShell();
-            }
-
-            return base.CreateWindow(activationState);
+            return new Window(new AppShell());
         }
         protected override void OnSleep()
         {
             base.OnSleep();
 
-            AppShell mainPage = ((AppShell)MainPage);
+            AppShell mainPage = ((AppShell)Current.Windows[0].Page);
             Page currentPage = mainPage.CurrentPage;
 
             if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
@@ -210,7 +205,7 @@ namespace GamHubApp
 
         protected override void OnResume()
         {
-            AppShell mainPage = ((AppShell)MainPage);
+            AppShell mainPage = ((AppShell)Current.Windows[0].Page);
             Page currentPage = mainPage.CurrentPage;
 
             if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
@@ -254,7 +249,7 @@ namespace GamHubApp
         /// <returns></returns>
         private Page GetCurrentPage ()
         {
-            AppShell mainPage = ((AppShell)MainPage);
+            AppShell mainPage = ((AppShell)Current.Windows[0].Page);
             return mainPage.CurrentPage;
         }
         /// <summary>

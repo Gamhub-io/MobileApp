@@ -13,10 +13,10 @@
     <SingleProject>true</SingleProject>
   </PropertyGroup>-->
 	<PropertyGroup>
-		<TargetFrameworks>net8.0-ios;net8.0-maccatalyst;net8.0-android34.0</TargetFrameworks>
+		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
-		<OutputType>Exe</OutputType>
+		<OutputType Condition="'$(TargetFramework)' != 'net8.0'">Exe</OutputType>
 		<RootNamespace>GamHubApp</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
@@ -40,6 +40,13 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug_Localhost|net8.0-android34.0|AnyCPU'">
 	  <DebugSymbols>True</DebugSymbols>
+	  <DefineConstants>$(DefineConstants);Debug</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug_Localhost|net8.0-ios|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);Debug</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug_Localhost|net8.0-maccatalyst|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);Debug</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="Config\AppSettings.json" />
@@ -81,6 +88,8 @@
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+	<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0" />	  
+	  
   </ItemGroup>
   <ItemGroup>
     <MauiXaml Update="Resources\Styles\Colors.xaml">
