@@ -84,7 +84,7 @@ namespace GamHubApp
                return;
            IsLoading = true;
 
-           OpenPopUp (this.LoadingIndicator);
+           OpenPopUp (this.LoadingIndicator = new LoadingPopUp());
 
         }
 
