@@ -39,16 +39,6 @@ namespace GamHubApp
         }
         public App()
         {
-#if __LOCAL__
-            // Set webservice
-            WService = new Service(host: LocalHost,
-                                    port: 255,
-                                   sslCertificate: false);
-#else
-            // Set webservice
-            WService = new Service(host: ProdHost,
-                                   sslCertificate: true);
-#endif
 
 #if DEBUG
             // Run the debug setup
@@ -56,12 +46,9 @@ namespace GamHubApp
 #endif
             DataFetcher = new Fetcher();
 
-            //Sharpnado.Tabs.Initializer.Initialize(false, false);
-            //Sharpnado.Shades.Initializer.Initialize(loggerEnable: false);
             Sources = new Collection<Source>();
 
             InitializeComponent();
-            //Sharpnado.CollectionView.Initializer.Initialize(true, false);
 
             // Start the db
             StartDb();
@@ -84,9 +71,6 @@ namespace GamHubApp
                     BackUpConn.InsertOrReplace(source);
                 }
             });
-
-            // Close the db
-            //CloseDb();
 
             
         }
@@ -194,7 +178,6 @@ namespace GamHubApp
 
                 ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Stop();
             }
-            //SqLiteConn.Dispose();
         }
         
 
