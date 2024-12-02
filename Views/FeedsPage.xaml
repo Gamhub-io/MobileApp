@@ -310,7 +310,7 @@
                     <Grid>
 
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Edit, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"/>
+                            <mct:TouchBehavior Command="{Binding Source={x:Reference collection}, Mode=TwoWay, Path=BindingContext.Edit}"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"
