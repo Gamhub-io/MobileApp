@@ -13,6 +13,7 @@ namespace GamHubApp.Views
         private readonly double _refreshButtonYPos;
 
         public bool IsFromDetail { get; set; }
+
         public FeedsPage()
         {
             InitializeComponent();
@@ -20,13 +21,15 @@ namespace GamHubApp.Views
             _refreshButtonYPos = refreshButton.Y;
             refreshButton.TranslationY = rButtonYStart;
         }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
             _vm.Resume();
+        }
 
-        }/// <summary>
+        /// <summary>
          /// Function to open a the dropdown
          /// </summary>
         public void OpenDropdownMenu()
@@ -44,15 +47,6 @@ namespace GamHubApp.Views
             dropdownMenu.Padding = 3;
 
             _vm.IsMenuOpen = true;
-        }
-        /// <summary>
-        /// Method to change the color of the first button in the CollectionView
-        /// </summary>
-        /// <param name="colour"></param>
-        private void ChangeFirstButtonColor(Color colour)
-        {
-
-            _firstButton.BackgroundColor = colour;
         }
 
         /// <summary>

@@ -44,6 +44,7 @@ namespace GamHubApp.ViewModels
 				OnPropertyChanged(nameof(FeedTabs));
 			}
 		}
+
         private int _currentFeedIndex;
 
         public int CurrentFeedIndex
@@ -60,9 +61,7 @@ namespace GamHubApp.ViewModels
             }
         }
 
-
         private bool _isRefreshing; 
-
 
         public bool IsRefreshing 
 		{
@@ -73,6 +72,7 @@ namespace GamHubApp.ViewModels
 				OnPropertyChanged(nameof(IsRefreshing));
 			}
 		}
+
 		private ObservableRangeCollection<Article> _articles;
 
 		public ObservableRangeCollection<Article> Articles
@@ -84,6 +84,7 @@ namespace GamHubApp.ViewModels
 				OnPropertyChanged(nameof(Articles));
 			}
 		}
+
         private Feed _selectedFeed;
 
         public Feed SelectedFeed
@@ -97,6 +98,7 @@ namespace GamHubApp.ViewModels
                 OnPropertyChanged(nameof(SelectedFeed));
             }
         }
+
         private TabButton _selectedFeedTab;
         public TabButton SelectedFeedTab
         {
@@ -123,9 +125,6 @@ namespace GamHubApp.ViewModels
                 }
             }
         }
-
-
-
 
         public Command<Feed> RefreshAll => new Command<Feed>((feed) =>
         {
@@ -228,6 +227,7 @@ namespace GamHubApp.ViewModels
             });
             _dataLoaded = true;
         });
+
 		public FeedsViewModel(FeedsPage page)
         {
             // CurrentApp and CurrentPage will allow use to access to global properties
@@ -353,12 +353,14 @@ namespace GamHubApp.ViewModels
 
             });
         }
+
         private readonly Command _shareArticle;
 
         public Command ShareArticle
         {
             get { return _shareArticle; }
         }
+
         private ObservableCollection<Article> _unnoticedArticles;
 
         public ObservableCollection<Article> UnnoticedArticles
@@ -375,6 +377,7 @@ namespace GamHubApp.ViewModels
                 OnPropertyChanged(nameof(UnnoticedArticles));
             }
         }
+
         public Command<string> FeedSelect
         {
             get { return new Command<string> ((feedId) =>
@@ -404,6 +407,7 @@ namespace GamHubApp.ViewModels
 
             }); }
         }
+
         // Command to add a Bookmark
         private readonly Command _addBookmark;
 
@@ -420,10 +424,6 @@ namespace GamHubApp.ViewModels
                 return;
 
             IsBusy = true;
-#if DEBUG
-
-            //Debug.WriteLine($"IsNotBusy: {IsNotBusy}");
-#endif
             CurrentApp.ShowLoadingIndicator();
 
             // Determine wether or not it's the first time loading the article of this feed
@@ -439,6 +439,7 @@ namespace GamHubApp.ViewModels
                 CurrentApp.RemoveLoadingIndicator();
             });
         }
+
         /// <summary>
         /// Load articles via search
         /// </summary>
@@ -491,6 +492,7 @@ namespace GamHubApp.ViewModels
             IsRefreshing = false;
 
         }
+
         /// <summary>
         /// Insert a set of articles in the current list
         /// </summary>
@@ -567,9 +569,9 @@ namespace GamHubApp.ViewModels
                     Articles.Insert(index, current);
                 }
 
-
             }
         }
+
         /// <summary>
         /// Remove a feed from the list
         /// </summary>
@@ -630,6 +632,7 @@ namespace GamHubApp.ViewModels
                 });
             }));
         }
+
         /// <summary>
         /// Update a feed
         /// </summary>
@@ -644,10 +647,9 @@ namespace GamHubApp.ViewModels
             {
                 int index = _feeds.IndexOf(feedToUpdate);
                 var f =_feeds[index] = feed;
-
-                //CurrentFeedIndex = index;
             }
         }
+
         /// <summary>
         /// Processed launched when the page reappear
         /// </summary>
@@ -665,6 +667,7 @@ namespace GamHubApp.ViewModels
 
                 return;
             };
+
             CurrentPage.CloseDropdownMenu();
             try
             {
@@ -680,10 +683,8 @@ namespace GamHubApp.ViewModels
                 throw ex;
 #endif
             }
-
-           
-
         }
+
         /// <summary>
         /// Method to refresh the first feed
         /// </summary>
@@ -738,20 +739,6 @@ namespace GamHubApp.ViewModels
         }
 
         /// <summary>
-        /// Change feed from another feed
-        /// </summary>
-        /// <param name="feed"></param>
-        private void ChangeFeed (Feed feed)
-        {
-            int feedIndex = _feeds.IndexOf(feed);
-
-            Feeds[feedIndex] = feed;
-            //CopyFeedsToTabs();
-            FeedTabs[feedIndex].Title = feed.Title;
-
-            Refresh(feed);
-        }
-        /// <summary>
         /// Copies the items from the <see cref="_feeds"/> collection to the <see cref="FeedTabs"/> collection, transforming them into <see cref="TabButton"/> items.
         /// </summary>
         private void CopyFeedsToTabs()
@@ -774,17 +761,7 @@ namespace GamHubApp.ViewModels
                 FeedTabs[_currentFeedIndex].IsSelected = true;
 
         }
-        /// <summary>
-        /// Deselect all the feed tabs
-        /// </summary>
-        private void DeselectAll()
-        {
-            foreach (var item in FeedTabs)
-            {
-                //FeedTabs[_currentFeedIndex].BackgroundColour = (Xamarin.Forms.Color)Application.Current.Resources["LightDark"];
-                FeedTabs[_currentFeedIndex].IsSelected = false;
-            }
-        }
+
         /// <summary>
         /// Select a tab from its index
         /// </summary>
@@ -796,6 +773,7 @@ namespace GamHubApp.ViewModels
 
             FeedTabs[index].IsSelected = true;
         }
+
         /// <summary>
         /// Select a tab after the select tab was deleted
         /// </summary>
@@ -824,6 +802,7 @@ namespace GamHubApp.ViewModels
             //Refresh(_feeds[tabIndex]);
             SelectedFeed = _feeds[tabIndex];
         }
+
         /// <summary>
         /// Remove a feed using it's index
         /// </summary>
@@ -834,6 +813,7 @@ namespace GamHubApp.ViewModels
             Feeds.RemoveAt(feedIndex);
             SelectDefaultTab(feedIndex);
         }
+
         /// <summary>
         /// Delect a tab from its index
         /// </summary>
@@ -854,6 +834,7 @@ namespace GamHubApp.ViewModels
 
             }
         }
+
         /// <summary>
         /// Switch from a tab to another
         /// </summary>
