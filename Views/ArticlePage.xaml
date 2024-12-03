@@ -226,7 +226,6 @@
             <!-- Menu overlay -->
             <Border HorizontalOptions="End"
                    x:Name="dropdownMenu"
-                   CornerRadius="0"
                    VerticalOptions="Start"
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
