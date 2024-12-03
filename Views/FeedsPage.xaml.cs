@@ -9,7 +9,6 @@ namespace GamHubApp.Views
         private const uint _modalHeightStart = 0;
         private readonly uint _modalWidthStart = 50;
         private readonly FeedsViewModel _vm;
-        private readonly Button _firstButton;
         private readonly double _refreshButtonYPos;
 
         public bool IsFromDetail { get; set; }
@@ -54,7 +53,8 @@ namespace GamHubApp.Views
         /// </summary>
         public void CloseDropdownMenu()
         {
-            //_vm.ModalClose = true;
+            if (dropdownMenu.Height <= _modalHeightStart && dropdownMenu.Width <= _modalWidthStart)
+                return;
 
             // Animation
             void callbackH(double inputH) => dropdownMenu.HeightRequest = inputH;

@@ -34,7 +34,6 @@
                        FontFamily="P-Bold"
                        Grid.Column="0"/>
 
-
                 <!-- edit button -->
                 <Button Text="&#xf044;" 
                         FontFamily="FaSolid"
@@ -42,11 +41,11 @@
                         BackgroundColor="{StaticResource LightDark}"
                         Clicked="Menu_Clicked"
                         Grid.Column="1"
+                    WidthRequest="80"
                         FontSize="30"
                         Padding="0"
-                        HorizontalOptions="End"
-                        Margin="0"
-                        >
+                    HorizontalOptions="EndAndExpand"
+                    Margin="0">
                     <Button.Triggers>
                         <DataTrigger Binding="{Binding Feeds.Count}"
                                  TargetType="Button"
@@ -297,13 +296,12 @@
             <!-- -->
             
             <!-- Menu - Menu overlay-->
-            <Frame HorizontalOptions="End"
+            <Border HorizontalOptions="End"
                    x:Name="dropdownMenu"
                    VerticalOptions="Start"
                    BackgroundColor="{StaticResource LightDark}"
                    HeightRequest="0"
                    Padding="0"
-                   CornerRadius="0"
                    Grid.RowSpan="2"
                    WidthRequest="50">
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
@@ -340,7 +338,7 @@
                                    HorizontalOptions="Center"/>
                     </Grid>
                 </StackLayout>
-            </Frame>
+            </Border>
             <!-- -->
         
         </Grid>
