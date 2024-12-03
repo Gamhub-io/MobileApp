@@ -13,7 +13,7 @@
              >
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
-            <Grid>
+            <Grid ColumnDefinitions="4*,*">
                 
                 <Label Text="{Binding SelectedArticle.Source.Name}"
                        VerticalOptions="Center"
@@ -21,7 +21,7 @@
                        FontSize="20"
                        TextColor="{StaticResource FontColor}"
                        FontFamily="P-Bold"
-                       Grid.Column="0"/>
+                       Grid.Column="0" />
 
 
                 <!-- Browser button -->
@@ -35,7 +35,7 @@
                         HorizontalOptions="End"
                         Margin="0"
                         Clicked="Menu_Clicked"
-                        />
+                        WidthRequest="80" />
             </Grid>
 
         </ContentView>
@@ -224,7 +224,7 @@
             </BoxView>
             
             <!-- Menu overlay -->
-            <Frame HorizontalOptions="End"
+            <Border HorizontalOptions="End"
                    x:Name="dropdownMenu"
                    CornerRadius="0"
                    VerticalOptions="Start"
@@ -264,7 +264,7 @@
                                    HorizontalOptions="Center"/>
                     </Grid>
                 </StackLayout>
-            </Frame>
+            </Border>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
