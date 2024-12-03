@@ -539,8 +539,6 @@ namespace GamHubApp.ViewModels
         public int CurrentFocusIndex { get; set; }
         public bool ListHasBeenUpdated { get; set; }
 
-
-
         /// <summary>
         /// Update the current article feed by adding new elements
         /// </summary>
