@@ -18,15 +18,18 @@
                    BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
                    HeightRequest="221"
                    Padding="0">
+                
+                <!--
+                TODO: there is a bug with mct Behaviors that makes all children input transparent
                 <Border.Behaviors>
                     <mct:TouchBehavior Command="{Binding TapCommand}" 
                                        CommandParameter="{Binding TapCommandParameter}"/>
-                </Border.Behaviors>
+                </Border.Behaviors>-->
 
-                <!--<Frame.GestureRecognizers>
+                <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding TapCommand}" 
                                                       CommandParameter="{Binding TapCommandParameter}" />
-                </Frame.GestureRecognizers>-->
+                </Border.GestureRecognizers>
                 <Grid >
 
                     <!-- Backgournd -->
