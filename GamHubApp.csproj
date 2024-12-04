@@ -67,8 +67,8 @@
 	  <MauiImage Include="Resources\Images\*" />
 	</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui" Version="9.1.0" />
-    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.1.0" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.1.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
     <PackageReference Include="Custard" Version="0.3.7" />
     <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
