@@ -11,13 +11,14 @@ namespace GamHubApp.Views
         public Action<AuthResponse> CallBack { get; private set; }
         public AuthPopUp(Action<AuthResponse> callBack)
 		{
-			InitializeComponent ();
+            CurrentApp = (App)App.Current;
+
+            InitializeComponent ();
 
             CallBack = callBack;
-		}
+        }
 
         public App CurrentApp { get; private set; }
-
         private async void Discord_Clicked(object sender, System.EventArgs e)
         {
             CurrentApp.ShowLoadingIndicator();
