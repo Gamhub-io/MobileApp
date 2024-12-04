@@ -57,7 +57,6 @@
                 </Button>
             </Grid>
 
-
     </Shell.TitleView>
     <ContentPage.Content>
         <Grid RowDefinitions="60,*">

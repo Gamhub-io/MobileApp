@@ -45,12 +45,8 @@
                 <Border Style="{StaticResource entryBorders}"
                         Grid.Row="1">
 
-                    <controls:BorderlessEntry BackgroundColor="Transparent"
-                                              Text="{Binding Feed.Title}"
-                                                  FontFamily="B-SemiBold"
-                                                  PlaceholderColor="{StaticResource FontColor}"
-                                                  TextColor="{StaticResource FontColor}"
-                                                  ReturnType="Done"/>
+                    <controls:BorderlessEntry Text="{Binding Feed.Title}"
+                                              Style="{StaticResource EntryStyle}"/>
                 </Border>
             </Grid>
 
@@ -67,37 +63,18 @@
 
                     <controls:BorderlessEntry BackgroundColor="Transparent"
                                               Text="{Binding Feed.Keywords}"
-                                                  FontFamily="B-SemiBold"
-                                                  PlaceholderColor="{StaticResource FontColor}"
-                                                  TextColor="{StaticResource FontColor}"
-                                                  ReturnType="Done"/>
+                                              Style="{StaticResource EntryStyle}"/>
                 </Border>
             </Grid>
             <Grid HorizontalOptions="Center" 
                   ColumnDefinitions="auto,auto">
                 <Button Text="Cancel"
-                        BackgroundColor="{StaticResource LightDark}"
-                        TextColor="{StaticResource Primary}"
-                        FontFamily="P-Bold"
-                        HeightRequest="40"
-                        FontSize="15"
-                        Padding="1"
                         Command="{Binding Cancel}"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        CornerRadius="12"
+                        Style="{StaticResource PrimaryActionButtonStyle}"
                         Grid.Column="0"/>
                 <Button Text="Confirm"
-                        BackgroundColor="{StaticResource Primary}"
-                        TextColor="{StaticResource LightDark}"
-                        FontFamily="P-Bold"
-                        FontSize="15"
-                        Padding="1"
-                        HeightRequest="40"
                         Command="{Binding Validate}"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        CornerRadius="12"
+                        Style="{StaticResource SecondaryActionButtonStyle}"
                         Grid.Column="1"/>
             </Grid>
         </StackLayout>

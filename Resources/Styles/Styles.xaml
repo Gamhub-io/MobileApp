@@ -2,6 +2,8 @@
 <?xaml-comp compile="true" ?>
 <ResourceDictionary 
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:controls="clr-namespace:GamHubApp.Controls" 
+             xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels" x:DataType="viewmodels:EditFeedViewModel"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:helpers="clr-namespace:GamHubApp.Helpers">
 
@@ -39,6 +41,8 @@
         <Setter Property="BackgroundColor"
                     Value="{StaticResource LightDark}" />
     </Style>
+    
+    <!-- Entry Styles -->
     <Style x:Key="entryBorders"
            TargetType="Border">
         <Setter Property="BackgroundColor" Value="{StaticResource DarkSecondary}" />
@@ -47,6 +51,15 @@
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0,8" />
     </Style>
+    <Style x:Key="EntryStyle"
+           TargetType="controls:BorderlessEntry">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontFamily" Value="B-SemiBold" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource FontColor}" />
+        <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+        <Setter Property="ReturnType" Value="Done" />
+    </Style>
+    
     <Style TargetType="Button"
                x:Key="ButtonStyle">
         <Setter Property="BackgroundColor"
@@ -59,6 +72,31 @@
         <Setter Property="TextColor" Value="{StaticResource Light}" />
 
     </Style>
+    
+    <!--Actions Styles -->
+    <Style TargetType="Button"
+           x:Key="PrimaryActionButtonStyle">
+        <Setter Property="BackgroundColor"
+                Value="{StaticResource LightDark}" />
+        <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+        <Setter Property="FontFamily" Value="P-Bold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Padding" Value="8,2" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="CornerRadius" Value="12" />
+
+    </Style>
+    <Style TargetType="Button"
+           x:Key="SecondaryActionButtonStyle"
+           BasedOn="{StaticResource PrimaryActionButtonStyle}">
+        <Setter Property="BackgroundColor"
+                Value="{StaticResource Primary}" />
+        <Setter Property="TextColor" Value="{StaticResource Dark}" />
+    </Style>
+
     <Style TargetType="Label"
                x:Key="LabelButtonStyle">
 
