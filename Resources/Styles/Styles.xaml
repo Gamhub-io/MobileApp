@@ -41,12 +41,24 @@
         <Setter Property="BackgroundColor"
                     Value="{StaticResource LightDark}" />
     </Style>
+    <Style TargetType="Border"
+               x:Key="ButtonBorder">
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 17" />
+        <Setter Property="Margin" Value="0,10,10,0" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="BackgroundColor"
+                    Value="{StaticResource LightDark}" />
+    </Style>
     
     <!-- Entry Styles -->
     <Style x:Key="entryBorders"
            TargetType="Border">
         <Setter Property="BackgroundColor" Value="{StaticResource DarkSecondary}" />
-        <Setter Property="StrokeShape" Value="RoundRectangle 10,10,10,10" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
         <Setter Property="WidthRequest" Value="300" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Margin" Value="0,8" />

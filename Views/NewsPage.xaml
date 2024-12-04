@@ -60,14 +60,12 @@
                 </Grid.ColumnDefinitions>
                 
              <!--Search bar--> 
-            
-                <Frame BackgroundColor="{StaticResource DarkSecondary}"
+                <Border BackgroundColor="{StaticResource DarkSecondary}"
                        x:Name="searchBar"
                        Grid.Column="0"
-                       CornerRadius="10"
+                       StrokeShape=" RoundRectangle 10"
                        WidthRequest="0"
                        HorizontalOptions="CenterAndExpand"
-                       HasShadow="False"
                        Padding="0"
                        Margin="0,8">
                     <Grid>
@@ -114,7 +112,7 @@
                                 x:Name="CloseSearchButton"
                                 Clicked="CloseSearchButton_Clicked"/>
                     </Grid>
-                </Frame>
+                </Border>
                 <Button Text="&#xf005;"
                         FontSize="28"
                          IsVisible="{Binding IsSearching}"

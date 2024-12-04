@@ -7,12 +7,11 @@
         x:Class="GamHubApp.Views.LogoutConfirmationPopUp"
        xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Color="Transparent">
-    <Frame
-           VerticalOptions="Center" 
+    <Border VerticalOptions="Center" 
            HorizontalOptions="Center"
            Margin="20, 100"
-           CornerRadius="20">
-        <Frame.Background>
+            StrokeShape="RoundRectangle 20">
+        <Border.Background>
             <LinearGradientBrush StartPoint="0,0"
                                          EndPoint="1,1">
                 <GradientStop Color="#262626"
@@ -22,7 +21,7 @@
                 <GradientStop Color="#0d0d0d"
                            Offset="65.0"/>
             </LinearGradientBrush>
-        </Frame.Background>
+        </Border.Background>
 
         <StackLayout Spacing="10">
             <xct:AvatarView ImageSource="{Binding Profile.Avatar}"
@@ -68,5 +67,5 @@
             </Grid>
         </StackLayout>
 
-    </Frame>
+    </Border>
 </xct:Popup>

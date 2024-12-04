@@ -151,8 +151,8 @@
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <!-- Share button-->
-                        <Frame Grid.Column="0"
-                               Style="{StaticResource ButtonFrame}"
+                        <Border Grid.Column="0"
+                               Style="{StaticResource ButtonBorder}"
                                Padding="0">
                             <Button Style="{StaticResource ButtonStyle}"
                                     Text="&#xf1e0;"
@@ -160,7 +160,7 @@
                                     Margin="0"
                                     CommandParameter="{Binding SelectedArticle.Url}"
                                         />
-                        </Frame>
+                        </Border>
                         <!-- Bookmark button-->
                         <ctrls:BookmarkButton IsSaved="{Binding Path=SelectedArticle.IsSaved, Mode=TwoWay}"
                                               Command="{Binding Path=AddBookmark, Mode=OneWay}"
@@ -168,14 +168,14 @@
                                               CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"
                                               ControlTemplate="{StaticResource BookmarkButton}" />
                         <!-- Text to speech button-->
-                        <Frame Grid.Column="2"
-                               Style="{StaticResource ButtonFrame}"
+                        <Border Grid.Column="2"
+                               Style="{StaticResource ButtonBorder}"
                                Padding="0"
                                BackgroundColor="{Binding TtsColour}"
                                >
-                                <Frame.Behaviors>
+                                <Border.Behaviors>
                                     <mct:TouchBehavior Command="{Binding PlayTextToSpeech}"/>
-                                </Frame.Behaviors>
+                                </Border.Behaviors>
 
                             <Label TextColor="{StaticResource Primary}"
                                     Text="{Binding TtsIcon}"
@@ -184,7 +184,7 @@
                                    VerticalOptions="CenterAndExpand"
                                     Margin="0"
                                         />
-                        </Frame>
+                        </Border>
                         
                     </Grid>
                 </Grid>

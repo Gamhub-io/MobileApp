@@ -6,10 +6,10 @@
      x:Class="GamHubApp.Views.PopUps.LoadingPopUp"
     CanBeDismissedByTappingOutsideOfPopup="False"
     Color="Transparent">
-    <Frame HeightRequest="150"
+    <Border HeightRequest="150"
            WidthRequest="140"
            x:Name="popUpFrame"
-           CornerRadius="25"
+           StrokeShape =" RoundRectangle 25"
             VerticalOptions="Center" 
             HorizontalOptions="Center"
            Padding="0"
@@ -28,5 +28,5 @@
                     TextColor="{StaticResource FontColor}"
                     FontFamily="P-SemiBold"/>
         </StackLayout>
-    </Frame>
+    </Border>
 </toolkit:Popup>

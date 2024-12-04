@@ -5,13 +5,14 @@
     xmlns:popups="clr-namespace:GamHubApp.ViewModels.PopUps" 
     x:DataType="popups:RenameFeedPopUpViewModel"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-    x:Class="GamHubApp.Views.RenameFeedPopUp">
-    <Frame
+    x:Class="GamHubApp.Views.RenameFeedPopUp"
+    Color="Transparent">
+    <Border
            VerticalOptions="Center" 
            HorizontalOptions="Center"
            Margin="20, 230"
-           CornerRadius="20">
-        <Frame.Background>
+           StrokeShape="RoundRectangle 20">
+        <Border.Background>
             <LinearGradientBrush StartPoint="0,0"
                                          EndPoint="1,1">
                 <GradientStop Color="#262626"
@@ -21,7 +22,7 @@
                 <GradientStop Color="#0d0d0d"
                            Offset="65.0"/>
             </LinearGradientBrush>
-        </Frame.Background>
+        </Border.Background>
 
         <StackLayout >
             <Entry Text="{Binding Feed.Title}"
@@ -61,5 +62,5 @@
             </Grid>
         </StackLayout>
 
-    </Frame>
+    </Border>
 </toolkit:Popup>

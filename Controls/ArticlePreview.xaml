@@ -14,16 +14,14 @@
 
         <!-- Template -->
         <ControlTemplate x:Key="ArticleTemplate">
-            <Frame CornerRadius="15" 
+            <Border StrokeShape="RoundRectangle 15" 
                    BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
-                   BorderColor="{StaticResource Dark}"
                    HeightRequest="221"
-                   IsClippedToBounds="True"
                    Padding="0">
-                <Frame.Behaviors>
+                <Border.Behaviors>
                     <mct:TouchBehavior Command="{Binding TapCommand}" 
                                        CommandParameter="{Binding TapCommandParameter}"/>
-                </Frame.Behaviors>
+                </Border.Behaviors>
 
                 <!--<Frame.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding TapCommand}" 
@@ -42,8 +40,8 @@
                                Opacity="0.60"
                                Aspect="AspectFill" />-->
                         <!-- filter -->
-                        <Frame Opacity="0.08">
-                            <Frame.Background>
+                        <Border Opacity="0.08">
+                            <Border.Background>
                                 <LinearGradientBrush EndPoint="0,1">
 
                                     <GradientStop Color="{StaticResource Primary}"
@@ -53,8 +51,8 @@
                                     <GradientStop Color="{StaticResource Dark}"
                                                           Offset="1.0" />
                                 </LinearGradientBrush>
-                            </Frame.Background>
-                        </Frame>
+                            </Border.Background>
+                        </Border>
                     </Grid>
                     <!-- Foreground -->
                     <Grid>
@@ -71,12 +69,11 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Mentionning the source -->
-                            <Frame Grid.Column="0"
+                            <Border Grid.Column="0"
                                    HorizontalOptions="Start"
                                    VerticalOptions="Start"
-                                   CornerRadius="8"
+                                   StrokeShape="RoundRectangle 8"
                                    Margin="10,10,0,0"
-                                   HasShadow="{OnPlatform Android='True', iOS='False'}"
                                    HeightRequest="25"
                                    Padding="4,0"
                                    BackgroundColor="{Binding ArticleSource.PrimaryColour, Mode=OneWay}">
@@ -87,7 +84,7 @@
                                        FontFamily="P-Bold"
                                        TextColor="{Binding ArticleSource.SecondaryColour, Mode=OneWay}"
                                            />
-                            </Frame>
+                            </Border>
 
                             <!-- Share and save-->
                             <Grid Grid.Column="1">
@@ -97,17 +94,17 @@
                                 </Grid.RowDefinitions>
                                 
                                 <!-- Share button-->
-                                <Frame Grid.Row="0"
-                                       Style="{StaticResource ButtonFrame}" 
+                                <Border Grid.Row="0"
+                                       Style="{StaticResource ButtonBorder}" 
                                        BackgroundColor="{StaticResource LightDark}" >
-                                    <Frame.Behaviors>
+                                    <Border.Behaviors>
                                         <mct:TouchBehavior Command="{Binding ShareCommand}"
                                                            CommandParameter="{Binding ArticleId}"/>
-                                    </Frame.Behaviors>
+                                    </Border.Behaviors>
                                     <Label Style="{StaticResource LabelButtonStyle}"
                                             Text="&#xf1e0;"
                                         />
-                                </Frame>
+                                </Border>
                                 
                                 <!-- Bookmark button-->
                                 <ctrs:BookmarkButton IsSaved="{Binding Path=ArticleIsSaved, Mode=TwoWay}"
@@ -151,7 +148,7 @@
 
                     </Grid>
                 </Grid>
-            </Frame>
+            </Border>
         </ControlTemplate>
     </ContentView.Resources>
 </ContentView>

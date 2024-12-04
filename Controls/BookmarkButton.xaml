@@ -6,8 +6,8 @@
   <ContentView.Resources>
         <ControlTemplate x:Key="BookmarkButton">
             <!-- Bookmark button-->
-            <Frame 
-                   Style="{StaticResource ButtonFrame}"
+            <Border 
+                   Style="{StaticResource ButtonBorder}"
                    BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
 
                 <Button Text="&#xf02e;"
@@ -34,7 +34,7 @@
                         </DataTrigger>
                     </Button.Triggers>
                 </Button>
-            </Frame>
+            </Border>
         </ControlTemplate>
   </ContentView.Resources>
 </ContentView>
