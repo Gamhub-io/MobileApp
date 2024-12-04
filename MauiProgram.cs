@@ -1,6 +1,7 @@
 ﻿
 using CommunityToolkit.Maui;
 using GamHubApp;
+using GamHubApp.Core;
 
 namespace Gamhub
 {
@@ -9,6 +10,9 @@ namespace Gamhub
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
+#if Debug
+            EnvironementSetup.DebugSetup();
+#endif
             builder.UseMauiApp<App>()
                    .ConfigureFonts(fonts =>
                    {
