@@ -8,7 +8,7 @@
              xmlns:models="clr-namespace:GamHubApp.Models"
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="vm:NewsViewModel">
-    <!-- NOTE: I keep that it will help us later... 
+    <!-- TODO: I keep that it will help us later... 
                it's like the mickey mouse meme shit you know
     -->
     <!--<ContentPage.ToolbarItems>
@@ -27,20 +27,8 @@
 
     <Shell.TitleView>
         <Grid >
-            <Grid IsVisible="{Binding IsSearching, Converter={StaticResource InvertedBoolConverter} }">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="auto"/>
-                    <ColumnDefinition >
-                        <ColumnDefinition.Width>
-                            <OnPlatform>
-                                <On Platform="iOS" Value="{StaticResource iOSTitleMargin}" />
-                                <On Platform="Android" Value="{StaticResource AndroidTitleMargin}" />
-                            </OnPlatform>
-                        </ColumnDefinition.Width>
-                    </ColumnDefinition>
-
-                </Grid.ColumnDefinitions>
+            <Grid IsVisible="{Binding IsSearching, Converter={StaticResource InvertedBoolConverter} }"
+                  ColumnDefinitions="*,4*,auto">
 
                 <Label Text="News"
                        Grid.Column="1"
@@ -54,6 +42,7 @@
                         FontFamily="FaSolid"
                         FontSize="27"
                         CornerRadius="20"
+                        WidthRequest="80"
                         VerticalOptions="CenterAndExpand"
                         HorizontalOptions="End"
                         Command="{Binding OpenSearch}"
