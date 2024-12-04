@@ -192,7 +192,6 @@
 
 
     <Shell.FlyoutFooter  x:DataType="viewmodels:AppShellViewModel">
-        <ContentView>
         <Grid RowDefinitions="*,auto,*,10">
             <!-- Support -->
             <Grid Grid.Row="0"
@@ -221,6 +220,7 @@
             <!-- Logout -->
             <Grid Grid.Row="1"
                   IsVisible="{Binding Authenticated}"
+                  HeightRequest="50"
                   VerticalOptions="End" >
                 <Grid.Behaviors>
                     <mct:TouchBehavior Command="{Binding Logout}"/>
@@ -248,6 +248,7 @@
                    VerticalOptions="Center"
                    HorizontalOptions="Center"/>
         </Grid>
+
 
     </Shell.FlyoutFooter>
 </Shell>
