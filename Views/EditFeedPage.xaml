@@ -42,13 +42,8 @@
                        FontSize="{StaticResource catFontSize}"
                        TextColor="{StaticResource FontColor}"
                        FontFamily="P-Bold"/>
-                <Frame BackgroundColor="{StaticResource DarkSecondary}"
-                       CornerRadius="10"
-                       WidthRequest="0"
-                       Grid.Row="1"
-                       HasShadow="False"
-                       Padding="0"
-                       Margin="0,8">
+                <Border Style="{StaticResource entryBorders}"
+                        Grid.Row="1">
 
                     <controls:BorderlessEntry BackgroundColor="Transparent"
                                               Text="{Binding Feed.Title}"
@@ -56,7 +51,7 @@
                                                   PlaceholderColor="{StaticResource FontColor}"
                                                   TextColor="{StaticResource FontColor}"
                                                   ReturnType="Done"/>
-                </Frame>
+                </Border>
             </Grid>
 
 
@@ -67,13 +62,8 @@
                        FontSize="{StaticResource catFontSize}"
                        TextColor="{StaticResource FontColor}"
                        FontFamily="P-Bold"/>
-                <Frame BackgroundColor="{StaticResource DarkSecondary}"
-                       CornerRadius="10"
-                       WidthRequest="0"
-                       Grid.Row="1"
-                       HasShadow="False"
-                       Padding="0"
-                       Margin="0,8">
+                <Border Style="{StaticResource entryBorders}"
+                        Grid.Row="1">
 
                     <controls:BorderlessEntry BackgroundColor="Transparent"
                                               Text="{Binding Feed.Keywords}"
@@ -81,7 +71,7 @@
                                                   PlaceholderColor="{StaticResource FontColor}"
                                                   TextColor="{StaticResource FontColor}"
                                                   ReturnType="Done"/>
-                </Frame>
+                </Border>
             </Grid>
             <Grid HorizontalOptions="Center" 
                   ColumnDefinitions="auto,auto">
@@ -92,7 +82,6 @@
                         HeightRequest="40"
                         FontSize="15"
                         Padding="1"
-                        Clicked="Button_Clicked"
                         Command="{Binding Cancel}"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
@@ -104,7 +93,6 @@
                         FontFamily="P-Bold"
                         FontSize="15"
                         Padding="1"
-                         Clicked="Button_Clicked"
                         HeightRequest="40"
                         Command="{Binding Validate}"
                         HorizontalOptions="Center"
