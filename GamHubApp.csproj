@@ -75,9 +75,9 @@
 	  <MauiImage Include="Resources\Images\*" />
 	</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
-    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.1.1" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="10.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="10.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Custard" Version="0.3.7" />
     <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
@@ -96,7 +96,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.12" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.21" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
