@@ -34,8 +34,7 @@ namespace GamHubApp.Models
         public string SourceId { get; set; }
         [JsonProperty("blocked")]
         public bool? Blocked { get; set; }
-        //[ManyToOne(CascadeOperations = CascadeOperation.All), JsonProperty("source")]
-        //public Source Source { get; set; }
+        [JsonIgnore]
         public Source Source { get
                 {
                 return App.Sources.FirstOrDefault(s => s.MongoId == SourceId);
