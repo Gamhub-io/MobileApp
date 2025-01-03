@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui.Views;
-using CustardApi.Objects;
 using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
@@ -9,9 +8,12 @@ using GamHubApp.Views.PopUps;
 using Newtonsoft.Json;
 using SQLite;
 using System.Collections.ObjectModel;
+#if DEBUG
+using System.Diagnostics;
+#endif
 
-namespace GamHubApp
-{
+namespace GamHubApp;
+
     public partial class App : Application
     {
         public bool IsLoading { get; private set; }
@@ -217,7 +219,7 @@ namespace GamHubApp
             catch (Exception ex)
             {
 #if DEBUG
-                throw ex;
+                Debug.WriteLine(ex.Message);
 #endif
             }
         }
@@ -298,4 +300,3 @@ namespace GamHubApp
             return popUp.Result ?? false;
         }
     }
-}
