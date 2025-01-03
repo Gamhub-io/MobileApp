@@ -93,7 +93,4 @@
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\Http\Payloads\NewFolder\" />
-  </ItemGroup>
 </Project>
