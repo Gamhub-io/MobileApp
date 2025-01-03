@@ -3,17 +3,9 @@ using GamHubApp.Models;
 using GamHubApp.Views;
 using Newtonsoft.Json;
 using SQLiteNetExtensions.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Command = Microsoft.Maui.Controls.Command;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.Networking;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
 using MvvmHelpers;
 
 namespace GamHubApp.ViewModels
