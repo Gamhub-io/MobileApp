@@ -5,22 +5,23 @@ using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-
+#if DEBUG
+using System.Diagnostics;
+#endif
 namespace GamHubApp.Services
 {
     public class Fetcher
     {
         public static string ProdHost { get; } = "api.gamhub.io";
-        public static string LocalHost { get; } = "gamhubdev.ddns.net";
         private static string _dateFormat = "dd-MM-yyy_HH:mm:ss";
         private Session CurrentSession { get; set; }
         public Service WebService { get; private set; }
         public User UserData { get; set; }
         public Fetcher()
         {
-#if __LOCAL__
+#if DEBUG_LOCALHOST
             // Set webservice
-            WebService = new Service(host: "gamhubdev.ddns.net",
+            WebService = new Service(host: AppConstant.Localhost,
                                     port: 255,
                                    sslCertificate: false);
 #else
@@ -69,7 +70,6 @@ namespace GamHubApp.Services
             });
         }
         /// <summary>
-        /// Get thye feed of an artile
         /// Get the feed of an article
         /// </summary>
         /// <param name="keywords">keywords of the feed</param>
@@ -80,6 +80,8 @@ namespace GamHubApp.Services
         {
             try
             {
+                // Convert the spaces to make it url friendly
+                keywords = keywords.Replace(' ', '+');
                 return await WebService.Get<Collection<Article>>(controller: "feeds",
                                                                  action: needUpdate ? "update" : null,
                                                                  parameters: needUpdate ? [timeUpdate] : [timeUpdate, keywords],
@@ -272,7 +274,7 @@ namespace GamHubApp.Services
             };
             var paramss = new string[] { article.MongooseId };
 
-            string test = await WebService.Post(controller: "monitor",
+            await WebService.Post(controller: "monitor",
                                                 action: "register",
                                                 singleUseHeaders: headers,
                                                 parameters: paramss);
