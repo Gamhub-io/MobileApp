@@ -10,7 +10,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>GamHubApp</ApplicationTitle>
+		<ApplicationTitle>GamHub - Gaming News</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.aresnews.app</ApplicationId>
