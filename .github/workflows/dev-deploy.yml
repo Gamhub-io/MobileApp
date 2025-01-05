@@ -61,6 +61,7 @@ jobs:
       project-folder: ${{ needs.vars.outputs.projectFolder }}
       build-config: 'Release'
       build-version: ${{ needs.vars.outputs.buildVersion }}
+      deploy-type: ${{ needs.vars.outputs.deploy-type }}
     secrets:
       keystore: ${{ secrets.PLAY_KEYSTORE }}
       keystore-alias: ${{ secrets.PLAY_KEYSTORE_ALIAS }}
