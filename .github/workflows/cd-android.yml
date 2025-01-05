@@ -31,7 +31,11 @@ on:
         required: true
       keystore:
         required: true
-      playstore-service-account:
+      discord_client_id:
+        required: true
+      api_host:
+        required: true
+      monitoring_key:
         required: true
 jobs:
   publish-android:
