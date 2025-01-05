@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:popups="clr-namespace:GamHubApp.ViewModels.PopUps" 
+    x:DataType="popups:RenameFeedPopUpViewModel"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="GamHubApp.Views.RenameFeedPopUp"
+    Color="Transparent">
+    <Border
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"
+           Margin="20, 230"
+           StrokeShape="RoundRectangle 20">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="1,1">
+                <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <StackLayout >
+            <Entry Text="{Binding Feed.Title}"
+                   FontSize="15"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-SemiBold"/>
+            <Grid HorizontalOptions="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Text="Cancel"
+                        BackgroundColor="{StaticResource LightDark}"
+                        TextColor="{StaticResource Primary}"
+                        FontFamily="P-Bold"
+                        HeightRequest="40"
+                        FontSize="15"
+                        Padding="1"
+                        Command="{Binding Cancel}"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Column="0"/>
+                <Button Text="Confirm"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="{StaticResource LightDark}"
+                        FontFamily="P-Bold"
+                        FontSize="15"
+                        Padding="1"
+                        
+                        HeightRequest="40"
+                        Command="{Binding Validate}"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Column="1"/>
+            </Grid>
+        </StackLayout>
+
+    </Border>
+</toolkit:Popup>

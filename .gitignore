@@ -338,4 +338,5 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/AresNews/AresNews/Config/AppSettings.json
+Config/AppSettings.json
+/App/Config/AppSettings.json

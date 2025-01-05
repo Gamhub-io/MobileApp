@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:controls="clr-namespace:GamHubApp.Controls" 
+             xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels" x:DataType="viewmodels:EditFeedViewModel"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:GamHubApp.Helpers">
+
+    <!-- Converter to convert time span to string-->
+    <helpers:TimeSpanConverter x:Key="TimeSpanConverter"/>
+
+    <!-- Converters-->
+    <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
+    <helpers:MultipleTOBoolConverter x:Key="MultipleTOBoolConverter"/>
+    <helpers:MaxLengthConverter x:Key="MaxLengthConverter"/>
+    <helpers:ThumbnailConverter x:Key="ThumbnailConverter"/>
+    <helpers:BoolInverseConverter x:Key="BoolInverseConverter"/>
+    <helpers:ZeroToFalseConverter x:Key="ZeroToFalseConverter"/>
+    <helpers:ZeroToTrueConverter x:Key="ZeroToTrueConverter"/>
+
+    <ResourceDictionary>
+        <OnPlatform x:Key="TitleRightMargin" x:TypeArguments="x:Double">
+            <On Platform="iOS" Value="2*" />
+            <On Platform="Android" Value="1.9*" />
+        </OnPlatform>
+    </ResourceDictionary>
+
+    <!-- Buttons -->
+    <Style TargetType="Frame"
+               x:Key="ButtonFrame">
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="17" />
+        <Setter Property="Margin" Value="0,10,10,0" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="HasShadow" Value="{OnPlatform Android='True', iOS='False'}" />
+        <Setter Property="IsClippedToBounds" Value="True" />
+        <Setter Property="BackgroundColor"
+                    Value="{StaticResource LightDark}" />
+    </Style>
+    <Style TargetType="Border"
+               x:Key="ButtonBorder">
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 17" />
+        <Setter Property="Margin" Value="0,10,10,0" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="WidthRequest" Value="40" />
+        <Setter Property="BackgroundColor"
+                    Value="{StaticResource LightDark}" />
+    </Style>
+    
+    <!-- Entry Styles -->
+    <Style x:Key="entryBorders"
+           TargetType="Border">
+        <Setter Property="BackgroundColor" Value="{StaticResource DarkSecondary}" />
+        <Setter Property="StrokeShape" Value="RoundRectangle 10" />
+        <Setter Property="WidthRequest" Value="300" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,8" />
+    </Style>
+    <Style x:Key="EntryStyle"
+           TargetType="controls:BorderlessEntry">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="FontFamily" Value="B-SemiBold" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource FontColor}" />
+        <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+        <Setter Property="ReturnType" Value="Done" />
+    </Style>
+    
+    <Style TargetType="Button"
+               x:Key="ButtonStyle">
+        <Setter Property="BackgroundColor"
+                    Value="{StaticResource LightDark}" />
+
+        <Setter Property="FontFamily" Value="FaSolid" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="TextColor" Value="{StaticResource Light}" />
+
+    </Style>
+    
+    <!--Actions Styles -->
+    <Style TargetType="Button"
+           x:Key="PrimaryActionButtonStyle">
+        <Setter Property="BackgroundColor"
+                Value="{StaticResource LightDark}" />
+        <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+        <Setter Property="FontFamily" Value="P-Bold" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Padding" Value="8,2" />
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="HeightRequest" Value="40" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="CornerRadius" Value="12" />
+
+    </Style>
+    <Style TargetType="Button"
+           x:Key="SecondaryActionButtonStyle"
+           BasedOn="{StaticResource PrimaryActionButtonStyle}">
+        <Setter Property="BackgroundColor"
+                Value="{StaticResource Primary}" />
+        <Setter Property="TextColor" Value="{StaticResource Dark}" />
+    </Style>
+
+    <Style TargetType="Label"
+               x:Key="LabelButtonStyle">
+
+        <Setter Property="FontFamily" Value="FaSolid" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+
+        <Setter Property="TextColor" Value="{StaticResource Light}" />
+
+    </Style>
+    <x:Double x:Key="iOSTitleMargin">2*</x:Double>
+    <x:Double x:Key="AndroidTitleMargin">1.9*</x:Double>
+</ResourceDictionary>

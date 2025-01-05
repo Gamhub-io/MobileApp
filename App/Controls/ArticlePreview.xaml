@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:GamHubApp.Helpers"
+             xmlns:ctrs="clr-namespace:GamHubApp.Controls"
+             x:Class="GamHubApp.Controls.ArticlePreview"
+             xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels" 
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             x:DataType="ctrs:ArticlePreview"
+             x:Name="preview">
+
+    <ContentView.Resources>
+        <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
+
+        <!-- Template -->
+        <ControlTemplate x:Key="ArticleTemplate">
+            <Border StrokeShape="RoundRectangle 15" 
+                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
+                   HeightRequest="221"
+                   Padding="0">
+                
+                <!--
+                TODO: there is a bug with mct Behaviors that makes all children input transparent
+                <Border.Behaviors>
+                    <mct:TouchBehavior Command="{Binding TapCommand}" 
+                                       CommandParameter="{Binding TapCommandParameter}"/>
+                </Border.Behaviors>-->
+
+                <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding TapCommand}" 
+                                                      CommandParameter="{Binding TapCommandParameter}" />
+                </Border.GestureRecognizers>
+                <Grid >
+
+                    <!-- Backgournd -->
+                    <Grid BackgroundColor="{StaticResource Dark}">
+                        <!-- Image -->
+                        <Image Source="{Binding Thumnail}"
+                               Opacity="0.60"
+                               Aspect="AspectFill" >
+                        </Image>
+                        <!--<Image Source="{Binding Thumnail, Mode=OneWay}"
+                               Opacity="0.60"
+                               Aspect="AspectFill" />-->
+                        <!-- filter -->
+                        <Border Opacity="0.08">
+                            <Border.Background>
+                                <LinearGradientBrush EndPoint="0,1">
+
+                                    <GradientStop Color="{StaticResource Primary}"
+                                                          Offset="0.1" />
+                                    <GradientStop Color="{StaticResource Light}"
+                                                          Offset="0.0" />
+                                    <GradientStop Color="{StaticResource Dark}"
+                                                          Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Border.Background>
+                        </Border>
+                    </Grid>
+                    <!-- Foreground -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Extra -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Mentionning the source -->
+                            <Border Grid.Column="0"
+                                   HorizontalOptions="Start"
+                                   VerticalOptions="Start"
+                                   StrokeShape="RoundRectangle 8"
+                                   Margin="10,10,0,0"
+                                   HeightRequest="25"
+                                   Padding="4,0"
+                                   BackgroundColor="{Binding ArticleSource.PrimaryColour, Mode=OneWay}">
+                                <Label FontSize="13"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Text="{Binding ArticleSource.Name, Mode=OneWay}"
+                                       FontFamily="P-Bold"
+                                       TextColor="{Binding ArticleSource.SecondaryColour, Mode=OneWay}"
+                                           />
+                            </Border>
+
+                            <!-- Share and save-->
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <!-- Share button-->
+                                <Border Grid.Row="0"
+                                       Style="{StaticResource ButtonBorder}" 
+                                       BackgroundColor="{StaticResource LightDark}" >
+                                    <Border.Behaviors>
+                                        <mct:TouchBehavior Command="{Binding ShareCommand}"
+                                                           CommandParameter="{Binding ArticleId}"/>
+                                    </Border.Behaviors>
+                                    <Label Style="{StaticResource LabelButtonStyle}"
+                                            Text="&#xf1e0;"
+                                        />
+                                </Border>
+                                
+                                <!-- Bookmark button-->
+                                <ctrs:BookmarkButton IsSaved="{Binding Path=ArticleIsSaved, Mode=TwoWay}"
+                                                     Command="{Binding BookmarkCommand}"
+                                                     CommandParameter="{Binding ArticleId}"
+                                                     Grid.Row="1"
+                                                     ControlTemplate="{StaticResource BookmarkButton}" />
+                            </Grid>
+
+                        </Grid>
+                        <!-- Banner -->
+                        <BoxView Grid.Row="1" 
+                                 BackgroundColor="{StaticResource Dark}"
+                                 Opacity="0.24"/>
+                        <!-- Title -->
+                        <Grid Grid.Row="1" 
+                              Margin="0,12,0,5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <!-- Headline -->
+                            <Label Grid.Row="0" 
+                                   Text="{Binding Headline, Converter={StaticResource MaxLengthConverter}, ConverterParameter=120}"
+                                   TextColor="{StaticResource FontColor}"
+                                   Margin="10,0"
+                                   TextType="Html"
+                                   FontFamily="P-Bold"
+                                   FontSize="17" />
+
+                            <!-- Time ago -->
+                            <Label Grid.Row="1" 
+                                   Text="{Binding ArticleTime}"
+                                   TextColor="{StaticResource FontColor}"
+                                   Margin="10,0"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End"
+                                   FontFamily="P-Bold"
+                                   FontSize="14"/>
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+    </ContentView.Resources>
+</ContentView>

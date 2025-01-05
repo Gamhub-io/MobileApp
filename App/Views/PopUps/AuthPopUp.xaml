@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:popups="clr-namespace:GamHubApp.ViewModels.PopUps" 
+    x:DataType="popups:RenameFeedPopUpViewModel"
+    x:Class="GamHubApp.Views.AuthPopUp"
+    Color="Transparent">
+    <Border
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"
+           HeightRequest="250"
+           WidthRequest="360"
+           StrokeShape="RoundRectangle 20">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="1,1">
+                <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <StackLayout Spacing="20"
+                    VerticalOptions="Center">
+            <Border StrokeShape="RoundRectangle 30"
+                    WidthRequest="85"
+                    VerticalOptions="Center"
+                    BackgroundColor="{StaticResource DiscordPurple}">
+                <Label Text="&#xf392;"
+                       FontSize="60"
+                       HeightRequest="80"
+                       VerticalTextAlignment="Center"
+                       HorizontalOptions="Center"
+                       TextColor="{StaticResource FontColor}"
+                       FontFamily="FaBrand"/>
+                
+            </Border>
+            <Label Text="Wow you find out that trick... so yeah you can login with Discord now"
+                   FontSize="20"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="5,0"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-SemiBold"/>
+            <Button Text="Sign In with Discord"
+                    BackgroundColor="{StaticResource DiscordPurple}"
+                    TextColor="{StaticResource FontColor}"
+                    FontFamily="P-Bold"
+                    FontSize="20"
+                    Padding="1"
+                    HeightRequest="40"
+                    WidthRequest="280"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    CornerRadius="12"
+                    Clicked="Discord_Clicked"/>
+        </StackLayout>
+
+    </Border>
+</toolkit:Popup>

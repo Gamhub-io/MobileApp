@@ -1,0 +1,104 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+		<OutputType Condition="'$(TargetFramework)' != 'net8.0'">Exe</OutputType>
+		<RootNamespace>GamHubApp</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<!-- Display name -->
+		<ApplicationTitle>GamHub - Gaming News</ApplicationTitle>
+
+		<!-- App Identifier -->
+		<ApplicationId>com.aresnews.app</ApplicationId>
+		<ApplicationIdGuid>6a6f8915-c047-4cee-aa8b-b399290b71f4</ApplicationIdGuid>
+
+		<!-- Versions -->
+		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
+		<Configurations>Debug;Release;Debug_Localhost</Configurations>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug_Localhost|net8.0-android34.0|AnyCPU'">
+	  <DebugSymbols>True</DebugSymbols>
+	  <DefineConstants>$(DefineConstants);Debug</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug_Localhost|net8.0-ios|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);Debug</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug_Localhost|net8.0-maccatalyst|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);Debug</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- App Icon -->
+		<MauiIcon Include="Resources\AppIcon\appicon.png" Color="#8B8E92" ForegroundScale="0.6" />
+
+		<!-- Splash Screen -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#8B8E92" BaseSize="128,128" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Config\AppSettings.json" />
+	  <None Remove="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
+	  <None Remove="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
+	  <None Remove="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Bold.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-BoldItalic.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Italic.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Light.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-LightItalic.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Medium.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
+	  <None Remove="Resources\Fonts\Ubuntu-Regular.ttf" />
+	</ItemGroup>
+	<ItemGroup>
+	  <MauiFont Include="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
+	  <MauiFont Include="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
+	  <MauiFont Include="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Bold.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-BoldItalic.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Italic.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Light.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-LightItalic.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Medium.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-MediumItalic.ttf" />
+	  <MauiFont Include="Resources\Fonts\Ubuntu-Regular.ttf" />
+	</ItemGroup>
+	<ItemGroup>
+	  <EmbeddedResource Include="Config\AppSettings.json" />
+	  <MauiImage Include="Resources\Images\*" />
+	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Maui" Version="10.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="10.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Custard" Version="0.3.7" />
+    <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
+    <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+	<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0" />	  
+	  
+  </ItemGroup>
+  <ItemGroup>
+    <MauiXaml Update="Resources\Styles\Colors.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Resources\Styles\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.21" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
+  </ItemGroup>
+</Project>

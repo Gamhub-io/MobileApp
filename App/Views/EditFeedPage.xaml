@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"  
+             xmlns:controls="clr-namespace:GamHubApp.Controls" xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels" x:DataType="viewmodels:EditFeedViewModel"
+             x:Class="GamHubApp.Views.EditFeedPage"
+             Padding="0,80,0,0">
+    <Shell.TitleView>
+        <Grid>
+
+            <Label Text="{Binding Feed.Title, StringFormat= 'Edit feed: {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=15}"
+                   FontSize="20"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"/>
+        </Grid>
+
+    </Shell.TitleView>
+    <ContentPage.Resources>
+        <x:Double x:Key="catFontSize">15</x:Double>
+    </ContentPage.Resources>
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0"
+                                         EndPoint="1,1">
+            <GradientStop Color="#262626"
+                           Offset="0.1"/>
+            <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+            <GradientStop Color="#0d0d0d"
+                           Offset="65.0"/>
+            <GradientStop Color="Black"
+                           Offset="1.0"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <ContentPage.Content>
+        <StackLayout Padding="50,0">
+
+            <!-- Edit name -->
+            <Grid RowDefinitions="auto,60">
+                <!--Label-->
+                <Label Text="Title"
+                       FontSize="{StaticResource catFontSize}"
+                       TextColor="{StaticResource FontColor}"
+                       FontFamily="P-Bold"/>
+                <Border Style="{StaticResource entryBorders}"
+                        Grid.Row="1">
+
+                    <controls:BorderlessEntry Text="{Binding Feed.Title}"
+                                              Style="{StaticResource EntryStyle}"/>
+                </Border>
+            </Grid>
+
+
+            <!-- Keywords -->
+            <Grid RowDefinitions="auto,60">
+                <!--Label-->
+                <Label Text="Keywords"
+                       FontSize="{StaticResource catFontSize}"
+                       TextColor="{StaticResource FontColor}"
+                       FontFamily="P-Bold"/>
+                <Border Style="{StaticResource entryBorders}"
+                        Grid.Row="1">
+
+                    <controls:BorderlessEntry BackgroundColor="Transparent"
+                                              Text="{Binding Feed.Keywords}"
+                                              Style="{StaticResource EntryStyle}"/>
+                </Border>
+            </Grid>
+            <Grid HorizontalOptions="Center" 
+                  ColumnDefinitions="auto,auto">
+                <Button Text="Cancel"
+                        Command="{Binding Cancel}"
+                        Style="{StaticResource PrimaryActionButtonStyle}"
+                        Grid.Column="0"/>
+                <Button Text="Confirm"
+                        Command="{Binding Validate}"
+                        Style="{StaticResource SecondaryActionButtonStyle}"
+                        Grid.Column="1"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
