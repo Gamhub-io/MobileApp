@@ -31,6 +31,8 @@ on:
         required: true
       keystore:
         required: true
+      playstore-service-account:
+        required: true
       discord_client_id:
         required: true
       api_host:
