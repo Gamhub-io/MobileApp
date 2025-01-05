@@ -3,14 +3,14 @@ name: Dev Deployment Build
 on:
   workflow_dispatch:
   push:
-    branches: [ "develop" ]
+    branches: ['develop']
     paths-ignore:
-      - "**.md"
+      - '**.md'
       - '**/*.gitignore'
       - '**/*.gitattributes'
       - '**/*.yml'
   pull_request:
-    branches: [ "develop" ]
+    branches: ['develop']
 env:
   BUILD_VERSION: '2.0'
   DOTNET_VERSION: 9.0.x
@@ -21,17 +21,18 @@ env:
 jobs:
   vars:
     runs-on: ubuntu-22.04
-    outputs:      
+    outputs:
       buildVersion: ${{ env.BUILD_VERSION }}
       dotnetVersion: ${{ env.DOTNET_VERSION }}
       xcodeVersion: ${{ env.XCODE_VERSION }}
       dotnetVersionTargets: ${{ env.DOTNET_VERSION_TARGETS }}
       csprojToBuild: ${{ env.CSPROJ_TO_BUILD }}
       projectFolder: ${{ env.PROJECT_FOLDER }}
+      deploy-type: 'dev'
     steps:
       - run: echo "Exposing env vars, because they can't be passed to nested workflows."
- build-ios:   
-    needs: vars 
+  build-ios:
+    needs: vars
     uses: ./.github/workflows/cd-ios.yml
     with:
       dotnet-version: ${{ needs.vars.outputs.dotnetVersion }}
@@ -47,9 +48,7 @@ jobs:
       appstore-issuer: ${{ secrets.APPSTORE_ISSUER_ID }}
       appstore-keyid: ${{ secrets.APPSTORE_KEY_ID }}
       appstore-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
-    env:
-      deploy-type: 'dev'
- build-android:
+  build-android:
     needs: vars
     uses: ./.github/workflows/cd-android.yml
     with:
@@ -64,8 +63,5 @@ jobs:
       keystore-alias: ${{ secrets.PLAY_KEYSTORE_ALIAS }}
       keystore-password: ${{ secrets.PLAY_KEYSTORE_PASS }}
       playstore-service-account: ${{ secrets.PLAYSTORE_SERVICE_ACC }}
-    env:
-      deploy-type: 'dev'
-
 # Inspired by https://thewissen.io/making-maui-cd-pipeline/
- 
+
