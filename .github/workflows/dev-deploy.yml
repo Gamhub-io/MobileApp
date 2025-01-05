@@ -16,7 +16,7 @@ env:
   DOTNET_VERSION: 9.0.x
   XCODE_VERSION: 14.3
   DOTNET_VERSION_TARGETS: net9.0
-  CSPROJ_TO_BUILD: App/GamHubApp.csproj
+  CSPROJ_TO_BUILD: ./App/GamHubApp.csproj
   PROJECT_FOLDER: GamHubApp
 jobs:
   vars:
