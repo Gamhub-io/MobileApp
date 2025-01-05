@@ -40,7 +40,6 @@ jobs:
   publish-android:
     runs-on: windows-latest
     name: Android Publish
-
     steps:
       # Build Environement variables
       - name: Environement variables
