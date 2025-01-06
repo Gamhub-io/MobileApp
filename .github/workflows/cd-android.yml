@@ -48,8 +48,6 @@ jobs:
         run: pwd
       - name: list
         run: ls ../../..
-      - name: list
-        run: $(System.DefaultWorkingDirectory)
       # Build Environement variables
       - name: Environement variables
         run: bash android_prebuild.sh
