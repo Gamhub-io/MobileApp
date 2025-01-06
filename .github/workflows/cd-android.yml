@@ -91,17 +91,17 @@ jobs:
         run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f ${{ inputs.dotnet-version-target }}-android /p:AndroidPackageFormats=aab /p:AndroidKeyStore=true /p:AndroidSigningKeyStore=ourkeystore.jks /p:AndroidSigningKeyAlias=${{secrets.keystore-alias}} /p:AndroidSigningKeyPass="${{ secrets.keystore-password }}" /p:AndroidSigningStorePass="${{ secrets.keystore-password }}" --no-restore
       - uses: r0adkll/upload-google-play@v1.0.17
         name: Upload Android Artifact to Play Console
+        if: ${{contains(inputs.deploy-type, 'dev')}}
         with:
           serviceAccountJsonPlainText: ${{ secrets.playstore-service-account }}
           packageName: ${{ inputs.package-name }}
           releaseFiles: ${{ github.workspace }}\${{ inputs.project-folder }}\bin\${{ inputs.build-config }}\${{ inputs.dotnet-version-target }}-android\${{ inputs.package-name }}-Signed.aab
           track: internal
-        if: contains(inputs.deploy-type, 'dev')
       - uses: r0adkll/upload-google-play@v1.0.17
         name: Upload Android Artifact to Play Console
+        if: ${{contains(inputs.deploy-type, 'prod')}}
         with:
           serviceAccountJsonPlainText: ${{ secrets.playstore-service-account }}
           packageName: ${{ inputs.package-name }}
           releaseFiles: ${{ github.workspace }}\${{ inputs.project-folder }}\bin\${{ inputs.build-config }}\${{ inputs.dotnet-version-target }}-android\${{ inputs.package-name }}-Signed.aab
           track: production
-        if: contains(inputs.deploy-type, 'prod')
