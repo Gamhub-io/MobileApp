@@ -46,7 +46,7 @@ jobs:
     steps:
       # Build Environement variables
       - name: Environement variables
-        run: bash ./App/builds/android_prebuild.sh
+        run: bash App/builds/android_prebuild.sh
 
       - name: Setup .NET ${{ inputs.dotnet-version }}
         uses: actions/setup-dotnet@v2
