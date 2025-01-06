@@ -44,15 +44,15 @@ jobs:
     runs-on: windows-latest
     name: Android Publish
     steps:
+      - uses: actions/checkout@v4
       - name: Current dir
         run: pwd
       - name: list
         run: ls ../..
       # Build Environement variables
       - name: Environement variables
-        run: |
-          chmod +x ./App/builds/android_prebuild.sh
-          ./App/builds/android_prebuild.sh
+        run: bash android_prebuild.sh
+        working-directory: ..\App\builds
 
       - name: Setup .NET ${{ inputs.dotnet-version }}
         uses: actions/setup-dotnet@v2
