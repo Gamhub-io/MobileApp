@@ -44,12 +44,8 @@ jobs:
     runs-on: windows-latest
     name: Android Publish
     steps:
-      - uses: actions/checkout@v4
       - name: Current dir
         run: pwd
-      # Build Environement variables
-      - name: Environement variables
-        run: bash /App/builds/android_prebuild.sh
 
       - name: Setup .NET ${{ inputs.dotnet-version }}
         uses: actions/setup-dotnet@v2
@@ -57,6 +53,9 @@ jobs:
           dotnet-version: ${{ inputs.dotnet-version }}
       - uses: actions/checkout@v3
         name: Checkout the code
+      # Build Environement variables
+      - name: Environement variables
+        run: bash /App/builds/android_prebuild.sh
 
       # This step might be obsolete at some point as .NET MAUI workloads
       # are starting to come pre-installed on the GH Actions build agents.
