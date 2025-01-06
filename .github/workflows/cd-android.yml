@@ -50,7 +50,9 @@ jobs:
         run: ls ../..
       # Build Environement variables
       - name: Environement variables
-        run: bash android_prebuild.sh
+        run: |
+          chmod +x ./public/scripts/test.sh
+          ./public/scripts/test.sh
         working-directory: ..\App\builds
 
       - name: Setup .NET ${{ inputs.dotnet-version }}
