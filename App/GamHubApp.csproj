@@ -71,7 +71,8 @@
 	  <MauiFont Include="Resources\Fonts\Ubuntu-Regular.ttf" />
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Include="Config\AppSettings.json" />
+	  <EmbeddedResource Include="Config\AppSettings.json"
+						Condition="'$(Configuration)' == 'Debug'"/>
 	  <MauiImage Include="Resources\Images\*" />
 	</ItemGroup>
   <ItemGroup>
