@@ -47,7 +47,7 @@ jobs:
       - name: Current dir
         run: pwd
       - name: list
-        run: ls .. .. ..
+        run: ls ../../..
       - name: list
         run: $(System.DefaultWorkingDirectory)
       # Build Environement variables
