@@ -47,7 +47,7 @@ jobs:
       - name: Current dir
         run: pwd
       - name: list
-        run: ls ..
+        run: ls ./
       # Build Environement variables
       - name: Environement variables
         run: bash App/builds/android_prebuild.sh
