@@ -51,9 +51,8 @@ jobs:
       # Build Environement variables
       - name: Environement variables
         run: |
-          chmod +x ./public/scripts/test.sh
-          ./public/scripts/test.sh
-        working-directory: ..\App\builds
+          chmod +x ./App/builds/android_prebuild.sh
+          ./App/builds/android_prebuild.sh
 
       - name: Setup .NET ${{ inputs.dotnet-version }}
         uses: actions/setup-dotnet@v2
