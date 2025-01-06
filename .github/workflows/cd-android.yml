@@ -51,7 +51,7 @@ jobs:
       # Build Environement variables
       - name: Environement variables
         run: bash android_prebuild.sh
-        working-directory: \App\builds
+        working-directory: /App/builds
 
       - name: Setup .NET ${{ inputs.dotnet-version }}
         uses: actions/setup-dotnet@v2
