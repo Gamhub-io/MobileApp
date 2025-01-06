@@ -47,12 +47,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Current dir
         run: pwd
-      - name: list
-        run: ls ../..
       # Build Environement variables
       - name: Environement variables
-        run: bash android_prebuild.sh
-        working-directory: ..\App\builds
+        run: bash /App/builds/android_prebuild.sh
 
       - name: Setup .NET ${{ inputs.dotnet-version }}
         uses: actions/setup-dotnet@v2
