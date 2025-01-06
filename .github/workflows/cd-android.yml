@@ -61,6 +61,10 @@ jobs:
           chmod +x ./App/builds/android_prebuild.sh
           ./App/builds/android_prebuild.sh
         shell: bash
+        env:
+          discord_client_id: ${{ secrets.discord_client_id }}
+          api_host: ${{ secrets.api_host }}
+          monitoring_key: ${{ secrets.monitoring_key }}
 
       # This step might be obsolete at some point as .NET MAUI workloads
       # are starting to come pre-installed on the GH Actions build agents.
