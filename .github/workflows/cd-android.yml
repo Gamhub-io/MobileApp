@@ -88,9 +88,13 @@ jobs:
       - name: Publish MAUI Android AAB
         run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f ${{ inputs.dotnet-version-target }}-android /p:AndroidPackageFormats=aab --no-restore
 
+      - name: Decode Signing Key
+        run: echo ${{ secrets.keystore }} | base64 -d > my-release-key.jks
+
       - name: Sign AAB
         run: |
-          echo ${{ secrets.keystore }} | base64 --decode > my-release-key.jks jarsigner -sigalg SHA256withRSA -digestalg SHA-256 -keystore my-release-key.jks -storepass ${{ secrets.keystore-password }} -keypass ${{ secrets.keystore-password }} ./output/myapp.aab ${{ secrets.keystore-alias }}
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore my-release-key.jks -storepass ${{ secrets.keystore-password }} -keypass ${{ secrets.keystore-password }} ./output/**.aab ${{ secrets.keystore-alias }}
+
       - uses: r0adkll/upload-google-play@v1.0.17
         name: Upload Android Artifact to Play Console internal
         if: ${{contains(inputs.deploy-type, 'dev')}}
