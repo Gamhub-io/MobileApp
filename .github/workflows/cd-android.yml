@@ -24,6 +24,9 @@ on:
       deploy-type:
         required: true
         type: string
+      package-name:
+        required: true
+        type: string
     secrets:
       keystore-password:
         required: true
