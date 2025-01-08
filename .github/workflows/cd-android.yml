@@ -76,13 +76,7 @@ jobs:
 
       - name: Restore Dependencies
         run: dotnet restore ${{ inputs.project-file }}
-      - name: Decode Keystore
-        id: decode_keystore
-        uses: timheuer/base64-to-file@v1
-        with:
-          fileDir: '${{ github.workspace }}\${{ inputs.project-folder }}'
-          fileName: 'AresGaming_keystore.jks'
-          encodedString: ${{ secrets.keystore }}
+
       - name: Version the app
         uses: managedcode/MAUIAppVersion@v1
         with:
@@ -90,8 +84,18 @@ jobs:
           version: ${{ github.run_number }} # to keep value unique
           displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}
           printFile: true # optional
+
       - name: Publish MAUI Android AAB
-        run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f ${{ inputs.dotnet-version-target }}-android /p:AndroidPackageFormats=aab /p:AndroidKeyStore=true /p:AndroidSigningKeyStore=AresGaming_keystore.jks /p:AndroidSigningKeyAlias=${{secrets.keystore-alias}} /p:AndroidSigningKeyPass="${{ secrets.keystore-password }}" /p:AndroidSigningStorePass="${{ secrets.keystore-password }}" --no-restore
+        run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} --no-restore
+
+      - name: Sign APK
+        uses: Tlaster/android-sign@v1
+        with:
+          releaseDirectory: './output'
+          signingKeyBase64: ${{ secrets.keystore }}
+          alias: ${{ secrets.keystore-alias }}
+          keyStorePassword: ${{ secrets.keystore-password }}
+          keyPassword: ${{ secrets.keystore-password }}
       - uses: r0adkll/upload-google-play@v1.0.17
         name: Upload Android Artifact to Play Console internal
         if: ${{contains(inputs.deploy-type, 'dev')}}
