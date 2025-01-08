@@ -78,7 +78,7 @@ jobs:
         uses: timheuer/base64-to-file@v1
         with:
           fileDir: '${{ github.workspace }}\${{ inputs.project-folder }}'
-          fileName: 'ourkeystore.jks'
+          fileName: 'AresGaming_keystore.jks'
           encodedString: ${{ secrets.keystore }}
       - name: Version the app
         uses: managedcode/MAUIAppVersion@v1
