@@ -44,7 +44,7 @@ on:
         required: true
 jobs:
   publish-android:
-    runs-on: windows-latest
+    runs-on: macos-latest
     name: Android Publish
     steps:
       - name: Current dir
