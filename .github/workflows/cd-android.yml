@@ -56,8 +56,7 @@ jobs:
           dotnet-version: ${{ inputs.dotnet-version }}
       - uses: actions/checkout@v3
         name: Checkout the code
-      - name: Show Directory
-        run: ls
+
       # Build Environement variables
       - name: Environement variables
         run: |
