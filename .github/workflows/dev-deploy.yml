@@ -18,7 +18,7 @@ env:
   XCODE_VERSION: 14.3
   DOTNET_VERSION_TARGETS: net9.0
   CSPROJ_TO_BUILD: ./App/GamHubApp.csproj
-  PROJECT_FOLDER: ./App
+  PROJECT_FOLDER: App
 jobs:
   vars:
     runs-on: ubuntu-22.04
