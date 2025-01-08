@@ -99,7 +99,7 @@ jobs:
         run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f ${{ inputs.dotnet-version-target }}-android /p:AndroidPackageFormats=aab /p:AndroidKeyStore=true /p:AndroidSigningKeyStore=${{ github.workspace }}/output/myapp.keystore /p:AndroidSigningKeyAlias=${{secrets.keystore-alias}} /p:AndroidSigningKeyPass="${{ secrets.keystore-password }}" /p:AndroidSigningStorePass="${{ secrets.keystore-password }}" --no-restore
       - name: List Bundles
         run: ls ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-android/
-      - uses: r0adkll/upload-google-play@v1.0.17
+      - uses: r0adkll/upload-google-play@v1.1.3
         name: Upload Android Artifact to Play Console internal
         if: ${{contains(inputs.deploy-type, 'dev')}}
         with:
@@ -107,7 +107,7 @@ jobs:
           packageName: ${{ inputs.package-name }}
           releaseFiles: ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-android/${{ inputs.package-name }}-Signed.aab
           track: internal
-      - uses: r0adkll/upload-google-play@v1.0.17
+      - uses: r0adkll/upload-google-play@v1.1.3
         name: Upload Android Artifact to Play Console production
         if: ${{contains(inputs.deploy-type, 'prod')}}
         with:
