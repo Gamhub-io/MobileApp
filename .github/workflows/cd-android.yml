@@ -86,16 +86,11 @@ jobs:
           printFile: true # optional
 
       - name: Publish MAUI Android AAB
-        run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} --no-restore
+        run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }}-f ${{ inputs.dotnet-version-target }}-android /p:AndroidPackageFormats=aab /p:AndroidKeyStore=true --no-restore
 
-      - name: Sign APK
-        uses: Tlaster/android-sign@v1
-        with:
-          releaseDirectory: './output'
-          signingKeyBase64: ${{ secrets.keystore }}
-          alias: ${{ secrets.keystore-alias }}
-          keyStorePassword: ${{ secrets.keystore-password }}
-          keyPassword: ${{ secrets.keystore-password }}
+      - name: Sign AAB
+        run: |
+          echo ${{ secrets.keystore }} | base64 --decode > my-release-key.jks jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore my-release-key.jks -storepass ${{ secrets.keystore-password }} -keypass ${{ secrets.keystore-password }} ./output/myapp.aab ${{ secrets.keystore-alias }}
       - uses: r0adkll/upload-google-play@v1.0.17
         name: Upload Android Artifact to Play Console internal
         if: ${{contains(inputs.deploy-type, 'dev')}}
