@@ -91,12 +91,12 @@ jobs:
           version: ${{ github.run_number }} # to keep value unique
           displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}
           printFile: true # optional
-      - name: List keystore
-        run: ls ${{ github.workspace }}/output
       - name: Setup Keystore File
         run: |
           echo "${{ secrets.keystore }}" > myapp.keystore.asc
-          gpg -d --passphrase "${{ secrets.keystore-password }}" --batch myapp.keystore.asc > myapp.keystore
+          gpg -d --passphrase "${{ secrets.keystore-password }}" --batch myapp.keystore.asc > ${{ github.workspace }}/output/myapp.keystore
+      - name: List keystore
+        run: ls ${{ github.workspace }}/output
       - name: Publish MAUI Android AAB
         run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f ${{ inputs.dotnet-version-target }}-android /p:AndroidPackageFormats=aab /p:AndroidKeyStore=true /p:AndroidSigningKeyStore=myapp.keystore /p:AndroidSigningKeyAlias=${{secrets.keystore-alias}} /p:AndroidSigningKeyPass="${{ secrets.keystore-password }}" /p:AndroidSigningStorePass="${{ secrets.keystore-password }}" --no-restore
 
