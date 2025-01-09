@@ -66,7 +66,6 @@ jobs:
         id: simulator
         with:
           model: 'iPhone 16'
-          os: 'ios'
           os_version: 18.2
 
       # This step might be obsolete at some point as .NET MAUI workloads
