@@ -64,7 +64,7 @@ jobs:
       - uses: futureware-tech/simulator-action@v4
         with:
           model: 'iPhone 15'
-          os_version: latest
+          os_version: 18.1
 
       # This step might be obsolete at some point as .NET MAUI workloads
       # are starting to come pre-installed on the GH Actions build agents.
