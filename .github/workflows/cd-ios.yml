@@ -102,10 +102,6 @@ jobs:
           version: ${{ github.run_number }} # to keep value unique
           displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}
           printFile: true # optional
-
-      - name: List Runtimes
-        run: xcrun simctl list runtimes
-
       # Compile the app
       - name: Compile the iOS app
         run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios -p:RuntimeIdentifier=ios-arm64 /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false
@@ -116,7 +112,7 @@ jobs:
         uses: apple-actions/upload-testflight-build@v1
         if: ${{contains(inputs.deploy-type, 'dev')}}
         with:
-          app-path: ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/${{ inputs.project-folder }}.ipa
+          app-path: ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/GamHubApp.ipa
           issuer-id: ${{ secrets.appstore-issuer }}
           api-key-id: ${{ secrets.appstore-keyid }}
           api-private-key: ${{ secrets.appstore-private-key }}
