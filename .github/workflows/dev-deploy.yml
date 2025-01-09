@@ -20,7 +20,7 @@ env:
   CSPROJ_TO_BUILD: ./App/GamHubApp.csproj
   PROJECT_FOLDER: App
 jobs:
-  vars:
+  setup:
     runs-on: ubuntu-22.04
     outputs:
       buildVersion: ${{ env.BUILD_VERSION }}
@@ -31,21 +31,21 @@ jobs:
       projectFolder: ${{ env.PROJECT_FOLDER }}
       deploy-type: 'dev'
     steps:
-      - run: echo "Exposing env vars, because they can't be passed to nested workflows."
+      - run: echo "Exposing env setup, because they can't be passed to nested workflows."
   #
   build-ios:
-    needs: vars
+    needs: setup
     uses: ./.github/workflows/cd-ios.yml
     with:
-      dotnet-version: ${{ needs.vars.outputs.dotnetVersion }}
-      dotnet-version-target: ${{ needs.vars.outputs.dotnetVersionTargets }}
-      xcode-version: ${{ needs.vars.outputs.xcodeVersion }}
-      project-file: ${{ needs.vars.outputs.csprojToBuild }}
-      project-folder: ${{ needs.vars.outputs.projectFolder }}
+      dotnet-version: ${{ needs.setup.outputs.dotnetVersion }}
+      dotnet-version-target: ${{ needs.setup.outputs.dotnetVersionTargets }}
+      xcode-version: ${{ needs.setup.outputs.xcodeVersion }}
+      project-file: ${{ needs.setup.outputs.csprojToBuild }}
+      project-folder: ${{ needs.setup.outputs.projectFolder }}
       build-config: 'Release'
       package-name: 'com.bricefriha.aresgaming'
-      deploy-type: ${{ needs.vars.outputs.deploy-type }}
-      build-version: ${{ needs.vars.outputs.buildVersion }}
+      deploy-type: ${{ needs.setup.outputs.deploy-type }}
+      build-version: ${{ needs.setup.outputs.buildVersion }}
     secrets:
       p12-cert: ${{ secrets.CERTIFICATES_P12 }}
       p12-cert-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
@@ -53,16 +53,16 @@ jobs:
       appstore-keyid: ${{ secrets.APPSTORE_KEY_ID }}
       appstore-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
   build-android:
-    needs: vars
+    needs: setup
     uses: ./.github/workflows/cd-android.yml
     with:
-      dotnet-version: ${{ needs.vars.outputs.dotnetVersion }}
-      dotnet-version-target: ${{ needs.vars.outputs.dotnetVersionTargets }}
-      project-file: ${{ needs.vars.outputs.csprojToBuild }}
-      project-folder: ${{ needs.vars.outputs.projectFolder }}
+      dotnet-version: ${{ needs.setup.outputs.dotnetVersion }}
+      dotnet-version-target: ${{ needs.setup.outputs.dotnetVersionTargets }}
+      project-file: ${{ needs.setup.outputs.csprojToBuild }}
+      project-folder: ${{ needs.setup.outputs.projectFolder }}
       build-config: 'Release'
-      build-version: ${{ needs.vars.outputs.buildVersion }}
-      deploy-type: ${{ needs.vars.outputs.deploy-type }}
+      build-version: ${{ needs.setup.outputs.buildVersion }}
+      deploy-type: ${{ needs.setup.outputs.deploy-type }}
       package-name: 'com.bricefriha.aresgaming'
     secrets:
       keystore: ${{ secrets.PLAY_KEYSTORE }}
