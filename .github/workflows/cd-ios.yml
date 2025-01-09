@@ -43,7 +43,7 @@ on:
         required: true
 jobs:
   publish-ios:
-    runs-on: macos-latest
+    runs-on: macos-15
     name: iOS Publish
 
     steps:
