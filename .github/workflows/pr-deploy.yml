@@ -2,13 +2,9 @@ name: Dev Deployment Build
 
 on:
   workflow_dispatch:
-  push:
+  pull_request:
     branches: ['develop']
-    paths-ignore:
-      - '**.md'
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
-      - '**/*.yml'
+    types: [opened, synchronize, reopened]
 env:
   BUILD_VERSION: '1.5'
   DOTNET_VERSION: 9.0.x
