@@ -1,71 +1,109 @@
 name: Dev Deployment Build
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [ "develop" ]
-    paths-ignore:
-      - "**.md"
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
-      - '**/*.yml'
-  pull_request:
-    branches: [ "develop" ]
-env:
-  BUILD_VERSION: '2.0'
-  DOTNET_VERSION: 9.0.x
-  XCODE_VERSION: 14.3
-  DOTNET_VERSION_TARGETS: net9.0
-  CSPROJ_TO_BUILD: App/GamHubApp.csproj
-  PROJECT_FOLDER: GamHubApp
+  workflow_call:
+    inputs:
+      dotnet-version:
+        required: true
+        type: string
+      dotnet-version-target:
+        required: true
+        type: string
+      xcode-version:
+        required: true
+        type: string
+      project-file:
+        required: true
+        type: string
+      project-folder:
+        required: true
+        type: string
+      build-config:
+        required: true
+        type: string
+      build-version:
+        required: true
+        type: string
+      package-name:
+        required: true
+        type: string
+      deploy-type:
+        required: true
+        type: string
+    secrets:
+      p12-cert:
+        required: true
+      p12-cert-password:
+        required: true
+      appstore-issuer:
+        required: true
+      appstore-keyid:
+        required: true
+      appstore-private-key:
+        required: true
 jobs:
-  vars:
-    runs-on: ubuntu-22.04
-    outputs:      
-      buildVersion: ${{ env.BUILD_VERSION }}
-      dotnetVersion: ${{ env.DOTNET_VERSION }}
-      xcodeVersion: ${{ env.XCODE_VERSION }}
-      dotnetVersionTargets: ${{ env.DOTNET_VERSION_TARGETS }}
-      csprojToBuild: ${{ env.CSPROJ_TO_BUILD }}
-      projectFolder: ${{ env.PROJECT_FOLDER }}
-    steps:
-      - run: echo "Exposing env vars, because they can't be passed to nested workflows."
- build-ios:   
-    needs: vars 
-    uses: ./.github/workflows/cd-ios.yml
-    with:
-      dotnet-version: ${{ needs.vars.outputs.dotnetVersion }}
-      dotnet-version-target: ${{ needs.vars.outputs.dotnetVersionTargets }}
-      xcode-version: ${{ needs.vars.outputs.xcodeVersion }}
-      project-file: ${{ needs.vars.outputs.csprojToBuild }}
-      project-folder: ${{ needs.vars.outputs.projectFolder }}
-      build-config: 'Release'
-      build-version: ${{ needs.vars.outputs.buildVersion }}
-    secrets:
-      p12-cert: ${{ secrets.CERTIFICATES_P12 }}
-      p12-cert-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
-      appstore-issuer: ${{ secrets.APPSTORE_ISSUER_ID }}
-      appstore-keyid: ${{ secrets.APPSTORE_KEY_ID }}
-      appstore-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
-    env:
-      deploy-type: 'dev'
- build-android:
-    needs: vars
-    uses: ./.github/workflows/cd-android.yml
-    with:
-      dotnet-version: ${{ needs.vars.outputs.dotnetVersion }}
-      dotnet-version-target: ${{ needs.vars.outputs.dotnetVersionTargets }}
-      project-file: ${{ needs.vars.outputs.csprojToBuild }}
-      project-folder: ${{ needs.vars.outputs.projectFolder }}
-      build-config: 'Release'
-      build-version: ${{ needs.vars.outputs.buildVersion }}
-    secrets:
-      keystore: ${{ secrets.PLAY_KEYSTORE }}
-      keystore-alias: ${{ secrets.PLAY_KEYSTORE_ALIAS }}
-      keystore-password: ${{ secrets.PLAY_KEYSTORE_PASS }}
-      playstore-service-account: ${{ secrets.PLAYSTORE_SERVICE_ACC }}
-    env:
-      deploy-type: 'dev'
+  publish-ios:
+    runs-on: macos-13
+    name: iOS Publish
 
-# Inspired by https://thewissen.io/making-maui-cd-pipeline/
- 
+    steps:
+      # Setup
+      - uses: maxim-lobanov/setup-xcode@v1
+        name: Set XCode version
+        with:
+          xcode-version: ${{ inputs.xcode-version }}
+
+      - name: Setup .NET ${{ inputs.dotnet-version }}
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ inputs.dotnet-version }}
+
+      - uses: actions/checkout@v3
+        name: Checkout the code
+
+      # This step might be obsolete at some point as .NET MAUI workloads
+      # are starting to come pre-installed on the GH Actions build agents.
+      - name: Install MAUI Workload
+        run: dotnet workload install maui --ignore-failed-sources
+
+      - name: Restore Dependencies
+        run: dotnet restore ${{ inputs.project-file }}
+
+      # Signing
+      - uses: apple-actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.p12-cert }}
+          p12-password: ${{ secrets.p12-cert-password }}
+
+      - name: Download Provisioning Profiles
+        id: provisioning
+        uses: apple-actions/download-provisioning-profiles@v1
+        with:
+          bundle-id: ${{ inputs.package-name }}
+          profile-type: 'IOS_APP_STORE'
+          issuer-id: ${{ secrets.appstore-issuer }}
+          api-key-id: ${{ secrets.appstore-keyid }}
+          api-private-key: ${{ secrets.appstore-private-key }}
+
+      # Version app
+      - name: Version the app
+        uses: managedcode/MAUIAppVersion@v1
+        with:
+          csproj: ${{ inputs.project-file }}
+          version: ${{ github.run_number }} # to keep value unique
+          displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}
+          printFile: true # optional
+
+      # Compile the app
+      - name: Compile the iOS app
+        run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false
+
+      # Uploading to TestFlight
+      - name: Upload app to TestFlight
+        uses: apple-actions/upload-testflight-build@v1
+        if: ${{contains(inputs.deploy-type, 'dev')}}
+        with:
+          app-path: ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/${{ inputs.project-folder }}.ipa
+          issuer-id: ${{ secrets.appstore-issuer }}
+          api-key-id: ${{ secrets.appstore-keyid }}
+          api-private-key: ${{ secrets.appstore-private-key }}
