@@ -15,7 +15,7 @@ on:
 env:
   BUILD_VERSION: '1.5'
   DOTNET_VERSION: 9.0.x
-  XCODE_VERSION: latest-stable
+  XCODE_VERSION: latest
   DOTNET_VERSION_TARGETS: net9.0
   CSPROJ_TO_BUILD: ./App/GamHubApp.csproj
   PROJECT_FOLDER: App
