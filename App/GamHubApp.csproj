@@ -35,6 +35,10 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug_Localhost|net8.0-maccatalyst|AnyCPU'">
 	  <DefineConstants>$(DefineConstants);Debug</DefineConstants>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
+	  <ProvisioningType>manual</ProvisioningType>
+	  <CodesignKey>Apple Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
