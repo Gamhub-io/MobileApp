@@ -1,8 +1,5 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Views;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.ApplicationModel.Communication;
 
 namespace GamHubApp.ViewModels
 {
