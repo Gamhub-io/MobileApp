@@ -115,3 +115,4 @@ jobs:
           packageName: ${{ inputs.package-name }}
           releaseFiles: ${{ github.workspace }}\${{ inputs.project-folder }}\bin\${{ inputs.build-config }}\${{ inputs.dotnet-version-target }}-android\${{ inputs.package-name }}-Signed.aab
           track: production
+          changesNotSentForReview: true
