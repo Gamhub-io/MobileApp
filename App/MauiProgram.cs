@@ -1,7 +1,6 @@
 ﻿
 using CommunityToolkit.Maui;
 using GamHubApp;
-using GamHubApp.Core;
 #if ANDROID
 using GamHubApp.Platforms.Android.Renderers;
 #endif

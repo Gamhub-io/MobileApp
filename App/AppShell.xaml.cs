@@ -1,17 +1,27 @@
 ﻿using GamHubApp.ViewModels;
-using Microsoft.Maui.Controls.Xaml;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
+using GamHubApp.Views;
 
-namespace GamHubApp
+namespace GamHubApp;
+
+[XamlCompilation(XamlCompilationOptions.Compile)]
+public partial class AppShell : Shell
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
+        InitializeComponent();
+        BindingContext = new AppShellViewModel(this);
+    }
+
+    protected override void OnNavigating(ShellNavigatingEventArgs args)
+    {
+        base.OnNavigating(args);
+        if (args.Current?.Location == args.Target.Location)
         {
-            InitializeComponent();
-            BindingContext = new AppShellViewModel(this);
+            if (this.CurrentPage is NewsPage)
+            {
+                // scroll the feed all the way to the top
+                (this.CurrentPage as NewsPage).ScrollFeed();
+            }
         }
     }
 }
