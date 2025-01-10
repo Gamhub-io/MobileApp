@@ -2,6 +2,9 @@
 using CommunityToolkit.Maui;
 using GamHubApp;
 using GamHubApp.Core;
+#if ANDROID
+using GamHubApp.Platforms.Android.Renderers;
+#endif
 
 namespace Gamhub
 {
@@ -27,7 +30,13 @@ namespace Gamhub
                        fonts.AddFont("Ubuntu-Regular.ttf", "P-Regular");
                        fonts.AddFont("Ubuntu-Bold.ttf", "P-Bold");
                        fonts.AddFont("Ubuntu-Medium.ttf", "P-Medium");
-                   }).UseMauiCommunityToolkit();
+                   }).UseMauiCommunityToolkit()
+                   .ConfigureMauiHandlers(handlers =>
+                   {
+#if ANDROID
+                       handlers.AddHandler(typeof(Shell), typeof(AndroidShellRenderer));
+#endif
+                   });
 #if DEBUG
             //builder.Logging.AddDebug();
 #endif
