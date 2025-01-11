@@ -97,7 +97,7 @@
                 <!-- Message for the half baked playstore reviewers -->
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="100"/>
                 <!-- Creator -->
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -193,41 +193,37 @@ its community's skills, knowledges and opinions.  "
             <Label Text="Contact us"
                    Grid.Row="8"
                    Style="{StaticResource TitleStyle}" />
-            <BoxView Grid.Row="9"
+                <BoxView Grid.Row="9"
                      Style="{StaticResource SeparatorStyle}"/>
-            <!--<Label Text="Email: Contact@gamhub.io"
-                   Grid.Row="10"
-                   Style="{StaticResource ParagraphStyle}"/>-->
                 <Grid Grid.Row="10"
-                      HorizontalOptions="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                      HorizontalOptions="Center"
+                      RowDefinitions="*,*">
 
-                    <Button Text="Support"
-                            Grid.Column="0"
+                    <Button Text="Support: support@gamhub.io"
+                            Grid.Row="0"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             CornerRadius="15"
                             BackgroundColor="{StaticResource LightDark}"
                             TextColor="{StaticResource FontColor}"
                             Padding="10,0"
+                            HeightRequest="30"
                             FontFamily="P-Bold"
                             Command="{Binding MailTo}"
                             CommandParameter="support@gamhub.io"/>
 
-                    <Button Text="Business"
+                    <Button Text="General: contact@gamhub.io"
                             BackgroundColor="{StaticResource LightDark}"
                             TextColor="{StaticResource FontColor}"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             CornerRadius="15"
                             Padding="10,0"
+                            HeightRequest="30"
                             FontFamily="P-Bold"
                             Command="{Binding MailTo}"
                             CommandParameter="contact@gamhub.io"
-                            Grid.Column="1"/>
+                            Grid.Row="1"/>
                 </Grid>
 
             <!-- Creator -->
