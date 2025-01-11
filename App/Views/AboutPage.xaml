@@ -28,7 +28,7 @@
                    VerticalOptions="Center"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-Bold"
-                   Margin="{OnPlatform Android='0,0,40,5', iOS='30,0,40,5'}"/>
+                   Margin="{OnPlatform Android='-30,0,40,5', iOS='30,0,40,5'}"/>
         </Grid>
 
     </Shell.TitleView>
@@ -62,6 +62,7 @@
             <Setter Property="FontFamily" Value="P-Regular" />
             <Setter Property="FontSize" Value="15" />
             <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+            <Setter Property="Margin" Value="0,20" />
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -97,7 +98,7 @@
                 <!-- Message for the half baked playstore reviewers -->
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="100"/>
                 <!-- Creator -->
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -108,23 +109,31 @@
             </Grid.RowDefinitions>
             
             <!-- Image -->
-            <Image Source="ares.png"
-                   VerticalOptions="Center"
-                   Grid.Row="0"
-                   Aspect="AspectFit" 
-                   />
+                <Border StrokeShape="RoundRectangle 15"
+                        BackgroundColor="{StaticResource Alternate}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Margin="5"
+                        Grid.Row="0">
+                    <Image Source="ares.png"
+                           Aspect="AspectFit" 
+                           />
+                    
+                </Border>
                 <StackLayout Grid.Row="1"
                              Orientation="Horizontal"
                              HorizontalOptions="Center"
-                             VerticalOptions="Center">
-                    <Frame CornerRadius="12"
+                             VerticalOptions="Center"
+                             Spacing="10">
+                    <Border StrokeShape="RoundRectangle 12"
                            Padding="7"
-                           BackgroundColor="{StaticResource Dark}">
-                        <Frame.Behaviors>
+                           BackgroundColor="#0d1017">
+                        <Border.Behaviors>
                             <mct:TouchBehavior 
                                 Command="{Binding ViewGithub}"/>
-                        </Frame.Behaviors>
-                        <StackLayout Orientation="Horizontal">
+                        </Border.Behaviors>
+                        <StackLayout Orientation="Horizontal"
+                                     Spacing="5">
                             <!-- Github icon -->
                             <Label Text="&#xf09b;"
                                    FontSize="20"
@@ -137,35 +146,36 @@
                                    TextColor="#fafafa"
                                    VerticalOptions="Center" />
                         </StackLayout>
-                    </Frame>
-                    <Frame CornerRadius="12"
+                    </Border>
+                    <Border StrokeShape="RoundRectangle 12"
                            Padding="7"
-                           BackgroundColor="#1DA1F2">
-                        <Frame.Behaviors>
+                           BackgroundColor="#e8e9eb">
+                        <Border.Behaviors>
                             <mct:TouchBehavior 
                                             Command="{Binding ViewTwitter}"
                                             CommandParameter="gamhub_io"
                                             />
-                        </Frame.Behaviors>
-                        <StackLayout Orientation="Horizontal">
+                        </Border.Behaviors>
+                        <StackLayout Orientation="Horizontal"
+                                     Spacing="5">
                             <!-- Twitter icon -->
-                            <Label Text="&#xf099;"
+                            <Label Text="&#xe61a;"
                                    FontSize="20"
                                    FontFamily="FaBrand"
-                                   TextColor="#fafafa"
+                                   TextColor="#000000"
                                    VerticalOptions="Center" />
-                            <Label Text="Follow on Twitter"
+                            <Label Text="Follow us on X"
                                    FontSize="12"
                                    FontFamily="P-SemiBold"
-                                   TextColor="#fafafa"
+                                   TextColor="#000000"
                                    VerticalOptions="Center" />
                         </StackLayout>
-                    </Frame>
+                    </Border>
 
                 </StackLayout>
 
             <!-- Description --> 
-            <Label Text="Project description"
+            <Label Text="Description"
                    Grid.Row="2"
                    Style="{StaticResource TitleStyle}" />
             <BoxView Grid.Row="3"
@@ -193,41 +203,37 @@ its community's skills, knowledges and opinions.  "
             <Label Text="Contact us"
                    Grid.Row="8"
                    Style="{StaticResource TitleStyle}" />
-            <BoxView Grid.Row="9"
+                <BoxView Grid.Row="9"
                      Style="{StaticResource SeparatorStyle}"/>
-            <!--<Label Text="Email: Contact@gamhub.io"
-                   Grid.Row="10"
-                   Style="{StaticResource ParagraphStyle}"/>-->
                 <Grid Grid.Row="10"
-                      HorizontalOptions="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                      HorizontalOptions="Center"
+                      RowDefinitions="*,*">
 
-                    <Button Text="Support"
-                            Grid.Column="0"
+                    <Button Text="Support: support@gamhub.io"
+                            Grid.Row="0"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             CornerRadius="15"
                             BackgroundColor="{StaticResource LightDark}"
                             TextColor="{StaticResource FontColor}"
                             Padding="10,0"
+                            HeightRequest="30"
                             FontFamily="P-Bold"
                             Command="{Binding MailTo}"
                             CommandParameter="support@gamhub.io"/>
 
-                    <Button Text="Business"
+                    <Button Text="General: contact@gamhub.io"
                             BackgroundColor="{StaticResource LightDark}"
                             TextColor="{StaticResource FontColor}"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             CornerRadius="15"
                             Padding="10,0"
+                            HeightRequest="30"
                             FontFamily="P-Bold"
                             Command="{Binding MailTo}"
                             CommandParameter="contact@gamhub.io"
-                            Grid.Column="1"/>
+                            Grid.Row="1"/>
                 </Grid>
 
             <!-- Creator -->
@@ -240,9 +246,9 @@ its community's skills, knowledges and opinions.  "
                      Style="{StaticResource SeparatorStyle}"/>
             
             <!-- Card creator -->
-            <Frame Grid.Row="13"
+            <Border Grid.Row="13"
                    BackgroundColor="{StaticResource LightDark}"
-                   CornerRadius="15"
+                   StrokeShape="RoundRectangle 15"
                    WidthRequest="265"
                    HeightRequest="108"
                    Margin="0,20"
@@ -261,6 +267,7 @@ its community's skills, knowledges and opinions.  "
                                     BackgroundColor="{DynamicResource Dark}"
                                     TextColor="{DynamicResource Dark}"
                                     Text=""
+                                    StrokeThickness="0"
                                     HeightRequest="70"
                                     WidthRequest="70"
                                     ImageSource="https://avatars.githubusercontent.com/u/37577669?v=4" />
@@ -282,12 +289,13 @@ its community's skills, knowledges and opinions.  "
 
                         <!-- Twitter -->
                         <StackLayout Orientation="Horizontal"
-                                     Grid.Row="1">
+                                     Grid.Row="1"
+                                     Spacing="5">
                             <!-- Twitter logo -->
                             <Label Text="&#xe61a;"
                                    FontSize="15"
                                    FontFamily="FaBrand"
-                                   TextColor="#1DA1F2"
+                                   TextColor="#e4e5e7"
                                    VerticalOptions="Center"/>
                             
                             <!-- Name -->
@@ -305,8 +313,8 @@ its community's skills, knowledges and opinions.  "
                     </Grid>
                     
                 </Grid>
-            </Frame>
-                <Label Text="© 2024 Brice Friha"
+            </Border>
+                <Label Text="© 2025 Brice Friha"
                        FontSize="12"
                        Grid.Row="15"
                        FontFamily="P-regular"

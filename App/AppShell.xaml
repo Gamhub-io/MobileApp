@@ -239,7 +239,7 @@
                    />
             </Grid>
             
-            <Label Text="© 2024 Brice Friha"
+            <Label Text="© 2025 Brice Friha"
                    FontSize="12"
                    Grid.Row="2"
                    Margin="0,10,0,0"
