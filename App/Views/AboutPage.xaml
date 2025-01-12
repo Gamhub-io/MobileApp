@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels" 
+             xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"  
+             xmlns:models="clr-namespace:GamHubApp.Models"  
              x:DataType="viewmodels:AboutViewModel"
              x:Class="GamHubApp.Views.AboutPage">
     <Shell.TitleView>
@@ -100,6 +101,10 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="100"/>
                 <!-- Creator -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <!-- Partners -->
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -314,9 +319,39 @@ its community's skills, knowledges and opinions.  "
                     
                 </Grid>
             </Border>
+
+            <!-- Partners -->
+            <Label Text="Partners"
+                   Grid.Row="14"
+                   Style="{StaticResource TitleStyle}" 
+                   />
+
+            <BoxView Grid.Row="15"
+                     Style="{StaticResource SeparatorStyle}"/>
+                <StackLayout Grid.Row="16"
+                             BindableLayout.ItemsSource="{Binding Partners}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:Partner">
+                            <!-- Card partner -->
+                            <Border 
+                                BackgroundColor="{StaticResource LightDark}"
+                                StrokeShape="RoundRectangle 15"
+                                WidthRequest="265"
+                                HeightRequest="108"
+                                Margin="0,20"
+                                HorizontalOptions="Center"
+                                Padding="0">
+                                <!-- Logo -->
+                                <ImageButton Source="{Binding Logo}"/>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+            </StackLayout>
+            
+            
                 <Label Text="© 2025 Brice Friha"
                        FontSize="12"
-                       Grid.Row="15"
+                       Grid.Row="17"
                        FontFamily="P-regular"
                        TextColor="{StaticResource FontColor}"
                        VerticalOptions="Center"

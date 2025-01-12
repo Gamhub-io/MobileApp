@@ -1,18 +1,14 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.ApplicationModel.Communication;
-using Microsoft.Maui.ApplicationModel;
+﻿using GamHubApp.Models;
+using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels
 {
     public class AboutViewModel : BaseViewModel
     {
+        public ObservableCollection<Partner> Partners { get; set; }
         public AboutViewModel()
         {
+            Partners = new((App.Current as App).Partners);
         }
 
         public Command ViewGithub

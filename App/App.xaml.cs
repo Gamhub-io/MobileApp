@@ -27,6 +27,7 @@ namespace GamHubApp;
         public static string ProdHost { get; } = "api.gamhub.io";
         public static string LocalHost { get; } = "gamhubdev.ddns.net";
         public User SaveInfo { get; private set; }
+        public Collection<Partner> Partners { get; private set; }
         /// <summary>
         /// Date first registered to determin when is the best time to ask for user review
         /// </summary>
@@ -63,6 +64,7 @@ namespace GamHubApp;
 
             LoadingIndicator = new LoadingPopUp();
 
+            // Task to get all the resource data from the API
             Task.Run(async () =>
             {
                 Sources = await DataFetcher.GetSources();
@@ -72,9 +74,11 @@ namespace GamHubApp;
                     SqLiteConn.InsertOrReplace(source);
                     BackUpConn.InsertOrReplace(source);
                 }
+
+                Partners = await DataFetcher.GetPartners();
             });
 
-            
+        
         }
         /// <summary>
         /// Show the popup loading indicator
