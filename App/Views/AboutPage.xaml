@@ -132,9 +132,11 @@
                              Spacing="10">
                     <Border StrokeShape="RoundRectangle 12"
                            Padding="7"
-                           BackgroundColor="#0d1017">
+                           BackgroundColor="#0d1017"
+                            x:Name="githubBtn">
                         <Border.Behaviors>
                             <mct:TouchBehavior 
+                                BindingContext="{Binding Path=BindingContext, Source={x:Reference githubBtn}}"
                                 Command="{Binding ViewGithub}"/>
                         </Border.Behaviors>
                         <StackLayout Orientation="Horizontal"
@@ -154,10 +156,12 @@
                     </Border>
                     <Border StrokeShape="RoundRectangle 12"
                            Padding="7"
-                           BackgroundColor="#e8e9eb">
+                            BackgroundColor="#e8e9eb"
+                            x:Name="twitterBtn">
                         <Border.Behaviors>
                             <mct:TouchBehavior 
                                             Command="{Binding ViewTwitter}"
+                                            BindingContext="{Binding Path=BindingContext, Source={x:Reference twitterBtn}}"
                                             CommandParameter="gamhub_io"
                                             />
                         </Border.Behaviors>
@@ -308,10 +312,12 @@ its community's skills, knowledges and opinions.  "
                                    FontSize="14"
                                    FontFamily="P-Bold"
                                    VerticalOptions="Center"
+                                    x:Name="briceTwitterBtn"
                                    TextColor="{StaticResource FontColor}">
                                 <Label.Behaviors>
                                     <mct:TouchBehavior Command="{Binding ViewTwitter}"
-                                                       CommandParameter="bricefriha"/>
+                                                       CommandParameter="bricefriha"
+                                                       BindingContext="{Binding Path=BindingContext, Source={x:Reference briceTwitterBtn}}"/>
                                 </Label.Behaviors>
                             </Label>
                         </StackLayout>
