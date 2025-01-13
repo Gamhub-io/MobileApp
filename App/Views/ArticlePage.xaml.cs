@@ -1,13 +1,6 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.ViewModels;
 using Plugin.StoreReview;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Microsoft.Maui.Controls.Xaml;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.Storage;
 
 namespace GamHubApp.Views
 {
