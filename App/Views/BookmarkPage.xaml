@@ -90,19 +90,7 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
-                                             ArticleId="{Binding Id}"
-                                             ArticleIsSaved="True"
-                                             ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
-                                             ArticleSource="{Binding Source, Mode=OneWay}"
-                                             Thumnail="{Binding Image}"
-                                             ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=ShareArticle, Mode=OneWay}"
-                                             ShareCommandParameter="{Binding Url}"
-                                             BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=AddBookmark, Mode=OneWay}"
-                                             ControlTemplate="{StaticResource ArticleTemplate}"
-                                             TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:BookmarkViewModel}}, Path=GoToDetail}"
-                                             TapCommandParameter="{Binding Id}"
-                                             />
+                    <controls:ArticlePreview Article="{Binding .}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

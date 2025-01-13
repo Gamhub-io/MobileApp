@@ -1,8 +1,10 @@
 ﻿
 
+using GamHubApp.Views;
 using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
+using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -98,6 +100,63 @@ namespace GamHubApp.Models
                 }
             }
             return true;
+        }
+
+        public Command GoToDetail
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    var articlePage = new ArticlePage(this);
+
+
+                    _ = (App.Current as App).Windows[0].Page.Navigation.PushAsync(articlePage);
+                }); ;
+            }
+        }
+
+        public Command AddBookmark
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    // If the article is already in bookmarks
+                    bool isSaved = IsSaved;
+
+                    //// Marked the article as saved
+                    IsSaved = !IsSaved;
+
+                    if (isSaved)
+                        App.SqLiteConn.Delete(this, recursive: true);
+                    else
+                    {
+                        // Insert it in database
+                        App.SqLiteConn.InsertWithChildren(this, recursive: true);
+                    }
+
+                    // Say the the bookmark has been updated
+                    MessagingCenter.Send<Article>(this, "SwitchBookmark");
+                }); ;
+            }
+        }
+
+        public Command ShareArticle
+        {
+            get
+            {
+                return new Command(() =>
+                {
+                    _ = Share.RequestAsync(new ShareTextRequest
+                    {
+                        Uri = Url,
+                        Title = "Share this article",
+                        Subject = Title,
+                        Text = Title
+                    });
+                }); ;
+            }
         }
     }
 }

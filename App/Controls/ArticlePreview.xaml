@@ -9,149 +9,125 @@
              x:DataType="ctrs:ArticlePreview"
              x:Name="preview">
 
-    <ContentView.Resources>
-        <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
+    <Border StrokeShape="RoundRectangle 15" 
+            StrokeThickness="0"
+            HeightRequest="221"
+            Padding="0">
+        <Grid >
 
-        <!-- Template -->
-        <ControlTemplate x:Key="ArticleTemplate">
-            <Border StrokeShape="RoundRectangle 15" 
-                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}"
-                   HeightRequest="221"
-                   Padding="0">
-                
-                <!--
-                TODO: there is a bug with mct Behaviors that makes all children input transparent
-                <Border.Behaviors>
-                    <mct:TouchBehavior Command="{Binding TapCommand}" 
-                                       CommandParameter="{Binding TapCommandParameter}"/>
-                </Border.Behaviors>-->
+            <!-- Backgournd -->
+            <Grid BackgroundColor="{StaticResource Dark}">
+                <!-- Image -->
+                <Image Source="{Binding Article.Image, Source={x:Reference preview}}"
+                   Opacity="0.60"
+                   Aspect="AspectFill" >
+                </Image>
+            </Grid>
+            <!-- Foreground -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
 
-                <Border.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding TapCommand}" 
-                                                      CommandParameter="{Binding TapCommandParameter}" />
-                </Border.GestureRecognizers>
-                <Grid >
+                <!-- Banner -->
+                <BoxView Grid.Row="1" 
+                     BackgroundColor="{StaticResource Dark}"
+                     Opacity="0.24"/>
+                <!-- Title -->
+                <Grid Grid.Row="1" 
+                  Margin="0,12,0,5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!-- Headline -->
+                    <Label Grid.Row="0" 
+                       Text="{Binding Article.Title, Converter={StaticResource MaxLengthConverter}, ConverterParameter=120, Source={x:Reference preview}}"
+                       TextColor="{StaticResource FontColor}"
+                       Margin="10,0"
+                       TextType="Html"
+                       FontFamily="P-Bold"
+                       FontSize="17" />
 
-                    <!-- Backgournd -->
-                    <Grid BackgroundColor="{StaticResource Dark}">
-                        <!-- Image -->
-                        <Image Source="{Binding Thumnail}"
-                               Opacity="0.60"
-                               Aspect="AspectFill" >
-                        </Image>
-                        <!--<Image Source="{Binding Thumnail, Mode=OneWay}"
-                               Opacity="0.60"
-                               Aspect="AspectFill" />-->
-                        <!-- filter -->
-                        <Border Opacity="0.08">
-                            <Border.Background>
-                                <LinearGradientBrush EndPoint="0,1">
+                    <!-- Time ago -->
+                    <Label Grid.Row="1" 
+                       Text="{Binding Article.Time, Source={x:Reference preview}, Converter={StaticResource TimeSpanConverter}}"
+                       TextColor="{StaticResource FontColor}"
+                       Margin="10,0"
+                       VerticalOptions="Center"
+                       HorizontalOptions="End"
+                       FontFamily="P-Bold"
+                       FontSize="14"/>
+                </Grid>
+                <Button Grid.RowSpan="2"
+                        Opacity="0.08"
+                        Command="{Binding Article.GoToDetail, Source={x:Reference preview}}">
+                    <Button.Background>
+                        <LinearGradientBrush EndPoint="0,1">
 
-                                    <GradientStop Color="{StaticResource Primary}"
-                                                          Offset="0.1" />
-                                    <GradientStop Color="{StaticResource Light}"
-                                                          Offset="0.0" />
-                                    <GradientStop Color="{StaticResource Dark}"
-                                                          Offset="1.0" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-                    </Grid>
-                    <!-- Foreground -->
-                    <Grid>
+                            <GradientStop Color="{StaticResource Primary}"
+                          Offset="0.1" />
+                            <GradientStop Color="{StaticResource Light}"
+                          Offset="0.0" />
+                            <GradientStop Color="{StaticResource Dark}"
+                          Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                </Button>
+                <!-- Extra -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Mentionning the source -->
+                    <Border Grid.Column="0"
+                       HorizontalOptions="Start"
+                       VerticalOptions="Start"
+                       StrokeShape="RoundRectangle 8"
+                       Margin="10,10,0,0"
+                       HeightRequest="25"
+                       Padding="4,0"
+                       BackgroundColor="{Binding Article.Source.PrimaryColour, Mode=OneWay, Source={x:Reference preview}}">
+                        <Label FontSize="13"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Text="{Binding Article.Source.Name, Mode=OneWay, Source={x:Reference preview}}"
+                           FontFamily="P-Bold"
+                           TextColor="{Binding Article.Source.SecondaryColour, Mode=OneWay, Source={x:Reference preview}}"
+                               />
+                    </Border>
+
+                    <!-- Share and save-->
+                    <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
 
-                        <!-- Extra -->
-                        <Grid Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                        <!-- Share button-->
+                        <Border Grid.Row="0"
+                                Style="{StaticResource ButtonBorder}" 
+                                BackgroundColor="{StaticResource LightDark}" >
+                                 <Border.Behaviors>
+                                     <mct:TouchBehavior Command="{Binding Article.ShareArticle, Source={x:Reference preview}}"/>
+                                 </Border.Behaviors>
+                                 <Label Style="{StaticResource LabelButtonStyle}"
+                                     Text="&#xf1e0;"
+                                 />
+                        </Border>
 
-                            <!-- Mentionning the source -->
-                            <Border Grid.Column="0"
-                                   HorizontalOptions="Start"
-                                   VerticalOptions="Start"
-                                   StrokeShape="RoundRectangle 8"
-                                   Margin="10,10,0,0"
-                                   HeightRequest="25"
-                                   Padding="4,0"
-                                   BackgroundColor="{Binding ArticleSource.PrimaryColour, Mode=OneWay}">
-                                <Label FontSize="13"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"
-                                       Text="{Binding ArticleSource.Name, Mode=OneWay}"
-                                       FontFamily="P-Bold"
-                                       TextColor="{Binding ArticleSource.SecondaryColour, Mode=OneWay}"
-                                           />
-                            </Border>
-
-                            <!-- Share and save-->
-                            <Grid Grid.Column="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto"/>
-                                    <RowDefinition Height="auto"/>
-                                </Grid.RowDefinitions>
-                                
-                                <!-- Share button-->
-                                <Border Grid.Row="0"
-                                       Style="{StaticResource ButtonBorder}" 
-                                       BackgroundColor="{StaticResource LightDark}" >
-                                    <Border.Behaviors>
-                                        <mct:TouchBehavior Command="{Binding ShareCommand}"
-                                                           CommandParameter="{Binding ArticleId}"/>
-                                    </Border.Behaviors>
-                                    <Label Style="{StaticResource LabelButtonStyle}"
-                                            Text="&#xf1e0;"
-                                        />
-                                </Border>
-                                
-                                <!-- Bookmark button-->
-                                <ctrs:BookmarkButton IsSaved="{Binding Path=ArticleIsSaved, Mode=TwoWay}"
-                                                     Command="{Binding BookmarkCommand}"
-                                                     CommandParameter="{Binding ArticleId}"
-                                                     Grid.Row="1"
-                                                     ControlTemplate="{StaticResource BookmarkButton}" />
-                            </Grid>
-
-                        </Grid>
-                        <!-- Banner -->
-                        <BoxView Grid.Row="1" 
-                                 BackgroundColor="{StaticResource Dark}"
-                                 Opacity="0.24"/>
-                        <!-- Title -->
-                        <Grid Grid.Row="1" 
-                              Margin="0,12,0,5">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <!-- Headline -->
-                            <Label Grid.Row="0" 
-                                   Text="{Binding Headline, Converter={StaticResource MaxLengthConverter}, ConverterParameter=120}"
-                                   TextColor="{StaticResource FontColor}"
-                                   Margin="10,0"
-                                   TextType="Html"
-                                   FontFamily="P-Bold"
-                                   FontSize="17" />
-
-                            <!-- Time ago -->
-                            <Label Grid.Row="1" 
-                                   Text="{Binding ArticleTime}"
-                                   TextColor="{StaticResource FontColor}"
-                                   Margin="10,0"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="End"
-                                   FontFamily="P-Bold"
-                                   FontSize="14"/>
-                        </Grid>
-
+                        <!-- Bookmark button-->
+                        <ctrs:BookmarkButton IsSaved="{Binding Article.IsSaved, Mode=TwoWay, Source={x:Reference preview}}"
+                                         Command="{Binding Article.AddBookmark, Source={x:Reference preview}}"
+                                         CommandParameter="{Binding Article.Id, Source={x:Reference preview}}"
+                                         Grid.Row="1" />
                     </Grid>
+
                 </Grid>
-            </Border>
-        </ControlTemplate>
-    </ContentView.Resources>
+            </Grid>
+        </Grid>
+    </Border>
 </ContentView>

@@ -2,39 +2,36 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
-             x:Class="GamHubApp.Controls.BookmarkButton">
-  <ContentView.Resources>
-        <ControlTemplate x:Key="BookmarkButton">
-            <!-- Bookmark button-->
-            <Border 
-                   Style="{StaticResource ButtonBorder}"
-                   BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
+             x:Class="GamHubApp.Controls.BookmarkButton"
+             x:Name="thy">
 
-                <Button Text="&#xf02e;"
+    <!-- Bookmark button-->
+    <Border Style="{StaticResource ButtonBorder}"
+            BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
+
+        <Button Text="&#xf02e;"
                         Style="{StaticResource ButtonStyle}"
-                        Command="{Binding Command}"
-                        CommandParameter="{Binding CommandParameter}"
+                        Command="{Binding Command, Source={x:Reference thy}}"
+                        CommandParameter="{Binding CommandParameter, Source={x:Reference thy}}"
                         Clicked="Button_Clicked">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding IsSaved}"
-                                     Value="true">
-                            <Setter Property="FontFamily"
-                                    Value="FaSolid" />
-                            <Setter Property="TextColor" 
+            <Button.Triggers>
+                <DataTrigger TargetType="Button"
+                             Binding="{Binding IsSaved, Source={x:Reference thy}}"
+                             Value="true">
+                    <Setter Property="FontFamily"
+                            Value="FaSolid" />
+                    <Setter Property="TextColor" 
                                     Value="{StaticResource Primary}" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding IsSaved}"
-                                     Value="false">
-                            <Setter Property="FontFamily"
-                                    Value="FaRegular" />
-                            <Setter Property="TextColor" 
-                                    Value="{StaticResource Light}" />
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
-            </Border>
-        </ControlTemplate>
-  </ContentView.Resources>
+                </DataTrigger>
+                <DataTrigger TargetType="Button"
+                             Binding="{Binding IsSaved, Source={x:Reference thy}}"
+                             Value="false">
+                    <Setter Property="FontFamily"
+                            Value="FaRegular" />
+                    <Setter Property="TextColor" 
+                            Value="{StaticResource Light}" />
+                </DataTrigger>
+            </Button.Triggers>
+        </Button>
+    </Border>
 </ContentView>

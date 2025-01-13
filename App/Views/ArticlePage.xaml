@@ -156,17 +156,15 @@
                                Padding="0">
                             <Button Style="{StaticResource ButtonStyle}"
                                     Text="&#xf1e0;"
-                                    Command="{Binding ShareArticle}"
+                                    Command="{Binding SelectedArticle.ShareArticle}"
                                     Margin="0"
                                     CommandParameter="{Binding SelectedArticle.Url}"
                                         />
                         </Border>
                         <!-- Bookmark button-->
                         <ctrls:BookmarkButton IsSaved="{Binding Path=SelectedArticle.IsSaved, Mode=TwoWay}"
-                                              Command="{Binding Path=AddBookmark, Mode=OneWay}"
-                                              Grid.Column="1"
-                                              CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"
-                                              ControlTemplate="{StaticResource BookmarkButton}" />
+                                              Command="{Binding SelectedArticle.AddBookmark, Mode=OneWay}"
+                                              Grid.Column="1"/>
                         <!-- Text to speech button-->
                         <Border Grid.Column="2"
                                Style="{StaticResource ButtonBorder}"
