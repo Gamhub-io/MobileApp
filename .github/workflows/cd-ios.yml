@@ -100,7 +100,7 @@ jobs:
         with:
           csproj: ${{ inputs.project-file }}
           version: ${{ github.run_number }} # to keep value unique
-          displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}
+          displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}.159
           printFile: true # optional
       # Compile the app
       - name: Compile the iOS app
