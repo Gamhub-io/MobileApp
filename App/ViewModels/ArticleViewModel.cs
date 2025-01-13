@@ -178,8 +178,10 @@ namespace GamHubApp.ViewModels
             _ttsIcon = "\uf028";
             _ttsColour = "#36383c";
 
+#if !DEBUG
             // Register Hook
             _ =(App.Current as App).DataFetcher.RegisterHook(article);
+#endif
 
             _addBookmark = new Command((id) =>
             {
