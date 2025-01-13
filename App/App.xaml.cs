@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui.Views;
-using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
@@ -10,6 +9,7 @@ using SQLite;
 using System.Collections.ObjectModel;
 #if DEBUG
 using System.Diagnostics;
+using GamHubApp.Core;
 #endif
 
 namespace GamHubApp;
