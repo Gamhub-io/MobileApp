@@ -106,8 +106,11 @@ namespace GamHubApp;
            IsLoading = false;
            
            // Close the popup
-           this.LoadingIndicator.Close();
-        }
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+               this.LoadingIndicator.Close();
+            });
+    }
         /// <summary>
         ///  Function to close the database 
         /// </summary>
@@ -217,8 +220,10 @@ namespace GamHubApp;
                     page = GetCurrentPage();
                 if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp?.Id))
                     return;
-
-                page.ShowPopup(popUp);
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    page.ShowPopup(popUp);
+                });
             }
             catch (Exception ex)
             {
