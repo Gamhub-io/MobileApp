@@ -11,8 +11,8 @@
 
     <Border StrokeShape="RoundRectangle 15" 
             StrokeThickness="0"
-        HeightRequest="221"
-        Padding="0">
+            HeightRequest="221"
+            Padding="0">
         <Grid >
 
             <!-- Backgournd -->
@@ -123,8 +123,7 @@
                         <ctrs:BookmarkButton IsSaved="{Binding Article.IsSaved, Mode=TwoWay, Source={x:Reference preview}}"
                                          Command="{Binding Article.AddBookmark, Source={x:Reference preview}}"
                                          CommandParameter="{Binding Article.Id, Source={x:Reference preview}}"
-                                         Grid.Row="1"
-                                         ControlTemplate="{StaticResource BookmarkButton}" />
+                                         Grid.Row="1" />
                     </Grid>
 
                 </Grid>

@@ -165,8 +165,7 @@
                         <ctrls:BookmarkButton IsSaved="{Binding Path=SelectedArticle.IsSaved, Mode=TwoWay}"
                                               Command="{Binding Path=AddBookmark, Mode=OneWay}"
                                               Grid.Column="1"
-                                              CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"
-                                              ControlTemplate="{StaticResource BookmarkButton}" />
+                                              CommandParameter="{Binding Path=SelectedArticle.Id, Mode=OneWay}"/>
                         <!-- Text to speech button-->
                         <Border Grid.Column="2"
                                Style="{StaticResource ButtonBorder}"
