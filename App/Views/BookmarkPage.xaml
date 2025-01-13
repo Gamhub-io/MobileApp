@@ -4,7 +4,8 @@
              xmlns:controls="clr-namespace:GamHubApp.Controls"
              xmlns:vm="clr-namespace:GamHubApp.ViewModels"
              x:Class="GamHubApp.Views.BookmarkPage"
-             BackgroundColor="{StaticResource Dark}">
+             BackgroundColor="{StaticResource Dark}"
+             x:DataType="vm:BookmarkViewModel">
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>

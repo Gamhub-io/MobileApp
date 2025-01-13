@@ -48,6 +48,7 @@
 	  <CodesignKey>Apple Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>		
 	<UseInterpreter>true</UseInterpreter>
 		<TrimMode>full</TrimMode>
+    <NoSymbolStrip>true</NoSymbolStrip>
 		<PublishAot Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</PublishAot>
 	</PropertyGroup>
 
