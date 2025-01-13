@@ -197,6 +197,27 @@ namespace GamHubApp.Services
             }
         }
         /// <summary>
+        /// Get all the partners
+        /// </summary>
+        /// <returns>chunk articles the date provided</returns>
+        public async Task<Collection<Partner>> GetPartners()
+        {
+            try
+            {
+                return await this.WebService.Get<Collection<Partner>>(controller: "partners",
+                                                                   unSuccessCallback: e => _ = HandleHttpException(e));
+            }
+            catch (Exception ex)
+            {
+
+#if DEBUG
+                throw ex;
+#else
+                return null; 
+#endif
+            }
+        }
+        /// <summary>
         /// Save all the tokens of a session and expiration
         /// </summary>
         /// <param name="newSession"></param>

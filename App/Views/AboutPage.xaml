@@ -2,9 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels" 
+             xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"  
+             xmlns:models="clr-namespace:GamHubApp.Models"  
              x:DataType="viewmodels:AboutViewModel"
-             x:Class="GamHubApp.Views.AboutPage">
+             x:Class="GamHubApp.Views.AboutPage"
+             x:Name="thy">
     <Shell.TitleView>
         <Grid>
             
@@ -37,7 +39,7 @@
         <Style x:Key="TitleStyle"
                TargetType="Label">
             <Setter Property="HorizontalOptions" Value="Center" />
-            <Setter Property="Margin" Value="0,20,0,0" />
+            <Setter Property="Margin" Value="0,20,0,20" />
             <Setter Property="FontFamily" Value="P-Bold" />
             <Setter Property="FontSize" Value="23" />
             <Setter Property="TextColor" Value="{StaticResource FontColor}" />
@@ -91,7 +93,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <!-- Economic model -->
+                <!-- Business model -->
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -100,6 +102,10 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="100"/>
                 <!-- Creator -->
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <!-- Partners -->
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
@@ -127,9 +133,11 @@
                              Spacing="10">
                     <Border StrokeShape="RoundRectangle 12"
                            Padding="7"
-                           BackgroundColor="#0d1017">
+                           BackgroundColor="#0d1017"
+                           x:Name="githubBtn">
                         <Border.Behaviors>
                             <mct:TouchBehavior 
+                                BindingContext="{Binding Path=BindingContext, Source={x:Reference githubBtn}}"
                                 Command="{Binding ViewGithub}"/>
                         </Border.Behaviors>
                         <StackLayout Orientation="Horizontal"
@@ -148,11 +156,13 @@
                         </StackLayout>
                     </Border>
                     <Border StrokeShape="RoundRectangle 12"
-                           Padding="7"
-                           BackgroundColor="#e8e9eb">
+                            Padding="7"
+                            BackgroundColor="#e8e9eb"
+                            x:Name="twitterBtn">
                         <Border.Behaviors>
                             <mct:TouchBehavior 
                                             Command="{Binding ViewTwitter}"
+                                            BindingContext="{Binding Path=BindingContext, Source={x:Reference twitterBtn}}"
                                             CommandParameter="gamhub_io"
                                             />
                         </Border.Behaviors>
@@ -195,7 +205,7 @@ its community's skills, knowledges and opinions.  "
                    Style="{StaticResource TitleStyle}" />
             <BoxView Grid.Row="6"
                      Style="{StaticResource SeparatorStyle}"/>
-            <Label Text="It's not."
+                <Label Text="It's not. &#x0a; We don't really have a business model per se. Our affiliate partners (see bellow) allows to pay for development and expenses, and we are grateful for that. &#x0a; It's a passion project first and foremost, we would love to make a living out of it one day, but as it stands it isn't realistic. "
                    Grid.Row="7"
                    Style="{StaticResource ParagraphStyle}"/>
             
@@ -303,10 +313,12 @@ its community's skills, knowledges and opinions.  "
                                    FontSize="14"
                                    FontFamily="P-Bold"
                                    VerticalOptions="Center"
+                                    x:Name="briceTwitterBtn"
                                    TextColor="{StaticResource FontColor}">
                                 <Label.Behaviors>
                                     <mct:TouchBehavior Command="{Binding ViewTwitter}"
-                                                       CommandParameter="bricefriha"/>
+                                                       CommandParameter="bricefriha"
+                                                       BindingContext="{Binding Path=BindingContext, Source={x:Reference briceTwitterBtn}}"/>
                                 </Label.Behaviors>
                             </Label>
                         </StackLayout>
@@ -314,9 +326,36 @@ its community's skills, knowledges and opinions.  "
                     
                 </Grid>
             </Border>
+
+            <!-- Partners -->
+            <Label Text="Partners"
+                   Grid.Row="14"
+                   Style="{StaticResource TitleStyle}" 
+                   />
+
+            <BoxView Grid.Row="15"
+                     Style="{StaticResource SeparatorStyle}"/>
+                <StackLayout Grid.Row="16"
+                             BindableLayout.ItemsSource="{Binding Partners}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:Partner">
+                            <ImageButton Command="{Binding ViewPartner}" 
+                                         Source="{Binding Logo}"
+                                         CommandParameter="{Binding Url}"
+                                         WidthRequest="265"
+                                         HeightRequest="108"
+                                         Clicked="Button_Clicked"
+                                         CornerRadius="15"
+                                         Margin="0,20"
+                                         BackgroundColor="{StaticResource FontColor}"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+            </StackLayout>
+            
+            
                 <Label Text="© 2025 Brice Friha"
                        FontSize="12"
-                       Grid.Row="15"
+                       Grid.Row="17"
                        FontFamily="P-regular"
                        TextColor="{StaticResource FontColor}"
                        VerticalOptions="Center"

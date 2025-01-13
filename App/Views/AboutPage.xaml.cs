@@ -1,18 +1,29 @@
 ﻿using GamHubApp.ViewModels;
-using Microsoft.Maui.Controls.Xaml;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
 
-namespace GamHubApp.Views
+namespace GamHubApp.Views;
+
+[XamlCompilation(XamlCompilationOptions.Compile)]
+public partial class AboutPage : ContentPage
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AboutPage : ContentPage
+    public AboutPage()
     {
-        public AboutPage()
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            BindingContext = new AboutViewModel();
-        }
+        BindingContext = new AboutViewModel();
+    }
+
+    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+
+    }
+
+    private async void Button_Clicked(object sender, EventArgs e)
+    {
+        var url = ((ImageButton)sender).CommandParameter as string;
+        await Browser.OpenAsync(url, new BrowserLaunchOptions
+        {
+            LaunchMode = BrowserLaunchMode.External,
+            TitleMode = BrowserTitleMode.Default,
+        });
     }
 }
