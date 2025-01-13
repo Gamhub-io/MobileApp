@@ -339,7 +339,7 @@ its community's skills, knowledges and opinions.  "
                              BindableLayout.ItemsSource="{Binding Partners}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="models:Partner">
-                            <ImageButton Command="{Binding ViewPartner}" 
+                            <ImageButton Command="{Binding View}" 
                                          Source="{Binding Logo}"
                                          CommandParameter="{Binding Url}"
                                          WidthRequest="265"

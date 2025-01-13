@@ -45,6 +45,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
+                
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <!-- Icon -->
@@ -115,8 +116,8 @@
             </Grid>
         </DataTemplate>
     </Shell.MenuItemTemplate>
-    <Shell.FlyoutHeader  x:DataType="viewmodels:AppShellViewModel">
-        <Grid>
+    <Shell.FlyoutHeader >
+        <Grid x:DataType="viewmodels:AppShellViewModel">
             <Grid BackgroundColor="{StaticResource Alternate}"
                   HeightRequest="80"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}">
@@ -191,8 +192,9 @@
 
 
 
-    <Shell.FlyoutFooter  x:DataType="viewmodels:AppShellViewModel">
-        <Grid RowDefinitions="*,auto,*,10">
+    <Shell.FlyoutFooter  >
+        <Grid RowDefinitions="*,auto,*,10" 
+              x:DataType="viewmodels:AppShellViewModel">
             <!-- Support -->
             <Grid Grid.Row="0"
                   VerticalOptions="End" >
@@ -212,9 +214,7 @@
 
                 <!-- label -->
                 <Label Text="Contact support"
-                       
-                       Style="{StaticResource MenuLabel}"
-                   />
+                       Style="{StaticResource MenuLabel}"/>
             </Grid>
 
             <!-- Logout -->
