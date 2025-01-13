@@ -38,9 +38,8 @@
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios'">
 	  <ProvisioningType>manual</ProvisioningType>
-	  <CodesignKey>Apple Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>
-		<UseInterpreter>true</UseInterpreter>
-		<TrimMode>full</TrimMode>
+	  <CodesignKey>Apple Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>		
+	<UseInterpreter>true</UseInterpreter>
 	</PropertyGroup>
 
 	<ItemGroup>
