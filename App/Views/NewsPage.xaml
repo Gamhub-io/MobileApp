@@ -208,18 +208,7 @@
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Article">
-                            <controls:ArticlePreview Headline="{Binding Title, Mode=OneWay}"
-                                                     ArticleId="{Binding Id}"
-                                                     ArticleIsSaved="{Binding IsSaved}"
-                                                     ArticleTime="{Binding Time, Mode=OneWay, Converter={StaticResource TimeSpanConverter}}"
-                                                     ArticleSource="{Binding Source, Mode=OneWay}"
-                                                     Thumnail="{Binding Image}"
-                                                     ShareCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=ShareArticle, Mode=OneWay}"
-                                                     ShareCommandParameter="{Binding Url}"
-                                                     BookmarkCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=AddBookmark, Mode=OneWay}"
-                                                     ControlTemplate="{StaticResource ArticleTemplate}" 
-                                                     TapCommand="{Binding Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Path=GoToDetail}"
-                                                     TapCommandParameter="{Binding Id}"/>
+                            <controls:ArticlePreview Article="{Binding .}"/>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
