@@ -2,18 +2,20 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             xmlns:local="clr-namespace:GamHubApp.Controls"
              x:Class="GamHubApp.Controls.BookmarkButton"
-             x:Name="thy">
+             x:Name="thy"
+             x:DataType="local:BookmarkButton">
 
     <!-- Bookmark button-->
     <Border Style="{StaticResource ButtonBorder}"
             BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
 
         <Button Text="&#xf02e;"
-                        Style="{StaticResource ButtonStyle}"
-                        Command="{Binding Command, Source={x:Reference thy}}"
-                        CommandParameter="{Binding CommandParameter, Source={x:Reference thy}}"
-                        Clicked="Button_Clicked">
+                Style="{StaticResource ButtonStyle}"
+                Command="{Binding Command, Source={x:Reference thy}}"
+                CommandParameter="{Binding CommandParameter, Source={x:Reference thy}}"
+                Clicked="Button_Clicked">
             <Button.Triggers>
                 <DataTrigger TargetType="Button"
                              Binding="{Binding IsSaved, Source={x:Reference thy}}"
