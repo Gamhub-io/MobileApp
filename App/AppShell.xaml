@@ -37,7 +37,7 @@
         </Style>
     </Shell.Resources>
     <Shell.ItemTemplate>
-        <DataTemplate x:DataType="ShellContent">
+        <DataTemplate x:DataType="FlyoutItem">
             <Grid HorizontalOptions="Center"
                   Padding="0,10,0,0"
                   >
