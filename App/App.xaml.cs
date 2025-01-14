@@ -169,7 +169,7 @@ public partial class App : Application
 
             }
 
-            this.CreateWindow(null);
+            Current.Windows[0].Page = new AppShell();
         }
         protected override Window CreateWindow(IActivationState? activationState)
             {

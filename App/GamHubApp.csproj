@@ -28,10 +28,6 @@
 		<Configurations>Debug;Release;Debug_Localhost</Configurations>
 		
 	</PropertyGroup>
-	<PropertyGroup Condition="$(TargetFramework.Contains('-ios')) and '$(Configuration)' == 'Release'">
-		<MtouchLink>SdkOnly</MtouchLink>
-		<UseInterpreter>true</UseInterpreter>
-	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug_Localhost|net8.0-android34.0|AnyCPU'">
 	  <DebugSymbols>True</DebugSymbols>
 	  <DefineConstants>$(DefineConstants);Debug</DefineConstants>
@@ -52,6 +48,8 @@
 	  <ProvisioningType>manual</ProvisioningType>
 	  <CodesignKey>Apple Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>		
 	<UseInterpreter>true</UseInterpreter>
+		<MtouchLink>SdkOnly</MtouchLink>
+		<UseInterpreter>true</UseInterpreter>
 		<!--<PublishAot Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</PublishAot>-->
 	</PropertyGroup>
 
