@@ -10,10 +10,6 @@ public partial class AboutPage : ContentPage
         InitializeComponent();
 
         BindingContext = new AboutViewModel();
-    }
-
-    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
-    {
 
     }
 
