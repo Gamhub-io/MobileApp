@@ -112,6 +112,7 @@ public partial class App : Application
                this.LoadingIndicator.Close();
             });
     }
+
         /// <summary>
         ///  Function to close the database 
         /// </summary>
