@@ -145,10 +145,6 @@ namespace GamHubApp.ViewModels
 
                     App.SqLiteConn.Delete(feedTarget);
                     Feeds.Remove(feedTarget);
-
-
-
-
                 });
             }
         }
