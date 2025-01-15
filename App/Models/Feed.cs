@@ -3,8 +3,8 @@ using SQLite;
 using System.Collections.ObjectModel;
 using Color = Microsoft.Maui.Graphics.Color;
 
-namespace GamHubApp.Models
-{
+namespace GamHubApp.Models;
+
     public class Feed : SelectableModel
     {
         [PrimaryKey, Column("_id")]
@@ -17,11 +17,8 @@ namespace GamHubApp.Models
             get { return _keywords; }
             set
             {
-                //if (_isSelected != value)
-                //{
                 _keywords = value;
                 OnPropertyChanged(nameof(Keywords));
-                //}
             }
         }
         public bool IsSaved { get; set; }
@@ -33,4 +30,3 @@ namespace GamHubApp.Models
         public ObservableCollection<Article> Articles { get; set; }
 
     }
-}
