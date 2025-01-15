@@ -13,14 +13,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition >
-                    <ColumnDefinition.Width>
-                        <OnPlatform>
-                            <On Platform="iOS" Value="{StaticResource iOSTitleMargin}" />
-                            <On Platform="Android" Value="{StaticResource AndroidTitleMargin}" />
-                        </OnPlatform>
-                    </ColumnDefinition.Width>
-                </ColumnDefinition>
+                <ColumnDefinition Width="{OnPlatform Android='1.9*', 
+                                                     iOS='2*'}"/>
 
             </Grid.ColumnDefinitions>
 
