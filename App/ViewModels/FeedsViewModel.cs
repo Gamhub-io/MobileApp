@@ -14,7 +14,7 @@ namespace GamHubApp.ViewModels
     {
         private bool _dataLoaded = false;
         public List<UpdateOrder> UpdateOrders { get; private set; }
-        private ObservableCollection<Feed> _feeds;
+        private ObservableCollection<Feed> _feeds = new();
 
 		public ObservableCollection<Feed> Feeds
 		{
