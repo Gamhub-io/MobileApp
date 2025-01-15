@@ -8,8 +8,7 @@
              x:DataType="local:BookmarkButton">
 
     <!-- Bookmark button-->
-    <Border Style="{StaticResource ButtonBorder}"
-            BindingContext="{Binding Source={RelativeSource TemplatedParent}}">
+    <Border Style="{StaticResource ButtonBorder}">
 
         <Button Text="&#xf02e;"
                 Style="{StaticResource ButtonStyle}"

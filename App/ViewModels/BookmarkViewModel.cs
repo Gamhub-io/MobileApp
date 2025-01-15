@@ -1,13 +1,5 @@
 ﻿using GamHubApp.Models;
-using GamHubApp.Views;
-using SQLiteNetExtensions.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
-using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace GamHubApp.ViewModels
 {
@@ -15,6 +7,7 @@ namespace GamHubApp.ViewModels
     {
         // Property list of articles
         private ObservableCollection<Article> _bookmarks;
+        private App _curr;
 
         public ObservableCollection<Article> Bookmarks
         {
@@ -26,34 +19,6 @@ namespace GamHubApp.ViewModels
             }
         }
         
-
-        public Command GoToDetail
-        {
-            get
-            {
-                return new Command(async (id) =>
-                {
-                    var articlePage = new ArticlePage(_bookmarks.FirstOrDefault(art => art.Id == id.ToString()));
-
-                    /*Task.Run(async () =>*/
-                    await App.Current.MainPage.Navigation.PushAsync(articlePage);
-                }); ;
-            }
-        }
-        // Command to add a Bookmark
-        private readonly Command _addBookmark;
-
-        public Command AddBookmark
-        {
-            get { return _addBookmark; }
-        }
-        // Command to add a Bookmark
-        private readonly Command _shareArticle;
-
-        public Command ShareArticle
-        {
-            get { return _shareArticle; }
-        }
         public BookmarkViewModel()
         {
 
