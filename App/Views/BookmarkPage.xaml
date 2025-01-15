@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:GamHubApp.Controls"
              xmlns:vm="clr-namespace:GamHubApp.ViewModels"
+             xmlns:models="clr-namespace:GamHubApp.Models"
              x:Class="GamHubApp.Views.BookmarkPage"
              BackgroundColor="{StaticResource Dark}"
              x:DataType="vm:BookmarkViewModel">
@@ -90,7 +91,7 @@
 
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:Article">
                     <controls:ArticlePreview Article="{Binding .}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>

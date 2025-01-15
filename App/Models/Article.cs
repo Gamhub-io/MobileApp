@@ -5,11 +5,6 @@ using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using SQLiteNetExtensions.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 
 namespace GamHubApp.Models
 {
@@ -102,6 +97,7 @@ namespace GamHubApp.Models
             return true;
         }
 
+        [Ignore]
         public Command GoToDetail
         {
             get
@@ -115,7 +111,7 @@ namespace GamHubApp.Models
                 }); ;
             }
         }
-
+        [Ignore]
         public Command AddBookmark
         {
             get
@@ -142,6 +138,7 @@ namespace GamHubApp.Models
             }
         }
 
+        [Ignore]
         public Command ShareArticle
         {
             get
