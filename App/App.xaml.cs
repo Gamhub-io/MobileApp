@@ -74,9 +74,10 @@ public partial class App : Application
                     SqLiteConn.InsertOrReplace(source);
                     BackUpConn.InsertOrReplace(source);
                 }
-
-                Partners = await DataFetcher.GetPartners();
             });
+        Task.Run(async() =>
+            Partners = await DataFetcher.GetPartners());
+
 
         
         }
