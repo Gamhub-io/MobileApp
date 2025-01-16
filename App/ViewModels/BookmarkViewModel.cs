@@ -1,4 +1,5 @@
 ﻿using GamHubApp.Models;
+using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels
