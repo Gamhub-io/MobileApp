@@ -103,7 +103,7 @@
                          Command="{Binding Path=RefreshArticles}"
                          Grid.Row="0"
                          Grid.RowSpan="2"
-                         Margin="0,40,0,0"
+                         Margin="{OnPlatform Android='0,40,0,0', iOS='0'}"
                          x:Name="newsRefreshView"
                          HorizontalOptions="Center"
                          RefreshColor="{StaticResource PrimaryAccent}">
