@@ -115,7 +115,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.21" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.30" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
