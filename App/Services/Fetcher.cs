@@ -45,15 +45,18 @@ namespace GamHubApp.Services
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
+#if DEBUG
             catch (Exception ex)
             {
-
-#if DEBUG
-                throw ex;
-#else
+                Debug.WriteLine(ex);
                 return null;
-#endif
             }
+#else
+            catch
+            {
+                return null; 
+            }
+#endif
         }
         /// <summary>
         /// Get all the sources
@@ -129,21 +132,24 @@ namespace GamHubApp.Services
                 }
                 return res.Session;
             }
+#if DEBUG
             catch (Exception ex)
             {
-
-#if DEBUG
-                throw ex;
-#else
-                return null; 
-#endif
+                Debug.WriteLine(ex);
+                return null;
             }
+#else
+            catch
+            {
+                return null; 
+            }
+#endif
         }
         /// <summary>
-        /// Get the lastest articles since given date
+        /// Get the latest articles since given date
         /// </summary>
         /// <param name="dateUpdate">given date as "dd-MM-yyy_HH:mm:ss"</param>
-        /// <returns>lastest articles the date provided</returns>
+        /// <returns>latest articles the date provided</returns>
         public async Task<Collection<Article>> GetMainFeedUpdate(string dateUpdate)
         {
             try
@@ -155,15 +161,18 @@ namespace GamHubApp.Services
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
+#if DEBUG
             catch (Exception ex)
             {
-
-#if DEBUG
-                throw ex;
-#else
-                return null; 
-#endif
+                Debug.WriteLine(ex);
+                return null;
             }
+#else
+            catch
+            {
+                return null; 
+            }
+#endif
         }
         /// <summary>
         /// Get the chunk articles from given date
@@ -186,15 +195,18 @@ namespace GamHubApp.Services
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
+#if DEBUG
             catch (Exception ex)
             {
-
-#if DEBUG
-                throw ex;
-#else
-                return null; 
-#endif
+                Debug.WriteLine(ex);
+                return null;
             }
+#else
+            catch
+            {
+                return null; 
+            }
+#endif
         }
         /// <summary>
         /// Get all the partners
@@ -207,15 +219,19 @@ namespace GamHubApp.Services
                 return await this.WebService.Get<Collection<Partner>>(controller: "partners",
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
-            catch (Exception ex)
-            {
 
 #if DEBUG
-                throw ex;
-#else
-                return null; 
-#endif
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return null;
             }
+#else
+            catch
+            {
+                return null; 
+            }
+#endif
         }
         /// <summary>
         /// Save all the tokens of a session and expiration
@@ -315,6 +331,7 @@ namespace GamHubApp.Services
 
 
         }
+
         /// <summary>
         /// Method to handle exceptions
         /// </summary>
