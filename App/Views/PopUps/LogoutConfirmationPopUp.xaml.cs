@@ -8,7 +8,7 @@ namespace GamHubApp.Views
     {
         public User Profile { get; set; }
         public App CurrentApp { get; }
-        public bool? Result { get; set; } = null;
+        public bool? ResponseResult { get; set; } = null;
 
         /// <summary>
         /// 
@@ -24,12 +24,12 @@ namespace GamHubApp.Views
 
         private void Cancel_Clicked(object sender, System.EventArgs e)
         {
-            Result = false;
+            ResponseResult = false;
         }
 
         private void Confirm_Clicked(object sender, System.EventArgs e)
         {
-            Result = true;
+            ResponseResult = true;
         }
     }
 }

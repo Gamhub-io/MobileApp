@@ -266,8 +266,8 @@ its community's skills, knowledges and opinions.  "
                     
                     <!-- Profile pic -->
                     <mct:AvatarView Grid.Column="0" 
-                                    HorizontalOptions="CenterAndExpand"
-                                    VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
                                     BackgroundColor="{DynamicResource Dark}"
                                     TextColor="{DynamicResource Dark}"
                                     Text=""

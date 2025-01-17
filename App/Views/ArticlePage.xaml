@@ -175,11 +175,11 @@
                                 </Border.Behaviors>
 
                             <Label TextColor="{StaticResource Primary}"
-                                    Text="{Binding TtsIcon}"
+                                   Text="{Binding TtsIcon}"
                                    FontFamily="FaSolid"
-                                   HorizontalOptions="CenterAndExpand"
-                                   VerticalOptions="CenterAndExpand"
-                                    Margin="0"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center"
+                                   Margin="0"
                                         />
                         </Border>
                         
@@ -248,7 +248,7 @@
                                  Opacity="0.1"/>
                     <Grid>
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding ShareArticle}"/>
+                            <mct:TouchBehavior Command="{Binding SelectedArticle.ShareArticle}"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>

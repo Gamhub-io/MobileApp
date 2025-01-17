@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GamHubApp.Views.Portals.DiscordAuthPortal"
              xmlns:Core="GamHubApp.Core"
-                 BackgroundColor="{StaticResource BgBannerColor}">
+             xmlns:local="clr-namespace:GamHubApp.Views.Portals"
+                 BackgroundColor="{StaticResource BgBannerColor}"
+             x:DataType="local:DiscordAuthPortal">
     <ContentPage.Content>
         <WebView Source="{Binding Url}"
                  VerticalOptions="Fill"

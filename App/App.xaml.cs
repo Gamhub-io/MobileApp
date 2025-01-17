@@ -75,23 +75,21 @@ public partial class App : Application
                     BackUpConn.InsertOrReplace(source);
                 }
             });
-        Task.Run(async() =>
-            Partners = await DataFetcher.GetPartners());
 
 
-        
+
         }
         /// <summary>
         /// Show the popup loading indicator
         /// </summary>
-        public void ShowLoadingIndicator()
+        public void ShowLoadingIndicator(Page rootPage = null)
         {
 
            if (IsLoading)
                return;
            IsLoading = true;
 
-           OpenPopUp (this.LoadingIndicator = new LoadingPopUp());
+           OpenPopUp (this.LoadingIndicator = new LoadingPopUp(), rootPage);
 
         }
 
@@ -111,7 +109,7 @@ public partial class App : Application
             {
                this.LoadingIndicator.Close();
             });
-    }
+        }
 
         /// <summary>
         ///  Function to close the database 
@@ -126,13 +124,6 @@ public partial class App : Application
         /// </summary>
         public static void StartDb()
         {
-            const SQLite.SQLiteOpenFlags Flags =
-                    // open the database in read/write mode
-                    SQLite.SQLiteOpenFlags.ReadWrite |
-                    // create the database if it doesn't exist
-                    SQLite.SQLiteOpenFlags.Create |
-                    // enable multi-threaded database access
-                    SQLite.SQLiteOpenFlags.SharedCache;
             // Just use whatever directory SpecialFolder.Personal returns
             string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
@@ -171,15 +162,14 @@ public partial class App : Application
 
             }
 
-        Task.Run(async () =>
-            Partners = await DataFetcher.GetPartners()).GetAwaiter();
-            Current.Windows[0].Page = new AppShell();
+        //Task.Run(async () =>
+        //    Partners = await DataFetcher.GetPartners()).GetAwaiter();
         }
-        protected override Window CreateWindow(IActivationState? activationState)
-            {
-            return new Window(new AppShell());
-        }
-        protected override void OnSleep()
+    protected override Window CreateWindow(IActivationState activationState)
+    {
+        return new Window(new AppShell());
+    }
+    protected override void OnSleep()
         {
             base.OnSleep();
 
@@ -224,17 +214,21 @@ public partial class App : Application
                     page = GetCurrentPage();
                 if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp?.Id))
                     return;
-                MainThread.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(() =>
                 {
                     page.ShowPopup(popUp);
                 });
-            }
+        }
+#if DEBUG
             catch (Exception ex)
             {
-#if DEBUG
                 Debug.WriteLine(ex.Message);
+            }
+#else
+            catch 
+            {
+            }
 #endif
-        }
     }
     /// <summary>
     /// Get the current page from the shell
@@ -245,6 +239,17 @@ public partial class App : Application
         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
         return mainPage.CurrentPage;
     }
+
+    /// <summary>
+    /// Load all the partners
+    /// </summary>
+    /// <returns></returns>
+    public async Task LoadPartners()
+    {
+        Partners = await DataFetcher.GetPartners();
+
+    }
+
     /// <summary>
     /// Save the info relevant to the user
     /// </summary>
@@ -304,12 +309,12 @@ public partial class App : Application
         OpenPopUp(popUp);
 
         // Wait for a response
-        while (popUp.Result == null)
+        while (popUp.ResponseResult == null)
             await Task.Delay(10);
 
         // in any case close the pop up after receiving a response
         popUp.Close();
 
-        return popUp.Result ?? false;
+        return popUp.ResponseResult ?? false;
     }
 }
