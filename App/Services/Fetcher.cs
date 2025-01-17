@@ -41,19 +41,22 @@ namespace GamHubApp.Services
 
                 return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                    action: "update",
-                                                                   parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) },
+                                                                   parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
+#if DEBUG
             catch (Exception ex)
             {
-
-#if DEBUG
-                throw ex;
-#else
+                Debug.WriteLine(ex);
                 return null;
-#endif
             }
+#else
+            catch
+            {
+                return null; 
+            }
+#endif
         }
         /// <summary>
         /// Get all the sources
@@ -67,6 +70,7 @@ namespace GamHubApp.Services
 #if DEBUG || DEBUG_LOCALHOST
                 throw new Exception(await e.Content.ReadAsStringAsync());
 #endif
+                SentrySdk.CaptureMessage(await e.Content.ReadAsStringAsync());
             });
         }
         /// <summary>
@@ -96,12 +100,11 @@ namespace GamHubApp.Services
             }
             catch (Exception ex)
             {
-
 #if DEBUG
                 Debug.WriteLine(ex);
-
+#else
+                SentrySdk.CaptureException(ex);
 #endif
-
                 return null;
             }
         }
@@ -131,19 +134,19 @@ namespace GamHubApp.Services
             }
             catch (Exception ex)
             {
-
 #if DEBUG
-                throw ex;
+                Debug.WriteLine(ex);
 #else
-                return null; 
+                SentrySdk.CaptureException(ex);
 #endif
+                return null;
             }
         }
         /// <summary>
-        /// Get the lastest articles since given date
+        /// Get the latest articles since given date
         /// </summary>
         /// <param name="dateUpdate">given date as "dd-MM-yyy_HH:mm:ss"</param>
-        /// <returns>lastest articles the date provided</returns>
+        /// <returns>latest articles the date provided</returns>
         public async Task<Collection<Article>> GetMainFeedUpdate(string dateUpdate)
         {
             try
@@ -157,12 +160,12 @@ namespace GamHubApp.Services
             }
             catch (Exception ex)
             {
-
 #if DEBUG
-                throw ex;
+                Debug.WriteLine(ex);
 #else
-                return null; 
+                SentrySdk.CaptureException(ex);
 #endif
+                return null;
             }
         }
         /// <summary>
@@ -188,12 +191,12 @@ namespace GamHubApp.Services
             }
             catch (Exception ex)
             {
-
 #if DEBUG
-                throw ex;
+                Debug.WriteLine(ex);
 #else
-                return null; 
+                SentrySdk.CaptureException(ex);
 #endif
+                return null;
             }
         }
         /// <summary>
@@ -207,14 +210,15 @@ namespace GamHubApp.Services
                 return await this.WebService.Get<Collection<Partner>>(controller: "partners",
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
+
             catch (Exception ex)
             {
-
 #if DEBUG
-                throw ex;
+                Debug.WriteLine(ex);
 #else
-                return null; 
+                SentrySdk.CaptureException(ex);
 #endif
+                return null;
             }
         }
         /// <summary>
@@ -315,6 +319,7 @@ namespace GamHubApp.Services
 
 
         }
+
         /// <summary>
         /// Method to handle exceptions
         /// </summary>
@@ -325,6 +330,7 @@ namespace GamHubApp.Services
 #if DEBUG
             throw new Exception(await err.Content.ReadAsStringAsync());
 #endif
+            SentrySdk.CaptureException(new Exception(await err.Content.ReadAsStringAsync()));
         }
     }
 }

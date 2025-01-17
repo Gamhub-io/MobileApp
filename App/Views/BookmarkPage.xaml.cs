@@ -1,11 +1,7 @@
 ﻿using GamHubApp.ViewModels;
-using Microsoft.Maui.Controls.Xaml;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui;
 
-namespace GamHubApp.Views
-{
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+namespace GamHubApp.Views;
+
     public partial class BookmarkPage : ContentPage
     {
         public BookmarkPage()
@@ -15,4 +11,3 @@ namespace GamHubApp.Views
             BindingContext = new BookmarkViewModel();
         }
     }
-}

@@ -55,7 +55,7 @@ public partial class DiscordAuthPortal : ContentPage
             CallBack(res);
 
             // Navigate back
-            CurrentApp.MainPage.Navigation.RemovePage(this);
+            CurrentApp.Windows[0].Page.Navigation.RemovePage(this);
 
             CurrentApp.RemoveLoadingIndicator();
             return;

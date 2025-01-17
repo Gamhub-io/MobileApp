@@ -6,21 +6,16 @@
              xmlns:models="clr-namespace:GamHubApp.Models"  
              x:DataType="viewmodels:AboutViewModel"
              x:Class="GamHubApp.Views.AboutPage"
-             x:Name="thy">
+             x:Name="thy"
+             BackgroundColor="{StaticResource BackgroundColor}">
     <Shell.TitleView>
         <Grid>
             
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition >
-                    <ColumnDefinition.Width>
-                        <OnPlatform>
-                            <On Platform="iOS" Value="{StaticResource iOSTitleMargin}" />
-                            <On Platform="Android" Value="{StaticResource AndroidTitleMargin}" />
-                        </OnPlatform>
-                    </ColumnDefinition.Width>
-                </ColumnDefinition>
+                <ColumnDefinition Width="{OnPlatform Android='1.9*', 
+                                                     iOS='2*'}"/>
 
             </Grid.ColumnDefinitions>
 
@@ -68,21 +63,8 @@
         </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
-        
+
         <ScrollView>
-            <ScrollView.Background>
-                <LinearGradientBrush StartPoint="0,0"
-                             EndPoint="1,1">
-                    <GradientStop Color="#262626"
-                           Offset="0.1"/>
-                    <GradientStop Color="{StaticResource Dark}"
-                           Offset="0.75"/>
-                    <GradientStop Color="#0d0d0d"
-                           Offset="65.0"/>
-                    <GradientStop Color="Black"
-                           Offset="1.0"/>
-                </LinearGradientBrush>
-            </ScrollView.Background>
             <Grid>
             <Grid.RowDefinitions>
                 <!-- Image -->
@@ -272,8 +254,8 @@ its community's skills, knowledges and opinions.  "
                     
                     <!-- Profile pic -->
                     <mct:AvatarView Grid.Column="0" 
-                                    HorizontalOptions="CenterAndExpand"
-                                    VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
                                     BackgroundColor="{DynamicResource Dark}"
                                     TextColor="{DynamicResource Dark}"
                                     Text=""
@@ -339,7 +321,7 @@ its community's skills, knowledges and opinions.  "
                              BindableLayout.ItemsSource="{Binding Partners}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="models:Partner">
-                            <ImageButton Command="{Binding ViewPartner}" 
+                            <ImageButton Command="{Binding View}" 
                                          Source="{Binding Logo}"
                                          CommandParameter="{Binding Url}"
                                          WidthRequest="265"

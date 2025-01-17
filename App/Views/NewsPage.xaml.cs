@@ -17,14 +17,7 @@ namespace GamHubApp.Views
 
             BindingContext = _vm = new NewsViewModel(this);
 
-            //_vm.IsRefreshing = true;
 
-            // For the auto scroll
-            MessagingCenter.Subscribe<MessageItem>(this._vm, "ScrollTop", (sender) =>
-            {
-                // Scroll to the top of the collection view
-                newsCollectionView.ScrollTo(0);
-            });
             refreshButtonYPos = refreshButton.Y;
             refreshButton.TranslationY = rButtonYStart;
 

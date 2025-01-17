@@ -12,7 +12,8 @@
        Shell.ForegroundColor="{StaticResource Light}"
        FlyoutWidth="270"
        xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
-       xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels">
+       xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
+       x:DataType="viewmodels:AppShellViewModel">
     <!-- Template for the shell content-->
     <Shell.Resources>
         <Style TargetType="Label"
@@ -37,7 +38,7 @@
         </Style>
     </Shell.Resources>
     <Shell.ItemTemplate>
-        <DataTemplate>
+        <DataTemplate x:DataType="FlyoutItem">
             <Grid HorizontalOptions="Center"
                   Padding="0,10,0,0"
                   >
@@ -45,6 +46,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
+                
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <!-- Icon -->
@@ -76,7 +78,7 @@
 
                 <BoxView BackgroundColor="Gray" 
                          Grid.Row="1"
-                         HorizontalOptions="CenterAndExpand"
+                         HorizontalOptions="Center"
                          VerticalOptions="Center"
                          Margin="0,10,0,0"
                          HeightRequest="1"
@@ -115,8 +117,8 @@
             </Grid>
         </DataTemplate>
     </Shell.MenuItemTemplate>
-    <Shell.FlyoutHeader  x:DataType="viewmodels:AppShellViewModel">
-        <Grid>
+    <Shell.FlyoutHeader >
+        <Grid x:DataType="viewmodels:AppShellViewModel">
             <Grid BackgroundColor="{StaticResource Alternate}"
                   HeightRequest="80"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}">
@@ -191,8 +193,9 @@
 
 
 
-    <Shell.FlyoutFooter  x:DataType="viewmodels:AppShellViewModel">
-        <Grid RowDefinitions="*,auto,*,10">
+    <Shell.FlyoutFooter  >
+        <Grid RowDefinitions="*,auto,*,10" 
+              x:DataType="viewmodels:AppShellViewModel">
             <!-- Support -->
             <Grid Grid.Row="0"
                   VerticalOptions="End" >
@@ -212,9 +215,7 @@
 
                 <!-- label -->
                 <Label Text="Contact support"
-                       
-                       Style="{StaticResource MenuLabel}"
-                   />
+                       Style="{StaticResource MenuLabel}"/>
             </Grid>
 
             <!-- Logout -->

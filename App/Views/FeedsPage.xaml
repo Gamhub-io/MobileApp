@@ -6,7 +6,8 @@
              xmlns:model="clr-namespace:GamHubApp.Models" 
              xmlns:vm="clr-namespace:GamHubApp.ViewModels" 
              xmlns:controls="clr-namespace:GamHubApp.Controls"
-             x:DataType="vm:FeedsViewModel">
+             x:DataType="vm:FeedsViewModel"
+             x:Name="thy">
     <ContentPage.Background>
         <LinearGradientBrush StartPoint="0,0"
                              EndPoint="1,1">
@@ -44,7 +45,7 @@
                     WidthRequest="80"
                         FontSize="30"
                         Padding="0"
-                    HorizontalOptions="EndAndExpand"
+                    HorizontalOptions="End"
                     Margin="0">
                     <Button.Triggers>
                         <DataTrigger Binding="{Binding Feeds.Count}"
@@ -72,8 +73,8 @@
                     </DataTrigger>
 
                 </ContentView.Triggers>
-                <StackLayout VerticalOptions="CenterAndExpand"
-                             HorizontalOptions="CenterAndExpand">
+                <StackLayout VerticalOptions="Center"
+                             HorizontalOptions="Center">
                     <Label Text="&#xf005;"
                                FontFamily="FaSolid"
                                TextColor="{StaticResource Primary}"
@@ -98,13 +99,13 @@
             <!---->
             
             <!-- Current feed - list of article of the selected feed -->
-            <RefreshView IsRefreshing="{Binding IsRefreshing, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=TwoWay}"
-                         Command="{Binding Path=RefreshArticles, Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+            <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                         Command="{Binding Path=RefreshArticles}"
                          Grid.Row="0"
                          Grid.RowSpan="2"
                          Margin="0,40,0,0"
                          x:Name="newsRefreshView"
-                         HorizontalOptions="CenterAndExpand"
+                         HorizontalOptions="Center"
                          RefreshColor="{StaticResource PrimaryAccent}">
                 <RefreshView.BackgroundColor>
                     <OnPlatform x:TypeArguments="Color">
@@ -112,7 +113,7 @@
                     </OnPlatform>
                 </RefreshView.BackgroundColor>
                 <Grid>
-                    <CollectionView ItemsSource="{Binding Articles, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Mode=OneWay}"
+                    <CollectionView ItemsSource="{Binding Articles}"
                                     x:DataType="model:Feed"
                                     VerticalScrollBarVisibility="Never"
                                     x:Name="newsCollectionView"
@@ -134,13 +135,13 @@
                             <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
                         </CollectionView.ItemsLayout>
                         <CollectionView.EmptyView>
-                            <ContentView IsVisible="{Binding IsBusy, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}},Converter={StaticResource BoolInverseConverter}}">
+                            <ContentView x:DataType="vm:FeedsViewModel"
+                                          IsVisible="{Binding IsBusy}">
 
-                                <StackLayout VerticalOptions="CenterAndExpand"
-                                        HorizontalOptions="CenterAndExpand"
-                                         IsVisible="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Converter={StaticResource ZeroToFalseConverter}}">
+                                <StackLayout IsVisible="{Binding FeedTabs.Count}"
+                                             VerticalOptions="Center">
                                     <StackLayout.Triggers>
-                                        <DataTrigger Binding="{Binding FeedTabs.Count, Source={x:RelativeSource AncestorType={x:Type vm:FeedsViewModel}}}"
+                                        <DataTrigger Binding="{Binding FeedTabs.Count}"
                                                  TargetType="StackLayout"
                                                  Value="0">
                                             <Setter Property="IsVisible" 
@@ -212,8 +213,7 @@
                                 Value="false" />
                     </DataTrigger>
                 </Grid.Triggers>
-                <BoxView HorizontalOptions="FillAndExpand"
-                         Color="{StaticResource FontColor}"
+                <BoxView Color="{StaticResource FontColor}"
                          Opacity="0.1"
                          Grid.Row="1"
                          Margin="0"/>
@@ -246,7 +246,7 @@
                                     Padding="0"
                                     CornerRadius="16"
                                     TextColor ="{StaticResource FontColor}"
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, Path=FeedSelect}"
+                                    Command="{Binding Source={x:Reference thy}, Path=BindingContext.FeedSelect}"
                                     CommandParameter="{Binding Id}">
                                 <Button.Triggers>
 
@@ -297,7 +297,9 @@
                     <Grid>
 
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Source={x:Reference collection}, Mode=TwoWay, Path=BindingContext.Edit}"/>
+                            <mct:TouchBehavior Command="{Binding Source={x:Reference collection}, 
+                                                                 Mode=TwoWay, 
+                                                                 Path=BindingContext.Edit}"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"

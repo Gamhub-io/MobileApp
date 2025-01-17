@@ -13,5 +13,15 @@ public class Partner
     [JsonProperty("logo")]
     public string Logo { get; set; }
 
-
+    public Command View
+    {
+        get
+        {
+            return new Command(async (username) => await Browser.OpenAsync(Url, new BrowserLaunchOptions
+            {
+                LaunchMode = BrowserLaunchMode.External,
+                TitleMode = BrowserTitleMode.Default,
+            }));
+        }
+    }
 }

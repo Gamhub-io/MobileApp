@@ -8,7 +8,8 @@ namespace GamHubApp.ViewModels
         public ObservableCollection<Partner> Partners { get; set; }
         public AboutViewModel()
         {
-            Partners = new((App.Current as App).Partners);
+            if (App.Current is App curr && curr.Partners is not null)
+                Partners = new(curr.Partners);
         }
 
         public Command ViewGithub

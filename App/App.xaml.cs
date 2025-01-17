@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui.Views;
-using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
@@ -10,38 +9,39 @@ using SQLite;
 using System.Collections.ObjectModel;
 #if DEBUG
 using System.Diagnostics;
+using GamHubApp.Core;
 #endif
 
 namespace GamHubApp;
 
-    public partial class App : Application
+public partial class App : Application
+{
+    public bool IsLoading { get; private set; }
+
+    public static Collection<Source> Sources { get; private set; }
+    public static SQLiteConnection SqLiteConn { get; set; }
+    public static SQLiteConnection BackUpConn { get; set; }
+
+    public Popup LoadingIndicator { get; private set; }
+    public Fetcher DataFetcher { get; set; }
+    public static string ProdHost { get; } = "api.gamhub.io";
+    public static string LocalHost { get; } = "gamhubdev.ddns.net";
+    public User SaveInfo { get; private set; }
+    public Collection<Partner> Partners { get; private set; }
+    /// <summary>
+    /// Date first registered to determin when is the best time to ask for user review
+    /// </summary>
+    public DateTime DateFirstRun { get; set; }
+    public enum PageType
     {
-        public bool IsLoading { get; private set; }
-
-        public static Collection<Source> Sources { get; private set; }
-        public static SQLiteConnection SqLiteConn { get; set; }
-        public static SQLiteConnection BackUpConn { get; set; }
-
-        public Popup LoadingIndicator { get; private set; }
-        public Fetcher DataFetcher { get; set; }
-        public static string ProdHost { get; } = "api.gamhub.io";
-        public static string LocalHost { get; } = "gamhubdev.ddns.net";
-        public User SaveInfo { get; private set; }
-        public Collection<Partner> Partners { get; private set; }
-        /// <summary>
-        /// Date first registered to determin when is the best time to ask for user review
-        /// </summary>
-        public DateTime DateFirstRun { get; set; }
-        public enum PageType
-        {
-            about,
-            article,
-            bookmark,
-            news,
-            source
-        }
-        public App()
-        {
+        about,
+        article,
+        bookmark,
+        news,
+        source
+    }
+    public App()
+    {
 
 #if DEBUG
             // Run the debug setup
@@ -74,23 +74,22 @@ namespace GamHubApp;
                     SqLiteConn.InsertOrReplace(source);
                     BackUpConn.InsertOrReplace(source);
                 }
-
-                Partners = await DataFetcher.GetPartners();
             });
 
-        
+
+
         }
         /// <summary>
         /// Show the popup loading indicator
         /// </summary>
-        public void ShowLoadingIndicator()
+        public void ShowLoadingIndicator(Page rootPage = null)
         {
 
            if (IsLoading)
                return;
            IsLoading = true;
 
-           OpenPopUp (this.LoadingIndicator = new LoadingPopUp());
+           OpenPopUp (this.LoadingIndicator = new LoadingPopUp(), rootPage);
 
         }
 
@@ -110,7 +109,8 @@ namespace GamHubApp;
             {
                this.LoadingIndicator.Close();
             });
-    }
+        }
+
         /// <summary>
         ///  Function to close the database 
         /// </summary>
@@ -124,13 +124,6 @@ namespace GamHubApp;
         /// </summary>
         public static void StartDb()
         {
-            const SQLite.SQLiteOpenFlags Flags =
-                    // open the database in read/write mode
-                    SQLite.SQLiteOpenFlags.ReadWrite |
-                    // create the database if it doesn't exist
-                    SQLite.SQLiteOpenFlags.Create |
-                    // enable multi-threaded database access
-                    SQLite.SQLiteOpenFlags.SharedCache;
             // Just use whatever directory SpecialFolder.Personal returns
             string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
@@ -169,13 +162,14 @@ namespace GamHubApp;
 
             }
 
-            this.CreateWindow(null);
+        //Task.Run(async () =>
+        //    Partners = await DataFetcher.GetPartners()).GetAwaiter();
         }
-        protected override Window CreateWindow(IActivationState? activationState)
-            {
-            return new Window(new AppShell());
-        }
-        protected override void OnSleep()
+    protected override Window CreateWindow(IActivationState activationState)
+    {
+        return new Window(new AppShell());
+    }
+    protected override void OnSleep()
         {
             base.OnSleep();
 
@@ -220,92 +214,107 @@ namespace GamHubApp;
                     page = GetCurrentPage();
                 if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp?.Id))
                     return;
-                MainThread.BeginInvokeOnMainThread(() =>
+            MainThread.BeginInvokeOnMainThread(() =>
                 {
                     page.ShowPopup(popUp);
                 });
-            }
+        }
+#if DEBUG
             catch (Exception ex)
             {
-#if DEBUG
                 Debug.WriteLine(ex.Message);
-#endif
             }
-        }
-        /// <summary>
-        /// Get the current page from the shell
-        /// </summary>
-        /// <returns></returns>
-        private Page GetCurrentPage ()
-        {
-            AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-            return mainPage.CurrentPage;
-        }
-        /// <summary>
-        /// Save the info relevant to the user
-        /// </summary>
-        public void SaveUserInfo(User user)
-        {
-            SaveInfo = user;
-
-            // Save preferences
-            Preferences.Set(nameof(SaveInfo), JsonConvert.SerializeObject(SaveInfo));
-        }
-        /// <summary>
-        /// Save the info relevant to the user
-        /// </summary>
-        public void DeleteUserInfo()
-        {
-            // Save preferences
-            Preferences.Remove(nameof(SaveInfo));
-        }
-        /// <summary>
-        /// Recover the info relevant to the user
-        /// </summary>
-        /// <returns>true: data found | false: data not found</returns>
-        public bool RecoverUserInfo()
-        {
-
-            // Get preferences
-            string userDataStr = Preferences.Get(nameof(SaveInfo), string.Empty);
-
-            if (string.IsNullOrEmpty(userDataStr))
-                return false;
-
-            // Set Userdata object
-            return (SaveInfo = DataFetcher.UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
-        }
-        /// <summary>
-        /// Log out the current active user
-        /// </summary>
-        public void LogoutCurrentAccount()
-        {
-            // Delete user data
-            DeleteUserInfo();
-
-            // Close the current session
-            DataFetcher.KillSession();
-        }
-        /// <summary>
-        /// Show a pop up to confirm wether or not the user wants to logout
-        /// </summary>
-        /// <param name="user">user</param>
-        /// <returns>true: confirm | false: cancel</returns>
-        public async Task<bool> ShowLogoutConfirmation(User user = null)
-        {
-            if (user == null)
-                user = SaveInfo;
-
-            LogoutConfirmationPopUp popUp = new(user);
-            OpenPopUp(popUp);
-
-            // Wait for a response
-            while (popUp.Result == null)
-                await Task.Delay(10);
-
-            // in any case close the pop up after receiving a response
-            popUp.Close();
-
-            return popUp.Result ?? false;
-        }
+#else
+            catch 
+            {
+            }
+#endif
     }
+    /// <summary>
+    /// Get the current page from the shell
+    /// </summary>
+    /// <returns></returns>
+    private Page GetCurrentPage ()
+    {
+        AppShell mainPage = ((AppShell)Current.Windows[0].Page);
+        return mainPage.CurrentPage;
+    }
+
+    /// <summary>
+    /// Load all the partners
+    /// </summary>
+    /// <returns></returns>
+    public async Task LoadPartners()
+    {
+        Partners = await DataFetcher.GetPartners();
+
+    }
+
+    /// <summary>
+    /// Save the info relevant to the user
+    /// </summary>
+    public void SaveUserInfo(User user)
+    {
+        SaveInfo = user;
+
+        // Save preferences
+        Preferences.Set(nameof(SaveInfo), JsonConvert.SerializeObject(SaveInfo));
+    }
+    /// <summary>
+    /// Save the info relevant to the user
+    /// </summary>
+    public void DeleteUserInfo()
+    {
+        // Save preferences
+        Preferences.Remove(nameof(SaveInfo));
+    }
+    /// <summary>
+    /// Recover the info relevant to the user
+    /// </summary>
+    /// <returns>true: data found | false: data not found</returns>
+    public bool RecoverUserInfo()
+    {
+
+        // Get preferences
+        string userDataStr = Preferences.Get(nameof(SaveInfo), string.Empty);
+
+        if (string.IsNullOrEmpty(userDataStr))
+            return false;
+
+        // Set Userdata object
+        return (SaveInfo = DataFetcher.UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
+    }
+    /// <summary>
+    /// Log out the current active user
+    /// </summary>
+    public void LogoutCurrentAccount()
+    {
+        // Delete user data
+        DeleteUserInfo();
+
+        // Close the current session
+        DataFetcher.KillSession();
+    }
+    /// <summary>
+    /// Show a pop up to confirm wether or not the user wants to logout
+    /// </summary>
+    /// <param name="user">user</param>
+    /// <returns>true: confirm | false: cancel</returns>
+    public async Task<bool> ShowLogoutConfirmation(User user = null)
+    {
+        if (user == null)
+            user = SaveInfo;
+
+        LogoutConfirmationPopUp popUp = new(user);
+        OpenPopUp(popUp);
+
+        // Wait for a response
+        while (popUp.ResponseResult == null)
+            await Task.Delay(10);
+
+        // in any case close the pop up after receiving a response
+        popUp.Close();
+
+        return popUp.ResponseResult ?? false;
+    }
+}

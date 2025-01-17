@@ -25,7 +25,7 @@ namespace GamHubApp.Views
             DiscordAuthPortal discordAuthPortal = new(CallBack);
 
 
-            await App.Current.MainPage.Navigation.PushAsync(discordAuthPortal);
+            await App.Current.Windows[0].Page.Navigation.PushAsync(discordAuthPortal);
 
             // Close this popup
             //CurrentApp.ClosePopUp(this);

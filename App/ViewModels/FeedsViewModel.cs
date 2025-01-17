@@ -7,6 +7,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services;
 
 namespace GamHubApp.ViewModels
 {
@@ -14,7 +16,7 @@ namespace GamHubApp.ViewModels
     {
         private bool _dataLoaded = false;
         public List<UpdateOrder> UpdateOrders { get; private set; }
-        private ObservableCollection<Feed> _feeds;
+        private ObservableCollection<Feed> _feeds = new();
 
 		public ObservableCollection<Feed> Feeds
 		{
@@ -271,86 +273,34 @@ namespace GamHubApp.ViewModels
             RefreshArticles.Execute(null);
 
 
-            MessagingCenter.Subscribe<Feed>(this, "AddFeed", (sender) =>
-            {;
+            //WeakReferenceMessenger.Default.Register<FeedAddedMessage>(this, (r, m) =>
+            //{
+            //    AddFeed(r as Feed);
 
-                AddFeed(sender);
+            //});
 
-            });
+            //WeakReferenceMessenger.Default.Register<FeedRemovedMessage>(this, (r, m) =>
+            //{
+            //    var feed = r as Feed;
+            //    if (feed == null)
+            //        return;
+            //    _ = RemoveFeed(feed);
 
-            MessagingCenter.Subscribe<Feed>(this, "RemoveFeed", (sender) =>
-            {
+            //});
 
-                if (sender == null)
-                    return;
-                _ = RemoveFeed(sender);
+            //WeakReferenceMessenger.Default.Register<FeedUpdatedMessage>(this, (r, m) =>
+            //{
+            //    var feed = r as Feed;
+            //    if (feed == null)
+            //        return;
 
+            //    UpdateOrders.Add(new UpdateOrder
+            //    {
+            //        Update = UpdateOrder.FeedUpdate.Edit,
+            //        Feed = feed
+            //    });
 
-            });
-
-            MessagingCenter.Subscribe<Feed>(this, "EditFeed", (sender) =>
-            {
-
-                if (sender == null)
-                    return;
-
-                UpdateOrders.Add(new UpdateOrder
-                {
-                    Update = UpdateOrder.FeedUpdate.Edit,
-                    Feed = sender
-                });
-
-
-            });
-
-            // Set command to share an article
-            _shareArticle = new Command(async (id) =>
-            {
-                // Get selected article
-                var article = Articles.FirstOrDefault(art => art.Id == id.ToString());
-
-                _ = Share.RequestAsync(new ShareTextRequest
-                {
-                    Uri = article.Url,
-                    Title = "Share this article",
-                    Subject = article.Title,
-                    Text = article.Title
-                });
-            });
-            _addBookmark = new Command((id) =>
-            {
-                var article = new Article();
-                // Get the article
-                article = Articles.FirstOrDefault(art => art.Id == id.ToString());
-
-
-
-                // If the article is already in bookmarks
-                bool isSaved = article.IsSaved;
-
-                //// Marked the article as saved
-                article.IsSaved = !article.IsSaved;
-
-                if (isSaved)
-                    App.SqLiteConn.Delete(article, recursive: true);
-                else
-                {
-                    // Insert it in database
-                    App.SqLiteConn.InsertWithChildren(article, recursive: true);
-                }
-
-                // Say the the bookmark has been updated
-                MessagingCenter.Send<Article>(article, "SwitchBookmark");
-
-
-            });
-        }
-
-        private readonly Command _shareArticle;
-
-        public Command ShareArticle
-        {
-            get { return _shareArticle; }
+            //});
         }
 
         private ObservableCollection<Article> _unnoticedArticles;
@@ -400,16 +350,6 @@ namespace GamHubApp.ViewModels
             }); }
         }
 
-        // Command to add a Bookmark
-        private readonly Command _addBookmark;
-
-        public Command AddBookmark
-        {
-            get
-            {
-                return _addBookmark;
-            }
-        }
         public void Refresh(Feed feed)
 		{
             if (IsBusy)
@@ -420,7 +360,6 @@ namespace GamHubApp.ViewModels
 
             // Determine wether or not it's the first time loading the article of this feed
             bool isFirstLoad = _articles == null || _articles.Count <= 0;
-
 
 
             _ = AggregateFeed(feed, isFirstLoad).ContinueWith(res =>
@@ -440,7 +379,7 @@ namespace GamHubApp.ViewModels
         {
             int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
 
-            List<Article> articles = new List<Article>();
+            List<Article> articles = new ();
             
             // Figure out if the feed deserve an update
             string timeUpdate = string.Empty;
@@ -509,7 +448,7 @@ namespace GamHubApp.ViewModels
                     var articlePage = new ArticlePage(Articles.FirstOrDefault(art => art.Id == id.ToString()));
 
 
-                    _ = App.Current.MainPage.Navigation.PushAsync(articlePage);
+                    _ = App.Current.Windows[0].Page.Navigation.PushAsync(articlePage);
                 }); ;
             }
         }
@@ -554,7 +493,7 @@ namespace GamHubApp.ViewModels
                 else
                 {
                     int index = Feeds[indexFeed].Articles.IndexOf(existingArticle);
-                    // replace the exisiting one with the new one
+                    // replace the existing one with the new one
                     Articles.Remove(existingArticle);
                     Articles.Insert(index, current);
                 }
@@ -666,13 +605,17 @@ namespace GamHubApp.ViewModels
                 if (_selectedFeed != null)
                     Refresh(_selectedFeed);
             }
+#if DEBUG
             catch (Exception ex)
             {
-#if DEBUG
                 Debug.WriteLine($"Selected Feed {JsonConvert.SerializeObject(_selectedFeed)}");
-                throw ex;
-#endif
+                Debug.WriteLine(ex.Message);
             }
+#else
+            catch 
+            {
+            }
+#endif
         }
 
         /// <summary>

@@ -3,21 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:GamHubApp.Controls"
              xmlns:vm="clr-namespace:GamHubApp.ViewModels"
+             xmlns:models="clr-namespace:GamHubApp.Models"
              x:Class="GamHubApp.Views.BookmarkPage"
-             BackgroundColor="{StaticResource Dark}">
+             BackgroundColor="{StaticResource Dark}"
+             x:DataType="vm:BookmarkViewModel">
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition >
-                    <ColumnDefinition.Width>
-                        <OnPlatform>
-                            <On Platform="iOS" Value="{StaticResource iOSTitleMargin}" />
-                            <On Platform="Android" Value="{StaticResource AndroidTitleMargin}" />
-                        </OnPlatform>
-                    </ColumnDefinition.Width>
-                </ColumnDefinition>
+                <ColumnDefinition Width="{OnPlatform Android='1.9*', 
+                                                     iOS='2*'}"/>
 
             </Grid.ColumnDefinitions>
 
@@ -26,7 +22,8 @@
                    FontSize="30"
                    VerticalOptions="Center"
                    TextColor="{StaticResource FontColor}"
-                   Margin="{OnPlatform Android='0,0,40,5', iOS='30,0,40,5'}"
+                   Margin="{OnPlatform Android='0,0,40,5', 
+                                       iOS='30,0,40,5'}"
                    FontFamily="P-Bold"/>
         </Grid>
 
@@ -89,7 +86,7 @@
 
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:Article">
                     <controls:ArticlePreview Article="{Binding .}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
