@@ -41,7 +41,7 @@ namespace GamHubApp.Services
 
                 return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                    action: "update",
-                                                                   parameters: new string[] { DateTime.Now.AddMonths(-2).ToString(_dateFormat) },
+                                                                   parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
@@ -70,6 +70,7 @@ namespace GamHubApp.Services
 #if DEBUG || DEBUG_LOCALHOST
                 throw new Exception(await e.Content.ReadAsStringAsync());
 #endif
+                SentrySdk.CaptureMessage(await e.Content.ReadAsStringAsync());
             });
         }
         /// <summary>
@@ -99,12 +100,11 @@ namespace GamHubApp.Services
             }
             catch (Exception ex)
             {
-
 #if DEBUG
                 Debug.WriteLine(ex);
-
+#else
+                SentrySdk.CaptureException(ex);
 #endif
-
                 return null;
             }
         }
@@ -132,18 +132,15 @@ namespace GamHubApp.Services
                 }
                 return res.Session;
             }
-#if DEBUG
             catch (Exception ex)
             {
+#if DEBUG
                 Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
                 return null;
             }
-#else
-            catch
-            {
-                return null; 
-            }
-#endif
         }
         /// <summary>
         /// Get the latest articles since given date
@@ -161,18 +158,15 @@ namespace GamHubApp.Services
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
-#if DEBUG
             catch (Exception ex)
             {
+#if DEBUG
                 Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
                 return null;
             }
-#else
-            catch
-            {
-                return null; 
-            }
-#endif
         }
         /// <summary>
         /// Get the chunk articles from given date
@@ -195,18 +189,15 @@ namespace GamHubApp.Services
                                                                    jsonBody: null,
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
-#if DEBUG
             catch (Exception ex)
             {
+#if DEBUG
                 Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
                 return null;
             }
-#else
-            catch
-            {
-                return null; 
-            }
-#endif
         }
         /// <summary>
         /// Get all the partners
@@ -220,18 +211,15 @@ namespace GamHubApp.Services
                                                                    unSuccessCallback: e => _ = HandleHttpException(e));
             }
 
-#if DEBUG
             catch (Exception ex)
             {
+#if DEBUG
                 Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
                 return null;
             }
-#else
-            catch
-            {
-                return null; 
-            }
-#endif
         }
         /// <summary>
         /// Save all the tokens of a session and expiration
@@ -342,6 +330,7 @@ namespace GamHubApp.Services
 #if DEBUG
             throw new Exception(await err.Content.ReadAsStringAsync());
 #endif
+            SentrySdk.CaptureException(new Exception(await err.Content.ReadAsStringAsync()));
         }
     }
 }
