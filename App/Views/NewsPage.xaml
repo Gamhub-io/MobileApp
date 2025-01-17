@@ -43,7 +43,7 @@
                         FontSize="27"
                         CornerRadius="20"
                         WidthRequest="80"
-                        VerticalOptions="CenterAndExpand"
+                        VerticalOptions="Center"
                         HorizontalOptions="End"
                         Command="{Binding OpenSearch}"
                         Margin="{OnPlatform iOS='0,0,10,0'}"
@@ -65,9 +65,9 @@
                        Grid.Column="0"
                        StrokeShape=" RoundRectangle 10"
                        WidthRequest="0"
-                       HorizontalOptions="CenterAndExpand"
+                       HorizontalOptions="Center"
                        Padding="0"
-                       Margin="0,8">
+                       Margin="{OnPlatform iOS='10,0,4,4', Android='0,8'}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="30"/>
@@ -118,11 +118,10 @@
                          IsVisible="{Binding IsSearching}"
                         CornerRadius="20"
                         FontFamily ="FaSolid"
-                        VerticalOptions="CenterAndExpand"
+                        VerticalOptions="Center"
                         HorizontalOptions="End"
                         Command="{Binding SaveSearch, Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}}"
-                        Margin="{OnPlatform iOS='0,0,10,0'}"
-                        BackgroundColor="{StaticResource LightDark}"
+                        BackgroundColor="Transparent"
                         TextColor="{StaticResource FontColor}"
                         Grid.Column="1">
                     <Button.Triggers>
