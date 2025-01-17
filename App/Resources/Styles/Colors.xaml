@@ -6,6 +6,7 @@
 
     <ResourceDictionary>
             <Color x:Key="Primary" >#4AC776</Color>
+            <Color x:Key="BackgroundColor" >#262626</Color>
             <Color x:Key="SelectionColor" >#528e70</Color>
             <Color x:Key="PrimaryAccent" >#1DB954</Color>
             <Color x:Key="DarkPrimary" >#14813A</Color>
