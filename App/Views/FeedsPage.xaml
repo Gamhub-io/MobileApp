@@ -114,7 +114,6 @@
                 </RefreshView.BackgroundColor>
                 <Grid>
                     <CollectionView ItemsSource="{Binding Articles}"
-                                    x:DataType="model:Feed"
                                     VerticalScrollBarVisibility="Never"
                                     x:Name="newsCollectionView"
                                     Scrolled="newsCollectionView_Scrolled"
@@ -136,7 +135,7 @@
                         </CollectionView.ItemsLayout>
                         <CollectionView.EmptyView>
                             <ContentView x:DataType="vm:FeedsViewModel"
-                                          IsVisible="{Binding IsBusy}">
+                                          IsVisible="{Binding IsBusy, Converter={StaticResource BoolInverseConverter}}">
 
                                 <StackLayout IsVisible="{Binding FeedTabs.Count}"
                                              VerticalOptions="Center">
@@ -246,7 +245,11 @@
                                     Padding="0"
                                     CornerRadius="16"
                                     TextColor ="{StaticResource FontColor}"
-                                    Command="{Binding Source={x:Reference thy}, Path=BindingContext.FeedSelect}"
+                                    Command="{Binding
+                                                      Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, 
+                                                      Path=FeedSelect,
+                                                      x:DataType=vm:FeedsViewModel
+                                                      }"
                                     CommandParameter="{Binding Id}">
                                 <Button.Triggers>
 
@@ -294,7 +297,7 @@
                    Grid.RowSpan="2"
                    WidthRequest="50">
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
-                    <Grid>
+                    <Grid x:Name="menuTab">
 
                         <Grid.Behaviors>
                             <mct:TouchBehavior Command="{Binding Source={x:Reference collection}, 

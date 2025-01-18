@@ -189,7 +189,7 @@ namespace GamHubApp.ViewModels
             }
         }
 
-        public Microsoft.Maui.Controls.Command RefreshArticles => new Microsoft.Maui.Controls.Command(() =>
+        public Command RefreshArticles =>new (() =>
         {
 
 
@@ -206,10 +206,7 @@ namespace GamHubApp.ViewModels
                     {
 
                         if (SelectedFeed == null)
-                        {
                             SelectedFeed = _feeds[0];
-
-                        }
                         Refresh(SelectedFeed);
                     }
                     catch
@@ -253,7 +250,7 @@ namespace GamHubApp.ViewModels
                     CurrentPage.ScrollFeed();
 
                     // Add the unnoticed articles
-                    UpdateArticles(UnnoticedArticles.ToList(), SelectedFeed, indexFeed);
+                    UpdateArticles([.. UnnoticedArticles], SelectedFeed, indexFeed);
 
                     UnnoticedArticles.Clear();
 
@@ -273,34 +270,7 @@ namespace GamHubApp.ViewModels
             RefreshArticles.Execute(null);
 
 
-            //WeakReferenceMessenger.Default.Register<FeedAddedMessage>(this, (r, m) =>
-            //{
-            //    AddFeed(r as Feed);
 
-            //});
-
-            //WeakReferenceMessenger.Default.Register<FeedRemovedMessage>(this, (r, m) =>
-            //{
-            //    var feed = r as Feed;
-            //    if (feed == null)
-            //        return;
-            //    _ = RemoveFeed(feed);
-
-            //});
-
-            //WeakReferenceMessenger.Default.Register<FeedUpdatedMessage>(this, (r, m) =>
-            //{
-            //    var feed = r as Feed;
-            //    if (feed == null)
-            //        return;
-
-            //    UpdateOrders.Add(new UpdateOrder
-            //    {
-            //        Update = UpdateOrder.FeedUpdate.Edit,
-            //        Feed = feed
-            //    });
-
-            //});
         }
 
         private ObservableCollection<Article> _unnoticedArticles;
@@ -327,11 +297,11 @@ namespace GamHubApp.ViewModels
                 if (string.IsNullOrEmpty(feedId))
                     return;
 
-                //Feed nextFeed = Feeds.FirstOrDefault(feed => feed.Id == feedId);
                 int nextIndex = _feeds.IndexOf(_feeds.FirstOrDefault(feed => feed.Id == feedId));
 
                 if (nextIndex == -1)
                     return;
+                Articles.Clear();
                 SelectedFeedTab = _feedTabs[nextIndex]; 
 
 
@@ -345,8 +315,6 @@ namespace GamHubApp.ViewModels
                     }
                 }
 
-
-
             }); }
         }
 
@@ -358,7 +326,7 @@ namespace GamHubApp.ViewModels
             IsBusy = true;
             CurrentApp.ShowLoadingIndicator();
 
-            // Determine wether or not it's the first time loading the article of this feed
+            // Determine whether or not it's the first time loading the article of this feed
             bool isFirstLoad = _articles == null || _articles.Count <= 0;
 
 
