@@ -36,6 +36,8 @@
 	<string></string>
 	<key>CFBundleShortVersionString</key>
 	<string></string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en-IE</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>UIBackgroundModes</key>
