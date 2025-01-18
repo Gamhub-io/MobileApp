@@ -330,8 +330,9 @@ namespace GamHubApp.Services
         {
 #if DEBUG
             throw new Exception(await err.Content.ReadAsStringAsync());
-#endif
+#else
             SentrySdk.CaptureException(new Exception(await err.Content.ReadAsStringAsync()));
+#endif
         }
     }
 }
