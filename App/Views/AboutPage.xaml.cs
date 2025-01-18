@@ -12,14 +12,4 @@ public partial class AboutPage : ContentPage
         BindingContext = new AboutViewModel();
 
     }
-
-    private async void Button_Clicked(object sender, EventArgs e)
-    {
-        var url = ((ImageButton)sender).CommandParameter as string;
-        await Browser.OpenAsync(url, new BrowserLaunchOptions
-        {
-            LaunchMode = BrowserLaunchMode.External,
-            TitleMode = BrowserTitleMode.Default,
-        });
-    }
 }
