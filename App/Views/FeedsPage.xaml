@@ -297,12 +297,13 @@
                    Grid.RowSpan="2"
                    WidthRequest="50">
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
-                    <Grid x:Name="menuTab">
+                    <Grid x:Name="editTab">
 
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Source={x:Reference collection}, 
-                                                                 Mode=TwoWay, 
-                                                                 Path=BindingContext.Edit}"/>
+                            <mct:TouchBehavior Command="{Binding Edit}"
+                                               BindingContext="{Binding BindingContext, 
+                                                                        Source={x:Reference editTab},
+                                                                        x:DataType=Grid }"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"
@@ -318,9 +319,12 @@
                                  WidthRequest="30"
                                  BackgroundColor="{StaticResource FontColor}"
                                  Opacity="0.1"/>
-                    <Grid>
+                    <Grid x:Name="deleteTab">
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Delete}"/>
+                            <mct:TouchBehavior Command="{Binding Delete}"
+                                               BindingContext="{Binding BindingContext, 
+                                                                        Source={x:Reference deleteTab},
+                                                                        x:DataType=Grid }"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
