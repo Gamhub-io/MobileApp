@@ -326,7 +326,6 @@ its community's skills, knowledges and opinions.  "
                                          CommandParameter="{Binding Url}"
                                          WidthRequest="265"
                                          HeightRequest="108"
-                                         Clicked="Button_Clicked"
                                          CornerRadius="15"
                                          Margin="0,20"
                                          BackgroundColor="{StaticResource FontColor}"/>
