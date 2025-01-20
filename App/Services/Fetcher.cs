@@ -69,8 +69,9 @@ namespace GamHubApp.Services
             {
 #if DEBUG || DEBUG_LOCALHOST
                 throw new Exception(await e.Content.ReadAsStringAsync());
-#endif
+#else
                 SentrySdk.CaptureMessage(await e.Content.ReadAsStringAsync());
+#endif
             });
         }
         /// <summary>
@@ -329,8 +330,9 @@ namespace GamHubApp.Services
         {
 #if DEBUG
             throw new Exception(await err.Content.ReadAsStringAsync());
-#endif
+#else
             SentrySdk.CaptureException(new Exception(await err.Content.ReadAsStringAsync()));
+#endif
         }
     }
 }

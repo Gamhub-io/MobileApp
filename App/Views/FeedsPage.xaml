@@ -103,7 +103,7 @@
                          Command="{Binding Path=RefreshArticles}"
                          Grid.Row="0"
                          Grid.RowSpan="2"
-                         Margin="0,40,0,0"
+                         Margin="{OnPlatform Android='0,40,0,0', iOS='0'}"
                          x:Name="newsRefreshView"
                          HorizontalOptions="Center"
                          RefreshColor="{StaticResource PrimaryAccent}">
@@ -114,7 +114,6 @@
                 </RefreshView.BackgroundColor>
                 <Grid>
                     <CollectionView ItemsSource="{Binding Articles}"
-                                    x:DataType="model:Feed"
                                     VerticalScrollBarVisibility="Never"
                                     x:Name="newsCollectionView"
                                     Scrolled="newsCollectionView_Scrolled"
@@ -136,7 +135,7 @@
                         </CollectionView.ItemsLayout>
                         <CollectionView.EmptyView>
                             <ContentView x:DataType="vm:FeedsViewModel"
-                                          IsVisible="{Binding IsBusy}">
+                                          IsVisible="{Binding IsBusy, Converter={StaticResource BoolInverseConverter}}">
 
                                 <StackLayout IsVisible="{Binding FeedTabs.Count}"
                                              VerticalOptions="Center">
@@ -246,7 +245,11 @@
                                     Padding="0"
                                     CornerRadius="16"
                                     TextColor ="{StaticResource FontColor}"
-                                    Command="{Binding Source={x:Reference thy}, Path=BindingContext.FeedSelect}"
+                                    Command="{Binding
+                                                      Source={RelativeSource AncestorType={x:Type vm:FeedsViewModel}}, 
+                                                      Path=FeedSelect,
+                                                      x:DataType=vm:FeedsViewModel
+                                                      }"
                                     CommandParameter="{Binding Id}">
                                 <Button.Triggers>
 
@@ -294,12 +297,13 @@
                    Grid.RowSpan="2"
                    WidthRequest="50">
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
-                    <Grid>
+                    <Grid x:Name="editTab">
 
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Source={x:Reference collection}, 
-                                                                 Mode=TwoWay, 
-                                                                 Path=BindingContext.Edit}"/>
+                            <mct:TouchBehavior Command="{Binding Edit}"
+                                               BindingContext="{Binding BindingContext, 
+                                                                        Source={x:Reference editTab},
+                                                                        x:DataType=Grid }"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"
@@ -315,9 +319,12 @@
                                  WidthRequest="30"
                                  BackgroundColor="{StaticResource FontColor}"
                                  Opacity="0.1"/>
-                    <Grid>
+                    <Grid x:Name="deleteTab">
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Delete}"/>
+                            <mct:TouchBehavior Command="{Binding Delete}"
+                                               BindingContext="{Binding BindingContext, 
+                                                                        Source={x:Reference deleteTab},
+                                                                        x:DataType=Grid }"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>

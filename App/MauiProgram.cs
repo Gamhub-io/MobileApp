@@ -47,7 +47,8 @@ public static class MauiProgram
                    fonts.AddFont("Ubuntu-Regular.ttf", "P-Regular");
                    fonts.AddFont("Ubuntu-Bold.ttf", "P-Bold");
                    fonts.AddFont("Ubuntu-Medium.ttf", "P-Medium");
-               }).UseMauiCommunityToolkit()
+               })
+               .UseMauiCommunityToolkit()
                .ConfigureMauiHandlers(handlers =>
                {
 #if ANDROID

@@ -98,21 +98,6 @@ public class Article
         }
         return true;
     }
-
-    [Ignore]
-    public Command GoToDetail
-    {
-        get
-        {
-            return new Command(() =>
-            {
-                var articlePage = new ArticlePage(this);
-
-
-                _ = (App.Current as App).Windows[0].Page.Navigation.PushAsync(articlePage);
-            }); ;
-        }
-    }
     [Ignore]
     public Command AddBookmark
     {

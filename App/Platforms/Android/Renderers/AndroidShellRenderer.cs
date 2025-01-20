@@ -44,7 +44,7 @@ public class CustomShellBottomNavViewAppearanceTracker : ShellBottomNavViewAppea
         _subscribedItemReselected = true;
     }
 
-    private void ItemReselected(object? sender, EventArgs e)
+    private void ItemReselected(object sender, EventArgs e)
     {
         (_shellItem as IShellItemController).ProposeSection(_shellItem.CurrentItem);
     }

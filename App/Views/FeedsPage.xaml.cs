@@ -1,7 +1,7 @@
 ﻿using GamHubApp.ViewModels;
 
-namespace GamHubApp.Views
-{
+namespace GamHubApp.Views;
+
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class FeedsPage : ContentPage
     {
@@ -98,6 +98,7 @@ namespace GamHubApp.Views
         {
             refreshButton.TranslateTo(refreshButton.X, _refreshButtonYPos, easing: Easing.BounceOut);
         }
+
         /// <summary>
         /// Method to remove the refresh button
         /// </summary>
@@ -120,5 +121,4 @@ namespace GamHubApp.Views
         {
             newsCollectionView.ScrollTo(position);
         }
-    }
 }

@@ -152,14 +152,15 @@ public class NewsViewModel : BaseViewModel
             return new Command(async () =>
             {
                 IsSearching = false;
-                await Task.Run(() =>
-                {
 
                     if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
 
 
                     // Scroll up before fetching the items
                     CurrentPage.ScrollFeed();
+
+                await Task.Run(() =>
+                {
 
                     _prevSearch = null;
 
