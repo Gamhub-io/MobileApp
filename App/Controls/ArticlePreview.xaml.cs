@@ -1,4 +1,5 @@
 ﻿using GamHubApp.Models;
+using GamHubApp.Views;
 
 namespace GamHubApp.Controls;
 
@@ -18,5 +19,16 @@ public partial class ArticlePreview : ContentView
     public ArticlePreview()
     {
         InitializeComponent();
+        BindingContext = this;
+    }
+
+    private void Article_Tapped(object sender, EventArgs e)
+    {
+        if (Article == null) return;
+
+        var articlePage = new ArticlePage(Article);
+
+
+        _ = (App.Current as App).Windows[0].Page.Navigation.PushAsync(articlePage);
     }
 }
