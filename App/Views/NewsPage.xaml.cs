@@ -1,5 +1,4 @@
-﻿using GamHubApp.Models;
-using GamHubApp.ViewModels;
+﻿using GamHubApp.ViewModels;
 using CommunityToolkit.Maui.Alerts;
 
 namespace GamHubApp.Views
@@ -57,17 +56,17 @@ namespace GamHubApp.Views
         {
             MainThread.BeginInvokeOnMainThread(() =>
             {
-            // update the height of the layout with this call-back
-            Action<double> callback = input => { searchBar.WidthRequest = input; };
+                // update the height of the layout with this call-back
+                Action<double> callback = input => { searchBar.WidthRequest = input; };
 
                 // pace at which animation proceeds
-            uint rate = 30;
+                uint rate = 30;
 
-            // one second animation
-            const uint length = 700;
-            Easing easing = Easing.Linear;
+                // one second animation
+                const uint length = 700;
+                Easing easing = Easing.Linear;
 
-            searchBar.Animate("invis", callback, startingWidth, endingWidth, rate, length, easing);
+                searchBar.Animate("invis", callback, startingWidth, endingWidth, rate, length, easing);
             });
         }
 
