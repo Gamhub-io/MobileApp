@@ -55,10 +55,12 @@ namespace GamHubApp.Views
         /// <param name="endingWidth">End size</param>
         public void AnimateWidthSearchBar(double startingWidth, double endingWidth)
         {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
             // update the height of the layout with this call-back
             Action<double> callback = input => { searchBar.WidthRequest = input; };
 
-            // pace at which aniation proceeds
+                // pace at which animation proceeds
             uint rate = 30;
 
             // one second animation
@@ -66,6 +68,7 @@ namespace GamHubApp.Views
             Easing easing = Easing.Linear;
 
             searchBar.Animate("invis", callback, startingWidth, endingWidth, rate, length, easing);
+            });
         }
 
         private void OpenSearchButton_Clicked(object sender, EventArgs e)
