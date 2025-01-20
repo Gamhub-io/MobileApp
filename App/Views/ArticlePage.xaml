@@ -9,7 +9,8 @@
              x:DataType="viewmodels:ArticleViewModel"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              Shell.TabBarIsVisible="False"
-             Shell.FlyoutBehavior="Disabled">
+             Shell.FlyoutBehavior="Disabled"
+             x:Name="thy">
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
             <Grid ColumnDefinitions="4*,*">
@@ -23,7 +24,7 @@
                        Grid.Column="0" />
 
 
-                <!-- Browser button -->
+                <!-- Sub Menu button -->
                 <Button Text="&#xf141;" 
                         FontFamily="FaSolid"
                         TextColor="{StaticResource Primary}"
@@ -231,7 +232,10 @@
                 <StackLayout IsVisible="{Binding IsMenuOpen}">
                     <Grid >
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Browse}"/>
+                            <mct:TouchBehavior Command="{Binding Browse}"
+                                               BindingContext="{Binding BindingContext, 
+                                                                Source={x:Reference thy},
+                                                                x:DataType=ContentPage}"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
@@ -248,7 +252,10 @@
                                  Opacity="0.1"/>
                     <Grid>
                         <Grid.Behaviors>
-                            <mct:TouchBehavior Command="{Binding SelectedArticle.ShareArticle}"/>
+                            <mct:TouchBehavior Command="{Binding SelectedArticle.ShareArticle}"
+                                               BindingContext="{Binding BindingContext, 
+                                                                 Source={x:Reference thy},
+                                                                 x:DataType=ContentPage}"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
