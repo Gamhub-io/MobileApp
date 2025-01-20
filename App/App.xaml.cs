@@ -28,6 +28,7 @@ public partial class App : Application
     public static string LocalHost { get; } = "gamhubdev.ddns.net";
     public User SaveInfo { get; private set; }
     public Collection<Partner> Partners { get; private set; }
+    public Collection<Deal> Deals { get; private set; }
     /// <summary>
     /// Date first registered to determin when is the best time to ask for user review
     /// </summary>
@@ -247,6 +248,7 @@ public partial class App : Application
     public async Task LoadPartners()
     {
         Partners = await DataFetcher.GetPartners();
+        Deals = await DataFetcher.GetDeals();
 
     }
 
