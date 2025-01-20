@@ -118,21 +118,20 @@
         </DataTemplate>
     </Shell.MenuItemTemplate>
     <Shell.FlyoutHeader >
-        <Grid x:DataType="viewmodels:AppShellViewModel">
+        <Grid >
             <Grid BackgroundColor="{StaticResource Alternate}"
                   HeightRequest="80"
-                  IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}">
-                <Grid.Behaviors>
-                    <mct:TouchBehavior Command="{Binding OpenAuth}"/>
-                </Grid.Behaviors>
+                  IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
+                  x:Name="Header">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenAuth}"
+                                          NumberOfTapsRequired="3"/>
+                </Grid.GestureRecognizers>
                 <Image Source="ares.png"/>
             </Grid>
             <Grid BackgroundColor="{StaticResource BgBannerColor}"
                   IsVisible="{Binding Authenticated}"
                   ColumnDefinitions="50,*">
-                <Grid.Behaviors>
-                    <mct:TouchBehavior Command="{Binding OpenAuth}"/>
-                </Grid.Behaviors>
                 <Image Source="{Binding UserProfile.Avatar}"
                        Grid.Column="0"/>
                 <Label Grid.Column="1" 

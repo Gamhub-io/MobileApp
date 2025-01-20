@@ -15,13 +15,13 @@
            StrokeShape="RoundRectangle 20">
         <Border.Background>
             <LinearGradientBrush StartPoint="0,0"
-                                         EndPoint="1,1">
+                                 EndPoint="1,1">
                 <GradientStop Color="#262626"
                            Offset="0.1"/>
                 <GradientStop Color="{StaticResource Dark}"
                            Offset="0.75"/>
                 <GradientStop Color="#0d0d0d"
-                           Offset="65.0"/>
+                           Offset="0.65"/>
             </LinearGradientBrush>
         </Border.Background>
 

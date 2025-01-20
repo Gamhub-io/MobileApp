@@ -5,7 +5,6 @@ namespace GamHubApp.ViewModels;
 
 public class AppShellViewModel : BaseViewModel
 {
-    private int logoClickCount;
 
     public Command MailTo
     {
@@ -39,29 +38,22 @@ public class AppShellViewModel : BaseViewModel
         {
             return new Command( () =>
             {
-                logoClickCount++;
 
-                if (logoClickCount == 3)
-                {
-                    // Reset the logo click count
-                    logoClickCount = 0;
+                 // CLose flyout 
+                 MainShell.FlyoutIsPresented = false;
 
-                    // CLose flyout 
-                    MainShell.FlyoutIsPresented = false;
+                 // Open the login pop up
+                 CurrentApp.OpenPopUp(new AuthPopUp((res) =>
+                 {
+                     // Save user info
+                     CurrentApp.SaveUserInfo(res.UserData);
 
-                    // Open the login pop up
-                    CurrentApp.OpenPopUp(new AuthPopUp((res) =>
-                    {
-                        // Save user info
-                        CurrentApp.SaveUserInfo(res.UserData);
+                     // Save the session
+                     CurrentApp.DataFetcher.SaveSession(res.Session);
 
-                        // Save the session
-                        CurrentApp.DataFetcher.SaveSession(res.Session);
-
-                        // Set user data
-                        UserProfile = res.UserData;
-                    }), MainShell);
-                }
+                     // Set user data
+                     UserProfile = res.UserData;
+                 }), MainShell);
             });
         }
     }
