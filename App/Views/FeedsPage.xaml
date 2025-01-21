@@ -186,13 +186,12 @@
                             Padding="1"
                             HeightRequest="30"
                             WidthRequest="150"
-                            Margin="10"
+                            Margin="{OnPlatform Android='0,70,0,0', iOS='0,110,0,0'}"
                             Command="{Binding UncoverNewArticles}"
                             HorizontalOptions="Center"
                             VerticalOptions="Start"
                             CornerRadius="12"
-                            x:Name="refreshButton"
-                            Grid.Row="0" />
+                            x:Name="refreshButton"/>
                 </Grid>
             </RefreshView>
             <!---->
