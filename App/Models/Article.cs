@@ -2,7 +2,6 @@
 
 using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Services;
-using GamHubApp.Views;
 using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
@@ -92,10 +91,8 @@ public class Article
             var value1 = property.GetValue(this);
             var value2 = property.GetValue(otherArticle);
             if (!Equals(value1, value2))
-            {
                 return false;
             }
-        }
         return true;
     }
     [Ignore]
@@ -114,10 +111,8 @@ public class Article
                 if (isSaved)
                     App.SqLiteConn.Delete(this, recursive: true);
                 else
-                {
                     // Insert it in database
                     App.SqLiteConn.InsertWithChildren(this, recursive: true);
-                }
 
                 // Say the the bookmark has been updated
                 WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(this));

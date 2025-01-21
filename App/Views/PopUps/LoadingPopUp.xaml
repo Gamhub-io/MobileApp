@@ -15,7 +15,7 @@
             Padding="0"
             BackgroundColor="{StaticResource LightDark}">
         <Grid RowDefinitions="*,*">
-            <ActivityIndicator Color="{OnPlatform iOS={StaticResource PrimaryAccent}, Android={StaticResource Primary}}}"
+            <ActivityIndicator Color="{OnPlatform iOS={StaticResource PrimaryAccent}, Android={StaticResource Primary}}"
                                IsRunning="True"
                                Grid.Row="0"
                                VerticalOptions="End"

@@ -17,9 +17,21 @@ public class Deal
     [JsonProperty("url")]
     public string Url { get; set; }
     [JsonProperty("createdAt")]
-    public string Created { get; set; }
+    public DateTime Created { get; set; }
     [JsonProperty("expiresAt")]
-    public string Expires { get; set; }
+    public DateTime Expires { get; set; }
     [JsonProperty("partner")]
     public Partner Partner { get; set; }
+    public Command Navigate
+    {
+        get 
+        {
+            return new Command(async () => 
+                await Browser.OpenAsync(Url, new BrowserLaunchOptions
+                {
+                    LaunchMode = BrowserLaunchMode.SystemPreferred,
+                    TitleMode = BrowserTitleMode.Default,
+                }));
+        }
+    }
 }
