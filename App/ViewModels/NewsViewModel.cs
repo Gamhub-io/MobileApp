@@ -463,7 +463,7 @@ public class NewsViewModel : BaseViewModel
         _lastCallDateTime = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
 
         // Get all the aricles from this date
-        var articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+        var articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(_lastCallDateTime).ConfigureAwait(false)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive));
 
         if (articles.Count == 0)
             return;
@@ -504,7 +504,7 @@ public class NewsViewModel : BaseViewModel
         }
         
         // Load the artcles of the last 24hrs
-        Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => article.Blocked == null || article.Blocked == false));
+        Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive));
 
         // Refresh the db
         await RefreshDB().ConfigureAwait(false);
@@ -523,7 +523,7 @@ public class NewsViewModel : BaseViewModel
         await Task.Run(async () =>
         {
             // get articles of the next 24hours after that
-            var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 12)).Where(article => article.Blocked == null || article.Blocked == false).ToList();
+            var collection = (await CurrentApp.DataFetcher.GetFeedChunk(_articles.LastOrDefault().FullPublishDate, 12)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive).ToList();
             
             Articles.AddRange(collection);
 
@@ -618,7 +618,7 @@ public class NewsViewModel : BaseViewModel
             if (isUpdate)
                 timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
             
-            articles = new(await CurrentApp.DataFetcher.GetFeedArticles(SearchText, timeParam, isUpdate));
+            articles = new((await CurrentApp.DataFetcher.GetFeedArticles(SearchText, timeParam, isUpdate)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive));
             
         }
         // Offline search

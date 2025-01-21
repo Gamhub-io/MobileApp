@@ -361,7 +361,7 @@ namespace GamHubApp.ViewModels
             if (Connectivity.NetworkAccess == NetworkAccess.Internet)
                 articles = (await CurrentApp.DataFetcher.GetFeedArticles(feed.Keywords, 
                                                                          timeUpdate, 
-                                                                         needUpdate)).ToList();
+                                                                         needUpdate)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive).ToList();
 
             // Offline search
             else
