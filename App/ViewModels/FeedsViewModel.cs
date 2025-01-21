@@ -273,7 +273,7 @@ namespace GamHubApp.ViewModels
 
         }
 
-        private ObservableCollection<Article> _unnoticedArticles;
+        private ObservableCollection<Article> _unnoticedArticles = new ();
 
         public ObservableCollection<Article> UnnoticedArticles
         {
