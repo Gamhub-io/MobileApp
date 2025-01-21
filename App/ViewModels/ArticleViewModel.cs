@@ -1,5 +1,7 @@
 ﻿using GamHubApp.Models;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace GamHubApp.ViewModels;
 
@@ -28,6 +30,8 @@ public class ArticleViewModel : BaseViewModel
             OnPropertyChanged(nameof(IsMenuOpen));
         }
     }
+    public ObservableCollection<Deal> Deals { get; set; }
+
 
     /// <summary>
     /// Time spend reading the article
@@ -126,6 +130,7 @@ public class ArticleViewModel : BaseViewModel
             });
         }
     }
+
     /// <summary>
     /// Stop text to speach
     /// </summary>
@@ -157,6 +162,15 @@ public class ArticleViewModel : BaseViewModel
 
     public ArticleViewModel(Article article)
     {
+        Deals = new ObservableCollection<Deal>((App.Current as App).Deals.Where(deal => 
+        {
+            for (int i = 0; i < article.Categories.Count(); i++) 
+                if (deal.Title.ToLower().Contains(article.Categories[i].ToLower()) 
+                ||
+                deal.Description.ToLower().Contains(article.Categories[i].ToLower()))
+                    return true;
+            return false;
+        }).ToList());
         _ttsIcon = "\uf028";
         _ttsColour = "#36383c";
 

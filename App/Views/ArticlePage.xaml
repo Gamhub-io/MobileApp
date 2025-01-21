@@ -4,13 +4,14 @@
              x:Class="GamHubApp.Views.ArticlePage"
              xmlns:helpers="clr-namespace:GamHubApp.Helpers"
              xmlns:ctrls="clr-namespace:GamHubApp.Controls"
-             BackgroundColor="{StaticResource Dark}"
              xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
              x:DataType="viewmodels:ArticleViewModel"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             xmlns:models="clr-namespace:GamHubApp.Models"
              Shell.TabBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled"
-             x:Name="thy">
+             x:Name="thy"
+             BackgroundColor="{StaticResource BackgroundColor}">
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
             <Grid ColumnDefinitions="4*,*">
@@ -43,43 +44,29 @@
     </Shell.TitleView>
     <ContentPage.Resources>
         <helpers:EmptyToBoolConverter x:Key="EmptyToBoolConverter"/>
+        <Style x:Key="SeparatorStyle" 
+               TargetType="BoxView">
+            <Setter Property="BackgroundColor" Value="{StaticResource FontColor}" />
+            <Setter Property="Margin" Value="20,0" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+            <Setter Property="HeightRequest" Value="1" />
+            <Setter Property="Opacity" Value="0.1" />
+        </Style>
     </ContentPage.Resources>
     <ContentPage.Content>
         <Grid>
         <ScrollView x:Name="scrollview">
             <Grid>
-
-                
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="200"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="100"/>
-                </Grid.RowDefinitions>
-                <Grid.Background>
-                    <LinearGradientBrush StartPoint="0,0"
-                                         EndPoint="1,1">
-                        <GradientStop Color="#262626"
-                           Offset="0.1"/>
-                        <GradientStop Color="{StaticResource Dark}"
-                           Offset="0.75"/>
-                        <GradientStop Color="#0d0d0d"
-                           Offset="65.0"/>
-                        <GradientStop Color="Black"
-                           Offset="1.0"/>
-                    </LinearGradientBrush>
-                </Grid.Background>
-
-                <!-- Thumbnail -->
-                <!--<ffimageloading:CachedImage Source="{Binding SelectedArticle.Image}"
-                                            CacheDuration="5"
-                                            Grid.Row="0"
-                                            RetryCount="3"
-                                            RetryDelay="600"
-                                            DownsampleToViewSize="true"
-                                            Aspect="AspectFill" />-->
-                
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="60"/>
+                        <!-- Deals -->
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <!-- Thumbnail -->                
                 <Image Source="{Binding SelectedArticle.Image}"
                        Grid.Row="0"
                        Aspect="AspectFill" />
@@ -169,8 +156,7 @@
                         <Border Grid.Column="2"
                                Style="{StaticResource ButtonBorder}"
                                Padding="0"
-                               BackgroundColor="{Binding TtsColour}"
-                               >
+                               BackgroundColor="{Binding TtsColour}">
                                 <Border.Behaviors>
                                     <mct:TouchBehavior Command="{Binding PlayTextToSpeech}"/>
                                 </Border.Behaviors>
@@ -180,8 +166,7 @@
                                    FontFamily="FaSolid"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center"
-                                   Margin="0"
-                                        />
+                                   Margin="0"/>
                         </Border>
                         
                     </Grid>
@@ -206,7 +191,72 @@
                         VerticalOptions="Center"
                         CornerRadius="12"
                         Grid.Row="4"/>
-                 <!-- Add IsVisible="{OnPlatform Android=true, iOS=false}" in case the app store is bothering us -->
+                 <!-- TODO: Add IsVisible="{OnPlatform Android=true, iOS=false}" in case the app store is bothering us -->
+                
+                <!-- Deals section -->
+                <Grid RowDefinitions="30,1, auto"
+                      Grid.Row="5"
+                      RowSpacing="10"
+                      IsVisible="{Binding Deals.Count, Converter={StaticResource ZeroToFalseConverter}}">
+                    <Label Grid.Row="0"
+                           HorizontalOptions="Start"
+                           Text="Related"
+                           TextColor="{StaticResource FontColor}"
+                           Margin="25,5"
+                           FontFamily="P-Bold"
+                           FontSize="18"
+                           />
+                    <BoxView Grid.Row="1"
+                            Style="{StaticResource SeparatorStyle}"/>
+                    <FlexLayout Grid.Row="2"
+                                BindableLayout.ItemsSource="{Binding Deals}"
+                                JustifyContent="SpaceEvenly"
+                                Wrap="Wrap"
+                                Margin="1,0"
+                                >
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:Deal">
+                                    <Grid RowDefinitions="100,30"
+                                          WidthRequest="200"
+                                          HeightRequest="200"
+                                          RowSpacing="5"
+                                          x:Name="DealBlock">
+                                        <Grid.Behaviors>
+                                            <mct:TouchBehavior Command="{Binding Navigate}"
+                                                               BindingContext="{Binding BindingContext, 
+                                                                                        Source={x:Reference DealBlock},
+                                                                                        x:DataType=Grid}"/>
+                                        </Grid.Behaviors>
+                                        <Border Grid.Row="0"
+                                                StrokeShape="RoundRectangle 8">
+                                            <Image Source="{Binding Image}"
+                                                   HorizontalOptions="Fill"
+                                                   VerticalOptions="Fill"
+                                                   Aspect="Fill"/>
+                                        </Border>
+                                        <Border Grid.Row="0"
+                                                StrokeShape="RoundRectangle 8"
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Start"
+                                                HeightRequest="30"
+                                                WidthRequest="60"
+                                                BackgroundColor="{StaticResource FontColor}">
+                                            <Image Source="{Binding Partner.Logo}"
+                                                   HorizontalOptions="Fill"
+                                                   VerticalOptions="Fill"/>
+                                        </Border>
+                                        <Label Grid.Row="1"
+                                               HorizontalOptions="Start"
+                                               Text="{Binding Title}"
+                                               TextColor="{StaticResource FontColor}"
+                                               FontFamily="P-Bold"
+                                               FontSize="12"
+                                               />
+                                    </Grid>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                    </FlexLayout>
+                </Grid>
             </Grid>
         </ScrollView>
 

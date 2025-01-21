@@ -200,10 +200,11 @@ namespace GamHubApp.Services
                 return null;
             }
         }
+
         /// <summary>
         /// Get all the partners
         /// </summary>
-        /// <returns>chunk articles the date provided</returns>
+        /// <returns>partners</returns>
         public async Task<Collection<Partner>> GetPartners()
         {
             try
@@ -222,6 +223,30 @@ namespace GamHubApp.Services
                 return null;
             }
         }
+
+        /// <summary>
+        /// Get all the deals
+        /// </summary>
+        /// <returns>all the deals</returns>
+        public async Task<Collection<Deal>> GetDeals()
+        {
+            try
+            {
+                return await this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                                   unSuccessCallback: e => _ = HandleHttpException(e));
+            }
+
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+                return null;
+            }
+        }
+
         /// <summary>
         /// Save all the tokens of a session and expiration
         /// </summary>
