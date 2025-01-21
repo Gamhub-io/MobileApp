@@ -29,7 +29,7 @@ public class Deal
             return new Command(async () => 
                 await Browser.OpenAsync(Url, new BrowserLaunchOptions
                 {
-                    LaunchMode = BrowserLaunchMode.SystemPreferred,
+                    LaunchMode = BrowserLaunchMode.External,
                     TitleMode = BrowserTitleMode.Default,
                 }));
         }
