@@ -86,18 +86,12 @@ namespace GamHubApp.Services
             try
             {
                 // Convert the spaces to make it url friendly
-                keywords = keywords.Replace(' ', '+');
+                keywords = keywords.Trim().Replace(' ', '+');
+
                 return await WebService.Get<Collection<Article>>(controller: "feeds",
                                                                  action: needUpdate ? "update" : null,
-                                                                 parameters: needUpdate ? [timeUpdate] : [timeUpdate, keywords],
-                                                                 unSuccessCallback: async (err) =>
-                                                                 {
-                                                                     string call = err.RequestMessage.RequestUri.OriginalString;
-                                                                     string content = await err.RequestMessage.Content.ReadAsStringAsync();
-#if DEBUG
-                                                                     throw new Exception(await err.Content.ReadAsStringAsync());
-#endif                                                           
-                                                                 });
+                                                                 parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
+                                                                 unSuccessCallback: (err) => _ = HandleHttpException(err));
             }
             catch (Exception ex)
             {
