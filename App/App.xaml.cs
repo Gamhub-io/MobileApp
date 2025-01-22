@@ -57,89 +57,62 @@ public partial class App : Application
 
        // Start the db
        StartDb();
+    }
+    /// <summary>
+    /// Show the popup loading indicator
+    /// </summary>
+    public void ShowLoadingIndicator(Page rootPage = null)
+    {
 
-        
+       if (IsLoading)
+           return;
+       IsLoading = true;
+
+       OpenPopUp (this.LoadingIndicator = new LoadingPopUp(), rootPage);
+
+    }
+
+    /// <summary>
+    /// Remove the popup loading indicator
+    /// </summary>
+    public void RemoveLoadingIndicator()
+    {
+       if (!IsLoading)
+           return;
 
 
-
-        }
-        /// <summary>
-        /// Show the popup loading indicator
-        /// </summary>
-        public void ShowLoadingIndicator(Page rootPage = null)
+       IsLoading = false;
+       
+       // Close the popup
+        MainThread.BeginInvokeOnMainThread(() =>
         {
+           this.LoadingIndicator.Close();
+        });
+    }
+    /// <summary>
+    /// Function to start the data base
+    /// </summary>
+    public static void StartDb()
+    {
+        // Just use whatever directory SpecialFolder.Personal returns
+        string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-           if (IsLoading)
-               return;
-           IsLoading = true;
+        GeneralDBpath = Path.Combine(libraryPath, "ares.db3");
+        PathDBBackUp = Path.Combine(libraryPath, "aresBackup.db3");
 
-           OpenPopUp (this.LoadingIndicator = new LoadingPopUp(), rootPage);
+        // Verify if a data base already exist
+        if (!File.Exists(GeneralDBpath))
+            // Create the folder path.
+            File.Create(GeneralDBpath);
 
-        }
+        // Verify if a data base already exist
+        if (!File.Exists(PathDBBackUp))
+            // Create the folder path.
+            File.Create(PathDBBackUp);
+    }
 
-        /// <summary>
-        /// Remove the popup loading indicator
-        /// </summary>
-        public void RemoveLoadingIndicator()
-        {
-           if (!IsLoading)
-               return;
-
-
-           IsLoading = false;
-           
-           // Close the popup
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-               this.LoadingIndicator.Close();
-            });
-        }
-        /// <summary>
-        /// Function to start the data base
-        /// </summary>
-        public static void StartDb()
-        {
-            // Just use whatever directory SpecialFolder.Personal returns
-            string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-            GeneralDBpath = Path.Combine(libraryPath, "ares.db3");
-            PathDBBackUp = Path.Combine(libraryPath, "aresBackup.db3");
-
-            // Verify if a data base already exist
-            if (!File.Exists(GeneralDBpath))
-                // Create the folder path.
-                File.Create(GeneralDBpath);
-
-            // Verify if a data base already exist
-            if (!File.Exists(PathDBBackUp))
-                // Create the folder path.
-                File.Create(PathDBBackUp);
-
-        // Sqlite connection
-        //(SqLiteConn = new SQLiteConnection(GeneralDBpath)) ;
-        //(BackUpConn = new SQLiteConnection(PathDBBackUp)) ;
-        }
-
-        protected override void OnStart()
-        {
-        using (var maincon = new SQLiteConnection(GeneralDBpath))
-        {
-            Thread.Sleep(1000);
-            maincon.CreateTable<Source>();
-            Thread.Sleep(1000);
-            maincon.CreateTable<Article>();
-            Thread.Sleep(1000);
-            maincon.CreateTable<Feed>();
-
-        };
-        using (var maincon = new SQLiteConnection(PathDBBackUp))
-        {
-            maincon.CreateTable<Source>();
-            Thread.Sleep(1000);
-            maincon.CreateTable<Article>();
-        };
-
-        LoadingIndicator = new LoadingPopUp();
+    protected override void OnStart()
+    {
 
         // Task to get all the resource data from the API
         Task.Run(async () =>
@@ -164,22 +137,32 @@ public partial class App : Application
         _ = DataFetcher.RestoreSession();
 
             // Register the date of the first run
-            DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
-            if (DateFirstRun == DateTime.MinValue)
-            {
-                // Set the property
-                DateFirstRun = DateTime.Now;
+        DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
+        if (DateFirstRun == DateTime.MinValue)
+        {
+            // Set the property
+            DateFirstRun = DateTime.Now;
 
-                // Register this date as the first date
-                Preferences.Set("date", DateFirstRun);
+            // Register this date as the first date
+            Preferences.Set("date", DateFirstRun);
 
-            }
-
-        //Task.Run(async () =>
-        //    Partners = await DataFetcher.GetPartners()).GetAwaiter();
         }
+    }
     protected override Window CreateWindow(IActivationState activationState)
     {
+        LoadingIndicator = new LoadingPopUp();
+        using (var maincon = new SQLiteConnection(GeneralDBpath))
+        {
+            maincon.CreateTable<Source>();
+            maincon.CreateTable<Article>();
+            maincon.CreateTable<Feed>();
+
+        };
+        using (var maincon = new SQLiteConnection(PathDBBackUp))
+        {
+            maincon.CreateTable<Source>();
+            maincon.CreateTable<Article>();
+        };
         return new Window(new AppShell());
     }
     protected override void OnSleep()
