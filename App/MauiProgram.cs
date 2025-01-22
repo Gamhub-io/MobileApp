@@ -15,24 +15,21 @@ public static class MauiProgram
 #endif
         builder.UseMauiApp<App>()
             .UseSentry(options => {
-                // The DSN is the only required setting.
-                options.Dsn = "https://6a618edd553c62a09273c0899febf030@o4508638278844416.ingest.de.sentry.io/4508638282580048";
+               
+#if DEBUG
+            // Sentry just pollute my logs in Debug so I disabled it
+            options.Dsn = "";
+#else 
+            // The DSN is the only required setting.
+            options.Dsn = "https://6a618edd553c62a09273c0899febf030@o4508638278844416.ingest.de.sentry.io/4508638282580048";
+#endif
 
-                // Use debug mode if you want to see what the SDK is doing.
-                // Debug messages are written to stdout with Console.Writeline,
-                // and are viewable in your IDE's debug console or with 'adb logcat', etc.
-                // This option is not recommended when deploying your application.
 #if DEBUG
                 options.Debug = true;
 #else
                 options.Debug = false;
 #endif
-    
-                // Set TracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-                // We recommend adjusting this value in production.
                 options.TracesSampleRate = 1.0;
-
-                // Other Sentry options can be set here.
             })
                .ConfigureFonts(fonts =>
                {
