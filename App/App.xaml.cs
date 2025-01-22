@@ -7,6 +7,7 @@ using GamHubApp.Views.PopUps;
 using Newtonsoft.Json;
 using SQLite;
 using System.Collections.ObjectModel;
+
 #if DEBUG
 using System.Diagnostics;
 using GamHubApp.Core;
@@ -19,9 +20,6 @@ public partial class App : Application
     public bool IsLoading { get; private set; }
 
     public static Collection<Source> Sources { get; private set; }
-    public static SQLiteConnection SqLiteConn { get; set; }
-    public static SQLiteConnection BackUpConn { get; set; }
-
     public Popup LoadingIndicator { get; private set; }
     public Fetcher DataFetcher { get; set; }
     public static string ProdHost { get; } = "api.gamhub.io";
@@ -33,6 +31,9 @@ public partial class App : Application
     /// Date first registered to determin when is the best time to ask for user review
     /// </summary>
     public DateTime DateFirstRun { get; set; }
+    public static string GeneralDBpath { get; private set; }
+    public static string PathDBBackUp { get; private set; }
+
     public enum PageType
     {
         about,
@@ -48,34 +49,16 @@ public partial class App : Application
             // Run the debug setup
             EnvironementSetup.DebugSetup();
 #endif
-            DataFetcher = new Fetcher();
+       DataFetcher = new Fetcher();
 
-            Sources = new Collection<Source>();
+       Sources = new Collection<Source>();
 
-            InitializeComponent();
+       InitializeComponent();
 
-            // Start the db
-            StartDb();
+       // Start the db
+       StartDb();
 
-            SqLiteConn.CreateTable<Source>();
-            SqLiteConn.CreateTable<Article>();
-            SqLiteConn.CreateTable<Feed>();
-            BackUpConn.CreateTable<Source>();
-            BackUpConn.CreateTable<Article>();
-
-            LoadingIndicator = new LoadingPopUp();
-
-            // Task to get all the resource data from the API
-            Task.Run(async () =>
-            {
-                Sources = await DataFetcher.GetSources();
-
-                foreach (var source in Sources)
-                {
-                    SqLiteConn.InsertOrReplace(source);
-                    BackUpConn.InsertOrReplace(source);
-                }
-            });
+        
 
 
 
@@ -111,15 +94,6 @@ public partial class App : Application
                this.LoadingIndicator.Close();
             });
         }
-
-        /// <summary>
-        ///  Function to close the database 
-        /// </summary>
-        public static void CloseDb()
-        {
-            SqLiteConn.Dispose();
-            //SqLiteConn.Close();
-        }
         /// <summary>
         /// Function to start the data base
         /// </summary>
@@ -128,28 +102,66 @@ public partial class App : Application
             // Just use whatever directory SpecialFolder.Personal returns
             string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-            var path = Path.Combine(libraryPath, "ares.db3");
-            var pathBackUp = Path.Combine(libraryPath, "aresBackup.db3");
+            GeneralDBpath = Path.Combine(libraryPath, "ares.db3");
+            PathDBBackUp = Path.Combine(libraryPath, "aresBackup.db3");
 
             // Verify if a data base already exist
-            if (!File.Exists(path))
+            if (!File.Exists(GeneralDBpath))
                 // Create the folder path.
-                File.Create(path);
+                File.Create(GeneralDBpath);
 
             // Verify if a data base already exist
-            if (!File.Exists(pathBackUp))
+            if (!File.Exists(PathDBBackUp))
                 // Create the folder path.
-                File.Create(pathBackUp);
+                File.Create(PathDBBackUp);
 
-            // Sqlite connection
-            SqLiteConn = new SQLiteConnection(path);
-            BackUpConn = new SQLiteConnection(pathBackUp);
+        // Sqlite connection
+        //(SqLiteConn = new SQLiteConnection(GeneralDBpath)) ;
+        //(BackUpConn = new SQLiteConnection(PathDBBackUp)) ;
         }
 
         protected override void OnStart()
         {
-            // Restore session
-            _ = DataFetcher.RestoreSession();
+        using (var maincon = new SQLiteConnection(GeneralDBpath))
+        {
+            Thread.Sleep(1000);
+            maincon.CreateTable<Source>();
+            Thread.Sleep(1000);
+            maincon.CreateTable<Article>();
+            Thread.Sleep(1000);
+            maincon.CreateTable<Feed>();
+
+        };
+        using (var maincon = new SQLiteConnection(PathDBBackUp))
+        {
+            maincon.CreateTable<Source>();
+            Thread.Sleep(1000);
+            maincon.CreateTable<Article>();
+        };
+
+        LoadingIndicator = new LoadingPopUp();
+
+        // Task to get all the resource data from the API
+        Task.Run(async () =>
+        {
+            Sources = await DataFetcher.GetSources();
+            var threads = new List<Task>();
+
+            foreach (var source in Sources)
+            {
+                using var mainConn = new SQLiteConnection(GeneralDBpath);
+                mainConn.InsertOrReplace(source);
+
+                mainConn.Close();
+                using var backupConn = new SQLiteConnection(PathDBBackUp);
+                backupConn.InsertOrReplace(source);
+
+                backupConn.Close();
+            }
+        });
+
+        // Restore session
+        _ = DataFetcher.RestoreSession();
 
             // Register the date of the first run
             DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);

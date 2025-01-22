@@ -1,5 +1,6 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Views;
+using SQLite;
 
 namespace GamHubApp.ViewModels.PopUps
 {
@@ -42,9 +43,12 @@ namespace GamHubApp.ViewModels.PopUps
 
         public Microsoft.Maui.Controls.Command Delete => new Microsoft.Maui.Controls.Command(() =>
         {
-
-            // Delete the feed
-            App.SqLiteConn.Delete(_feed);
+            using (var conn = new SQLiteConnection(App.GeneralDBpath))
+            {
+                // Delete the feed
+                conn.Delete(_feed);
+                conn.Close();
+            }
 
             int index = _context.Feeds.IndexOf(_feed);
 

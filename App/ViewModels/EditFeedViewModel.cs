@@ -1,5 +1,8 @@
-﻿using GamHubApp.Models;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Models;
+using GamHubApp.Services;
 using GamHubApp.Views;
+using SQLite;
 namespace GamHubApp.ViewModels;
 
 public class EditFeedViewModel : BaseViewModel
@@ -44,9 +47,12 @@ public class EditFeedViewModel : BaseViewModel
 
         // Remove feed
         Context.UpdateCurrentFeed(_feed);
-        // update the feed
-        App.SqLiteConn.Update(_feed);
-
+        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        {
+            // update the feed
+            conn.Update(_feed);
+            conn.Close();
+        }
         _context.ListHasBeenUpdated = true;
 
         if (_initialKeyWords != _feed.Keywords)
@@ -58,13 +64,8 @@ public class EditFeedViewModel : BaseViewModel
         System.Collections.ObjectModel.ObservableCollection<Feed> feeds = _context.Feeds;
         _context.CurrentFeedIndex = index = feeds.IndexOf(feeds.FirstOrDefault(feed => feed.Id == _feed.Id));
         _context.FeedTabs[index].Title = _feed.Title;
+        WeakReferenceMessenger.Default.Send(new FeedUpdatedMessage(_feed));
 
-        //_context.UpdateOrders.Add(new UpdateOrder
-        //{
-        //    Feed = _feed,
-        //    Update = UpdateOrder.FeedUpdate.Edit
-            
-        //});
     });
 
     public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(async () =>

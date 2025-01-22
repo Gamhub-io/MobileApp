@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Models;
 using GamHubApp.Services;
+using SQLite;
 using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
 
@@ -40,6 +41,12 @@ public class BookmarkViewModel : BaseViewModel
     /// <returns></returns>
     private static IEnumerable<Article> GetArticlesFromDb()
     {
-        return App.SqLiteConn.GetAllWithChildren<Article>(recursive: true).Reverse<Article>();
+        IEnumerable<Article> articles;
+        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        {
+            articles = conn.GetAllWithChildren<Article>(recursive: true).Reverse<Article>();
+            conn.Close();
+        }
+        return articles;
     }
 }
