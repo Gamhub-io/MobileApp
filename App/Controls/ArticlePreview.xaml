@@ -7,7 +7,8 @@
              xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels" 
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              x:DataType="ctrs:ArticlePreview"
-             x:Name="preview">
+             x:Name="preview"
+             Margin="2,5">
     <Border StrokeShape="RoundRectangle 15" 
             StrokeThickness="0"
             HeightRequest="221"

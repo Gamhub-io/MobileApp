@@ -165,7 +165,6 @@
                      Command="{Binding RefreshFeed, Mode=OneWay}"
                      CommandParameter="{Binding IsSearching, Converter={StaticResource BoolInverseConverter}}"
                      x:Name="newsRefreshView"
-                     HorizontalOptions="CenterAndExpand"
                      RefreshColor="{StaticResource PrimaryAccent}">
             
             <RefreshView.BackgroundColor>
@@ -203,7 +202,7 @@
                         </Grid>
                     </CollectionView.Footer>
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                        <LinearItemsLayout Orientation="Vertical"  />
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Article">
