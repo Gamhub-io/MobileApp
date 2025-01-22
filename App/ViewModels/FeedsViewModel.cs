@@ -89,7 +89,7 @@ namespace GamHubApp.ViewModels
             {
                 _selectedFeed = value;
                 CurrentFeedIndex = _feeds.IndexOf(value);
-                Refresh(value);
+                Refresh(value,true);
                 OnPropertyChanged(nameof(SelectedFeed));
             }
         }
@@ -225,7 +225,7 @@ namespace GamHubApp.ViewModels
             // CurrentApp and CurrentPage will allow use to access to global properties
             CurrentApp = App.Current as App;
             CurrentPage = page;
-            
+
             // Instantiate definitions 
             FeedTabs = new ObservableRangeCollection<TabButton>();
             using (var conn = new SQLiteConnection(App.GeneralDBpath))
@@ -274,8 +274,6 @@ namespace GamHubApp.ViewModels
 
             RefreshArticles.Execute(null);
 
-
-
         }
 
         private ObservableCollection<Article> _unnoticedArticles = new ();
@@ -322,8 +320,12 @@ namespace GamHubApp.ViewModels
 
             }); }
         }
-
-        public void Refresh(Feed feed)
+        /// <summary>
+        /// Refresh selected feed
+        /// </summary>
+        /// <param name="feed">feed of choice</param>
+        /// <param name="force">Whether we refresh the feed from scratch or not</param>
+        public void Refresh(Feed feed, bool force = false)
 		{
             if (IsBusy)
                 return;
@@ -334,21 +336,23 @@ namespace GamHubApp.ViewModels
             // Determine whether or not it's the first time loading the article of this feed
             bool isFirstLoad = _articles == null || _articles.Count <= 0;
 
-
-            _ = AggregateFeed(feed, isFirstLoad).ContinueWith(res =>
-            {
-                // End the loading indicator
-                IsRefreshing = false;
-                IsBusy = false;
-                CurrentApp.RemoveLoadingIndicator();
-            });
+            Task.Run(async () =>
+                await AggregateFeed(feed, isFirstLoad || force).ContinueWith(res =>
+                {
+                    // End the loading indicator
+                    IsRefreshing = false;
+                    IsBusy = false;
+                    CurrentApp.RemoveLoadingIndicator();
+                })
+            );
+            
         }
 
         /// <summary>
         /// Load articles via search
         /// </summary>
         /// <param name="feed">feed we are searching</param>
-        private async Task AggregateFeed(Feed feed, bool firstLoad = true)
+        private async Task AggregateFeed(Feed feed, bool force = true)
         {
             int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
 
@@ -356,6 +360,11 @@ namespace GamHubApp.ViewModels
             
             // Figure out if the feed deserve an update
             string timeUpdate = string.Empty;
+            if (force)
+            {
+                Articles.Clear();
+                UnnoticedArticles.Clear();
+            }
 
             if (Articles?.Count != 0)
                 timeUpdate = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
@@ -379,11 +388,20 @@ namespace GamHubApp.ViewModels
                 }
 
             }
+            if (force)
+            {
+                // Update list of articles
+                InsertArticles(articles);
+                SelectedFeed.IsLoaded = true;
+
+                IsRefreshing = false;
+                return;
+            }
 
             if (needUpdate)
             {
                 if (articles.Count > 0)
-                    if (OnTopScroll)
+                    if (OnTopScroll || _articles?.Count < 1)
                         UpdateArticles(articles, feed, indexFeed);
                     else
                         UnnoticedArticles = new ObservableCollection<Article>( articles);
@@ -576,10 +594,9 @@ namespace GamHubApp.ViewModels
             CurrentPage.CloseDropdownMenu();
             try
             {
+                IsBusy = true;
+                Articles.Clear();
                 UpdateFeeds();
-
-                if (_selectedFeed != null)
-                    Refresh(_selectedFeed);
             }
 #if DEBUG
             catch (Exception ex)
