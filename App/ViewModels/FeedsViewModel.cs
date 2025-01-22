@@ -623,7 +623,7 @@ namespace GamHubApp.ViewModels
         /// <summary>
         /// Update the feeds list
         /// </summary>
-        private async Task UpdateFeeds()
+        private void UpdateFeeds()
         {
             if (!_dataLoaded) return;
             if (_feeds == null /*|| _selectedFeed ==null*/)
