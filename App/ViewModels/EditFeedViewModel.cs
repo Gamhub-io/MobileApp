@@ -1,5 +1,6 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Views;
+using SQLite;
 namespace GamHubApp.ViewModels;
 
 public class EditFeedViewModel : BaseViewModel
@@ -44,9 +45,12 @@ public class EditFeedViewModel : BaseViewModel
 
         // Remove feed
         Context.UpdateCurrentFeed(_feed);
-        // update the feed
-        App.SqLiteConn.Update(_feed);
-
+        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        {
+            // update the feed
+            conn.Update(_feed);
+            conn.Close();
+        }
         _context.ListHasBeenUpdated = true;
 
         if (_initialKeyWords != _feed.Keywords)

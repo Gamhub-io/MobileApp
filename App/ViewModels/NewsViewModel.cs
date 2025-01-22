@@ -129,7 +129,11 @@ public class NewsViewModel : BaseViewModel
                     CurrentFeed.Title = SearchText;
                     CurrentFeed.Keywords = SearchText;
                     CurrentFeed.IsSaved = true;
-                    App.SqLiteConn.InsertWithChildren(_currentFeed);
+                    using (var conn = new SQLiteConnection(App.GeneralDBpath))
+                    {
+                        conn.InsertWithChildren(_currentFeed);
+                        conn.Close();
+                    }
                     Feeds.Add(_currentFeed);
 
                     // Update the feeds remotely
@@ -140,7 +144,12 @@ public class NewsViewModel : BaseViewModel
                 if (feedTarget?.Keywords == null)
                     feedTarget = Feeds.FirstOrDefault(f => f.Keywords.ToLower() == SearchText.ToLower());
 
-                App.SqLiteConn.Delete(feedTarget);
+                using (var conn = new SQLiteConnection(App.GeneralDBpath))
+                {
+                    conn.Delete(feedTarget);
+                    conn.Close();
+                }
+
                 Feeds.Remove(feedTarget);
             });
         }
@@ -291,7 +300,11 @@ public class NewsViewModel : BaseViewModel
     {
         CurrentApp = App.Current as App;
         CurrentPage = currentPage;
-        Feeds = new Collection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        {
+            Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
+            conn.Close();
+        }
         UnnoticedArticles = new();
         Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
         
@@ -392,12 +405,15 @@ public class NewsViewModel : BaseViewModel
 
             //// Marked the article as saved
             article.IsSaved = !article.IsSaved;
-
-            if (isSaved)
-                App.SqLiteConn.Delete(article, recursive: true);
-            else
-                // Insert it in database
-                App.SqLiteConn.InsertWithChildren(article, recursive: true);
+            using (var conn = new SQLiteConnection(App.GeneralDBpath))
+            {
+                if (isSaved)
+                    conn.Delete(article, recursive: true);
+                else
+                    // Insert it in database
+                    conn.InsertWithChildren(article, recursive: true);
+                conn.Close();
+            }
 
             // Say the the bookmark has been updated
             WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(article));
@@ -582,9 +598,7 @@ public class NewsViewModel : BaseViewModel
         {
             return Task.Run(() =>
             {
-                lock (collisionLock)
-                {
-                    using var conn = new SQLiteConnection(App.BackUpConn.DatabasePath);
+                    using var conn = new SQLiteConnection(App.PathDBBackUp);
 
                     conn.DeleteAll<Article>();
 
@@ -595,7 +609,7 @@ public class NewsViewModel : BaseViewModel
                         conn.InsertOrReplace(source);
 
                     }
-                }
+                    conn.Close();
             });
         }
         finally
@@ -650,14 +664,17 @@ public class NewsViewModel : BaseViewModel
         _prevSearch = SearchText;
 
     }
+
     /// <summary>
     /// Get all the articles from the db
     /// </summary>
     /// <returns></returns>
     private static IEnumerable<Article> GetBackupFromDb()
     {
-        return App.BackUpConn.GetAllWithChildren<Article>(recursive: true).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
+        using (var backupConn = new SQLiteConnection(App.PathDBBackUp))
+            return backupConn.GetAllWithChildren<Article>(recursive: true).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
     }
+
     /// <summary>
      /// Processed launched when the page reappear
      /// </summary>
@@ -676,8 +693,13 @@ public class NewsViewModel : BaseViewModel
 
 
         }
-        // Get all the feeds registered
-        var curFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+        ObservableCollection<Feed> curFeeds;
+        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        {
+            // Get all the feeds registered
+            curFeeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
+            conn.Close();
+        }
 
         // We try to figure out if the two feed lists contains the same items
         if (!FeedToolkit.CampareItems(Feeds, curFeeds))

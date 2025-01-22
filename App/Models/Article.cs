@@ -1,6 +1,4 @@
-﻿
-
-using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Services;
 using Newtonsoft.Json;
 using SQLite;
@@ -69,7 +67,8 @@ public class Article
         get
         {
             if (_isSaved == null)
-                return App.SqLiteConn.Find<Article>(Id) != null;
+                using (var conn = new SQLiteConnection(App.GeneralDBpath))
+                    return conn.Find<Article>(Id) != null;
 
             return (bool)_isSaved;
         }
@@ -108,11 +107,16 @@ public class Article
                 //// Marked the article as saved
                 IsSaved = !IsSaved;
 
-                if (isSaved)
-                    App.SqLiteConn.Delete(this, recursive: true);
-                else
-                    // Insert it in database
-                    App.SqLiteConn.InsertWithChildren(this, recursive: true);
+                using (var conn =new SQLiteConnection(App.GeneralDBpath))
+                {
+                    if (isSaved)
+                        conn.Delete(this, recursive: true);
+                    else
+                        // Insert it in database
+                        conn.InsertWithChildren(this, recursive: true);
+
+                    conn.Close();
+                }
 
                 // Say the the bookmark has been updated
                 WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(this));

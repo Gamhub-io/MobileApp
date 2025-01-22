@@ -1,5 +1,6 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Views;
+using SQLite;
 
 namespace GamHubApp.ViewModels.PopUps
 {
@@ -45,8 +46,12 @@ namespace GamHubApp.ViewModels.PopUps
 
             // Remove feed
             Context.UpdateCurrentFeed(_feed);
-            // update the feed
-            App.SqLiteConn.Update(_feed);
+            using (var conn = new SQLiteConnection(App.GeneralDBpath))
+            {
+                // update the feed
+                conn.Update(_feed);
+                conn.Close();
+            }
 
             // Close the popup
             _popUp.Close();

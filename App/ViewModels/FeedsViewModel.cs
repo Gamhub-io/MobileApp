@@ -9,6 +9,7 @@ using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
 using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Services;
+using SQLite;
 
 namespace GamHubApp.ViewModels
 {
@@ -227,7 +228,11 @@ namespace GamHubApp.ViewModels
             
             // Instantiate definitions 
             FeedTabs = new ObservableRangeCollection<TabButton>();
-            Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+            using (var conn = new SQLiteConnection(App.GeneralDBpath))
+            {
+                Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
+                conn.Close();
+            }
             _articles = new ObservableRangeCollection<Article>();
 
             // Organise feeds into tabs
@@ -554,8 +559,11 @@ namespace GamHubApp.ViewModels
         {
             if (!_dataLoaded)
             {
-                Feeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
-
+                using (var conn = new SQLiteConnection(App.GeneralDBpath))
+                {
+                    Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
+                    conn.Close();
+                }
                 // Refresh the first feed
                 RefreshFirstFeed();
 
@@ -598,14 +606,21 @@ namespace GamHubApp.ViewModels
         /// <summary>
         /// Update the feeds list
         /// </summary>
-        private void UpdateFeeds()
+        private async Task UpdateFeeds()
         {
             if (!_dataLoaded) return;
             if (_feeds == null /*|| _selectedFeed ==null*/)
                 return;
+            Collection<Feed> updatedFeeds;
+            using (var conn = new SQLiteConnection(App.GeneralDBpath))
+            {
+                // Get the updated list of feed
+                updatedFeeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
+                conn.Close();
+            }
 
-            // Get the updated list of feed
-            Collection<Feed> updatedFeeds = new ObservableCollection<Feed>(App.SqLiteConn.GetAllWithChildren<Feed>());
+            if (updatedFeeds is null)
+                return;
 
             List<Feed> newFeeds = updatedFeeds.Where(feed => !_feeds.Any(item => item.Id == feed.Id)).ToList();
             List<Feed> removedFeeds = _feeds.Where(feed => !updatedFeeds.Any(item => item.Id == feed.Id)).ToList();
