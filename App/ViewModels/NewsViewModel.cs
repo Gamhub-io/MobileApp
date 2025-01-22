@@ -352,6 +352,7 @@ public class NewsViewModel : BaseViewModel
 
             Feeds[index] = updatedFeed;
         });
+
         // Handle if a article change sees a change of bookmark state
         WeakReferenceMessenger.Default.Register(this, (MessageHandler<object, BookmarkChangedMessage>)((r, m) =>
         {
