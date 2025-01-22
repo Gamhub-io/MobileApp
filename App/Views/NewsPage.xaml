@@ -183,16 +183,7 @@
                                 RemainingItemsThresholdReachedCommand="{Binding RefreshBottomCommand}"
                                 Margin="8,0"
                                 >
-                    <CollectionView.Header>
-                        <BoxView  Margin="0">
-                            <BoxView.HeightRequest>
-                                <OnPlatform x:TypeArguments="x:Double">
-                                    <On Platform="Android" Value="0"/>
-                                    <On Platform="iOS" Value="75"/>
-                                </OnPlatform>
-                            </BoxView.HeightRequest>
-                        </BoxView>
-                    </CollectionView.Header>
+                    
                     <CollectionView.Footer>
                         <Grid>
                             <ActivityIndicator Color="{StaticResource Primary}"
