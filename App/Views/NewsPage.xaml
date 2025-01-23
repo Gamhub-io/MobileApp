@@ -165,7 +165,6 @@
                      Command="{Binding RefreshFeed, Mode=OneWay}"
                      CommandParameter="{Binding IsSearching, Converter={StaticResource BoolInverseConverter}}"
                      x:Name="newsRefreshView"
-                     HorizontalOptions="CenterAndExpand"
                      RefreshColor="{StaticResource PrimaryAccent}">
             
             <RefreshView.BackgroundColor>
@@ -184,16 +183,7 @@
                                 RemainingItemsThresholdReachedCommand="{Binding RefreshBottomCommand}"
                                 Margin="8,0"
                                 >
-                    <CollectionView.Header>
-                        <BoxView  Margin="0">
-                            <BoxView.HeightRequest>
-                                <OnPlatform x:TypeArguments="x:Double">
-                                    <On Platform="Android" Value="0"/>
-                                    <On Platform="iOS" Value="75"/>
-                                </OnPlatform>
-                            </BoxView.HeightRequest>
-                        </BoxView>
-                    </CollectionView.Header>
+                    
                     <CollectionView.Footer>
                         <Grid>
                             <ActivityIndicator Color="{StaticResource Primary}"
@@ -203,7 +193,7 @@
                         </Grid>
                     </CollectionView.Footer>
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                        <LinearItemsLayout Orientation="Vertical"  />
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Article">
