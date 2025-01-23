@@ -31,7 +31,7 @@ Platform | Testing | Production |
 As the app is open-source, the app evolve using
 its community's skills, knowledges and opinions.  
 
-#### Contribute with skills! 💪
+### Contribute with skills! 💪
 
 If you are a software developer skilled in C# and Xamarin. The most obvious way you can contribute is with your coding skills.
 Regarless of your experience, you contribution will always be welcome here. Take a look at the [list of issues](https://github.com/bricefriha/AresNews/issues), pick one, let us know you want to work on it, create a Fork of the project and here you go!
