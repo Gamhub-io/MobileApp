@@ -27,6 +27,9 @@ on:
       package-name:
         required: true
         type: string
+      generation:
+        required: true
+        type: string
     secrets:
       keystore-password:
         required: true
@@ -88,7 +91,7 @@ jobs:
         with:
           csproj: ${{ inputs.project-file }}
           version: ${{ github.run_number }} # to keep value unique
-          displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}
+          displayVersion: ${{ inputs.build-version }}.${{ github.run_number }} ${{ inputs.generation }}
           printFile: true # optional
       - name: Setup Keystore File
         run: |
@@ -107,6 +110,7 @@ jobs:
           packageName: ${{ inputs.package-name }}
           releaseFiles: ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-android/${{ inputs.package-name }}-Signed.aab
           track: internal
+          changesNotSentForReview: true
       - uses: r0adkll/upload-google-play@v1.1.3
         name: Upload Android Artifact to Play Console production
         if: ${{contains(inputs.deploy-type, 'prod')}}
@@ -115,3 +119,4 @@ jobs:
           packageName: ${{ inputs.package-name }}
           releaseFiles: ${{ github.workspace }}\${{ inputs.project-folder }}\bin\${{ inputs.build-config }}\${{ inputs.dotnet-version-target }}-android\${{ inputs.package-name }}-Signed.aab
           track: production
+          changesNotSentForReview: true

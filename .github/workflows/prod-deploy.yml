@@ -3,7 +3,7 @@ name: Dev Deployment Build
 on:
   workflow_dispatch:
   push:
-    branches: ['develop']
+    branches: ['master']
     paths-ignore:
       - '**.md'
       - '**/*.gitignore'
@@ -26,7 +26,7 @@ jobs:
       dotnetVersionTargets: ${{ env.DOTNET_VERSION_TARGETS }}
       csprojToBuild: ${{ env.CSPROJ_TO_BUILD }}
       projectFolder: ${{ env.PROJECT_FOLDER }}
-      deploy-type: 'dev'
+      deploy-type: 'prod'
     steps:
       - run: echo "Exposing env setup, because they can't be passed to nested workflows."
   #
@@ -60,7 +60,7 @@ jobs:
       build-config: 'Release'
       build-version: ${{ needs.setup.outputs.buildVersion }}
       deploy-type: ${{ needs.setup.outputs.deploy-type }}
-      generation: 'Atlas (BETA)'
+      generation: 'Atlas'
       package-name: 'com.bricefriha.aresgaming'
     secrets:
       keystore: ${{ secrets.PLAY_KEYSTORE }}
