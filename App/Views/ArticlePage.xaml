@@ -10,6 +10,7 @@
              xmlns:models="clr-namespace:GamHubApp.Models"
              Shell.TabBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled"
+             xmlns:stroked="https://vapolia.eu/Vapolia.StrokedLabel"
              x:Name="thy"
              BackgroundColor="{StaticResource BackgroundColor}">
     <Shell.TitleView>
@@ -216,7 +217,7 @@
                                 >
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="models:Deal">
-                                    <Grid RowDefinitions="100,30"
+                                    <Grid RowDefinitions="120,30"
                                           WidthRequest="200"
                                           HeightRequest="200"
                                           RowSpacing="5"
@@ -252,6 +253,25 @@
                                                FontFamily="P-Bold"
                                                FontSize="12"
                                                />
+                                        <Border Grid.Row="0"
+                                                StrokeShape="RoundRectangle 0,8,8,0"
+                                                HorizontalOptions="Start"
+                                                VerticalOptions="End"
+                                                HeightRequest="20"
+                                                WidthRequest="50"
+                                                IsVisible="{Binding Discount, Converter={StaticResource NotNullOrEmptyStringConverter}}"
+                                                BackgroundColor="{StaticResource PrimaryAccent}">
+                                            <Label 
+                                                   Text="{Binding Discount}"
+                                                   TextColor="{StaticResource FontColor}"
+                                                   FontFamily="P-Bold"
+                                                   stroked:StrokedLabel.StrokeColor="{StaticResource Dark}"
+                                                   stroked:StrokedLabel.StrokeWidth="2"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   FontSize="12"
+                                                   />
+                                        </Border>
                                     </Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
