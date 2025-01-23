@@ -18,22 +18,8 @@
 up-to-date on everything game-related, for free, 
 with no ads or any other type of annoyance.
 
-The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms).
+The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms) then migrated to [.NET MAUI](https://github.com/dotnet/maui).
   
-<!-- <p align="center">
-  
-  
-  <a > 
-    <img src="https://user-images.githubusercontent.com/37577669/128909033-f012fc69-d494-4e89-8691-6bf676de66c2.jpeg" height="450" />
-  </a>
-  <a>
-    <img src="https://user-images.githubusercontent.com/37577669/128909027-c2049b08-64c8-406f-ba4d-1d184019ae38.jpeg" height="450"/> 
-  </a>
-  <a > 
-    <img src="https://user-images.githubusercontent.com/37577669/128909032-d76176cd-21ed-418e-adc4-2d5da8b696d2.jpeg" height="450" />
-  </a>
-</p> -->
-
 ## Status
 
 Platform | Testing | Production |
