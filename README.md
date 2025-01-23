@@ -18,22 +18,8 @@
 up-to-date on everything game-related, for free, 
 with no ads or any other type of annoyance.
 
-The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms).
+The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.Forms) then migrated to [.NET MAUI](https://github.com/dotnet/maui).
   
-<!-- <p align="center">
-  
-  
-  <a > 
-    <img src="https://user-images.githubusercontent.com/37577669/128909033-f012fc69-d494-4e89-8691-6bf676de66c2.jpeg" height="450" />
-  </a>
-  <a>
-    <img src="https://user-images.githubusercontent.com/37577669/128909027-c2049b08-64c8-406f-ba4d-1d184019ae38.jpeg" height="450"/> 
-  </a>
-  <a > 
-    <img src="https://user-images.githubusercontent.com/37577669/128909032-d76176cd-21ed-418e-adc4-2d5da8b696d2.jpeg" height="450" />
-  </a>
-</p> -->
-
 ## Status
 
 Platform | Testing | Production |
@@ -45,10 +31,7 @@ Platform | Testing | Production |
 As the app is open-source, the app evolve using
 its community's skills, knowledges and opinions.  
 
-#### Contribute with skills! 💪
-
-
-> ⚠️ we are currently closing contributions as we are working on migrating the project to .NET MAUI
+### Contribute with skills! 💪
 
 If you are a software developer skilled in C# and Xamarin. The most obvious way you can contribute is with your coding skills.
 Regarless of your experience, you contribution will always be welcome here. Take a look at the [list of issues](https://github.com/bricefriha/AresNews/issues), pick one, let us know you want to work on it, create a Fork of the project and here you go!

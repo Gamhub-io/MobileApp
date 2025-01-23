@@ -3,7 +3,7 @@ name: Prod Deployment Build
 on:
   workflow_dispatch:
   push:
-    branches: ['master']
+    branches: ['main']
     paths-ignore:
       - '**.md'
       - '**/*.gitignore'
