@@ -4,11 +4,6 @@ on:
   workflow_dispatch:
   push:
     branches: ['develop']
-    paths-ignore:
-      - '**.md'
-      - '**/*.gitignore'
-      - '**/*.gitattributes'
-      - '**/*.yml'
 env:
   BUILD_VERSION: '1.5'
   DOTNET_VERSION: 9.0.x
