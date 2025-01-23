@@ -60,7 +60,7 @@ jobs:
       build-config: 'Release'
       build-version: ${{ needs.setup.outputs.buildVersion }}
       deploy-type: ${{ needs.setup.outputs.deploy-type }}
-      generation: 'Atlas'
+      generation: 'Atlas (BETA)'
       package-name: 'com.bricefriha.aresgaming'
     secrets:
       keystore: ${{ secrets.PLAY_KEYSTORE }}

@@ -110,6 +110,7 @@ jobs:
           packageName: ${{ inputs.package-name }}
           releaseFiles: ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-android/${{ inputs.package-name }}-Signed.aab
           track: internal
+          changesNotSentForReview: true
       - uses: r0adkll/upload-google-play@v1.1.3
         name: Upload Android Artifact to Play Console production
         if: ${{contains(inputs.deploy-type, 'prod')}}
@@ -118,3 +119,4 @@ jobs:
           packageName: ${{ inputs.package-name }}
           releaseFiles: ${{ github.workspace }}\${{ inputs.project-folder }}\bin\${{ inputs.build-config }}\${{ inputs.dotnet-version-target }}-android\${{ inputs.package-name }}-Signed.aab
           track: production
+          changesNotSentForReview: true
