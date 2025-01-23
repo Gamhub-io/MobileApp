@@ -54,6 +54,7 @@ jobs:
       project-file: ${{ needs.setup.outputs.csprojToBuild }}
       project-folder: ${{ needs.setup.outputs.projectFolder }}
       build-config: 'Release'
+      generation: 'Atlas'
       build-version: ${{ needs.setup.outputs.buildVersion }}
       deploy-type: ${{ needs.setup.outputs.deploy-type }}
       package-name: 'com.bricefriha.aresgaming'
