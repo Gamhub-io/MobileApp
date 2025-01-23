@@ -1,4 +1,4 @@
-name: Dev Deployment Build
+name: PR Deployment Build
 
 on:
   workflow_dispatch:
