@@ -1,0 +1,74 @@
+name: Dev Deployment Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['master']
+    paths-ignore:
+      - '**.md'
+      - '**/*.gitignore'
+      - '**/*.gitattributes'
+      - '**/*.yml'
+env:
+  BUILD_VERSION: '1.5'
+  DOTNET_VERSION: 9.0.x
+  XCODE_VERSION: 16.2
+  DOTNET_VERSION_TARGETS: net9.0
+  CSPROJ_TO_BUILD: ./App/GamHubApp.csproj
+  PROJECT_FOLDER: App
+jobs:
+  setup:
+    runs-on: ubuntu-22.04
+    outputs:
+      buildVersion: ${{ env.BUILD_VERSION }}
+      dotnetVersion: ${{ env.DOTNET_VERSION }}
+      xcodeVersion: ${{ env.XCODE_VERSION }}
+      dotnetVersionTargets: ${{ env.DOTNET_VERSION_TARGETS }}
+      csprojToBuild: ${{ env.CSPROJ_TO_BUILD }}
+      projectFolder: ${{ env.PROJECT_FOLDER }}
+      deploy-type: 'prod'
+    steps:
+      - run: echo "Exposing env setup, because they can't be passed to nested workflows."
+  #
+  build-ios:
+    needs: setup
+    uses: ./.github/workflows/cd-ios.yml
+    with:
+      dotnet-version: ${{ needs.setup.outputs.dotnetVersion }}
+      dotnet-version-target: ${{ needs.setup.outputs.dotnetVersionTargets }}
+      xcode-version: ${{ needs.setup.outputs.xcodeVersion }}
+      project-file: ${{ needs.setup.outputs.csprojToBuild }}
+      project-folder: ${{ needs.setup.outputs.projectFolder }}
+      build-config: 'Release'
+      package-name: 'com.bricefriha.aresgaming'
+      deploy-type: ${{ needs.setup.outputs.deploy-type }}
+      build-version: ${{ needs.setup.outputs.buildVersion }}
+    secrets:
+      p12-cert: ${{ secrets.CERTIFICATES_P12 }}
+      p12-cert-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+      appstore-issuer: ${{ secrets.APPSTORE_ISSUER_ID }}
+      appstore-keyid: ${{ secrets.APPSTORE_KEY_ID }}
+      appstore-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+  build-android:
+    needs: setup
+    uses: ./.github/workflows/cd-android.yml
+    with:
+      dotnet-version: ${{ needs.setup.outputs.dotnetVersion }}
+      dotnet-version-target: ${{ needs.setup.outputs.dotnetVersionTargets }}
+      project-file: ${{ needs.setup.outputs.csprojToBuild }}
+      project-folder: ${{ needs.setup.outputs.projectFolder }}
+      build-config: 'Release'
+      build-version: ${{ needs.setup.outputs.buildVersion }}
+      deploy-type: ${{ needs.setup.outputs.deploy-type }}
+      generation: 'Atlas'
+      package-name: 'com.bricefriha.aresgaming'
+    secrets:
+      keystore: ${{ secrets.PLAY_KEYSTORE }}
+      keystore-alias: ${{ secrets.PLAY_KEYSTORE_ALIAS }}
+      keystore-password: ${{ secrets.PLAY_KEYSTORE_PASS }}
+      playstore-service-account: ${{ secrets.PLAYSTORE_SERVICE_ACC }}
+      discord_client_id: ${{ secrets.DISCORD_CLIENT_ID }}
+      api_host: ${{ secrets.API_HOST }}
+      monitoring_key: ${{ secrets.MONITORING_KEY }}
+# Inspired by https://thewissen.io/making-maui-cd-pipeline/
+
