@@ -615,15 +615,15 @@ public class FeedsViewModel : BaseViewModel
             Articles.Clear();
             UpdateFeeds();
         }
-#if DEBUG
         catch (Exception ex)
+#if DEBUG
         {
             Debug.WriteLine($"Selected Feed {JsonConvert.SerializeObject(_selectedFeed)}");
             Debug.WriteLine(ex.Message);
         }
 #else
-        catch 
         {
+            SentrySdk.CaptureException(ex);
         }
 #endif
     }
