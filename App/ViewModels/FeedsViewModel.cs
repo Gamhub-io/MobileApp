@@ -335,13 +335,22 @@ public class FeedsViewModel : BaseViewModel
         bool isFirstLoad = _articles == null || _articles.Count <= 0;
 
         Task.Run(async () =>
-            await AggregateFeed(feed, isFirstLoad || force).ContinueWith(res =>
+        {
+            try
+            {
+                await AggregateFeed(feed, isFirstLoad || force).ContinueWith(res =>
+                {
+                    CurrentApp.RemoveLoadingIndicator();
+
+                });
+            }
+            finally
             {
                 // End the loading indicator
                 IsRefreshing = false;
                 IsBusy = false;
-                CurrentApp.RemoveLoadingIndicator();
-            })
+            } }
+            
         );
         
     }
