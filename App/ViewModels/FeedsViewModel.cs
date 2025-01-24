@@ -612,7 +612,6 @@ public class FeedsViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-            Articles.Clear();
             UpdateFeeds();
         }
         catch (Exception ex)
