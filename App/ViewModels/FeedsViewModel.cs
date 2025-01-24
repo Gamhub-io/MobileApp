@@ -46,7 +46,7 @@ public class FeedsViewModel : BaseViewModel
         set 
         {
             _currentFeedIndex = value;
-            //SwitchTabs(_currentFeedIndex);
+
 
             OnPropertyChanged(nameof(CurrentFeedIndex));
 
@@ -436,11 +436,11 @@ public class FeedsViewModel : BaseViewModel
                 return;
             }
 
-        Articles = new ObservableRangeCollection<Article>();
+            Articles = new ObservableRangeCollection<Article>();
 
         Articles.AddRange(articles);
         if (articlesOld.Any())
-            Articles.AddRange(articlesOld);
+                Articles.AddRange(articlesOld);
             
     }
 
