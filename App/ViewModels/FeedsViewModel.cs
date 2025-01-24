@@ -1,10 +1,7 @@
-﻿
-using GamHubApp.Models;
+﻿using GamHubApp.Models;
 using GamHubApp.Views;
-using Newtonsoft.Json;
 using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
 using SQLite;
@@ -28,15 +25,15 @@ public class FeedsViewModel : BaseViewModel
 		}
     private ObservableCollection<TabButton> _feedTabs;
 
-		public ObservableCollection<TabButton> FeedTabs
+	public ObservableCollection<TabButton> FeedTabs
+	{
+		get { return _feedTabs; }
+		set 
 		{
-			get { return _feedTabs; }
-			set 
-			{
-            _feedTabs = value; 
-				OnPropertyChanged(nameof(FeedTabs));
-			}
+        _feedTabs = value; 
+			OnPropertyChanged(nameof(FeedTabs));
 		}
+	}
 
     private int _currentFeedIndex;
 
@@ -57,26 +54,26 @@ public class FeedsViewModel : BaseViewModel
     private bool _isRefreshing; 
 
     public bool IsRefreshing 
+	{
+		get { return _isRefreshing; }
+		set 
 		{
-			get { return _isRefreshing; }
-			set 
-			{
-            _isRefreshing = value; 
-				OnPropertyChanged(nameof(IsRefreshing));
-			}
+        _isRefreshing = value; 
+			OnPropertyChanged(nameof(IsRefreshing));
 		}
+	}
 
-		private ObservableRangeCollection<Article> _articles;
+	private ObservableRangeCollection<Article> _articles;
 
-		public ObservableRangeCollection<Article> Articles
+	public ObservableRangeCollection<Article> Articles
+	{
+		get { return _articles; }
+		set 
 		{
-			get { return _articles; }
-			set 
-			{
-            _articles = value; 
-				OnPropertyChanged(nameof(Articles));
-			}
+        _articles = value; 
+			OnPropertyChanged(nameof(Articles));
 		}
+	}
 
     private Feed _selectedFeed;
 
@@ -218,7 +215,7 @@ public class FeedsViewModel : BaseViewModel
         _dataLoaded = true;
     });
 
-		public FeedsViewModel(FeedsPage page)
+	public FeedsViewModel(FeedsPage page)
     {
         // CurrentApp and CurrentPage will allow use to access to global properties
         CurrentApp = App.Current as App;
@@ -318,13 +315,14 @@ public class FeedsViewModel : BaseViewModel
 
         }); }
     }
+
     /// <summary>
     /// Refresh selected feed
     /// </summary>
     /// <param name="feed">feed of choice</param>
     /// <param name="force">Whether we refresh the feed from scratch or not</param>
     public void Refresh(Feed feed, bool force = false)
-		{
+	{
         if (IsBusy)
             return;
 
