@@ -46,7 +46,7 @@ public class FeedsViewModel : BaseViewModel
         set 
         {
             _currentFeedIndex = value;
-            //SwitchTabs(_currentFeedIndex);
+
 
             OnPropertyChanged(nameof(CurrentFeedIndex));
 
@@ -398,7 +398,7 @@ public class FeedsViewModel : BaseViewModel
         if (force)
         {
             // Update list of articles
-            InsertArticles(articles);
+            InsertArticles(articles, force);
             SelectedFeed.IsLoaded = true;
 
             IsRefreshing = false;
@@ -426,14 +426,22 @@ public class FeedsViewModel : BaseViewModel
     /// Insert a set of articles in the current list
     /// </summary>
     /// <param name="articles">articles to add</param>
-    private void InsertArticles(IEnumerable<Article> articles)
+    /// <param name="force">if true we overwrite the current article list</param>
+    private void InsertArticles(IEnumerable<Article> articles, bool force = false)
     {
         ObservableRangeCollection<Article> articlesOld = new (_articles);
-        Articles = new ObservableRangeCollection<Article>();
+            if (force)
+            {
+                Articles = new ObservableRangeCollection<Article>(articles);
+                return;
+            }
+
+            Articles = new ObservableRangeCollection<Article>();
 
         Articles.AddRange(articles);
         if (articlesOld.Any())
-            Articles.AddRange(articlesOld);
+                Articles.AddRange(articlesOld);
+            
     }
 
     // See detail of the article
