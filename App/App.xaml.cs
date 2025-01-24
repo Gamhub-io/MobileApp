@@ -218,8 +218,9 @@ public partial class App : Application
                 Debug.WriteLine(ex.Message);
             }
 #else
-        catch 
+        catch (Exception ex) 
         {
+            SentrySdk.CaptureException(ex);
         }
 #endif
     }
