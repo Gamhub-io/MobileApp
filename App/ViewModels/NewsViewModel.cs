@@ -233,16 +233,6 @@ public class NewsViewModel : BaseViewModel
 
     public App CurrentApp { get; }
     private NewsPage CurrentPage { get; set; }
-    // Command to add a Bookmark
-    private readonly Command _addBookmark;
-
-    public Command AddBookmark
-    {
-        get
-        {
-            return _addBookmark;
-        }
-    }
     // Command to refresh the news feed
     private readonly Command _refreshFeed;
 
@@ -403,33 +393,6 @@ public class NewsViewModel : BaseViewModel
             }
 #endif
         }));
-
-        _addBookmark = new Command((id) =>
-        {
-            var article = new Article();
-            // Get the article
-            article = _articles.FirstOrDefault(art => art.Id == id.ToString());
-
-
-
-            // If the article is already in bookmarks
-            bool isSaved = article.IsSaved;
-
-            //// Marked the article as saved
-            article.IsSaved = !article.IsSaved;
-            using (var conn = new SQLiteConnection(App.GeneralDBpath))
-            {
-                if (isSaved)
-                    conn.Delete(article, recursive: true);
-                else
-                    // Insert it in database
-                    conn.InsertWithChildren(article, recursive: true);
-                conn.Close();
-            }
-
-            // Say the the bookmark has been updated
-            WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(article));
-        });
 
         _refreshFeed = new Command<bool>( async (isAll) =>
         {

@@ -119,7 +119,7 @@ public class Article
                 }
 
                 // Say the the bookmark has been updated
-                WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(this));
+                WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(this, IsSaved));
             }); ;
         }
     }
