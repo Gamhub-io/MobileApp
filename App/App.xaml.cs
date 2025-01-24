@@ -166,54 +166,51 @@ public partial class App : Application
         return new Window(new AppShell());
     }
     protected override void OnSleep()
-        {
-            base.OnSleep();
+     {
+         base.OnSleep();
 
-            AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-            Page currentPage = mainPage.CurrentPage;
+         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
+         Page currentPage = mainPage.CurrentPage;
 
-            if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
-            {
+         if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
+         {
 
-                ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Stop();
-            }
-        }
-        
+             ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Stop();
+         }
+     }
+     
 
-        protected override void OnResume()
-        {
-            AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-            Page currentPage = mainPage.CurrentPage;
+     protected override void OnResume()
+     {
+         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
+         Page currentPage = mainPage.CurrentPage;
 
-            if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
-            {
+         if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
+         {
 
-                ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
-            }
+             ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
+         }
 
-            StartDb();
-        }
-        /// <summary>
-        /// Open any popup
-        /// </summary>
-        /// <param name="popUp">pop up to open</param>
-        /// <param name="page">parent page</param>
-        public void OpenPopUp(Popup popUp, Page page = null)
-        {
-            try
-            {
+         StartDb();
+     }
+     /// <summary>
+     /// Open any popup
+     /// </summary>
+     /// <param name="popUp">pop up to open</param>
+     /// <param name="page">parent page</param>
+     public void OpenPopUp(Popup popUp, Page page = null)
+     {
+         try
+         {
 
-                if (popUp == null)
-                    return;
+             if (popUp == null)
+                 return;
 
-                if (page == null)
-                    page = GetCurrentPage();
-                if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp?.Id))
-                    return;
-            MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    page.ShowPopup(popUp);
-                });
+             if (page == null)
+                 page = GetCurrentPage();
+             if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp?.Id))
+                 return;
+         MainThread.BeginInvokeOnMainThread(() => page.ShowPopup(popUp));
         }
 #if DEBUG
             catch (Exception ex)
@@ -221,9 +218,9 @@ public partial class App : Application
                 Debug.WriteLine(ex.Message);
             }
 #else
-            catch 
-            {
-            }
+        catch 
+        {
+        }
 #endif
     }
     /// <summary>
