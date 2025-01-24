@@ -5,6 +5,10 @@ using System.Collections.ObjectModel;
 using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
 using SQLite;
+#if DEBUG
+using System.Diagnostics;
+using Newtonsoft.Json;
+#endif
 
 namespace GamHubApp.ViewModels;
 
