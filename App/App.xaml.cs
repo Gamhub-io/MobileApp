@@ -208,7 +208,7 @@ public partial class App : Application
 
              if (page == null)
                  page = GetCurrentPage();
-             if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp?.Id))
+             if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp!.Id))
                  return;
          MainThread.BeginInvokeOnMainThread(() => page.ShowPopup(popUp));
         }

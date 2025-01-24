@@ -5,6 +5,10 @@ using System.Collections.ObjectModel;
 using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
 using SQLite;
+#if DEBUG
+using System.Diagnostics;
+using Newtonsoft.Json;
+#endif
 
 namespace GamHubApp.ViewModels;
 
@@ -327,7 +331,7 @@ public class FeedsViewModel : BaseViewModel
             return;
 
         IsBusy = true;
-        CurrentApp.ShowLoadingIndicator();
+        CurrentApp.ShowLoadingIndicator(CurrentPage);
 
         // Determine whether or not it's the first time loading the article of this feed
         bool isFirstLoad = _articles == null || _articles.Count <= 0;
