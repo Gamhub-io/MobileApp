@@ -612,18 +612,17 @@ public class FeedsViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-            Articles.Clear();
             UpdateFeeds();
         }
-#if DEBUG
         catch (Exception ex)
+#if DEBUG
         {
             Debug.WriteLine($"Selected Feed {JsonConvert.SerializeObject(_selectedFeed)}");
             Debug.WriteLine(ex.Message);
         }
 #else
-        catch 
         {
+            SentrySdk.CaptureException(ex);
         }
 #endif
     }
