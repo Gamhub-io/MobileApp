@@ -14,6 +14,8 @@ public class Deal
     public string Description { get; set; }
     [JsonProperty("type")]
     public string Type { get; set; }
+    [JsonProperty("discount")]
+    public string Discount { get; set; }
     [JsonProperty("url")]
     public string Url { get; set; }
     [JsonProperty("createdAt")]

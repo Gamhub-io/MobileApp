@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using Vapolia.StrokedLabels;
 #if ANDROID
 using GamHubApp.Platforms.Android.Renderers;
 #endif
@@ -45,6 +46,7 @@ public static class MauiProgram
                    fonts.AddFont("Ubuntu-Bold.ttf", "P-Bold");
                    fonts.AddFont("Ubuntu-Medium.ttf", "P-Medium");
                })
+               .UseStrokedLabelBehavior()
                .UseMauiCommunityToolkit()
                .ConfigureMauiHandlers(handlers =>
                {

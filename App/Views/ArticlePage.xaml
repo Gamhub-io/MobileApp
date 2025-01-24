@@ -10,6 +10,7 @@
              xmlns:models="clr-namespace:GamHubApp.Models"
              Shell.TabBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled"
+             xmlns:stroked="https://vapolia.eu/Vapolia.StrokedLabel"
              x:Name="thy"
              BackgroundColor="{StaticResource BackgroundColor}">
     <Shell.TitleView>
@@ -194,7 +195,7 @@
                  <!-- TODO: Add IsVisible="{OnPlatform Android=true, iOS=false}" in case the app store is bothering us -->
                 
                 <!-- Deals section -->
-                <Grid RowDefinitions="30,1, auto"
+                <Grid RowDefinitions="30,1,100, auto"
                       Grid.Row="5"
                       RowSpacing="10"
                       IsVisible="{Binding Deals.Count, Converter={StaticResource ZeroToFalseConverter}}">
@@ -208,7 +209,16 @@
                            />
                     <BoxView Grid.Row="1"
                             Style="{StaticResource SeparatorStyle}"/>
-                    <FlexLayout Grid.Row="2"
+                    <Label Grid.Row="2"
+                           HorizontalOptions="Start"
+                           HorizontalTextAlignment="Center"
+                           Text="We've found deals related to this article. These deals are listed according to the categories the outlets classified their article as. This is a work-in-progress feature, so feel free to contact us if you find it too irrelevant or troublesome."
+                           TextColor="{StaticResource FontColor}"
+                           Margin="10,5"
+                           FontFamily="P-Regular"
+                           FontSize="14"
+                           />
+                        <FlexLayout Grid.Row="3"
                                 BindableLayout.ItemsSource="{Binding Deals}"
                                 JustifyContent="SpaceEvenly"
                                 Wrap="Wrap"
@@ -216,7 +226,7 @@
                                 >
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="models:Deal">
-                                    <Grid RowDefinitions="100,30"
+                                    <Grid RowDefinitions="120,30"
                                           WidthRequest="200"
                                           HeightRequest="200"
                                           RowSpacing="5"
@@ -252,6 +262,25 @@
                                                FontFamily="P-Bold"
                                                FontSize="12"
                                                />
+                                        <Border Grid.Row="0"
+                                                StrokeShape="RoundRectangle 0,8,8,0"
+                                                HorizontalOptions="Start"
+                                                VerticalOptions="End"
+                                                HeightRequest="20"
+                                                WidthRequest="50"
+                                                IsVisible="{Binding Discount, Converter={StaticResource NotNullOrEmptyStringConverter}}"
+                                                BackgroundColor="{StaticResource PrimaryAccent}">
+                                            <Label 
+                                                   Text="{Binding Discount}"
+                                                   TextColor="{StaticResource FontColor}"
+                                                   FontFamily="P-Bold"
+                                                   stroked:StrokedLabel.StrokeColor="{StaticResource Dark}"
+                                                   stroked:StrokedLabel.StrokeWidth="2"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center"
+                                                   FontSize="12"
+                                                   />
+                                        </Border>
                                     </Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
