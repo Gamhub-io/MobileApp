@@ -92,6 +92,7 @@ jobs:
           csproj: ${{ inputs.project-file }}
           version: ${{ github.run_number }} # to keep value unique
           displayVersion: ${{ inputs.build-version }}.${{ github.run_number }} ${{ inputs.generation }}
+          ApplicationVersion: ${{ inputs.build-version }}.${{ github.run_number }}
           printFile: true # optional
       - name: Setup Keystore File
         run: |
