@@ -7,7 +7,6 @@
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
-		<integer>2</integer>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
@@ -44,6 +43,5 @@
 	<array>
 		<string>fetch</string>
 	</array>
-
 </dict>
 </plist>
