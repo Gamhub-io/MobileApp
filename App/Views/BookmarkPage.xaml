@@ -56,7 +56,7 @@
                 </BoxView>
             </CollectionView.Header>
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="25" />
+                <LinearItemsLayout Orientation="Vertical"/>
             </CollectionView.ItemsLayout>
             <CollectionView.EmptyView>
 
