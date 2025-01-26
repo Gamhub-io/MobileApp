@@ -90,7 +90,7 @@ jobs:
         uses: managedcode/MAUIAppVersion@v1
         with:
           csproj: ${{ inputs.project-file }}
-          version: ${{ inputs.build-version }}.${{ github.run_number }}00
+          version: ${{ github.run_number }}00
           displayVersion: ${{ inputs.build-version }}.${{ github.run_number }} ${{ inputs.generation }}
           printFile: true # optional
       - name: Setup Keystore File
