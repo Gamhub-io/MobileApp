@@ -116,3 +116,11 @@ jobs:
           issuer-id: ${{ secrets.appstore-issuer }}
           api-key-id: ${{ secrets.appstore-keyid }}
           api-private-key: ${{ secrets.appstore-private-key }}
+      - name: Upload app to TestFlight
+        uses: apple-actions/upload-testflight-build@v1
+        if: ${{contains(inputs.deploy-type, 'prod')}}
+        with:
+          app-path: ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/GamHubApp.ipa
+          issuer-id: ${{ secrets.appstore-issuer }}
+          api-key-id: ${{ secrets.appstore-keyid }}
+          api-private-key: ${{ secrets.appstore-private-key }}
