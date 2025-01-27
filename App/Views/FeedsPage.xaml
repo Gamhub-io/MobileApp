@@ -103,7 +103,7 @@
                          Command="{Binding Path=RefreshArticles}"
                          Grid.Row="0"
                          Grid.RowSpan="2"
-                         Margin="{OnPlatform Android='0,40,0,0', iOS='0'}"
+                         Margin="{OnPlatform Android='0,60,0,0', iOS='0'}"
                          x:Name="newsRefreshView"
                          HorizontalOptions="Center"
                          RefreshColor="{StaticResource PrimaryAccent}">
@@ -131,7 +131,8 @@
                             </BoxView>
                         </CollectionView.Header>
                         <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Vertical"/>
+                            <LinearItemsLayout Orientation="Vertical"
+                                               ItemSpacing="1"/>
                         </CollectionView.ItemsLayout>
                         <CollectionView.EmptyView>
                             <ContentView x:DataType="vm:FeedsViewModel"
@@ -230,7 +231,8 @@
                         </DataTrigger>
                     </CollectionView.Triggers>
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10" />
+                        <LinearItemsLayout Orientation="Horizontal" 
+                                           ItemSpacing="10" />
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
