@@ -173,13 +173,27 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
-                <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
-                       FontFamily="P-Regular"
-                       TextColor="{StaticResource FontColor}"
-                       Margin="10"
-                       TextType="Html"
-                       Grid.Row="3"
-                       />
+                    <!-- NOTE: a bug prevent use from using WebView on iOS. see: https://github.com/dotnet/maui/issues/21604-->
+                
+               <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                      FontFamily="P-Regular"
+                      IsVisible="{OnPlatform Android='false',
+                                             iOS='true'}"
+                      TextColor="{StaticResource FontColor}"
+                      Margin="10"
+                      TextType="Html"
+                      Grid.Row="3"
+                      />
+                    <WebView Grid.Row="3"
+                        IsVisible="{OnPlatform Android='true',
+                                        iOS='false'}"
+                        x:Name="contentView"
+                        BackgroundColor="Transparent"
+                       >
+                        <WebView.Source>
+                            <HtmlWebViewSource Html="{Binding SelectedArticle.HTMLContent, Mode=OneWay}"/>
+                        </WebView.Source>
+                    </WebView>
 
                     <!-- Button to open to the default Browser -->
                 <Button Text="Read more"
