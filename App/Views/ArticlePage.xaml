@@ -173,8 +173,23 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
+                    <!-- NOTE: a bug prevent use from using WebView on iOS. see: https://github.com/dotnet/maui/issues/21604-->
+                
+               <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                      FontFamily="P-Regular"
+                      IsVisible="{OnPlatform Android='false',
+                                             iOS='true'}"
+                      TextColor="{StaticResource FontColor}"
+                      Margin="10"
+                      TextType="Html"
+                      Grid.Row="3"
+                      />
                     <WebView Grid.Row="3"
-                             BackgroundColor="Transparent">
+                        IsVisible="{OnPlatform Android='true',
+                                        iOS='false'}"
+                        x:Name="contentView"
+                        BackgroundColor="Transparent"
+                       >
                         <WebView.Source>
                             <HtmlWebViewSource Html="{Binding SelectedArticle.HTMLContent, Mode=OneWay}"
                        />
