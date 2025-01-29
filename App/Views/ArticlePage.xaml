@@ -191,8 +191,7 @@
                         BackgroundColor="Transparent"
                        >
                         <WebView.Source>
-                            <HtmlWebViewSource Html="{Binding SelectedArticle.HTMLContent, Mode=OneWay}"
-                       />
+                            <HtmlWebViewSource Html="{Binding SelectedArticle.HTMLContent, Mode=OneWay}"/>
                         </WebView.Source>
                     </WebView>
 
