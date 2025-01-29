@@ -173,13 +173,13 @@
                     </Grid>
                 </Grid>
                 <!-- content -->
-                <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
-                       FontFamily="P-Regular"
-                       TextColor="{StaticResource FontColor}"
-                       Margin="10"
-                       TextType="Html"
-                       Grid.Row="3"
+                    <WebView Grid.Row="3"
+                             BackgroundColor="Transparent">
+                        <WebView.Source>
+                            <HtmlWebViewSource Html="{Binding SelectedArticle.HTMLContent, Mode=OneWay}"
                        />
+                        </WebView.Source>
+                    </WebView>
 
                     <!-- Button to open to the default Browser -->
                 <Button Text="Read more"

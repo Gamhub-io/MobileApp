@@ -1,0 +1,23 @@
+﻿@font-face {
+    font-family: TextFont;
+    src: url("file:///android_asset/Ubuntu-Medium.ttf")
+}
+/* This sets the width of all images to 50% of their original size */
+img, [class^="image-"] {
+    width: 250px;
+    height: auto;
+}
+
+label {
+    font-family: TextFont;
+    font-size: medium;
+    text-align: justify;
+    color: #ecebeb;
+}
+
+a {
+    color: #14813A;
+}
+* {
+    color: #ecebeb;
+}
