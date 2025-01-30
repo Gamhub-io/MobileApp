@@ -157,9 +157,13 @@
                         <Border Grid.Column="2"
                                Style="{StaticResource ButtonBorder}"
                                Padding="0"
-                               BackgroundColor="{Binding TtsColour}">
+                               BackgroundColor="{Binding TtsColour}"
+                                x:Name="TtsButton">
                                 <Border.Behaviors>
-                                    <mct:TouchBehavior Command="{Binding PlayTextToSpeech}"/>
+                                    <mct:TouchBehavior Command="{Binding PlayTextToSpeech}"
+                                                       BindingContext="{Binding BindingContext, 
+                                                                                Source={x:Reference thy},
+                                                                                x:DataType=ContentPage}"/>
                                 </Border.Behaviors>
 
                             <Label TextColor="{StaticResource Primary}"
