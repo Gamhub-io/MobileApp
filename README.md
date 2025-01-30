@@ -24,12 +24,12 @@ The app has been built using [Xamarin Forms](https://github.com/xamarin/Xamarin.
 
 Platform | Testing | Production |
 --- | ----- | ------|
-| **Android**| [![Build status](https://github.com/Gamhub-io/MobileApp/actions/workflows/dev-deploy.yml/badge.svg)](https://github.com/Gamhub-io/MobileApp/actions/workflows/dev-deploy.yml)|[![Build status](https://build.appcenter.ms/v0.1/apps/af152970-a78b-4dc4-9435-c88d5bc7a5d8/branches/master/badge)](https://appcenter.ms)
-| **iOS**| [![Build status](https://github.com/Gamhub-io/MobileApp/actions/workflows/dev-deploy.yml/badge.svg)](https://github.com/Gamhub-io/MobileApp/actions/workflows/dev-deploy.yml)|[![Build status](https://build.appcenter.ms/v0.1/apps/ccbb4d7f-7e53-41ca-8da6-be665b7eeeb4/branches/master/badge)](https://appcenter.ms)|
+| **Android**| [![Build status](https://github.com/Gamhub-io/MobileApp/actions/workflows/dev-deploy.yml/badge.svg)](https://github.com/Gamhub-io/MobileApp/actions/workflows/dev-deploy.yml)|[![Prod Deployment Build](https://github.com/Gamhub-io/MobileApp/actions/workflows/prod-deploy.yml/badge.svg)](https://github.com/Gamhub-io/MobileApp/actions/workflows/prod-deploy.yml)
+| **iOS**| [![Build status](https://github.com/Gamhub-io/MobileApp/actions/workflows/dev-deploy.yml/badge.svg)](https://github.com/Gamhub-io/MobileApp/actions/workflows/dev-deploy.yml)|[![Prod Deployment Build](https://github.com/Gamhub-io/MobileApp/actions/workflows/prod-deploy.yml/badge.svg)](https://github.com/Gamhub-io/MobileApp/actions/workflows/prod-deploy.yml)|
 
 ## Contributions
-As the app is open-source, the app evolve using
-its community's skills, knowledges and opinions.  
+As the app is open-source, the app evolves using
+its community's skills, knowledge and opinions.  
 
 ### Contribute with skills! 💪
 

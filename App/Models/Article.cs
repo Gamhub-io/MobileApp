@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using SQLiteNetExtensions.Extensions;
+using System.Reflection;
 
 namespace GamHubApp.Models;
 
@@ -139,6 +140,24 @@ public class Article
                     Text = Title
                 });
             }); ;
+        }
+    }
+
+    [Ignore]
+    public string HTMLContent
+    {
+        get
+        {
+
+            var assembly = Assembly.GetExecutingAssembly();
+            string style;
+            // Read the embedded resource
+            using (Stream stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.Resources.Styles.ArticleStyle.css"))
+            using (StreamReader reader = new (stream))
+            {
+                style = $"<style type=\"text/css\">{reader.ReadToEnd()}</style>";
+            }
+            return style+Content;
         }
     }
 }

@@ -1,0 +1,21 @@
+﻿@font-face {
+    font-family: TextFont;
+    src: url("file:///android_asset/Ubuntu-Medium.ttf")
+}
+img, [class^="image-"] {
+    width: 250px;
+    height: auto;
+}
+
+label {
+    font-family: TextFont;
+    font-size: medium;
+    text-align: justify;
+}
+
+a {
+    color: #4AC776;
+}
+* {
+    color: #ecebeb;
+}
