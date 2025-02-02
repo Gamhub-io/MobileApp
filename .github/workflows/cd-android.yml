@@ -70,6 +70,7 @@ jobs:
           discord_client_id: ${{ secrets.discord_client_id }}
           api_host: ${{ secrets.api_host }}
           monitoring_key: ${{ secrets.monitoring_key }}
+          project_folder: '.'
 
       # This step might be obsolete at some point as .NET MAUI workloads
       # are starting to come pre-installed on the GH Actions build agents.
