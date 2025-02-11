@@ -41,6 +41,12 @@ on:
         required: true
       appstore-private-key:
         required: true
+      discord_client_id:
+        required: true
+      api_host:
+        required: true
+      monitoring_key:
+        required: true
 jobs:
   publish-ios:
     runs-on: macos-15
