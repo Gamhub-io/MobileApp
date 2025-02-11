@@ -68,8 +68,18 @@ jobs:
       #     model: 'iPhone 16'
       #     os_version: 18.2
 
-      # This step might be obsolete at some point as .NET MAUI workloads
-      # are starting to come pre-installed on the GH Actions build agents.
+      # Build Environement variables
+      - name: Environement variables
+        run: |
+          chmod +x ./App/builds/ios_prebuild.sh
+          ./App/builds/ios_prebuild.sh
+        shell: bash
+        env:
+          discord_client_id: ${{ secrets.discord_client_id }}
+          api_host: ${{ secrets.api_host }}
+          monitoring_key: ${{ secrets.monitoring_key }}
+          project_folder: '.'
+
       - name: Install MAUI Workload
         run: |
           dotnet workload install maui --ignore-failed-sources
