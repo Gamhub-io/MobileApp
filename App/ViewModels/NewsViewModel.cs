@@ -7,7 +7,9 @@ using MvvmHelpers;
 using SQLite;
 using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
+#if DEBUG
 using System.Diagnostics;
+#endif
 
 namespace GamHubApp.ViewModels;
 
@@ -381,17 +383,15 @@ public class NewsViewModel : BaseViewModel
 
 
             }
-#if DEBUG
             catch (Exception ex)
             {
+#if DEBUG
                 Debug.WriteLine(ex);
-            }
-#else
-            catch
-            {
 
-            }
+#else
+                SentrySdk.CaptureException(ex);
 #endif
+            }
         }));
 
         _refreshFeed = new Command<bool>( async (isAll) =>
@@ -469,8 +469,13 @@ public class NewsViewModel : BaseViewModel
                 _ = RefreshDB();
 
             }
-            catch
+            catch (Exception ex)
             {
+#if DEBUG
+                throw new (ex.Message);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
             }
 
         }
