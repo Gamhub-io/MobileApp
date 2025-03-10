@@ -1,7 +1,6 @@
 ﻿using GamHubApp.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 
 namespace GamHubApp.ViewModels;
 
@@ -125,7 +124,11 @@ public class ArticleViewModel : BaseViewModel
                 } 
                 catch (Exception ex)
                 {
+#if DEBUG
                     throw new Exception(ex.Message);
+#else
+                    SentrySdk.CaptureException(ex);
+#endif
                 }
             });
         }
