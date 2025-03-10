@@ -80,6 +80,8 @@ public class Fetcher
     {
         try
         {
+            if (string.IsNullOrEmpty(keywords))
+                return new Collection<Article>();
             // Convert the spaces to make it url friendly
             keywords = keywords.Trim().Replace(' ', '+');
 

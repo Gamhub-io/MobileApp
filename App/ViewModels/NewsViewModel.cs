@@ -411,7 +411,7 @@ public class NewsViewModel : BaseViewModel
 
         LoadSearch = new Command(async () =>
         {
-            if (IsSearchLoading)
+            if (IsSearchLoading || string.IsNullOrEmpty(SearchText))
                 return;
             CurrentApp.ShowLoadingIndicator();
             IsSearchProcessed = true;
@@ -629,6 +629,8 @@ public class NewsViewModel : BaseViewModel
         }
         else
         {
+            if (articles is null)
+                return;
             // Update list of articles
             Articles = new ObservableRangeCollection<Article>(articles.Where(article => article.Blocked == null || article.Blocked == false));
 
