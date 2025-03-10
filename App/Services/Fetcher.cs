@@ -97,7 +97,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return new Collection<Article>();
         }
     }
     /// <summary>
@@ -157,7 +157,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return new Collection<Article>();
         }
     }
     /// <summary>
