@@ -7,6 +7,8 @@ using GamHubApp.Views.PopUps;
 using Newtonsoft.Json;
 using SQLite;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+
 
 #if DEBUG
 using System.Diagnostics;
@@ -57,6 +59,9 @@ public partial class App : Application
 
        // Start the db
        StartDb();
+
+        // Restore session
+        DataFetcher.RestoreSession().GetAwaiter();
     }
     /// <summary>
     /// Show the popup loading indicator
@@ -132,9 +137,6 @@ public partial class App : Application
                 backupConn.Close();
             }
         });
-
-        // Restore session
-        _ = DataFetcher.RestoreSession();
 
             // Register the date of the first run
         DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
