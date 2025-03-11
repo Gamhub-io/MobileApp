@@ -80,6 +80,8 @@ public class Fetcher
     {
         try
         {
+            if (string.IsNullOrEmpty(keywords))
+                return new Collection<Article>();
             // Convert the spaces to make it url friendly
             keywords = keywords.Trim().Replace(' ', '+');
 
@@ -95,7 +97,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return new Collection<Article>();
         }
     }
     /// <summary>
@@ -155,7 +157,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return new Collection<Article>();
         }
     }
     /// <summary>
