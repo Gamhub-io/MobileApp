@@ -125,7 +125,8 @@
                   x:Name="Header">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenAuth}"
-                                          NumberOfTapsRequired="3"/>
+                                          NumberOfTapsRequired="2"/>
+                    <!-- Cannot set more than 2 taps https://github.com/dotnet/maui/issues/6407 -->
                 </Grid.GestureRecognizers>
                 <Image Source="ares.png"/>
             </Grid>
@@ -221,10 +222,10 @@
             <Grid Grid.Row="1"
                   IsVisible="{Binding Authenticated}"
                   HeightRequest="50"
-                  VerticalOptions="End" >
-                <Grid.Behaviors>
-                    <mct:TouchBehavior Command="{Binding Logout}"/>
-                </Grid.Behaviors>
+                  VerticalOptions="End">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding Logout}"/>
+                </Grid.GestureRecognizers>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="*"/>
