@@ -125,7 +125,8 @@
                   x:Name="Header">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenAuth}"
-                                          NumberOfTapsRequired="3"/>
+                                          NumberOfTapsRequired="2"/>
+                    <!-- Cannot set more than 2 taps https://github.com/dotnet/maui/issues/6407 -->
                 </Grid.GestureRecognizers>
                 <Image Source="ares.png"/>
             </Grid>
