@@ -1,5 +1,6 @@
 ﻿using GamHubApp.Models;
-using GamHubApp.Views;
+using GamHubApp.Models.Http.Responses;
+using GamHubApp.Services;
 
 namespace GamHubApp.ViewModels;
 
@@ -32,33 +33,12 @@ public class AppShellViewModel : BaseViewModel
             });
         }
     }
-    public Command OpenAuth
-    {
-        get
-        {
-            return new Command( () =>
-            {
 
-                 // CLose flyout 
-                 MainShell.FlyoutIsPresented = false;
-
-                 // Open the login pop up
-                 CurrentApp.OpenPopUp(new AuthPopUp((res) =>
-                 {
-                     // Save user info
-                     CurrentApp.SaveUserInfo(res.UserData);
-
-                     // Save the session
-                     CurrentApp.DataFetcher.SaveSession(res.Session);
-
-                     // Set user data
-                     UserProfile = res.UserData;
-                 }), MainShell);
-            });
-        }
-    }
 
     public App CurrentApp { get; private set; }
+
+    private Fetcher dataFetcher;
+
     public AppShell MainShell { get; }
     private bool _authenticated;
 
@@ -88,12 +68,30 @@ public class AppShellViewModel : BaseViewModel
     }
 
 
-    public AppShellViewModel(AppShell shell)
+    public AppShellViewModel(Fetcher fetc)
     {
-        CurrentApp = (App)App.Current;
-        MainShell = shell;
+        CurrentApp = App.Current as App;
+        dataFetcher = fetc;
 
-        UserProfile = CurrentApp.DataFetcher.UserData;
+
+        Task.Run(async () =>
+        {
+            await fetc.RestoreSession();
+            UserProfile = fetc.UserData;
+
+        });
+    }
+
+    public void PostAuthProcess(AuthResponse res) 
+    {
+        // Save user info
+        dataFetcher.SaveUserInfo(res.UserData);
+
+        // Save the session
+        dataFetcher.SaveSession(res.Session);
+
+        // Set user data
+        UserProfile = res.UserData;
     }
 
 }

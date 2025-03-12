@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Vapolia.StrokedLabels;
+using GamHubApp.Services;
+using GamHubApp.ViewModels;
 #if ANDROID
 using GamHubApp.Platforms.Android.Renderers;
 #endif
@@ -46,6 +48,8 @@ public static class MauiProgram
                    fonts.AddFont("Ubuntu-Bold.ttf", "P-Bold");
                    fonts.AddFont("Ubuntu-Medium.ttf", "P-Medium");
                })
+               .RegisterViews()
+               .RegisterViewModels()
                .UseStrokedLabelBehavior()
                .UseMauiCommunityToolkit()
                .ConfigureMauiHandlers(handlers =>
@@ -57,6 +61,22 @@ public static class MauiProgram
 #if DEBUG
         //builder.Logging.AddDebug();
 #endif
+        builder.Services.AddSingleton<Fetcher>();
         return builder.Build();
+    }
+
+    public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
+
+        return mauiAppBuilder;
+    }
+
+    public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<App>();
+        mauiAppBuilder.Services.AddSingleton<AppShell>();
+
+        return mauiAppBuilder;
     }
 }
