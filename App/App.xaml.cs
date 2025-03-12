@@ -300,7 +300,7 @@ public partial class App : Application
     public async Task<bool> ShowLogoutConfirmation(User user = null)
     {
         if (user == null)
-            user = SaveInfo;
+            user = DataFetcher.UserData;
 
         LogoutConfirmationPopUp popUp = new(user);
         OpenPopUp(popUp);
