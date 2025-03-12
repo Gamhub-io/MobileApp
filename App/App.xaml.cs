@@ -7,7 +7,6 @@ using GamHubApp.Views.PopUps;
 using Newtonsoft.Json;
 using SQLite;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 
 #if DEBUG
@@ -20,6 +19,7 @@ namespace GamHubApp;
 public partial class App : Application
 {
     public bool IsLoading { get; private set; }
+    private AppShell Shell { get; set; }
 
     public static Collection<Source> Sources { get; private set; }
     public Popup LoadingIndicator { get; private set; }
@@ -44,14 +44,15 @@ public partial class App : Application
         news,
         source
     }
-    public App()
+    public App(Fetcher fetc, AppShell shell)
     {
 
 #if DEBUG
             // Run the debug setup
             EnvironementSetup.DebugSetup();
 #endif
-       DataFetcher = new Fetcher();
+       DataFetcher = fetc;
+       Shell = shell;
 
        Sources = new Collection<Source>();
 
@@ -59,9 +60,6 @@ public partial class App : Application
 
        // Start the db
        StartDb();
-
-        // Restore session
-        DataFetcher.RestoreSession().GetAwaiter();
     }
     /// <summary>
     /// Show the popup loading indicator
@@ -165,7 +163,7 @@ public partial class App : Application
             maincon.CreateTable<Source>();
             maincon.CreateTable<Article>();
         };
-        return new Window(new AppShell());
+        return new Window(Shell);
     }
     protected override void OnSleep()
      {
@@ -281,6 +279,7 @@ public partial class App : Application
         // Set Userdata object
         return (SaveInfo = DataFetcher.UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
     }
+
     /// <summary>
     /// Log out the current active user
     /// </summary>
@@ -292,6 +291,7 @@ public partial class App : Application
         // Close the current session
         DataFetcher.KillSession();
     }
+
     /// <summary>
     /// Show a pop up to confirm wether or not the user wants to logout
     /// </summary>

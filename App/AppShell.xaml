@@ -4,18 +4,20 @@
        xmlns:views="clr-namespace:GamHubApp.Views"
        x:Class="GamHubApp.AppShell"
        xmlns:control="clr-namespace:GamHubApp.Controls"
-       Shell.TabBarBackgroundColor="{StaticResource LightDark}"
-       Shell.TabBarUnselectedColor="{StaticResource Light}"
-       Shell.TabBarTitleColor="{StaticResource Primary}"
-       Shell.BackgroundColor="{StaticResource LightDark}"
-       FlyoutBackgroundColor="{StaticResource LightDark}"
-       Shell.ForegroundColor="{StaticResource Light}"
+       Shell.TabBarBackgroundColor="{DynamicResource LightDark}"
+       Shell.TabBarUnselectedColor="{DynamicResource Light}"
+       Shell.TabBarTitleColor="{DynamicResource Primary}"
+       Shell.BackgroundColor="{DynamicResource LightDark}"
+       FlyoutBackgroundColor="{DynamicResource LightDark}"
+       Shell.ForegroundColor="{DynamicResource Light}"
        FlyoutWidth="270"
        xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
        xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
-       x:DataType="viewmodels:AppShellViewModel">
+       x:DataType="viewmodels:AppShellViewModel"
+       xmlns:helpers="clr-namespace:GamHubApp.Helpers">
     <!-- Template for the shell content-->
     <Shell.Resources>
+        <helpers:BoolInverseConverter x:Key="BoolInverseConverter"/>
         <Style TargetType="Label"
                x:Key="MenuIcon">
             <Setter Property="FontFamily" Value="FaSolid" />
@@ -24,7 +26,7 @@
             <Setter Property="HorizontalTextAlignment" Value="Center" />
             <Setter Property="HorizontalOptions" Value="Center" />
             <Setter Property="FontSize" Value="23" />
-            <Setter Property="TextColor" Value="{StaticResource Primary}" />
+            <Setter Property="TextColor" Value="{DynamicResource Primary}" />
             <Setter Property="Grid.Column" Value="0" />
         </Style>
         <Style TargetType="Label"
@@ -33,7 +35,7 @@
             <Setter Property="FontSize" Value="18" />
             <Setter Property="VerticalOptions" Value="Center" />
             <Setter Property="HorizontalTextAlignment" Value="Start" />
-            <Setter Property="TextColor" Value="{StaticResource FontColor}" />
+            <Setter Property="TextColor" Value="{DynamicResource FontColor}" />
             <Setter Property="Grid.Column" Value="1" />
         </Style>
     </Shell.Resources>
@@ -63,14 +65,14 @@
                             Text="{Binding Icon}" 
                             FontFamily="FaSolid" 
                             FontSize="23"
-                            TextColor="{StaticResource Light}"/>
+                            TextColor="{DynamicResource Light}"/>
                     <!-- Title -->
                     <Label Grid.Column="1" 
                            Text="{Binding Title}" 
                            FontSize="18" 
                            VerticalOptions="Center"
                            VerticalTextAlignment="Center"
-                           TextColor="{StaticResource FontColor}" 
+                           TextColor="{DynamicResource FontColor}" 
                            FontFamily="P-Regular"
                            HorizontalOptions="Start"  />
                 </Grid>
@@ -106,12 +108,12 @@
                         Text="{Binding Icon}" 
                         FontFamily="FaSolid" 
                         FontSize="23"
-                        TextColor="{StaticResource Primary}"/>
+                        TextColor="{DynamicResource Primary}"/>
                 <!-- Title -->
                 <Label Grid.Column="1" 
                        Text="{Binding Title}" 
                        FontSize="20" 
-                       TextColor="{StaticResource FontColor}" 
+                       TextColor="{DynamicResource FontColor}" 
                        FontFamily="P-SemiBold"
                        HorizontalOptions="Start"  />
             </Grid>
@@ -119,18 +121,19 @@
     </Shell.MenuItemTemplate>
     <Shell.FlyoutHeader >
         <Grid >
-            <Grid BackgroundColor="{StaticResource Alternate}"
+            <Grid BackgroundColor="{DynamicResource Alternate}"
                   HeightRequest="80"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
                   x:Name="Header">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenAuth}"
+                                          Tapped="Auth_Tapped"
                                           NumberOfTapsRequired="2"/>
                     <!-- Cannot set more than 2 taps https://github.com/dotnet/maui/issues/6407 -->
                 </Grid.GestureRecognizers>
                 <Image Source="ares.png"/>
             </Grid>
-            <Grid BackgroundColor="{StaticResource BgBannerColor}"
+            <Grid BackgroundColor="{DynamicResource BgBannerColor}"
                   IsVisible="{Binding Authenticated}"
                   ColumnDefinitions="50,*">
                 <Image Source="{Binding UserProfile.Avatar}"
@@ -138,7 +141,7 @@
                 <Label Grid.Column="1" 
                        Text="{Binding UserProfile.PublicName}" 
                        FontSize="20"
-                       TextColor="{StaticResource FontColor}" 
+                       TextColor="{DynamicResource FontColor}" 
                        FontFamily="P-SemiBold"
                        HorizontalOptions="Start"  />
             </Grid>
@@ -211,11 +214,11 @@
 
                 <!-- Button to contact support -->
                 <Label Text="&#xf590;"
-                       Style="{StaticResource MenuIcon}"/>
+                       Style="{DynamicResource MenuIcon}"/>
 
                 <!-- label -->
                 <Label Text="Contact support"
-                       Style="{StaticResource MenuLabel}"/>
+                       Style="{DynamicResource MenuLabel}"/>
             </Grid>
 
             <!-- Logout -->
@@ -233,10 +236,10 @@
                 <!--Button to log out-->
                 <Label 
                     Text="&#xf2f5;"
-                    Style="{StaticResource MenuIcon}"/>
+                    Style="{DynamicResource MenuIcon}"/>
                 <!--label-->
                 <Label Text="Log out"
-                       Style="{StaticResource MenuLabel}"
+                       Style="{DynamicResource MenuLabel}"
                    />
             </Grid>
             
@@ -245,7 +248,7 @@
                    Grid.Row="2"
                    Margin="0,10,0,0"
                    FontFamily="P-regular"
-                   TextColor="{StaticResource FontColor}"
+                   TextColor="{DynamicResource FontColor}"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"/>
         </Grid>

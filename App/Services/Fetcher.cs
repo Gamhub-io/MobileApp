@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 #if DEBUG
 using System.Diagnostics;
 #endif
+
 namespace GamHubApp.Services;
 
 public class Fetcher
@@ -258,6 +259,7 @@ public class Fetcher
         Preferences.Set(nameof(Session.ExpiresIn), newSession.ExpiresIn);
         Preferences.Set(nameof(Session.Created), newSession.Created);
     }
+
     /// <summary>
     /// Restore the last session if any
     /// </summary>
@@ -280,13 +282,9 @@ public class Fetcher
 
             return;
         }
-        if (!(App.Current as App).RecoverUserInfo())
-        {
-            // Kill the previous session
-            KillSession();
-            return;
 
-        }
+        if (!EvaluateCurrentSession()) return;
+
         // Save sensitive data
         var accessTask = SecureStorage.GetAsync(nameof(Session.AccessToken));
         var tokenTypeTask = SecureStorage.GetAsync(nameof(Session.TokenType));
@@ -304,6 +302,23 @@ public class Fetcher
 
 
     }
+
+    /// <summary>
+    /// Evaluate the validity and state of the current session
+    /// </summary>
+    /// <returns>true -> session alive; false -> dead session</returns>
+    private bool EvaluateCurrentSession()
+    {
+        if (!RecoverUserInfo())
+        {
+            // Kill the previous session
+            KillSession();
+            return false;
+
+        }
+        return true;
+    }
+
     /// <summary>
     /// Adding a hook to an article
     /// </summary>
@@ -337,6 +352,34 @@ public class Fetcher
         SecureStorage.Remove(nameof(Session.TokenType));
 
 
+    }
+
+    /// <summary>
+    /// Recover the info relevant to the user
+    /// </summary>
+    /// <returns>true: data found | false: data not found</returns>
+    public bool RecoverUserInfo()
+    {
+
+        // Get preferences
+        string userDataStr = Preferences.Get(nameof(UserData), string.Empty);
+
+        if (string.IsNullOrEmpty(userDataStr))
+            return false;
+
+        // Set Userdata object
+        return (UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
+    }
+
+    /// <summary>
+    /// Save the info relevant to the user
+    /// </summary>
+    public void SaveUserInfo(User user)
+    {
+        UserData = user;
+
+        // Save preferences
+        Preferences.Set(nameof(UserData), JsonConvert.SerializeObject(UserData));
     }
 
     /// <summary>
