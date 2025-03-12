@@ -227,7 +227,7 @@
                   HeightRequest="50"
                   VerticalOptions="End">
                 <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Logout}"/>
+                    <TapGestureRecognizer Tapped="Logout_Tapped"/>
                 </Grid.GestureRecognizers>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60"/>

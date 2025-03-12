@@ -15,26 +15,6 @@ public class AppShellViewModel : BaseViewModel
         }
     }
 
-    public Command Logout
-    {
-        get
-        {
-            return new Command(async () => 
-            {
-
-                if (await CurrentApp.ShowLogoutConfirmation())
-                {
-                    // Remove the authenticated flag
-                    Authenticated = false;
-                    // Logout the user
-                    CurrentApp.LogoutCurrentAccount();
-
-                }
-            });
-        }
-    }
-
-
     public App CurrentApp { get; private set; }
 
     private Fetcher dataFetcher;

@@ -43,4 +43,16 @@ public partial class AppShell : Shell
         // Open the login pop up
         _currentApp.OpenPopUp(new AuthPopUp((res) =>_vm.PostAuthProcess(res)), this);
     }
+
+    private async void Logout_Tapped(object sender, TappedEventArgs e)
+    {
+        if (await _currentApp.ShowLogoutConfirmation())
+        {
+            // Remove the authenticated flag
+            _vm.Authenticated = false;
+            // Logout the user
+            _currentApp.LogoutCurrentAccount();
+
+        }
+    }
 }
