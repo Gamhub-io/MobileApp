@@ -5,11 +5,11 @@ namespace GamHubApp.Views;
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class AboutPage : ContentPage
 {
-    public AboutPage()
+    public AboutPage(AboutViewModel vm)
     {
         InitializeComponent();
 
-        BindingContext = new AboutViewModel();
+        BindingContext = vm;
 
     }
 }
