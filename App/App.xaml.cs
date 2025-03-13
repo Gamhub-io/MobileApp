@@ -231,7 +231,7 @@ public partial class App : Application
     private Page GetCurrentPage ()
     {
         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-        return mainPage.CurrentPage;
+        return mainPage;
     }
 
     /// <summary>

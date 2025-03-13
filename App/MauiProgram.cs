@@ -71,6 +71,7 @@ public static class MauiProgram
     {
         mauiAppBuilder.Services.AddSingleton<AboutViewModel>();
         mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
+        mauiAppBuilder.Services.AddSingleton<BookmarkViewModel>();
         mauiAppBuilder.Services.AddSingleton<FeedsViewModel>();
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
 
