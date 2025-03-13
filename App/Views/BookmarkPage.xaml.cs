@@ -2,12 +2,12 @@
 
 namespace GamHubApp.Views;
 
-    public partial class BookmarkPage : ContentPage
+public partial class BookmarkPage : ContentPage
+{
+    public BookmarkPage()
     {
-        public BookmarkPage()
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            BindingContext = new BookmarkViewModel();
-        }
+        BindingContext = new BookmarkViewModel();
     }
+}

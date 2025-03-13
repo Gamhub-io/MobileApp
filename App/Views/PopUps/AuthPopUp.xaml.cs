@@ -3,33 +3,32 @@ using CommunityToolkit.Maui.Views;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Views.Portals;
 
-namespace GamHubApp.Views
+namespace GamHubApp.Views;
+
+[XamlCompilation(XamlCompilationOptions.Compile)]
+public partial class AuthPopUp : Popup
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class AuthPopUp : Popup
-    {
-        public Action<AuthResponse> CallBack { get; private set; }
-        public AuthPopUp(Action<AuthResponse> callBack)
+    public Action<AuthResponse> CallBack { get; private set; }
+    public AuthPopUp(Action<AuthResponse> callBack)
 		{
-            CurrentApp = (App)App.Current;
+        CurrentApp = (App)App.Current;
 
-            InitializeComponent ();
+        InitializeComponent ();
 
-            CallBack = callBack;
-        }
+        CallBack = callBack;
+    }
 
-        public App CurrentApp { get; private set; }
-        private async void Discord_Clicked(object sender, System.EventArgs e)
-        {
-            CurrentApp.ShowLoadingIndicator();
-            DiscordAuthPortal discordAuthPortal = new(CallBack);
+    public App CurrentApp { get; private set; }
+    private async void Discord_Clicked(object sender, System.EventArgs e)
+    {
+        CurrentApp.ShowLoadingIndicator();
+        DiscordAuthPortal discordAuthPortal = new(CallBack);
 
 
-            await App.Current.Windows[0].Page.Navigation.PushAsync(discordAuthPortal);
+        await App.Current.Windows[0].Page.Navigation.PushAsync(discordAuthPortal);
 
-            // Close this popup
-            //CurrentApp.ClosePopUp(this);
-            this.Close();
-        }
+        // Close this popup
+        //CurrentApp.ClosePopUp(this);
+        this.Close();
     }
 }
