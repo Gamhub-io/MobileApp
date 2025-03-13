@@ -1,5 +1,8 @@
 ﻿using GamHubApp.ViewModels;
 using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services;
+using GamHubApp.Services.ChangedMessages;
 
 namespace GamHubApp.Views;
 
@@ -10,14 +13,27 @@ public partial class NewsPage : ContentPage
     private const int rButtonYStart = -10;
     private const int _searchbarEndingWidth = 270;
     private double refreshButtonYPos;
-    public NewsPage()
+    public NewsPage(NewsViewModel vm)
     {
         InitializeComponent();
 
-        BindingContext = _vm = new NewsViewModel(this);
+        BindingContext = _vm = vm;
 
         refreshButtonYPos = refreshButton.Y;
         refreshButton.TranslationY = rButtonYStart;
+
+        WeakReferenceMessenger.Default.Register<UnnoticedArticlesChangedMessage>(this, (r, m) =>
+        {
+            if (m.Count > 0)
+                ShowRefreshButton();
+            else
+                RemoveRefreshButton();
+        });
+
+        WeakReferenceMessenger.Default.Register<ScrollMainPageChangedMessage>(this, (r, m) =>
+        {
+            ScrollFeed();
+        });
 
     }
     protected override void OnAppearing()

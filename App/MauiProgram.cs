@@ -2,6 +2,8 @@
 using Vapolia.StrokedLabels;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
+using GamHubApp.Views;
+
 #if ANDROID
 using GamHubApp.Platforms.Android.Renderers;
 #endif
@@ -68,6 +70,7 @@ public static class MauiProgram
     public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
     {
         mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
+        mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
 
         return mauiAppBuilder;
     }
@@ -77,6 +80,8 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<App>();
         mauiAppBuilder.Services.AddSingleton<AppShell>();
 
+        // pages
+        mauiAppBuilder.Services.AddSingleton<NewsPage>();
         return mauiAppBuilder;
     }
 }
