@@ -5,6 +5,12 @@ using System.Collections.ObjectModel;
 using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
 using SQLite;
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services;
+using GamHubApp.Services.ChangedMessages;
+
+
+
 #if DEBUG
 using System.Diagnostics;
 using Newtonsoft.Json;
@@ -15,6 +21,11 @@ namespace GamHubApp.ViewModels;
 public class FeedsViewModel : BaseViewModel
 {
     private bool _dataLoaded = false;
+    public bool DataLoaded 
+    { 
+        get { return _dataLoaded; }
+        set { _dataLoaded = value; }
+    }
     public List<UpdateOrder> UpdateOrders { get; private set; }
     private ObservableCollection<Feed> _feeds = new();
 
@@ -155,17 +166,16 @@ public class FeedsViewModel : BaseViewModel
     public App CurrentApp { get; }
 
     public Command UncoverNewArticles { get; private set; }
-    private FeedsPage CurrentPage { get; set; }
 
     public Command<Feed> Delete => new Command<Feed>( (feed) =>
     {
-        CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this), CurrentPage);
+        CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this));
 
     });
 
     public Command<Feed> Rename => new Command<Feed>( (feed) =>
     {
-        CurrentApp.OpenPopUp (new RenameFeedPopUp(_selectedFeed, this), CurrentPage);
+        CurrentApp.OpenPopUp (new RenameFeedPopUp(_selectedFeed, this));
 
     });
 
@@ -173,7 +183,7 @@ public class FeedsViewModel : BaseViewModel
     {
         IsFromDetail = true;
         CurrentFocusIndex = _feeds.IndexOf(_selectedFeed);
-        await CurrentPage.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this));
+        await CurrentApp.Windows[0].Page.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this));
 
     });
 
@@ -219,11 +229,10 @@ public class FeedsViewModel : BaseViewModel
         _dataLoaded = true;
     });
 
-	public FeedsViewModel(FeedsPage page)
+	public FeedsViewModel()
     {
         // CurrentApp and CurrentPage will allow use to access to global properties
         CurrentApp = App.Current as App;
-        CurrentPage = page;
 
         // Instantiate definitions 
         FeedTabs = new ObservableRangeCollection<TabButton>();
@@ -251,7 +260,7 @@ public class FeedsViewModel : BaseViewModel
             _ = Task.Run(() =>
             {
                 // Scroll up
-                CurrentPage.ScrollFeed();
+                WeakReferenceMessenger.Default.Send(new ScrollFeedPageChangedMessage(this));
 
                 // Add the unnoticed articles
                 UpdateArticles([.. UnnoticedArticles], SelectedFeed, indexFeed);
@@ -283,10 +292,10 @@ public class FeedsViewModel : BaseViewModel
         set
         {
             _unnoticedArticles = value;
-            if (_unnoticedArticles?.Count > 0)
-                CurrentPage.ShowRefreshButton();
-            else
-                CurrentPage.RemoveRefreshButton();
+            WeakReferenceMessenger.Default.Send(new UnnoticedFeedArticlesChangedMessage(_unnoticedArticles)
+            {
+                Id = SelectedFeed.Id,
+            });
 
             OnPropertyChanged(nameof(UnnoticedArticles));
         }
@@ -331,7 +340,7 @@ public class FeedsViewModel : BaseViewModel
             return;
 
         IsBusy = true;
-        CurrentApp.ShowLoadingIndicator(CurrentPage);
+        CurrentApp.ShowLoadingIndicator();
 
         // Determine whether or not it's the first time loading the article of this feed
         bool isFirstLoad = _articles == null || _articles.Count <= 0;
@@ -608,7 +617,6 @@ public class FeedsViewModel : BaseViewModel
             return;
         };
 
-        CurrentPage.CloseDropdownMenu();
         try
         {
             IsBusy = true;
