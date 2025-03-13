@@ -164,11 +164,11 @@ public class NewsViewModel : BaseViewModel
             {
                 IsSearching = false;
 
-                    if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
+                if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
 
 
-                    // Scroll up before fetching the items
-                    CurrentPage.ScrollFeed();
+                // Scroll up before fetching the items
+                WeakReferenceMessenger.Default.Send(this);
 
                 await Task.Run(() =>
                 {
@@ -212,10 +212,7 @@ public class NewsViewModel : BaseViewModel
         set
         {
             _unnoticedArticles = value;
-            if (_unnoticedArticles?.Count >0)
-                CurrentPage.ShowRefreshButton();
-            else
-                CurrentPage.RemoveRefreshButton();
+            WeakReferenceMessenger.Default.Send(new UnnoticedArticlesChangedMessage(_unnoticedArticles));
 
             OnPropertyChanged(nameof(UnnoticedArticles));
         }
@@ -234,7 +231,7 @@ public class NewsViewModel : BaseViewModel
 
 
     public App CurrentApp { get; }
-    private NewsPage CurrentPage { get; set; }
+
     // Command to refresh the news feed
     private readonly Command _refreshFeed;
 
@@ -288,10 +285,9 @@ public class NewsViewModel : BaseViewModel
     public bool IsSearchLoading { get; private set; }
     public bool IsLoadingChunks { get; private set; }
 
-    public NewsViewModel(NewsPage currentPage)
+    public NewsViewModel()
     {
         CurrentApp = App.Current as App;
-        CurrentPage = currentPage;
         using (var conn = new SQLiteConnection(App.GeneralDBpath))
         {
             Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
@@ -319,7 +315,7 @@ public class NewsViewModel : BaseViewModel
             _ = Task.Run( () =>
             {
                 // Scroll up
-                CurrentPage.ScrollFeed();
+                WeakReferenceMessenger.Default.Send(this);
 
                 // Add the unnoticed articles
                 UpdateArticles(UnnoticedArticles);
@@ -662,10 +658,11 @@ public class NewsViewModel : BaseViewModel
      /// </summary>
     public void Resume()
     {
+
         if (IsFirstLoad)
         {
 
-            CurrentApp.ShowLoadingIndicator(CurrentPage);
+            CurrentApp.ShowLoadingIndicator();
             _ = FetchExistingArticles().ContinueWith(res =>
             {
                 CurrentApp.RemoveLoadingIndicator();
