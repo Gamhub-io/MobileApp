@@ -71,6 +71,7 @@ public static class MauiProgram
     {
         mauiAppBuilder.Services.AddSingleton<AboutViewModel>();
         mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
+        mauiAppBuilder.Services.AddSingleton<FeedsViewModel>();
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
 
         return mauiAppBuilder;
@@ -83,6 +84,7 @@ public static class MauiProgram
 
         // pages
         mauiAppBuilder.Services.AddSingleton<AboutPage>();
+        mauiAppBuilder.Services.AddSingleton<FeedsPage>();
         return mauiAppBuilder;
     }
 }
