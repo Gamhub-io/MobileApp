@@ -359,10 +359,9 @@ public class FeedsViewModel : BaseViewModel
             {
                 // End the loading indicator
                 IsRefreshing = false;
-                IsBusy = false;
             } }
             
-        );
+        ).ContinueWith ((tr) => IsBusy = false);
         
     }
 
@@ -651,6 +650,7 @@ public class FeedsViewModel : BaseViewModel
     {
         if (!_dataLoaded) return;
         if (_feeds == null) return;
+        IsBusy = true;
 
         Collection<Feed> updatedFeeds;
         using (var conn = new SQLiteConnection(App.GeneralDBpath))
@@ -661,7 +661,10 @@ public class FeedsViewModel : BaseViewModel
         }
 
         if (updatedFeeds is null)
+        {
+            IsBusy = false;
             return;
+        }
 
         List<Feed> newFeeds = updatedFeeds.Where(feed => !_feeds.Any(item => item.Id == feed.Id)).ToList();
         List<Feed> removedFeeds = _feeds.Where(feed => !updatedFeeds.Any(item => item.Id == feed.Id)).ToList();
@@ -676,6 +679,7 @@ public class FeedsViewModel : BaseViewModel
         {
             _ =RemoveFeed(feed);
         }
+        IsBusy = false;
     }
 
     /// <summary>
