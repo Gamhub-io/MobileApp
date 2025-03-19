@@ -38,7 +38,7 @@ internal class BackPress : OnBackPressedCallback
         }
     }
 
-    internal static IEnumerable<TDelegate> GetLifecycleEventDelegates<TDelegate>(IServiceProvider? services, string? eventName = null)
+    internal static IEnumerable<TDelegate> GetLifecycleEventDelegates<TDelegate>(IServiceProvider services, string eventName = null)
         where TDelegate : Delegate
     {
         var lifecycleService = services?.GetService<ILifecycleEventService>();
