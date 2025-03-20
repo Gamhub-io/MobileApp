@@ -64,6 +64,7 @@ public static class MauiProgram
         //builder.Logging.AddDebug();
 #endif
         builder.Services.AddSingleton<Fetcher>();
+        builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
         return builder.Build();
     }
 
