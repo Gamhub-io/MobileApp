@@ -166,6 +166,9 @@ public partial class App : Application
 
         }
         ;
+#if !DEBUG
+        SentrySdk.AddBreadcrumb($"Created SQLite tables: {GeneralDBpath}");
+#endif
         using (var backupcon = new SQLiteConnection(PathDBBackUp))
         {
             backupcon.CreateTable<Source>();
@@ -173,6 +176,9 @@ public partial class App : Application
             backupcon.Close();
         }
         ;
+#if !DEBUG
+        SentrySdk.AddBreadcrumb($"Created SQLite tables: {PathDBBackUp}");
+#endif
         return new Window(Shell);
     }
     protected override void OnSleep()
