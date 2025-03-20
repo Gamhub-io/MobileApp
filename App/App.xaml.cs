@@ -125,14 +125,20 @@ public partial class App : Application
 
             foreach (var source in Sources)
             {
-                using var mainConn = new SQLiteConnection(GeneralDBpath);
+                using (var mainConn = new SQLiteConnection(GeneralDBpath))
+                {
                 mainConn.InsertOrReplace(source);
 
                 mainConn.Close();
-                using var backupConn = new SQLiteConnection(PathDBBackUp);
+
+                }
+                using (var backupConn = new SQLiteConnection(PathDBBackUp))
+                {
                 backupConn.InsertOrReplace(source);
 
                 backupConn.Close();
+
+                }
             }
         });
 
