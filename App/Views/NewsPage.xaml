@@ -88,7 +88,7 @@
 
                         <controls:BorderlessEntry Grid.Column="1"
                                                   BackgroundColor="Transparent"
-                                                  FontFamily="B-SemiBold"
+                                                  FontFamily="P-SemiBold"
                                                   Text="{Binding SearchText, Source={RelativeSource AncestorType={x:Type vm:NewsViewModel}}, Mode=TwoWay}"
                                                   PlaceholderColor="{StaticResource FontColor}"
                                                   TextColor="{StaticResource FontColor}"

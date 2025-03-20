@@ -67,7 +67,7 @@
     <Style x:Key="EntryStyle"
            TargetType="controls:BorderlessEntry">
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="FontFamily" Value="B-SemiBold" />
+        <Setter Property="FontFamily" Value="P-SemiBold" />
         <Setter Property="PlaceholderColor" Value="{StaticResource FontColor}" />
         <Setter Property="TextColor" Value="{StaticResource FontColor}" />
         <Setter Property="ReturnType" Value="Done" />
