@@ -162,13 +162,17 @@ public partial class App : Application
             maincon.CreateTable<Source>();
             maincon.CreateTable<Article>();
             maincon.CreateTable<Feed>();
+            maincon.Close();
 
-        };
-        using (var maincon = new SQLiteConnection(PathDBBackUp))
+        }
+        ;
+        using (var backupcon = new SQLiteConnection(PathDBBackUp))
         {
-            maincon.CreateTable<Source>();
-            maincon.CreateTable<Article>();
-        };
+            backupcon.CreateTable<Source>();
+            backupcon.CreateTable<Article>();
+            backupcon.Close();
+        }
+        ;
         return new Window(Shell);
     }
     protected override void OnSleep()
