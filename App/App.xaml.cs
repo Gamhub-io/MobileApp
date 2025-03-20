@@ -190,8 +190,6 @@ public partial class App : Application
 
              ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
          }
-
-         StartDb();
      }
      /// <summary>
      /// Open any popup
