@@ -4,7 +4,7 @@ using SQLite;
 
 namespace GamHubApp.Services;
 
-public sealed class GaneralDataBase
+public sealed class GeneralDataBase
 {
     SQLiteAsyncConnection database;
     public List<Source> Sources { get; private set; }
