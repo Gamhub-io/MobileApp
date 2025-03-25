@@ -116,7 +116,7 @@ public class NewsViewModel : BaseViewModel
     {
         get
         {
-            return new Command(() =>
+            return new Command(async () =>
             {
                 if (string.IsNullOrEmpty(SearchText))
                     return;
@@ -129,13 +129,10 @@ public class NewsViewModel : BaseViewModel
                 {
                     CurrentFeed.Id = Guid.NewGuid().ToString();
                     CurrentFeed.Title = SearchText;
-                    CurrentFeed.Keywords = SearchText;
+                    CurrentFeed.Keywords = SearchText; 
                     CurrentFeed.IsSaved = true;
-                    using (var conn = new SQLiteConnection(App.GeneralDBpath))
-                    {
-                        conn.InsertWithChildren(_currentFeed);
-                        conn.Close();
-                    }
+
+                    await _generalDB.InsertFeed(_currentFeed);
                     Feeds.Add(_currentFeed);
 
                     // Update the feeds remotely
@@ -146,11 +143,7 @@ public class NewsViewModel : BaseViewModel
                 if (feedTarget?.Keywords == null)
                     feedTarget = Feeds.FirstOrDefault(f => f.Keywords.ToLower() == SearchText.ToLower());
 
-                using (var conn = new SQLiteConnection(App.GeneralDBpath))
-                {
-                    conn.Delete(feedTarget);
-                    conn.Close();
-                }
+                await _generalDB.DeleteFeed(feedTarget);
 
                 Feeds.Remove(feedTarget);
             });
@@ -232,6 +225,8 @@ public class NewsViewModel : BaseViewModel
 
     public App CurrentApp { get; }
 
+    private GeneralDataBase _generalDB;
+
     // Command to refresh the news feed
     private readonly Command _refreshFeed;
 
@@ -285,14 +280,16 @@ public class NewsViewModel : BaseViewModel
     public bool IsSearchLoading { get; private set; }
     public bool IsLoadingChunks { get; private set; }
 
-    public NewsViewModel()
+    public NewsViewModel(GeneralDataBase generalDataBase)
     {
         CurrentApp = App.Current as App;
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        _generalDB = generalDataBase;
+
+        Task.Run(async () =>
         {
-            Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+            Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
+        });
+
         UnnoticedArticles = new();
         Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
         
@@ -656,7 +653,7 @@ public class NewsViewModel : BaseViewModel
     /// <summary>
      /// Processed launched when the page reappear
      /// </summary>
-    public void Resume()
+    public async Task Resume()
     {
 
         if (IsFirstLoad)
@@ -667,18 +664,11 @@ public class NewsViewModel : BaseViewModel
             {
                 CurrentApp.RemoveLoadingIndicator();
                 IsFirstLoad = false;
-
             });
 
 
         }
-        ObservableCollection<Feed> curFeeds;
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
-        {
-            // Get all the feeds registered
-            curFeeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+        ObservableCollection<Feed> curFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
 
         // We try to figure out if the two feed lists contains the same items
         if (!FeedToolkit.CampareItems(Feeds, curFeeds))

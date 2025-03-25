@@ -1,13 +1,10 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Views;
-using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
 using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
-using SQLite;
 using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Services;
-using GamHubApp.Services.ChangedMessages;
 
 
 
@@ -165,6 +162,8 @@ public class FeedsViewModel : BaseViewModel
 
     public App CurrentApp { get; }
 
+    private GeneralDataBase _generalDB;
+
     public Command UncoverNewArticles { get; private set; }
 
     public Command<Feed> Delete => new Command<Feed>( (feed) =>
@@ -229,18 +228,19 @@ public class FeedsViewModel : BaseViewModel
         _dataLoaded = true;
     });
 
-	public FeedsViewModel()
+	public FeedsViewModel(GeneralDataBase generalDataBase)
     {
         // CurrentApp and CurrentPage will allow use to access to global properties
         CurrentApp = App.Current as App;
 
+        _generalDB = generalDataBase;
+
         // Instantiate definitions 
         FeedTabs = new ObservableRangeCollection<TabButton>();
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        Task.Run(async () =>
         {
-            Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+            Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
+        });
         _articles = new ObservableRangeCollection<Article>();
 
         // Organise feeds into tabs
@@ -598,15 +598,12 @@ public class FeedsViewModel : BaseViewModel
     /// <summary>
     /// Processed launched when the page reappear
     /// </summary>
-    public void Resume()
+    public async Task Resume()
     {
         if (!_dataLoaded)
         {
-            using (var conn = new SQLiteConnection(App.GeneralDBpath))
-            {
-                Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-                conn.Close();
-            }
+            Feeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
+
             // Refresh the first feed
             RefreshFirstFeed();
 
@@ -645,19 +642,16 @@ public class FeedsViewModel : BaseViewModel
     /// <summary>
     /// Update the feeds list
     /// </summary>
-    private void UpdateFeeds()
+    private async Task UpdateFeeds()
     {
         if (!_dataLoaded) return;
         if (_feeds == null) return;
         IsBusy = true;
 
         Collection<Feed> updatedFeeds;
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
-        {
-            // Get the updated list of feed
-            updatedFeeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+
+        // Get the updated list of feed
+        updatedFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
 
         if (updatedFeeds is null)
         {

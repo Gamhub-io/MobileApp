@@ -29,7 +29,6 @@ public sealed class GeneralDataBase
     /// <returns>the article</returns>
     public async Task<Article> GetArticleById(string id)
     {
-        await Init();
         return await database.Table<Article>().FirstOrDefaultAsync(a => a.Id == id);
     }
 
@@ -40,7 +39,6 @@ public sealed class GeneralDataBase
     /// <returns>the source</returns>
     public async Task<Source> GetSourceById(string id)
     {
-        await Init();
         return await database.Table<Source>().FirstOrDefaultAsync(a => a.MongoId == id);
     }
 
@@ -51,7 +49,6 @@ public sealed class GeneralDataBase
     /// <returns>update status</returns>
     public async Task<int> InsertArticleBookmark(Article article)
     {
-        await Init();
         return await database.InsertOrReplaceAsync(article);
     }
 
@@ -62,7 +59,6 @@ public sealed class GeneralDataBase
     /// <returns>update status</returns>
     public async Task<int> DeleteArticleBookmark(Article article)
     {
-        await Init();
         return await database.DeleteAsync(article);
     }
 
@@ -72,8 +68,6 @@ public sealed class GeneralDataBase
     /// <returns>Bookmarked articles</returns>
     public async Task<List<Article>> GetBookmarkedArticles()
     {
-        await Init();
-        List<Article> articles = new();
 
         return (await database.Table<Article>().ToListAsync()).Reverse<Article>().ToList();
     }
@@ -85,7 +79,6 @@ public sealed class GeneralDataBase
     /// <returns>Update status</returns>
     public async Task<int> UpdateFeed(Feed feed)
     {
-        await Init();
         return await database.UpdateAsync(feed);
     }
 
@@ -93,10 +86,9 @@ public sealed class GeneralDataBase
     /// Get all feeds
     /// </summary>
     /// <returns>all feeds</returns>
-    public async Task<List<Feed>> GetFeeds(Feed feed)
+    public async Task<List<Feed>> GetFeeds()
     {
-        await Init();
-        return await database.Table<Feed>().ToListAsync();
+        return await database.Table<Feed>().ToListAsync() ?? new List<Feed>();
     }
 
     /// <summary>
@@ -104,10 +96,19 @@ public sealed class GeneralDataBase
     /// </summary>
     /// <param name="feed">Feed we want to insert</param>
     /// <returns>all feeds</returns>
-    public async Task<int> InsertFeeds(Feed feed)
+    public async Task<int> InsertFeed(Feed feed)
     {
-        await Init();
         return await database.InsertAsync(feed);
+    }
+
+    /// <summary>
+    /// Delete a feed
+    /// </summary>
+    /// <param name="feed">Feed we want to delete</param>
+    /// <returns>Update status</returns>
+    public async Task<int> DeleteFeed(Feed feed)
+    {
+        return await database.DeleteAsync(feed);
     }
 
 

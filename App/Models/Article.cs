@@ -2,14 +2,21 @@
 using GamHubApp.Services;
 using Newtonsoft.Json;
 using SQLite;
-using SQLiteNetExtensions.Attributes;
-using SQLiteNetExtensions.Extensions;
 using System.Reflection;
 
 namespace GamHubApp.Models;
 
 public class Article
 {
+    public Article() 
+    {
+        Task.Run(async () =>
+        {
+            await Init();
+        });
+
+    }
+
     [PrimaryKey, Column("_id"), JsonProperty("uuid")]
     public string Id { get; set; }
     [Column("mongoId"), JsonProperty("_id")]
@@ -24,18 +31,12 @@ public class Article
     [JsonProperty("author")]
     public string Author { get; set; }
     [JsonProperty("image")]
-    public string Image { get; set; }
-    [ForeignKey(typeof(Source))]
-    public int SourceIdFk { get; set; }
-    [JsonProperty("sourceId")]
+    public string Image { get; set; }[JsonProperty("sourceId")]
     public string SourceId { get; set; }
     [JsonProperty("blocked")]
     public bool? Blocked { get; set; }
-    [JsonIgnore]
-    public Source Source { get
-            {
-            return App.Sources.FirstOrDefault(s => s.MongoId == SourceId);
-        } }
+    [JsonProperty("source"), Ignore]
+    public Source Source { get; set; }
     [JsonProperty("isoDate")]
     public DateTime FullPublishDate { get; set; }
     [JsonProperty("categories"), Ignore]
@@ -67,11 +68,7 @@ public class Article
     {
         get
         {
-            if (_isSaved == null)
-                using (var conn = new SQLiteConnection(App.GeneralDBpath))
-                    return conn.Find<Article>(Id) != null;
-
-            return (bool)_isSaved;
+            return (_isSaved ?? false);
         }
         set { _isSaved = value; }
     }
@@ -95,29 +92,40 @@ public class Article
             }
         return true;
     }
+
+    public async Task Init()
+    {
+        if (_isSaved == null)
+            IsSaved = await app.DataFetcher.ArticleExist(this.Id);
+        if (app.DataFetcher.Sources is null)
+            await app.DataFetcher.GetSources();
+
+        if (Source is null)
+        {
+            Source = app.DataFetcher.Sources.SingleOrDefault(s => s.MongoId == SourceId);
+
+        }
+
+    }
+    App app = (App.Current as App);
+
     [Ignore]
     public Command AddBookmark
     {
         get
         {
-            return new Command(() =>
+            return new Command(async() =>
             {
                 // If the article is already in bookmarks
                 bool isSaved = IsSaved;
 
-                //// Marked the article as saved
+                // Marked the article as saved
                 IsSaved = !IsSaved;
-
-                using (var conn =new SQLiteConnection(App.GeneralDBpath))
-                {
-                    if (isSaved)
-                        conn.Delete(this, recursive: true);
-                    else
-                        // Insert it in database
-                        conn.InsertWithChildren(this, recursive: true);
-
-                    conn.Close();
-                }
+                if (isSaved)
+                    await app.DataFetcher.DeleteArticle(this);
+                else
+                    // Insert it in database
+                    await app.DataFetcher.AddBookmark(this);
 
                 // Say the the bookmark has been updated
                 WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(this, IsSaved));

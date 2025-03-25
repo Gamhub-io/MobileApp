@@ -65,6 +65,8 @@ public static class MauiProgram
         //builder.Logging.AddDebug();
 #endif
         builder.Services.AddSingleton<Fetcher>();
+        builder.Services.AddSingleton<GeneralDataBase>();
+
         builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
         return builder.Build();
     }
@@ -88,6 +90,9 @@ public static class MauiProgram
         // pages
         mauiAppBuilder.Services.AddSingleton<AboutPage>();
         mauiAppBuilder.Services.AddSingleton<FeedsPage>();
+        mauiAppBuilder.Services.AddSingleton<BookmarkPage>();
+        mauiAppBuilder.Services.AddSingleton<DeleteFeedPopUp>();
+        mauiAppBuilder.Services.AddSingleton<RenameFeedPopUp>();
         return mauiAppBuilder;
     }
 }

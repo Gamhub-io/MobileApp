@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Models;
 using GamHubApp.Services;
-using SQLite;
-using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels;
@@ -11,6 +9,10 @@ public class BookmarkViewModel : BaseViewModel
 {
     // Property list of articles
     private ObservableCollection<Article> _bookmarks;
+
+    public App CurrentApp { get; }
+
+    private GeneralDataBase _generalDB;
 
     public ObservableCollection<Article> Bookmarks
     {
@@ -22,10 +24,13 @@ public class BookmarkViewModel : BaseViewModel
         }
     }
     
-    public BookmarkViewModel()
+    public BookmarkViewModel(GeneralDataBase generalDataBase)
     {
-
-        Bookmarks = new ObservableCollection<Article>(GetArticlesFromDb());
+        // CurrentApp and CurrentPage will allow use to access to global properties
+        CurrentApp = App.Current as App;
+        CurrentApp.ShowLoadingIndicator();
+        _generalDB = generalDataBase;
+        _ = LoadBookmarksFromDb();
 
         // Handle if a article change sees a change of bookmark state
         WeakReferenceMessenger.Default.Register(this, (MessageHandler<object, BookmarkChangedMessage>)((r, m) =>
@@ -39,19 +44,16 @@ public class BookmarkViewModel : BaseViewModel
             }
             Bookmarks.Remove(_bookmarks.SingleOrDefault(bm => bm.MongooseId == m.ArticleSent.MongooseId));
         }));
+        CurrentApp.RemoveLoadingIndicator();
+
     }
+
     /// <summary>
     /// Get all the articles bookmarked from the local database
     /// </summary>
     /// <returns></returns>
-    private static IEnumerable<Article> GetArticlesFromDb()
+    private async Task LoadBookmarksFromDb()
     {
-        IEnumerable<Article> articles;
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
-        {
-            articles = conn.GetAllWithChildren<Article>(recursive: true).Reverse<Article>();
-            conn.Close();
-        }
-        return articles;
+        Bookmarks = new ObservableCollection<Article>(await _generalDB.GetBookmarkedArticles());
     }
 }
