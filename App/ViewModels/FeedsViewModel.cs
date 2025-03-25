@@ -36,8 +36,9 @@ public class FeedsViewModel : BaseViewModel
 			}
 		}
     private ObservableCollection<TabButton> _feedTabs;
+    private DeleteFeedPopUp _deletePopUp;
 
-	public ObservableCollection<TabButton> FeedTabs
+    public ObservableCollection<TabButton> FeedTabs
 	{
 		get { return _feedTabs; }
 		set 
@@ -163,18 +164,19 @@ public class FeedsViewModel : BaseViewModel
     public App CurrentApp { get; }
 
     private GeneralDataBase _generalDB;
+    private RenameFeedPopUp _renamePopUp;
 
     public Command UncoverNewArticles { get; private set; }
 
     public Command<Feed> Delete => new Command<Feed>( (feed) =>
     {
-        CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this));
+        CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this, _generalDB));
 
     });
 
     public Command<Feed> Rename => new Command<Feed>( (feed) =>
     {
-        CurrentApp.OpenPopUp (new RenameFeedPopUp(_selectedFeed, this));
+        CurrentApp.OpenPopUp (new  RenameFeedPopUp(_selectedFeed, this, _generalDB));
 
     });
 
@@ -182,7 +184,7 @@ public class FeedsViewModel : BaseViewModel
     {
         IsFromDetail = true;
         CurrentFocusIndex = _feeds.IndexOf(_selectedFeed);
-        await CurrentApp.Windows[0].Page.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this));
+        await CurrentApp.Windows[0].Page.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this, _generalDB));
 
     });
 
@@ -234,6 +236,7 @@ public class FeedsViewModel : BaseViewModel
         CurrentApp = App.Current as App;
 
         _generalDB = generalDataBase;
+
 
         // Instantiate definitions 
         FeedTabs = new ObservableRangeCollection<TabButton>();
@@ -615,7 +618,7 @@ public class FeedsViewModel : BaseViewModel
 
         try
         {
-            UpdateFeeds();
+            await UpdateFeeds();
         }
         catch (Exception ex)
 #if DEBUG

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Core;
 using GamHubApp.Helpers.Tools;
 using GamHubApp.Models;
 using GamHubApp.Services;
@@ -285,10 +286,10 @@ public class NewsViewModel : BaseViewModel
         CurrentApp = App.Current as App;
         _generalDB = generalDataBase;
 
-        Task.Run(async () =>
-        {
-            Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
-        });
+        //Task.Run(async () =>
+        //{
+        //    Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
+        //});
 
         UnnoticedArticles = new();
         Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
@@ -571,7 +572,7 @@ public class NewsViewModel : BaseViewModel
         {
             return Task.Run(() =>
             {
-                    using var conn = new SQLiteConnection(App.PathDBBackUp);
+                    using var conn = new SQLiteConnection(AppConstant.PathDBBackUp);
 
                     conn.DeleteAll<Article>();
 
@@ -604,8 +605,28 @@ public class NewsViewModel : BaseViewModel
         {
             if (isUpdate)
                 timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+
+            List<Article> collection = new();
+            try
+            {
+                collection = (await CurrentApp.DataFetcher.GetFeedArticles(SearchText, timeParam, isUpdate)).Where(article => /*(article.Blocked == null || article.Blocked == false)*/ 
+                article.Source?.IsActive ?? false).ToList();
             
-            articles = new((await CurrentApp.DataFetcher.GetFeedArticles(SearchText, timeParam, isUpdate)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive));
+
+            }
+            catch (Exception ex) 
+            {
+
+#if DEBUG
+                Debug.WriteLine(ex);
+
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+                return;
+            }
+            
+            articles = new(collection);
             
         }
         // Offline search
@@ -646,7 +667,7 @@ public class NewsViewModel : BaseViewModel
     /// <returns></returns>
     private static IEnumerable<Article> GetBackupFromDb()
     {
-        using (var backupConn = new SQLiteConnection(App.PathDBBackUp))
+        using (var backupConn = new SQLiteConnection(AppConstant.PathDBBackUp))
             return backupConn.GetAllWithChildren<Article>(recursive: true).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
     }
 
@@ -668,7 +689,7 @@ public class NewsViewModel : BaseViewModel
 
 
         }
-        ObservableCollection<Feed> curFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
+        ObservableCollection <Feed> curFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
 
         // We try to figure out if the two feed lists contains the same items
         if (!FeedToolkit.CampareItems(Feeds, curFeeds))
