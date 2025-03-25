@@ -151,17 +151,16 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState activationState)
     {
         LoadingIndicator = new LoadingPopUp();
+
         _generalDb.Init().GetAwaiter();
+
         using (var backupcon = new SQLiteConnection(PathDBBackUp))
         {
             backupcon.CreateTable<Source>();
             backupcon.CreateTable<Article>();
             backupcon.Close();
         }
-                ;
-#if !DEBUG
-                SentrySdk.AddBreadcrumb($"Created SQLite tables: {PathDBBackUp}");
-#endif
+        
         return new Window(Shell);
     }
     protected override void OnSleep()
