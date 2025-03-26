@@ -18,11 +18,11 @@ public class Fetcher
     private static string _dateFormat = "dd-MM-yyy_HH:mm:ss";
     private Session CurrentSession { get; set; }
     public Service WebService { get; private set; }
+    public static Collection<Source> Sources { get; set; }
 
     private GeneralDataBase _generalDB;
 
     public User UserData { get; set; }
-    public Collection<Source> Sources { get; private set; }
 
     public Fetcher(GeneralDataBase generalDataBase)
     {
@@ -37,6 +37,7 @@ public class Fetcher
                                sslCertificate: true);
 #endif
         _generalDB = generalDataBase;
+        GetSources().GetAwaiter();
     }
 
     /// <summary>
@@ -74,7 +75,7 @@ public class Fetcher
     /// <exception cref="Exception"></exception>
     public async Task<Collection<Source>> GetSources()
     {
-        return Sources = await WebService.Get<Collection<Source>>(controller: "sources", 
+        return Fetcher.Sources =  await WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
                                                          unSuccessCallback: e => _ = HandleHttpException(e));
     }

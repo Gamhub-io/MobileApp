@@ -6,7 +6,6 @@ using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using GamHubApp.Views.PopUps;
 using Newtonsoft.Json;
-using SQLite;
 using System.Collections.ObjectModel;
 
 
@@ -23,8 +22,6 @@ public partial class App : Application
 
     public bool IsLoading { get; private set; }
     private AppShell Shell { get; set; }
-
-    public static Collection<Source> Sources { get; private set; }
     public Popup LoadingIndicator { get; private set; }
     public Fetcher DataFetcher { get; set; }
     public static string ProdHost { get; } = "api.gamhub.io";
@@ -58,8 +55,6 @@ public partial class App : Application
 #endif
        DataFetcher = fetc;
        Shell = shell;
-
-       Sources = new Collection<Source>();
 
        InitializeComponent();
         
@@ -125,7 +120,7 @@ public partial class App : Application
         // Task to get all the resource data from the API
         Task.Run(async () =>
         {
-            await _backupDb.UpdateSources(Sources.ToList());
+            await _backupDb.UpdateSources(Fetcher.Sources.ToList());
         });
 
             // Register the date of the first run
