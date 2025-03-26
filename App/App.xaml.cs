@@ -147,8 +147,6 @@ public partial class App : Application
         _generalDb.Init().GetAwaiter();
         _backupDb.Init().GetAwaiter();
 
-                SentrySdk.AddBreadcrumb($"Created SQLite tables: {PathDBBackUp}");
-#endif
         return new Window(Shell);
     }
     protected override void OnSleep()
