@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Views;
+using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
@@ -11,13 +12,15 @@ using System.Collections.ObjectModel;
 
 #if DEBUG
 using System.Diagnostics;
-using GamHubApp.Core;
 #endif
 
 namespace GamHubApp;
 
 public partial class App : Application
 {
+    private GeneralDataBase _generalDb;
+    private BackUpDataBase _backupDb;
+
     public bool IsLoading { get; private set; }
     private AppShell Shell { get; set; }
 
@@ -44,11 +47,13 @@ public partial class App : Application
         news,
         source
     }
-    public App(Fetcher fetc, AppShell shell)
+    public App(Fetcher fetc, AppShell shell, GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
     {
+        _generalDb = generalDataBase;
+        _backupDb = backUpDataBase;
 
 #if DEBUG
-            // Run the debug setup
+        // Run the debug setup
             EnvironementSetup.DebugSetup();
 #endif
        DataFetcher = fetc;
@@ -57,7 +62,7 @@ public partial class App : Application
        Sources = new Collection<Source>();
 
        InitializeComponent();
-
+        
        // Start the db
        StartDb();
     }
@@ -104,42 +109,23 @@ public partial class App : Application
         PathDBBackUp = Path.Combine(libraryPath, "aresBackup.db3");
 
         // Verify if a data base already exist
-        if (!File.Exists(GeneralDBpath))
+        if (!File.Exists(AppConstant.GeneralDBpath))
             // Create the folder path.
-            File.Create(GeneralDBpath);
+            File.Create(AppConstant.GeneralDBpath);
 
         // Verify if a data base already exist
-        if (!File.Exists(PathDBBackUp))
+        if (!File.Exists(AppConstant.PathDBBackUp))
             // Create the folder path.
-            File.Create(PathDBBackUp);
+            File.Create(AppConstant.PathDBBackUp);
+
     }
 
     protected override void OnStart()
     {
-
         // Task to get all the resource data from the API
         Task.Run(async () =>
         {
-            Sources = await DataFetcher.GetSources();
-            var threads = new List<Task>();
-
-            foreach (var source in Sources)
-            {
-                using (var mainConn = new SQLiteConnection(GeneralDBpath))
-                {
-                mainConn.InsertOrReplace(source);
-
-                mainConn.Close();
-
-                }
-                using (var backupConn = new SQLiteConnection(PathDBBackUp))
-                {
-                backupConn.InsertOrReplace(source);
-
-                backupConn.Close();
-
-                }
-            }
+            await _backupDb.UpdateSources(Sources.ToList());
         });
 
             // Register the date of the first run
@@ -157,28 +143,10 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState activationState)
     {
         LoadingIndicator = new LoadingPopUp();
-        using (var maincon = new SQLiteConnection(GeneralDBpath))
-        {
-            maincon.CreateTable<Source>();
-            maincon.CreateTable<Article>();
-            maincon.CreateTable<Feed>();
-            maincon.Close();
 
-        }
-        ;
-#if !DEBUG
-        SentrySdk.AddBreadcrumb($"Created SQLite tables: {GeneralDBpath}");
-#endif
-        using (var backupcon = new SQLiteConnection(PathDBBackUp))
-        {
-            backupcon.CreateTable<Source>();
-            backupcon.CreateTable<Article>();
-            backupcon.Close();
-        }
-        ;
-#if !DEBUG
-        SentrySdk.AddBreadcrumb($"Created SQLite tables: {PathDBBackUp}");
-#endif
+        _generalDb.Init().GetAwaiter();
+        _backupDb.Init().GetAwaiter();
+
         return new Window(Shell);
     }
     protected override void OnSleep()

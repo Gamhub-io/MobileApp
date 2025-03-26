@@ -40,7 +40,7 @@ public partial class NewsPage : ContentPage
     {
         base.OnAppearing();
 
-        _vm.Resume();
+        _vm.Resume().GetAwaiter();
     }
     public async void DisplayOfflineMessage(string msg = null)
     {
@@ -139,6 +139,7 @@ public partial class NewsPage : ContentPage
         // FIguring out if the scroll is on top of the screen
         _vm.OnTopScroll = e.FirstVisibleItemIndex == 0;
     }
+
     /// <summary>
     /// Method to display the refresh button
     /// </summary>
@@ -146,6 +147,7 @@ public partial class NewsPage : ContentPage
     {
         refreshButton.TranslateTo(refreshButton.X, refreshButtonYPos, easing: Easing.BounceOut);
     }
+
     /// <summary>
     /// Method to remove the refresh button
     /// </summary>

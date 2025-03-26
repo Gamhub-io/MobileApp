@@ -53,15 +53,20 @@ public partial class FeedsPage : ContentPage
     {
         base.OnAppearing();
 
-        _vm.Resume();
+        _vm.Resume().GetAwaiter();
         if (_vm.DataLoaded)
             CloseDropdownMenu();
 
     }
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        UnRegisterMessaging();
+    }
 
     /// <summary>
-     /// Function to open a the dropdown
-     /// </summary>
+    /// Function to open a the dropdown
+    /// </summary>
     public void OpenDropdownMenu()
     {
         double height = 70;

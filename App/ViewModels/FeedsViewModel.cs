@@ -1,13 +1,10 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Views;
-using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
 using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
-using SQLite;
 using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Services;
-using GamHubApp.Services.ChangedMessages;
 
 
 
@@ -39,8 +36,9 @@ public class FeedsViewModel : BaseViewModel
 			}
 		}
     private ObservableCollection<TabButton> _feedTabs;
+    private DeleteFeedPopUp _deletePopUp;
 
-	public ObservableCollection<TabButton> FeedTabs
+    public ObservableCollection<TabButton> FeedTabs
 	{
 		get { return _feedTabs; }
 		set 
@@ -165,17 +163,20 @@ public class FeedsViewModel : BaseViewModel
 
     public App CurrentApp { get; }
 
+    private GeneralDataBase _generalDB;
+    private RenameFeedPopUp _renamePopUp;
+
     public Command UncoverNewArticles { get; private set; }
 
     public Command<Feed> Delete => new Command<Feed>( (feed) =>
     {
-        CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this));
+        CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this, _generalDB));
 
     });
 
     public Command<Feed> Rename => new Command<Feed>( (feed) =>
     {
-        CurrentApp.OpenPopUp (new RenameFeedPopUp(_selectedFeed, this));
+        CurrentApp.OpenPopUp (new  RenameFeedPopUp(_selectedFeed, this, _generalDB));
 
     });
 
@@ -183,7 +184,7 @@ public class FeedsViewModel : BaseViewModel
     {
         IsFromDetail = true;
         CurrentFocusIndex = _feeds.IndexOf(_selectedFeed);
-        await CurrentApp.Windows[0].Page.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this));
+        await CurrentApp.Windows[0].Page.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this, _generalDB));
 
     });
 
@@ -229,18 +230,20 @@ public class FeedsViewModel : BaseViewModel
         _dataLoaded = true;
     });
 
-	public FeedsViewModel()
+	public FeedsViewModel(GeneralDataBase generalDataBase)
     {
         // CurrentApp and CurrentPage will allow use to access to global properties
         CurrentApp = App.Current as App;
 
+        _generalDB = generalDataBase;
+
+
         // Instantiate definitions 
         FeedTabs = new ObservableRangeCollection<TabButton>();
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        Task.Run(async () =>
         {
-            Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+            Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
+        });
         _articles = new ObservableRangeCollection<Article>();
 
         // Organise feeds into tabs
@@ -598,15 +601,12 @@ public class FeedsViewModel : BaseViewModel
     /// <summary>
     /// Processed launched when the page reappear
     /// </summary>
-    public void Resume()
+    public async Task Resume()
     {
         if (!_dataLoaded)
         {
-            using (var conn = new SQLiteConnection(App.GeneralDBpath))
-            {
-                Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-                conn.Close();
-            }
+            Feeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
+
             // Refresh the first feed
             RefreshFirstFeed();
 
@@ -618,7 +618,7 @@ public class FeedsViewModel : BaseViewModel
 
         try
         {
-            UpdateFeeds();
+            await UpdateFeeds();
         }
         catch (Exception ex)
 #if DEBUG
@@ -645,19 +645,16 @@ public class FeedsViewModel : BaseViewModel
     /// <summary>
     /// Update the feeds list
     /// </summary>
-    private void UpdateFeeds()
+    private async Task UpdateFeeds()
     {
         if (!_dataLoaded) return;
         if (_feeds == null) return;
         IsBusy = true;
 
         Collection<Feed> updatedFeeds;
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
-        {
-            // Get the updated list of feed
-            updatedFeeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+
+        // Get the updated list of feed
+        updatedFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
 
         if (updatedFeeds is null)
         {

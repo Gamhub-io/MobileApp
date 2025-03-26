@@ -55,6 +55,7 @@ public static class MauiProgram
                .RegisterViewModels()
                .UseStrokedLabelBehavior()
                .UseMauiCommunityToolkit()
+               .RegisterLocalStorage()
                .ConfigureMauiHandlers(handlers =>
                {
 #if ANDROID
@@ -65,6 +66,7 @@ public static class MauiProgram
         //builder.Logging.AddDebug();
 #endif
         builder.Services.AddSingleton<Fetcher>();
+
         builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
         return builder.Build();
     }
@@ -80,6 +82,14 @@ public static class MauiProgram
         return mauiAppBuilder;
     }
 
+    public static MauiAppBuilder RegisterLocalStorage(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<GeneralDataBase>();
+        mauiAppBuilder.Services.AddSingleton<BackUpDataBase>();
+
+        return mauiAppBuilder;
+    }
+
     public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
     {
         mauiAppBuilder.Services.AddSingleton<App>();
@@ -88,6 +98,9 @@ public static class MauiProgram
         // pages
         mauiAppBuilder.Services.AddSingleton<AboutPage>();
         mauiAppBuilder.Services.AddSingleton<FeedsPage>();
+        mauiAppBuilder.Services.AddSingleton<BookmarkPage>();
+        mauiAppBuilder.Services.AddSingleton<DeleteFeedPopUp>();
+        mauiAppBuilder.Services.AddSingleton<RenameFeedPopUp>();
         return mauiAppBuilder;
     }
 }

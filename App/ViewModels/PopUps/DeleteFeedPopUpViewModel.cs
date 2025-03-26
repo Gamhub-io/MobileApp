@@ -1,4 +1,5 @@
 ﻿using GamHubApp.Models;
+using GamHubApp.Services;
 using GamHubApp.Views;
 using SQLite;
 
@@ -18,6 +19,7 @@ namespace GamHubApp.ViewModels.PopUps
             }
         }
         private FeedsViewModel _context;
+        private GeneralDataBase _generalDB;
 
         public FeedsViewModel Context
         {
@@ -41,14 +43,9 @@ namespace GamHubApp.ViewModels.PopUps
         }
         public App CurrentApp { get; }
 
-        public Microsoft.Maui.Controls.Command Delete => new Microsoft.Maui.Controls.Command(() =>
+        public Microsoft.Maui.Controls.Command Delete => new Microsoft.Maui.Controls.Command(async () =>
         {
-            using (var conn = new SQLiteConnection(App.GeneralDBpath))
-            {
-                // Delete the feed
-                conn.Delete(_feed);
-                conn.Close();
-            }
+            await _generalDB.DeleteFeed(_feed);
 
             int index = _context.Feeds.IndexOf(_feed);
 
@@ -68,8 +65,9 @@ namespace GamHubApp.ViewModels.PopUps
             _page.Close();
         });
 
-        public DeleteFeedPopUpViewModel(DeleteFeedPopUp page, Feed feed, FeedsViewModel ctx)
+        public DeleteFeedPopUpViewModel(DeleteFeedPopUp page, Feed feed, FeedsViewModel ctx, GeneralDataBase generalDataBase )
         {
+            _generalDB = generalDataBase;
             Context = ctx;
             Page = page;
             Feed = feed;

@@ -5,6 +5,7 @@ using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -17,8 +18,13 @@ public class Fetcher
     private static string _dateFormat = "dd-MM-yyy_HH:mm:ss";
     private Session CurrentSession { get; set; }
     public Service WebService { get; private set; }
+
+    private GeneralDataBase _generalDB;
+
     public User UserData { get; set; }
-    public Fetcher()
+    public Collection<Source> Sources { get; private set; }
+
+    public Fetcher(GeneralDataBase generalDataBase)
     {
 #if DEBUG_LOCALHOST
         // Set webservice
@@ -30,7 +36,9 @@ public class Fetcher
         WebService = new Service(host: ProdHost,
                                sslCertificate: true);
 #endif
+        _generalDB = generalDataBase;
     }
+
     /// <summary>
     /// Get the last 2 months worth of feed
     /// </summary>
@@ -66,7 +74,7 @@ public class Fetcher
     /// <exception cref="Exception"></exception>
     public async Task<Collection<Source>> GetSources()
     {
-        return await WebService.Get<Collection<Source>>(controller: "sources", 
+        return Sources = await WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
                                                          unSuccessCallback: e => _ = HandleHttpException(e));
     }
@@ -395,4 +403,57 @@ public class Fetcher
         SentrySdk.CaptureException(new Exception(await err.Content.ReadAsStringAsync()));
 #endif
     }
+
+    #region Local Actions
+
+    /// <summary>
+    /// Update a feed
+    /// </summary>
+    /// <param name="feed">Feed we want to update</param>
+    /// <returns>Update status</returns>
+    public async Task<int> UpdateFeed(Feed feed)
+    {
+        return await _generalDB.UpdateFeed(feed);
+    }
+
+    /// <summary>
+    /// Delete a feed
+    /// </summary>
+    /// <param name="feed">Feed we want to delete</param>
+    /// <returns>Update status</returns>
+    public async Task<int> DeleteFeed(Feed feed)
+    {
+        return await _generalDB.DeleteFeed(feed);
+    }
+
+    /// <summary>
+    /// Delete a article
+    /// </summary>
+    /// <param name="article">article we want to delete</param>
+    /// <returns>Update status</returns>
+    public async Task<int> DeleteArticle(Article article)
+    {
+        return await _generalDB.DeleteArticleBookmark(article);
+    }
+
+    /// <summary>
+    /// Check if an article exist
+    /// </summary>
+    /// <param name="articleId">Id of the article we want to check</param>
+    /// <returns>true -> exist; false -> doesn't</returns>
+    public async Task<bool> ArticleExist (string articleId)
+    {
+        return await _generalDB.GetArticleById(articleId) is not null;
+    }
+
+    /// <summary>
+    /// Add a bookmark to an article
+    /// </summary>
+    /// <param name="article">article to be bookmarked</param>
+    /// <returns>true -> exist; false -> doesn't</returns>
+    public async Task<int> AddBookmark (Article article)
+    {
+        return await _generalDB.InsertArticleBookmark(article);
+    }
+    #endregion
 }

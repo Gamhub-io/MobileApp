@@ -21,6 +21,8 @@ namespace GamHubApp.Helpers.Tools
         /// <returns></returns>
         public static bool CampareItems (IEnumerable<Feed> feedList1, IEnumerable<Feed> feedList2)
         {
+            if ((feedList1 is null && feedList2 is not null) ||
+                (feedList1 is not null && feedList2 is null)) return false;
             int feedList1Length = feedList1.Count();
             if (feedList1Length != feedList2.Count())
                 return false;

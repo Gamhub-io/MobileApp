@@ -2,11 +2,12 @@
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.Views;
-using SQLite;
+
 namespace GamHubApp.ViewModels;
 
 public class EditFeedViewModel : BaseViewModel
 {
+    private GeneralDataBase _generalDB;
     private Feed _feed;
     private string _initialKeyWords;
 
@@ -45,14 +46,10 @@ public class EditFeedViewModel : BaseViewModel
     public Microsoft.Maui.Controls.Command Validate => new Microsoft.Maui.Controls.Command(async () =>
     {
 
-        // Remove feed
+        // Update feed
         Context.UpdateCurrentFeed(_feed);
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
-        {
-            // update the feed
-            conn.Update(_feed);
-            conn.Close();
-        }
+        await _generalDB.UpdateFeed(_feed);
+
         _context.ListHasBeenUpdated = true;
 
         if (_initialKeyWords != _feed.Keywords)
@@ -71,13 +68,12 @@ public class EditFeedViewModel : BaseViewModel
     public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(async () =>
     {
         // Close the page
-
-        //_context.CurrentFeedIndex = _context.Feeds.IndexOf(_feed);
         await App.Current.Windows[0].Page.Navigation.PopAsync();
 
     });
-    public EditFeedViewModel( Feed feed, FeedsViewModel vm )
+    public EditFeedViewModel(Feed feed, FeedsViewModel vm, GeneralDataBase generalDB)
     {
+        _generalDB = generalDB;
         _feed = feed;
         _initialKeyWords = feed.Keywords;
         _context = vm;
