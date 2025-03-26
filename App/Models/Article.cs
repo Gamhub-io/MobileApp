@@ -97,12 +97,10 @@ public class Article
     {
         if (_isSaved == null)
             IsSaved = await app.DataFetcher.ArticleExist(this.Id);
-        if (app.DataFetcher.Sources is null)
-            await app.DataFetcher.GetSources();
 
         if (Source is null)
         {
-            Source = app.DataFetcher.Sources.SingleOrDefault(s => s.MongoId == SourceId);
+            Source = Fetcher.Sources.SingleOrDefault(s => s.MongoId == SourceId);
 
         }
 
