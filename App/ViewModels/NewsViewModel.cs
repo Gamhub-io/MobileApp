@@ -227,6 +227,7 @@ public class NewsViewModel : BaseViewModel
     public App CurrentApp { get; }
 
     private GeneralDataBase _generalDB;
+    private BackUpDataBase _backUpDataBase;
 
     // Command to refresh the news feed
     private readonly Command _refreshFeed;
@@ -281,18 +282,17 @@ public class NewsViewModel : BaseViewModel
     public bool IsSearchLoading { get; private set; }
     public bool IsLoadingChunks { get; private set; }
 
-    public NewsViewModel(GeneralDataBase generalDataBase)
+    public NewsViewModel(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
     {
         CurrentApp = App.Current as App;
         _generalDB = generalDataBase;
-
-        //Task.Run(async () =>
-        //{
-        //    Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
-        //});
+        _backUpDataBase = backUpDataBase;
 
         UnnoticedArticles = new();
-        Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+        Task.Run(async () =>
+        {
+            Articles = new ((await GetBackupFromDb()).OrderBy(a => a.Time).ToList());
+        });
         
         RefreshBottomCommand = new(() =>
         {
@@ -570,26 +570,23 @@ public class NewsViewModel : BaseViewModel
     {
         try
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
-                    using var conn = new SQLiteConnection(AppConstant.PathDBBackUp);
-
-                    conn.DeleteAll<Article>();
-
-                    conn.InsertAllWithChildren(_articles);
-
-                    foreach (var source in _articles.Select(a => a.Source).Distinct().ToList())
-                    {
-                        conn.InsertOrReplace(source);
-
-                    }
-                    conn.Close();
+                await _backUpDataBase.UpdateArticles(_articles);
             });
         }
-        finally
+        catch (Exception ex)
         {
-            //App.BackUpConn.Close();
-        };
+
+#if DEBUG
+            Debug.WriteLine(ex);
+
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            return null;
+        }
+        
     }
 
     /// <summary>
@@ -665,10 +662,9 @@ public class NewsViewModel : BaseViewModel
     /// Get all the articles from the db
     /// </summary>
     /// <returns></returns>
-    private static IEnumerable<Article> GetBackupFromDb()
+    private async Task<IEnumerable<Article>> GetBackupFromDb()
     {
-        using (var backupConn = new SQLiteConnection(AppConstant.PathDBBackUp))
-            return backupConn.GetAllWithChildren<Article>(recursive: true).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
+        return (await _backUpDataBase.GetArticles()).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
     }
 
     /// <summary>

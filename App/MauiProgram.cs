@@ -85,6 +85,7 @@ public static class MauiProgram
     public static MauiAppBuilder RegisterLocalStorage(this MauiAppBuilder mauiAppBuilder)
     {
         mauiAppBuilder.Services.AddSingleton<GeneralDataBase>();
+        mauiAppBuilder.Services.AddSingleton<BackUpDataBase>();
 
         return mauiAppBuilder;
     }

@@ -19,6 +19,7 @@ namespace GamHubApp;
 public partial class App : Application
 {
     private GeneralDataBase _generalDb;
+    private BackUpDataBase _backupDb;
 
     public bool IsLoading { get; private set; }
     private AppShell Shell { get; set; }
@@ -46,9 +47,11 @@ public partial class App : Application
         news,
         source
     }
-    public App(Fetcher fetc, AppShell shell, GeneralDataBase generalDataBase)
+    public App(Fetcher fetc, AppShell shell, GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
     {
         _generalDb = generalDataBase;
+        _backupDb = backUpDataBase;
+
 #if DEBUG
         // Run the debug setup
             EnvironementSetup.DebugSetup();
@@ -122,18 +125,7 @@ public partial class App : Application
         // Task to get all the resource data from the API
         Task.Run(async () =>
         {
-            var threads = new List<Task>();
-
-            foreach (var source in Sources)
-            {
-                using (var backupConn = new SQLiteConnection(PathDBBackUp))
-                {
-                backupConn.InsertOrReplace(source);
-
-                backupConn.Close();
-
-                }
-            }
+            await _backupDb.UpdateSources(Sources.ToList());
         });
 
             // Register the date of the first run
@@ -152,16 +144,8 @@ public partial class App : Application
     {
         LoadingIndicator = new LoadingPopUp();
         _generalDb.Init().GetAwaiter();
-        using (var backupcon = new SQLiteConnection(PathDBBackUp))
-        {
-            backupcon.CreateTable<Source>();
-            backupcon.CreateTable<Article>();
-            backupcon.Close();
-        }
-                ;
-#if !DEBUG
-                SentrySdk.AddBreadcrumb($"Created SQLite tables: {PathDBBackUp}");
-#endif
+        _backupDb.Init().GetAwaiter();
+
         return new Window(Shell);
     }
     protected override void OnSleep()
