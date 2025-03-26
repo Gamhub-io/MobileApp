@@ -110,7 +110,7 @@
                              Style="{StaticResource ButtonBorder}" 
                              BackgroundColor="{StaticResource LightDark}" >
                         <Border.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Article.ShareArticle}"
+                            <mct:TouchBehavior Command="{Binding Article.ShareArticle, Source={x:Reference preview}}"
                                                BindingContext="{Binding BindingContext, 
                                                                  Source={x:Reference preview}, 
                                                                  x:DataType=ContentView}"/>
