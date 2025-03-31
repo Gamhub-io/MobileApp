@@ -29,7 +29,8 @@ public sealed class GeneralDataBase
     /// <returns>the article</returns>
     public async Task<Article> GetArticleById(string id)
     {
-        return await database.Table<Article>().FirstOrDefaultAsync(a => a.Id == id);
+        List<Article>  ds = await database.Table<Article>().ToListAsync();
+        return await database.Table<Article>().FirstOrDefaultAsync(a => a.MongooseId == id);
     }
 
     /// <summary>
@@ -69,7 +70,7 @@ public sealed class GeneralDataBase
     public async Task<List<Article>> GetBookmarkedArticles()
     {
 
-        return (await database.Table<Article>().ToListAsync()).Reverse<Article>().ToList();
+        return (await database.Table<Article>().ToListAsync()).Reverse<Article>().Select(a => { a.IsSaved = true; return a; }).ToList();
     }
 
     /// <summary>
