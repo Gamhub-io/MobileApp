@@ -96,7 +96,7 @@ public class Article
     public async Task Init()
     {
         if (_isSaved == null)
-            IsSaved = await app.DataFetcher.ArticleExist(this.Id);
+            IsSaved = await app.DataFetcher.ArticleExist(this.MongooseId);
 
         if (Source is null)
         {
