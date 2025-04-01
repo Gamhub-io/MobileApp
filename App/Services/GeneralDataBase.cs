@@ -29,7 +29,7 @@ public sealed class GeneralDataBase
     /// <returns>the article</returns>
     public async Task<Article> GetArticleById(string id)
     {
-        return await database.Table<Article>().FirstOrDefaultAsync(a => a.Id == id);
+        return await database.Table<Article>().FirstOrDefaultAsync(a => a.MongooseId == id);
     }
 
     /// <summary>
@@ -69,7 +69,10 @@ public sealed class GeneralDataBase
     public async Task<List<Article>> GetBookmarkedArticles()
     {
 
-        return (await database.Table<Article>().ToListAsync()).Reverse<Article>().ToList();
+        return (await database.Table<Article>().ToListAsync())
+                              .Reverse<Article>()
+                              .Select(a => { a.Source = Fetcher.Sources.SingleOrDefault(s => s.MongoId == a.SourceId); ; return a; })
+                              .ToList() ?? new List<Article>();
     }
 
     /// <summary>

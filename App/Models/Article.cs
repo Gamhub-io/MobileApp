@@ -8,14 +8,6 @@ namespace GamHubApp.Models;
 
 public class Article
 {
-    public Article() 
-    {
-        Task.Run(async () =>
-        {
-            await Init();
-        });
-
-    }
 
     [PrimaryKey, Column("_id"), JsonProperty("uuid")]
     public string Id { get; set; }
@@ -68,6 +60,8 @@ public class Article
     {
         get
         {
+            if (_isSaved == null)
+                Task.Run(async() =>IsSaved = await app.DataFetcher.ArticleExist(this.MongooseId)).GetAwaiter();
             return (_isSaved ?? false);
         }
         set { _isSaved = value; }
@@ -93,18 +87,6 @@ public class Article
         return true;
     }
 
-    public async Task Init()
-    {
-        if (_isSaved == null)
-            IsSaved = await app.DataFetcher.ArticleExist(this.Id);
-
-        if (Source is null)
-        {
-            Source = Fetcher.Sources.SingleOrDefault(s => s.MongoId == SourceId);
-
-        }
-
-    }
     App app = (App.Current as App);
 
     [Ignore]
