@@ -29,7 +29,6 @@ public sealed class GeneralDataBase
     /// <returns>the article</returns>
     public async Task<Article> GetArticleById(string id)
     {
-        List<Article>  ds = await database.Table<Article>().ToListAsync();
         return await database.Table<Article>().FirstOrDefaultAsync(a => a.MongooseId == id);
     }
 
