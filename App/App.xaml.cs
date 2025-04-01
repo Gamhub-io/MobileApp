@@ -141,7 +141,7 @@ public partial class App : Application
 
         _generalDb.Init().GetAwaiter();
         _backupDb.Init().GetAwaiter();
-
+        DataFetcher.LoadBookmarks().GetAwaiter();
         return new Window(Shell);
     }
     protected override void OnSleep()
