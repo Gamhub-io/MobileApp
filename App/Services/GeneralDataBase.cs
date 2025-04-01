@@ -69,7 +69,10 @@ public sealed class GeneralDataBase
     public async Task<List<Article>> GetBookmarkedArticles()
     {
 
-        return (await database.Table<Article>().ToListAsync()).Reverse<Article>().Select(a => { a.IsSaved = true; return a; }).ToList();
+        return (await database.Table<Article>().ToListAsync())
+                              .Reverse<Article>()
+                              .Select(a => { a.Source = Fetcher.Sources.SingleOrDefault(s => s.MongoId == a.SourceId); ; return a; })
+                              .ToList() ?? new List<Article>();
     }
 
     /// <summary>
