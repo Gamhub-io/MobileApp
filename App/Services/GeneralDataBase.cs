@@ -33,6 +33,15 @@ public sealed class GeneralDataBase
     }
 
     /// <summary>
+    /// Get all articles
+    /// </summary>
+    /// <returns>the article</returns>
+    public async Task<List<Article>> GetArticles()
+    {
+        return await database.Table<Article>().ToListAsync();
+    }
+
+    /// <summary>
     /// Get a specific source
     /// </summary>
     /// <param name="id">id of the source</param>

@@ -23,6 +23,7 @@ public class Fetcher
     private GeneralDataBase _generalDB;
 
     public User UserData { get; set; }
+    public List<Article> Bookmarks { get; private set; }
 
     public Fetcher(GeneralDataBase generalDataBase)
     {
@@ -434,7 +435,19 @@ public class Fetcher
     /// <returns>Update status</returns>
     public async Task<int> DeleteArticle(Article article)
     {
-        return await _generalDB.DeleteArticleBookmark(article);
+        int res = -1;
+        Article item = Bookmarks.SingleOrDefault(b => b.MongooseId == article.MongooseId);
+        
+        if (item is null)
+            return res;
+
+        res = await _generalDB.DeleteArticleBookmark(article);
+        if (res == 1)
+        {
+            Bookmarks.RemoveAt(Bookmarks.IndexOf(item));
+    }
+
+        return res;
     }
 
     /// <summary>
@@ -442,9 +455,19 @@ public class Fetcher
     /// </summary>
     /// <param name="articleId">Id of the article we want to check</param>
     /// <returns>true -> exist; false -> doesn't</returns>
-    public async Task<bool> ArticleExist (string articleId)
+    public bool ArticleExist (string articleId)
     {
-        return await _generalDB.GetArticleById(articleId) is not null;
+        //return await _generalDB.GetArticleById(articleId) is not null;
+        return Bookmarks.SingleOrDefault(a => a.MongooseId == articleId) is not null;
+    }
+
+    /// <summary>
+    /// Load/Reload all the Bookmarks
+    /// </summary>
+    public async Task LoadBookmarks ()
+    {
+        
+        Bookmarks = [.. await _generalDB.GetArticles()];
     }
 
     /// <summary>
@@ -454,7 +477,11 @@ public class Fetcher
     /// <returns>true -> exist; false -> doesn't</returns>
     public async Task<int> AddBookmark (Article article)
     {
-        return await _generalDB.InsertArticleBookmark(article);
+        int res = -1;
+        res =  await _generalDB.InsertArticleBookmark(article);
+        if (res == 1)
+            Bookmarks.Insert(0, article);
+        return res;
     }
     #endregion
 }
