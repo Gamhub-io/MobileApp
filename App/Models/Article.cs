@@ -61,7 +61,7 @@ public class Article
         get
         {
             if (_isSaved == null)
-                Task.Run(async() =>IsSaved = await app.DataFetcher.ArticleExist(this.MongooseId)).GetAwaiter();
+                IsSaved = app.DataFetcher.ArticleExist(this.MongooseId);
             return (_isSaved ?? false);
         }
         set { _isSaved = value; }
