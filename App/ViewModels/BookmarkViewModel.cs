@@ -39,7 +39,7 @@ public class BookmarkViewModel : BaseViewModel
                 return;
             if (m.Saved)
             {
-                Bookmarks.Add(m.ArticleSent);
+                Bookmarks.Insert(0, m.ArticleSent);
                 return;
             }
             Bookmarks.Remove(_bookmarks.SingleOrDefault(bm => bm.MongooseId == m.ArticleSent.MongooseId));
