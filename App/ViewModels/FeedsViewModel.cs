@@ -36,7 +36,6 @@ public class FeedsViewModel : BaseViewModel
 			}
 		}
     private ObservableCollection<TabButton> _feedTabs;
-    private DeleteFeedPopUp _deletePopUp;
 
     public ObservableCollection<TabButton> FeedTabs
 	{
@@ -164,7 +163,6 @@ public class FeedsViewModel : BaseViewModel
     public App CurrentApp { get; }
 
     private GeneralDataBase _generalDB;
-    private RenameFeedPopUp _renamePopUp;
 
     public Command UncoverNewArticles { get; private set; }
 
