@@ -33,8 +33,8 @@ its community's skills, knowledge and opinions.
 
 ### Contribute with skills! 💪
 
-If you are a software developer skilled in C# and Xamarin. The most obvious way you can contribute is with your coding skills.
-Regarless of your experience, you contribution will always be welcome here. Take a look at the [list of issues](https://github.com/bricefriha/AresNews/issues), pick one, let us know you want to work on it, create a Fork of the project and here you go!
+If you are a software developer skilled in C# and .NET MAUI, the most obvious way you can contribute is through your coding skills.
+Regardless of your experience, your contribution will always be welcome here. Take a look at the [list of issues](https://github.com/bricefriha/AresNews/issues), pick one, let us know you want to work on it, create a Fork of the project, and here you go!
 
 ### Contribute with your opinions! 🗣
 Your opinions always matters as the GamHubApp is a product built around his user. 
