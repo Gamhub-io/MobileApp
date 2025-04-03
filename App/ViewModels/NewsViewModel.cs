@@ -1,12 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using GamHubApp.Core;
 using GamHubApp.Helpers.Tools;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.Views;
 using MvvmHelpers;
-using SQLite;
-using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
 #if DEBUG
 using System.Diagnostics;
@@ -326,8 +323,6 @@ public class NewsViewModel : BaseViewModel
 
         CurrentFeed = new Feed();
 
-
-
         WeakReferenceMessenger.Default.Register<FeedUpdatedMessage>(this, (r, m) =>
         {
             Feed updatedFeed = m.Feed;
@@ -342,40 +337,21 @@ public class NewsViewModel : BaseViewModel
         // Handle if a article change sees a change of bookmark state
         WeakReferenceMessenger.Default.Register(this, (MessageHandler<object, BookmarkChangedMessage>)((r, m) =>
         {
+            // Escape is the current page is the news page
+            if (((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage is NewsPage)
+                return;
             if (m.ArticleSent is null)
                 return;
-
-            var bookmark = m.ArticleSent;
-            var page = ((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
-
-            // Escape is the current page is the news page
-            if (page is NewsPage)
-                return;
-
-            // Select the article
-            Article article = _articles.FirstOrDefault((Func<Article, bool>)(a => a.Id == bookmark.Id));
-
-            // end there if the article is not listed anymore
-            if (article is null)
-                return;
-
+            Article article = _articles.FirstOrDefault((Func<Article, bool>)(a => a.Id == m.ArticleSent.Id));
             // Get article index
             int index = _articles.IndexOf(article);
 
             try
             {
                 if (_articles.Count > 0)
-                {
-                    // Remove the previous one 
-                    Articles.Remove(article);
-
-                    article.IsSaved = !article.IsSaved;
-
-                    // to add the new one
-                    Articles.Insert(index, article);
-                }
-
-
+                    // Reload the Article that has been bookmarked
+                    Articles[index] = m.ArticleSent;
+                
             }
             catch (Exception ex)
             {
