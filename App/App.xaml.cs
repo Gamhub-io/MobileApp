@@ -1,25 +1,27 @@
 ﻿using CommunityToolkit.Maui.Views;
+using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using GamHubApp.Views.PopUps;
 using Newtonsoft.Json;
-using SQLite;
 using System.Collections.ObjectModel;
+
 
 #if DEBUG
 using System.Diagnostics;
-using GamHubApp.Core;
 #endif
 
 namespace GamHubApp;
 
 public partial class App : Application
 {
-    public bool IsLoading { get; private set; }
+    private GeneralDataBase _generalDb;
+    private BackUpDataBase _backupDb;
 
-    public static Collection<Source> Sources { get; private set; }
+    public bool IsLoading { get; private set; }
+    private AppShell Shell { get; set; }
     public Popup LoadingIndicator { get; private set; }
     public Fetcher DataFetcher { get; set; }
     public static string ProdHost { get; } = "api.gamhub.io";
@@ -42,19 +44,20 @@ public partial class App : Application
         news,
         source
     }
-    public App()
+    public App(Fetcher fetc, AppShell shell, GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
     {
+        _generalDb = generalDataBase;
+        _backupDb = backUpDataBase;
 
 #if DEBUG
-            // Run the debug setup
+        // Run the debug setup
             EnvironementSetup.DebugSetup();
 #endif
-       DataFetcher = new Fetcher();
-
-       Sources = new Collection<Source>();
+       DataFetcher = fetc;
+       Shell = shell;
 
        InitializeComponent();
-
+        
        // Start the db
        StartDb();
     }
@@ -101,40 +104,24 @@ public partial class App : Application
         PathDBBackUp = Path.Combine(libraryPath, "aresBackup.db3");
 
         // Verify if a data base already exist
-        if (!File.Exists(GeneralDBpath))
+        if (!File.Exists(AppConstant.GeneralDBpath))
             // Create the folder path.
-            File.Create(GeneralDBpath);
+            File.Create(AppConstant.GeneralDBpath);
 
         // Verify if a data base already exist
-        if (!File.Exists(PathDBBackUp))
+        if (!File.Exists(AppConstant.PathDBBackUp))
             // Create the folder path.
-            File.Create(PathDBBackUp);
+            File.Create(AppConstant.PathDBBackUp);
+
     }
 
     protected override void OnStart()
     {
-
         // Task to get all the resource data from the API
         Task.Run(async () =>
         {
-            Sources = await DataFetcher.GetSources();
-            var threads = new List<Task>();
-
-            foreach (var source in Sources)
-            {
-                using var mainConn = new SQLiteConnection(GeneralDBpath);
-                mainConn.InsertOrReplace(source);
-
-                mainConn.Close();
-                using var backupConn = new SQLiteConnection(PathDBBackUp);
-                backupConn.InsertOrReplace(source);
-
-                backupConn.Close();
-            }
+            await _backupDb.UpdateSources(Fetcher.Sources.ToList());
         });
-
-        // Restore session
-        _ = DataFetcher.RestoreSession();
 
             // Register the date of the first run
         DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
@@ -151,19 +138,11 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState activationState)
     {
         LoadingIndicator = new LoadingPopUp();
-        using (var maincon = new SQLiteConnection(GeneralDBpath))
-        {
-            maincon.CreateTable<Source>();
-            maincon.CreateTable<Article>();
-            maincon.CreateTable<Feed>();
 
-        };
-        using (var maincon = new SQLiteConnection(PathDBBackUp))
-        {
-            maincon.CreateTable<Source>();
-            maincon.CreateTable<Article>();
-        };
-        return new Window(new AppShell());
+        _generalDb.Init().GetAwaiter();
+        _backupDb.Init().GetAwaiter();
+        DataFetcher.LoadBookmarks().GetAwaiter();
+        return new Window(Shell);
     }
     protected override void OnSleep()
      {
@@ -190,8 +169,6 @@ public partial class App : Application
 
              ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
          }
-
-         StartDb();
      }
      /// <summary>
      /// Open any popup
@@ -231,7 +208,7 @@ public partial class App : Application
     private Page GetCurrentPage ()
     {
         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-        return mainPage.CurrentPage;
+        return mainPage;
     }
 
     /// <summary>
@@ -279,6 +256,7 @@ public partial class App : Application
         // Set Userdata object
         return (SaveInfo = DataFetcher.UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
     }
+
     /// <summary>
     /// Log out the current active user
     /// </summary>
@@ -290,6 +268,7 @@ public partial class App : Application
         // Close the current session
         DataFetcher.KillSession();
     }
+
     /// <summary>
     /// Show a pop up to confirm wether or not the user wants to logout
     /// </summary>
@@ -298,7 +277,7 @@ public partial class App : Application
     public async Task<bool> ShowLogoutConfirmation(User user = null)
     {
         if (user == null)
-            user = SaveInfo;
+            user = DataFetcher.UserData;
 
         LogoutConfirmationPopUp popUp = new(user);
         OpenPopUp(popUp);

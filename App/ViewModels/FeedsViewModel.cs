@@ -1,10 +1,13 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Views;
-using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
 using Command = Microsoft.Maui.Controls.Command;
 using MvvmHelpers;
-using SQLite;
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services;
+
+
+
 #if DEBUG
 using System.Diagnostics;
 using Newtonsoft.Json;
@@ -15,6 +18,11 @@ namespace GamHubApp.ViewModels;
 public class FeedsViewModel : BaseViewModel
 {
     private bool _dataLoaded = false;
+    public bool DataLoaded 
+    { 
+        get { return _dataLoaded; }
+        set { _dataLoaded = value; }
+    }
     public List<UpdateOrder> UpdateOrders { get; private set; }
     private ObservableCollection<Feed> _feeds = new();
 
@@ -29,7 +37,7 @@ public class FeedsViewModel : BaseViewModel
 		}
     private ObservableCollection<TabButton> _feedTabs;
 
-	public ObservableCollection<TabButton> FeedTabs
+    public ObservableCollection<TabButton> FeedTabs
 	{
 		get { return _feedTabs; }
 		set 
@@ -154,18 +162,19 @@ public class FeedsViewModel : BaseViewModel
 
     public App CurrentApp { get; }
 
+    private GeneralDataBase _generalDB;
+
     public Command UncoverNewArticles { get; private set; }
-    private FeedsPage CurrentPage { get; set; }
 
     public Command<Feed> Delete => new Command<Feed>( (feed) =>
     {
-        CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this), CurrentPage);
+        CurrentApp.OpenPopUp (new DeleteFeedPopUp(_selectedFeed, this, _generalDB));
 
     });
 
     public Command<Feed> Rename => new Command<Feed>( (feed) =>
     {
-        CurrentApp.OpenPopUp (new RenameFeedPopUp(_selectedFeed, this), CurrentPage);
+        CurrentApp.OpenPopUp (new  RenameFeedPopUp(_selectedFeed, this, _generalDB));
 
     });
 
@@ -173,7 +182,7 @@ public class FeedsViewModel : BaseViewModel
     {
         IsFromDetail = true;
         CurrentFocusIndex = _feeds.IndexOf(_selectedFeed);
-        await CurrentPage.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this));
+        await CurrentApp.Windows[0].Page.Navigation.PushAsync(new EditFeedPage(_selectedFeed, this, _generalDB));
 
     });
 
@@ -219,19 +228,20 @@ public class FeedsViewModel : BaseViewModel
         _dataLoaded = true;
     });
 
-	public FeedsViewModel(FeedsPage page)
+	public FeedsViewModel(GeneralDataBase generalDataBase)
     {
         // CurrentApp and CurrentPage will allow use to access to global properties
         CurrentApp = App.Current as App;
-        CurrentPage = page;
+
+        _generalDB = generalDataBase;
+
 
         // Instantiate definitions 
         FeedTabs = new ObservableRangeCollection<TabButton>();
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
+        Task.Run(async () =>
         {
-            Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+            Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
+        });
         _articles = new ObservableRangeCollection<Article>();
 
         // Organise feeds into tabs
@@ -251,7 +261,7 @@ public class FeedsViewModel : BaseViewModel
             _ = Task.Run(() =>
             {
                 // Scroll up
-                CurrentPage.ScrollFeed();
+                WeakReferenceMessenger.Default.Send(new ScrollFeedPageChangedMessage(this));
 
                 // Add the unnoticed articles
                 UpdateArticles([.. UnnoticedArticles], SelectedFeed, indexFeed);
@@ -283,10 +293,10 @@ public class FeedsViewModel : BaseViewModel
         set
         {
             _unnoticedArticles = value;
-            if (_unnoticedArticles?.Count > 0)
-                CurrentPage.ShowRefreshButton();
-            else
-                CurrentPage.RemoveRefreshButton();
+            WeakReferenceMessenger.Default.Send(new UnnoticedFeedArticlesChangedMessage(_unnoticedArticles)
+            {
+                Id = SelectedFeed.Id,
+            });
 
             OnPropertyChanged(nameof(UnnoticedArticles));
         }
@@ -331,7 +341,7 @@ public class FeedsViewModel : BaseViewModel
             return;
 
         IsBusy = true;
-        CurrentApp.ShowLoadingIndicator(CurrentPage);
+        CurrentApp.ShowLoadingIndicator();
 
         // Determine whether or not it's the first time loading the article of this feed
         bool isFirstLoad = _articles == null || _articles.Count <= 0;
@@ -350,10 +360,9 @@ public class FeedsViewModel : BaseViewModel
             {
                 // End the loading indicator
                 IsRefreshing = false;
-                IsBusy = false;
             } }
             
-        );
+        ).ContinueWith ((tr) => IsBusy = false);
         
     }
 
@@ -590,15 +599,12 @@ public class FeedsViewModel : BaseViewModel
     /// <summary>
     /// Processed launched when the page reappear
     /// </summary>
-    public void Resume()
+    public async Task Resume()
     {
         if (!_dataLoaded)
         {
-            using (var conn = new SQLiteConnection(App.GeneralDBpath))
-            {
-                Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-                conn.Close();
-            }
+            Feeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
+
             // Refresh the first feed
             RefreshFirstFeed();
 
@@ -608,11 +614,9 @@ public class FeedsViewModel : BaseViewModel
             return;
         };
 
-        CurrentPage.CloseDropdownMenu();
         try
         {
-            IsBusy = true;
-            UpdateFeeds();
+            await UpdateFeeds();
         }
         catch (Exception ex)
 #if DEBUG
@@ -639,21 +643,22 @@ public class FeedsViewModel : BaseViewModel
     /// <summary>
     /// Update the feeds list
     /// </summary>
-    private void UpdateFeeds()
+    private async Task UpdateFeeds()
     {
         if (!_dataLoaded) return;
         if (_feeds == null) return;
+        IsBusy = true;
 
         Collection<Feed> updatedFeeds;
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
-        {
-            // Get the updated list of feed
-            updatedFeeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+
+        // Get the updated list of feed
+        updatedFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
 
         if (updatedFeeds is null)
+        {
+            IsBusy = false;
             return;
+        }
 
         List<Feed> newFeeds = updatedFeeds.Where(feed => !_feeds.Any(item => item.Id == feed.Id)).ToList();
         List<Feed> removedFeeds = _feeds.Where(feed => !updatedFeeds.Any(item => item.Id == feed.Id)).ToList();
@@ -668,6 +673,7 @@ public class FeedsViewModel : BaseViewModel
         {
             _ =RemoveFeed(feed);
         }
+        IsBusy = false;
     }
 
     /// <summary>

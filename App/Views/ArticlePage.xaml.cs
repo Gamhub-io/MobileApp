@@ -2,8 +2,8 @@
 using GamHubApp.ViewModels;
 using Plugin.StoreReview;
 
-namespace GamHubApp.Views
-{
+namespace GamHubApp.Views;
+
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ArticlePage : ContentPage
     {
@@ -147,4 +147,3 @@ namespace GamHubApp.Views
             await scrollview.ScrollToAsync(scrollview.ScrollX, scrollview.ScrollY + 5, true);
         }
     }
-}

@@ -2,14 +2,13 @@
 using GamHubApp.Services;
 using Newtonsoft.Json;
 using SQLite;
-using SQLiteNetExtensions.Attributes;
-using SQLiteNetExtensions.Extensions;
 using System.Reflection;
 
 namespace GamHubApp.Models;
 
 public class Article
 {
+
     [PrimaryKey, Column("_id"), JsonProperty("uuid")]
     public string Id { get; set; }
     [Column("mongoId"), JsonProperty("_id")]
@@ -24,18 +23,12 @@ public class Article
     [JsonProperty("author")]
     public string Author { get; set; }
     [JsonProperty("image")]
-    public string Image { get; set; }
-    [ForeignKey(typeof(Source))]
-    public int SourceIdFk { get; set; }
-    [JsonProperty("sourceId")]
+    public string Image { get; set; }[JsonProperty("sourceId")]
     public string SourceId { get; set; }
     [JsonProperty("blocked")]
     public bool? Blocked { get; set; }
-    [JsonIgnore]
-    public Source Source { get
-            {
-            return App.Sources.FirstOrDefault(s => s.MongoId == SourceId);
-        } }
+    [JsonProperty("source"), Ignore]
+    public Source Source { get; set; }
     [JsonProperty("isoDate")]
     public DateTime FullPublishDate { get; set; }
     [JsonProperty("categories"), Ignore]
@@ -68,10 +61,8 @@ public class Article
         get
         {
             if (_isSaved == null)
-                using (var conn = new SQLiteConnection(App.GeneralDBpath))
-                    return conn.Find<Article>(Id) != null;
-
-            return (bool)_isSaved;
+                _isSaved = app.DataFetcher.ArticleExist(this.MongooseId);
+            return (_isSaved ?? false);
         }
         set { _isSaved = value; }
     }
@@ -95,32 +86,31 @@ public class Article
             }
         return true;
     }
+
+    App app = (App.Current as App);
+
     [Ignore]
     public Command AddBookmark
     {
         get
         {
-            return new Command(() =>
+            return new Command(async() =>
             {
                 // If the article is already in bookmarks
-                bool isSaved = IsSaved;
+                bool isSaved = _isSaved ?? false;
 
-                //// Marked the article as saved
-                IsSaved = !IsSaved;
+                // Marked the article as saved
+                IsSaved = !isSaved;
+                var bookmark = (Article)this.MemberwiseClone();
 
-                using (var conn =new SQLiteConnection(App.GeneralDBpath))
-                {
-                    if (isSaved)
-                        conn.Delete(this, recursive: true);
-                    else
-                        // Insert it in database
-                        conn.InsertWithChildren(this, recursive: true);
-
-                    conn.Close();
-                }
+                if (isSaved)
+                    await app.DataFetcher.DeleteArticle(bookmark);
+                else
+                    // Insert it in database
+                    await app.DataFetcher.AddBookmark(bookmark);
 
                 // Say the the bookmark has been updated
-                WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(this, IsSaved));
+                WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(bookmark, _isSaved ?? false));
             }); ;
         }
     }

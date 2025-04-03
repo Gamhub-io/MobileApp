@@ -5,9 +5,11 @@ using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+
 #if DEBUG
 using System.Diagnostics;
 #endif
+
 namespace GamHubApp.Services;
 
 public class Fetcher
@@ -16,8 +18,14 @@ public class Fetcher
     private static string _dateFormat = "dd-MM-yyy_HH:mm:ss";
     private Session CurrentSession { get; set; }
     public Service WebService { get; private set; }
+    public static Collection<Source> Sources { get; set; }
+
+    private GeneralDataBase _generalDB;
+
     public User UserData { get; set; }
-    public Fetcher()
+    public List<Article> Bookmarks { get; private set; }
+
+    public Fetcher(GeneralDataBase generalDataBase)
     {
 #if DEBUG_LOCALHOST
         // Set webservice
@@ -29,7 +37,10 @@ public class Fetcher
         WebService = new Service(host: ProdHost,
                                sslCertificate: true);
 #endif
+        _generalDB = generalDataBase;
+        GetSources().GetAwaiter();
     }
+
     /// <summary>
     /// Get the last 2 months worth of feed
     /// </summary>
@@ -65,7 +76,7 @@ public class Fetcher
     /// <exception cref="Exception"></exception>
     public async Task<Collection<Source>> GetSources()
     {
-        return await WebService.Get<Collection<Source>>(controller: "sources", 
+        return Fetcher.Sources =  await WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
                                                          unSuccessCallback: e => _ = HandleHttpException(e));
     }
@@ -258,6 +269,7 @@ public class Fetcher
         Preferences.Set(nameof(Session.ExpiresIn), newSession.ExpiresIn);
         Preferences.Set(nameof(Session.Created), newSession.Created);
     }
+
     /// <summary>
     /// Restore the last session if any
     /// </summary>
@@ -280,13 +292,9 @@ public class Fetcher
 
             return;
         }
-        if (!(App.Current as App).RecoverUserInfo())
-        {
-            // Kill the previous session
-            KillSession();
-            return;
 
-        }
+        if (!EvaluateCurrentSession()) return;
+
         // Save sensitive data
         var accessTask = SecureStorage.GetAsync(nameof(Session.AccessToken));
         var tokenTypeTask = SecureStorage.GetAsync(nameof(Session.TokenType));
@@ -304,6 +312,23 @@ public class Fetcher
 
 
     }
+
+    /// <summary>
+    /// Evaluate the validity and state of the current session
+    /// </summary>
+    /// <returns>true -> session alive; false -> dead session</returns>
+    private bool EvaluateCurrentSession()
+    {
+        if (!RecoverUserInfo())
+        {
+            // Kill the previous session
+            KillSession();
+            return false;
+
+        }
+        return true;
+    }
+
     /// <summary>
     /// Adding a hook to an article
     /// </summary>
@@ -340,6 +365,34 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Recover the info relevant to the user
+    /// </summary>
+    /// <returns>true: data found | false: data not found</returns>
+    public bool RecoverUserInfo()
+    {
+
+        // Get preferences
+        string userDataStr = Preferences.Get(nameof(UserData), string.Empty);
+
+        if (string.IsNullOrEmpty(userDataStr))
+            return false;
+
+        // Set Userdata object
+        return (UserData = JsonConvert.DeserializeObject<User>(userDataStr)) != null;
+    }
+
+    /// <summary>
+    /// Save the info relevant to the user
+    /// </summary>
+    public void SaveUserInfo(User user)
+    {
+        UserData = user;
+
+        // Save preferences
+        Preferences.Set(nameof(UserData), JsonConvert.SerializeObject(UserData));
+    }
+
+    /// <summary>
     /// Method to handle exceptions
     /// </summary>
     /// <param name="err"></param>
@@ -352,4 +405,83 @@ public class Fetcher
         SentrySdk.CaptureException(new Exception(await err.Content.ReadAsStringAsync()));
 #endif
     }
+
+    #region Local Actions
+
+    /// <summary>
+    /// Update a feed
+    /// </summary>
+    /// <param name="feed">Feed we want to update</param>
+    /// <returns>Update status</returns>
+    public async Task<int> UpdateFeed(Feed feed)
+    {
+        return await _generalDB.UpdateFeed(feed);
+    }
+
+    /// <summary>
+    /// Delete a feed
+    /// </summary>
+    /// <param name="feed">Feed we want to delete</param>
+    /// <returns>Update status</returns>
+    public async Task<int> DeleteFeed(Feed feed)
+    {
+        return await _generalDB.DeleteFeed(feed);
+    }
+
+    /// <summary>
+    /// Delete a article
+    /// </summary>
+    /// <param name="article">article we want to delete</param>
+    /// <returns>Update status</returns>
+    public async Task<int> DeleteArticle(Article article)
+    {
+        int res = -1;
+        Article item = Bookmarks.SingleOrDefault(b => b.MongooseId == article.MongooseId);
+        
+        if (item is null)
+            return res;
+
+        res = await _generalDB.DeleteArticleBookmark(article);
+        if (res == 1)
+        {
+            Bookmarks.RemoveAt(Bookmarks.IndexOf(item));
+    }
+
+        return res;
+    }
+
+    /// <summary>
+    /// Check if an article exist
+    /// </summary>
+    /// <param name="articleId">Id of the article we want to check</param>
+    /// <returns>true -> exist; false -> doesn't</returns>
+    public bool ArticleExist (string articleId)
+    {
+        //return await _generalDB.GetArticleById(articleId) is not null;
+        return Bookmarks.SingleOrDefault(a => a.MongooseId == articleId) is not null;
+    }
+
+    /// <summary>
+    /// Load/Reload all the Bookmarks
+    /// </summary>
+    public async Task LoadBookmarks ()
+    {
+        
+        Bookmarks = [.. await _generalDB.GetArticles()];
+    }
+
+    /// <summary>
+    /// Add a bookmark to an article
+    /// </summary>
+    /// <param name="article">article to be bookmarked</param>
+    /// <returns>true -> exist; false -> doesn't</returns>
+    public async Task<int> AddBookmark (Article article)
+    {
+        int res = -1;
+        res =  await _generalDB.InsertArticleBookmark(article);
+        if (res == 1)
+            Bookmarks.Insert(0, article);
+        return res;
+    }
+    #endregion
 }

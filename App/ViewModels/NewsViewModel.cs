@@ -4,8 +4,6 @@ using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.Views;
 using MvvmHelpers;
-using SQLite;
-using SQLiteNetExtensions.Extensions;
 using System.Collections.ObjectModel;
 #if DEBUG
 using System.Diagnostics;
@@ -116,7 +114,7 @@ public class NewsViewModel : BaseViewModel
     {
         get
         {
-            return new Command(() =>
+            return new Command(async () =>
             {
                 if (string.IsNullOrEmpty(SearchText))
                     return;
@@ -129,13 +127,10 @@ public class NewsViewModel : BaseViewModel
                 {
                     CurrentFeed.Id = Guid.NewGuid().ToString();
                     CurrentFeed.Title = SearchText;
-                    CurrentFeed.Keywords = SearchText;
+                    CurrentFeed.Keywords = SearchText; 
                     CurrentFeed.IsSaved = true;
-                    using (var conn = new SQLiteConnection(App.GeneralDBpath))
-                    {
-                        conn.InsertWithChildren(_currentFeed);
-                        conn.Close();
-                    }
+
+                    await _generalDB.InsertFeed(_currentFeed);
                     Feeds.Add(_currentFeed);
 
                     // Update the feeds remotely
@@ -146,11 +141,7 @@ public class NewsViewModel : BaseViewModel
                 if (feedTarget?.Keywords == null)
                     feedTarget = Feeds.FirstOrDefault(f => f.Keywords.ToLower() == SearchText.ToLower());
 
-                using (var conn = new SQLiteConnection(App.GeneralDBpath))
-                {
-                    conn.Delete(feedTarget);
-                    conn.Close();
-                }
+                await _generalDB.DeleteFeed(feedTarget);
 
                 Feeds.Remove(feedTarget);
             });
@@ -164,11 +155,11 @@ public class NewsViewModel : BaseViewModel
             {
                 IsSearching = false;
 
-                    if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
+                if (string.IsNullOrEmpty(_searchText) || !IsSearchProcessed) return;
 
 
-                    // Scroll up before fetching the items
-                    CurrentPage.ScrollFeed();
+                // Scroll up before fetching the items
+                WeakReferenceMessenger.Default.Send(this);
 
                 await Task.Run(() =>
                 {
@@ -212,10 +203,7 @@ public class NewsViewModel : BaseViewModel
         set
         {
             _unnoticedArticles = value;
-            if (_unnoticedArticles?.Count >0)
-                CurrentPage.ShowRefreshButton();
-            else
-                CurrentPage.RemoveRefreshButton();
+            WeakReferenceMessenger.Default.Send(new UnnoticedArticlesChangedMessage(_unnoticedArticles));
 
             OnPropertyChanged(nameof(UnnoticedArticles));
         }
@@ -234,7 +222,10 @@ public class NewsViewModel : BaseViewModel
 
 
     public App CurrentApp { get; }
-    private NewsPage CurrentPage { get; set; }
+
+    private GeneralDataBase _generalDB;
+    private BackUpDataBase _backUpDataBase;
+
     // Command to refresh the news feed
     private readonly Command _refreshFeed;
 
@@ -288,17 +279,17 @@ public class NewsViewModel : BaseViewModel
     public bool IsSearchLoading { get; private set; }
     public bool IsLoadingChunks { get; private set; }
 
-    public NewsViewModel(NewsPage currentPage)
+    public NewsViewModel(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
     {
         CurrentApp = App.Current as App;
-        CurrentPage = currentPage;
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
-        {
-            Feeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+        _generalDB = generalDataBase;
+        _backUpDataBase = backUpDataBase;
+
         UnnoticedArticles = new();
-        Articles = new ObservableRangeCollection<Article>(GetBackupFromDb().OrderBy(a => a.Time).ToList());
+        Task.Run(async () =>
+        {
+            Articles = new ((await GetBackupFromDb()).OrderBy(a => a.Time).ToList());
+        });
         
         RefreshBottomCommand = new(() =>
         {
@@ -319,7 +310,7 @@ public class NewsViewModel : BaseViewModel
             _ = Task.Run( () =>
             {
                 // Scroll up
-                CurrentPage.ScrollFeed();
+                WeakReferenceMessenger.Default.Send(this);
 
                 // Add the unnoticed articles
                 UpdateArticles(UnnoticedArticles);
@@ -331,8 +322,6 @@ public class NewsViewModel : BaseViewModel
         });
 
         CurrentFeed = new Feed();
-
-
 
         WeakReferenceMessenger.Default.Register<FeedUpdatedMessage>(this, (r, m) =>
         {
@@ -348,40 +337,21 @@ public class NewsViewModel : BaseViewModel
         // Handle if a article change sees a change of bookmark state
         WeakReferenceMessenger.Default.Register(this, (MessageHandler<object, BookmarkChangedMessage>)((r, m) =>
         {
+            // Escape is the current page is the news page
+            if (((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage is NewsPage)
+                return;
             if (m.ArticleSent is null)
                 return;
-
-            var bookmark = m.ArticleSent;
-            var page = ((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
-
-            // Escape is the current page is the news page
-            if (page is NewsPage)
-                return;
-
-            // Select the article
-            Article article = _articles.FirstOrDefault((Func<Article, bool>)(a => a.Id == bookmark.Id));
-
-            // end there if the article is not listed anymore
-            if (article is null)
-                return;
-
+            Article article = _articles.FirstOrDefault((Func<Article, bool>)(a => a.Id == m.ArticleSent.Id));
             // Get article index
             int index = _articles.IndexOf(article);
 
             try
             {
                 if (_articles.Count > 0)
-                {
-                    // Remove the previous one 
-                    Articles.Remove(article);
-
-                    article.IsSaved = !article.IsSaved;
-
-                    // to add the new one
-                    Articles.Insert(index, article);
-                }
-
-
+                    // Reload the Article that has been bookmarked
+                    Articles[index] = m.ArticleSent;
+                
             }
             catch (Exception ex)
             {
@@ -576,26 +546,23 @@ public class NewsViewModel : BaseViewModel
     {
         try
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
-                    using var conn = new SQLiteConnection(App.PathDBBackUp);
-
-                    conn.DeleteAll<Article>();
-
-                    conn.InsertAllWithChildren(_articles);
-
-                    foreach (var source in _articles.Select(a => a.Source).Distinct().ToList())
-                    {
-                        conn.InsertOrReplace(source);
-
-                    }
-                    conn.Close();
+                await _backUpDataBase.UpdateArticles(_articles);
             });
         }
-        finally
+        catch (Exception ex)
         {
-            //App.BackUpConn.Close();
-        };
+
+#if DEBUG
+            Debug.WriteLine(ex);
+
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            return null;
+        }
+        
     }
 
     /// <summary>
@@ -611,8 +578,28 @@ public class NewsViewModel : BaseViewModel
         {
             if (isUpdate)
                 timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+
+            List<Article> collection = new();
+            try
+            {
+                collection = (await CurrentApp.DataFetcher.GetFeedArticles(SearchText, timeParam, isUpdate)).Where(article => /*(article.Blocked == null || article.Blocked == false)*/ 
+                article.Source?.IsActive ?? false).ToList();
             
-            articles = new((await CurrentApp.DataFetcher.GetFeedArticles(SearchText, timeParam, isUpdate)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive));
+
+            }
+            catch (Exception ex) 
+            {
+
+#if DEBUG
+                Debug.WriteLine(ex);
+
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+                return;
+            }
+            
+            articles = new(collection);
             
         }
         // Offline search
@@ -651,37 +638,30 @@ public class NewsViewModel : BaseViewModel
     /// Get all the articles from the db
     /// </summary>
     /// <returns></returns>
-    private static IEnumerable<Article> GetBackupFromDb()
+    private async Task<IEnumerable<Article>> GetBackupFromDb()
     {
-        using (var backupConn = new SQLiteConnection(App.PathDBBackUp))
-            return backupConn.GetAllWithChildren<Article>(recursive: true).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
+        return (await _backUpDataBase.GetArticles()).Where(article => article.Blocked == null || article.Blocked == false).Reverse<Article>();
     }
 
     /// <summary>
      /// Processed launched when the page reappear
      /// </summary>
-    public void Resume()
+    public async Task Resume()
     {
+
         if (IsFirstLoad)
         {
 
-            CurrentApp.ShowLoadingIndicator(CurrentPage);
+            CurrentApp.ShowLoadingIndicator();
             _ = FetchExistingArticles().ContinueWith(res =>
             {
                 CurrentApp.RemoveLoadingIndicator();
                 IsFirstLoad = false;
-
             });
 
 
         }
-        ObservableCollection<Feed> curFeeds;
-        using (var conn = new SQLiteConnection(App.GeneralDBpath))
-        {
-            // Get all the feeds registered
-            curFeeds = new ObservableCollection<Feed>(conn.GetAllWithChildren<Feed>());
-            conn.Close();
-        }
+        ObservableCollection <Feed> curFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
 
         // We try to figure out if the two feed lists contains the same items
         if (!FeedToolkit.CampareItems(Feeds, curFeeds))

@@ -2,16 +2,16 @@
 using GamHubApp.ViewModels;
 using GamHubApp.ViewModels.PopUps;
 using CommunityToolkit.Maui.Views;
+using GamHubApp.Services;
 
-namespace GamHubApp.Views
+namespace GamHubApp.Views;
+
+[XamlCompilation(XamlCompilationOptions.Compile)]
+public partial class RenameFeedPopUp : Popup
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
-	public partial class RenameFeedPopUp : Popup
-    {
-		public RenameFeedPopUp (Feed feed, FeedsViewModel vm)
-		{
-			InitializeComponent ();
-			BindingContext = new RenameFeedPopUpViewModel (this,feed, vm);
-        }
+	public RenameFeedPopUp (Feed feed, FeedsViewModel vm, GeneralDataBase generalDataBase)
+	{
+		InitializeComponent ();
+		BindingContext = new RenameFeedPopUpViewModel (this,feed, vm, generalDataBase);
     }
 }

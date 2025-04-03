@@ -1,5 +1,9 @@
 ﻿using CommunityToolkit.Maui;
 using Vapolia.StrokedLabels;
+using GamHubApp.Services;
+using GamHubApp.ViewModels;
+using GamHubApp.Views;
+
 #if ANDROID
 using GamHubApp.Platforms.Android.Renderers;
 #endif
@@ -45,9 +49,13 @@ public static class MauiProgram
                    fonts.AddFont("Ubuntu-Regular.ttf", "P-Regular");
                    fonts.AddFont("Ubuntu-Bold.ttf", "P-Bold");
                    fonts.AddFont("Ubuntu-Medium.ttf", "P-Medium");
+                   fonts.AddFont("Lexend-SemiBold.ttf", "P-SemiBold");
                })
+               .RegisterViews()
+               .RegisterViewModels()
                .UseStrokedLabelBehavior()
                .UseMauiCommunityToolkit()
+               .RegisterLocalStorage()
                .ConfigureMauiHandlers(handlers =>
                {
 #if ANDROID
@@ -57,6 +65,42 @@ public static class MauiProgram
 #if DEBUG
         //builder.Logging.AddDebug();
 #endif
+        builder.Services.AddSingleton<Fetcher>();
+
+        builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
         return builder.Build();
+    }
+
+    public static MauiAppBuilder RegisterViewModels(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<AboutViewModel>();
+        mauiAppBuilder.Services.AddSingleton<AppShellViewModel>();
+        mauiAppBuilder.Services.AddSingleton<BookmarkViewModel>();
+        mauiAppBuilder.Services.AddSingleton<FeedsViewModel>();
+        mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
+
+        return mauiAppBuilder;
+    }
+
+    public static MauiAppBuilder RegisterLocalStorage(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<GeneralDataBase>();
+        mauiAppBuilder.Services.AddSingleton<BackUpDataBase>();
+
+        return mauiAppBuilder;
+    }
+
+    public static MauiAppBuilder RegisterViews(this MauiAppBuilder mauiAppBuilder)
+    {
+        mauiAppBuilder.Services.AddSingleton<App>();
+        mauiAppBuilder.Services.AddSingleton<AppShell>();
+
+        // pages
+        mauiAppBuilder.Services.AddSingleton<AboutPage>();
+        mauiAppBuilder.Services.AddSingleton<FeedsPage>();
+        mauiAppBuilder.Services.AddSingleton<BookmarkPage>();
+        mauiAppBuilder.Services.AddSingleton<DeleteFeedPopUp>();
+        mauiAppBuilder.Services.AddSingleton<RenameFeedPopUp>();
+        return mauiAppBuilder;
     }
 }

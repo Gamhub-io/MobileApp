@@ -8,5 +8,22 @@ namespace GamHubApp.Core
         public static string ApiHost = Environment.GetEnvironmentVariable("api_host");
         public static string MonitoringKey = Environment.GetEnvironmentVariable("monitoring_key");
         public static string Localhost = Environment.GetEnvironmentVariable("localhost");
+
+        public const string DbFilename = "ares.db3";
+        public const string DbBackUpFilename = "aresBackup.db3";
+
+        public const SQLite.SQLiteOpenFlags Flags =
+            // open the database in read/write mode
+            SQLite.SQLiteOpenFlags.ReadWrite |
+            // create the database if it doesn't exist
+            SQLite.SQLiteOpenFlags.Create |
+            // enable multi-threaded database access
+            SQLite.SQLiteOpenFlags.SharedCache;
+
+        public static string GeneralDBpath =>
+            Path.Combine(FileSystem.AppDataDirectory, DbFilename);
+
+        public static string PathDBBackUp =>
+            Path.Combine(FileSystem.AppDataDirectory, DbBackUpFilename);
     }
 }

@@ -1,4 +1,7 @@
-﻿using GamHubApp.ViewModels;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services;
+using GamHubApp.Services.ChangedMessages;
+using GamHubApp.ViewModels;
 
 namespace GamHubApp.Views;
 
@@ -13,24 +16,57 @@ public partial class FeedsPage : ContentPage
 
     public bool IsFromDetail { get; set; }
 
-    public FeedsPage()
+    public FeedsPage(FeedsViewModel vm)
     {
         InitializeComponent();
-        BindingContext = _vm = new FeedsViewModel(this);
+        BindingContext = _vm = vm;
         _refreshButtonYPos = refreshButton.Y;
         refreshButton.TranslationY = rButtonYStart;
+        
+        RegisterMessaging();
+    }
+
+    private void RegisterMessaging()
+    {
+        WeakReferenceMessenger.Default.Register<UnnoticedArticlesChangedMessage>(this, (r, m) =>
+        {
+            if (m.Count > 0)
+                ShowRefreshButton();
+            else
+                RemoveRefreshButton();
+        });
+
+        WeakReferenceMessenger.Default.Register<ScrollFeedPageChangedMessage>(this, (r, m) =>
+        {
+            ScrollFeed();
+        });
+    }
+
+    private void UnRegisterMessaging()
+    {
+        WeakReferenceMessenger.Default.Unregister<UnnoticedArticlesChangedMessage>(this);
+
+        WeakReferenceMessenger.Default.Unregister<ScrollFeedPageChangedMessage>(this);
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        _vm.Resume();
+        _vm.Resume().GetAwaiter();
+        if (_vm.DataLoaded)
+            CloseDropdownMenu();
+
+    }
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        UnRegisterMessaging();
     }
 
     /// <summary>
-     /// Function to open a the dropdown
-     /// </summary>
+    /// Function to open a the dropdown
+    /// </summary>
     public void OpenDropdownMenu()
     {
         double height = 70;

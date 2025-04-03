@@ -6,10 +6,13 @@ namespace GamHubApp;
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class AppShell : Shell
 {
-    public AppShell()
+    private App _currentApp;
+    private AppShellViewModel _vm;
+
+    public AppShell(AppShellViewModel vm)
     {
         InitializeComponent();
-        BindingContext = new AppShellViewModel(this);
+        BindingContext = _vm = vm;
     }
 
     protected override void OnNavigating(ShellNavigatingEventArgs args)
@@ -28,6 +31,28 @@ public partial class AppShell : Shell
     {
         base.OnAppearing();
 
-        await (App.Current as App).LoadPartners();
+        _currentApp = (App.Current as App);
+        await _currentApp.LoadPartners();
+    }
+
+    private void Auth_Tapped(object sender, TappedEventArgs e)
+    {
+        // CLose flyout 
+        FlyoutIsPresented = false;
+
+        // Open the login pop up
+        _currentApp.OpenPopUp(new AuthPopUp((res) =>_vm.PostAuthProcess(res)), this);
+    }
+
+    private async void Logout_Tapped(object sender, TappedEventArgs e)
+    {
+        if (await _currentApp.ShowLogoutConfirmation())
+        {
+            // Remove the authenticated flag
+            _vm.Authenticated = false;
+            // Logout the user
+            _currentApp.LogoutCurrentAccount();
+
+        }
     }
 }
