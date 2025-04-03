@@ -61,7 +61,7 @@ public class Article
         get
         {
             if (_isSaved == null)
-                IsSaved = app.DataFetcher.ArticleExist(this.MongooseId);
+                _isSaved = app.DataFetcher.ArticleExist(this.MongooseId);
             return (_isSaved ?? false);
         }
         set { _isSaved = value; }
@@ -97,18 +97,20 @@ public class Article
             return new Command(async() =>
             {
                 // If the article is already in bookmarks
-                bool isSaved = IsSaved;
+                bool isSaved = _isSaved ?? false;
 
                 // Marked the article as saved
-                IsSaved = !IsSaved;
+                IsSaved = !isSaved;
+                var bookmark = (Article)this.MemberwiseClone();
+
                 if (isSaved)
-                    await app.DataFetcher.DeleteArticle(this);
+                    await app.DataFetcher.DeleteArticle(bookmark);
                 else
                     // Insert it in database
-                    await app.DataFetcher.AddBookmark(this);
+                    await app.DataFetcher.AddBookmark(bookmark);
 
                 // Say the the bookmark has been updated
-                WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(this, IsSaved));
+                WeakReferenceMessenger.Default.Send(new BookmarkChangedMessage(bookmark, _isSaved ?? false));
             }); ;
         }
     }
