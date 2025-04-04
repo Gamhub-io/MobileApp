@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Maui.Views;
-using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
@@ -57,10 +56,8 @@ public partial class App : Application
        Shell = shell;
 
        InitializeComponent();
-        
-       // Start the db
-       StartDb();
     }
+
     /// <summary>
     /// Show the popup loading indicator
     /// </summary>
@@ -92,35 +89,13 @@ public partial class App : Application
            this.LoadingIndicator.Close();
         });
     }
-    /// <summary>
-    /// Function to start the data base
-    /// </summary>
-    public static void StartDb()
-    {
-        // Just use whatever directory SpecialFolder.Personal returns
-        string libraryPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-        GeneralDBpath = Path.Combine(libraryPath, "ares.db3");
-        PathDBBackUp = Path.Combine(libraryPath, "aresBackup.db3");
-
-        // Verify if a data base already exist
-        if (!File.Exists(AppConstant.GeneralDBpath))
-            // Create the folder path.
-            File.Create(AppConstant.GeneralDBpath);
-
-        // Verify if a data base already exist
-        if (!File.Exists(AppConstant.PathDBBackUp))
-            // Create the folder path.
-            File.Create(AppConstant.PathDBBackUp);
-
-    }
 
     protected override void OnStart()
     {
         // Task to get all the resource data from the API
         Task.Run(async () =>
         {
-            await _backupDb.UpdateSources(Fetcher.Sources.ToList());
+            await _backupDb.UpdateSources([.. Fetcher.Sources]);
         });
 
             // Register the date of the first run
