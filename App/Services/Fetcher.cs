@@ -477,8 +477,8 @@ public class Fetcher
     /// </summary>
     public async Task UpdateBackupSources ()
     {
-
-        await _backupDB.UpdateSources([.. Fetcher.Sources]);
+        if (Fetcher.Sources?.Count > 0)
+            await _backupDB.UpdateSources([.. Fetcher.Sources]);
     }
 
     /// <summary>
