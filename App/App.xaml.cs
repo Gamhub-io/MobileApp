@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 
 #if DEBUG
 using System.Diagnostics;
+using GamHubApp.Core;
 #endif
 
 namespace GamHubApp;
@@ -92,12 +93,6 @@ public partial class App : Application
 
     protected override void OnStart()
     {
-        // Task to get all the resource data from the API
-        Task.Run(async () =>
-        {
-            await _backupDb.UpdateSources([.. Fetcher.Sources]);
-        });
-
             // Register the date of the first run
         DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
         if (DateFirstRun == DateTime.MinValue)
@@ -117,6 +112,8 @@ public partial class App : Application
         _generalDb.Init().GetAwaiter();
         _backupDb.Init().GetAwaiter();
         DataFetcher.LoadBookmarks().GetAwaiter();
+        DataFetcher.UpdateBackupSources().GetAwaiter();
+
         return new Window(Shell);
     }
     protected override void OnSleep()
