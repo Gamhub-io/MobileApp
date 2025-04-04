@@ -31,7 +31,7 @@ public class BackUpDataBase
 
         List<Task> tasks = new();
 
-        for (int i = 0; i < sources.Count(); i++)
+        for (int i = 0; i < sources.Count; i++)
             tasks.Add(database.InsertOrReplaceAsync(sources[i]));
 
         return Task.WhenAll(tasks);
