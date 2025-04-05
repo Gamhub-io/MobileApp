@@ -26,6 +26,7 @@ public class Fetcher
     public User UserData { get; set; }
     public List<Article> Bookmarks { get; private set; }
 
+
     public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
     {
 #if DEBUG_LOCALHOST
@@ -40,6 +41,7 @@ public class Fetcher
 #endif
         _generalDB = generalDataBase;
         _backupDB = backUpDataBase;
+  
         GetSources().GetAwaiter();
     }
 
@@ -506,5 +508,7 @@ public class Fetcher
             Bookmarks.Insert(0, article);
         return res;
     }
+
 #endregion
+
 }

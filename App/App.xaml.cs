@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui.Views;
+using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
@@ -10,7 +11,6 @@ using System.Collections.ObjectModel;
 
 #if DEBUG
 using System.Diagnostics;
-using GamHubApp.Core;
 #endif
 
 namespace GamHubApp;
@@ -113,7 +113,7 @@ public partial class App : Application
         _backupDb.Init().GetAwaiter();
         DataFetcher.LoadBookmarks().GetAwaiter();
         DataFetcher.UpdateBackupSources().GetAwaiter();
-
+        
         return new Window(Shell);
     }
     protected override void OnSleep()
