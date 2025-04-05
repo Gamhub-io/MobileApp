@@ -21,11 +21,13 @@ public class Fetcher
     public static Collection<Source> Sources { get; set; }
 
     private GeneralDataBase _generalDB;
+    private BackUpDataBase _backupDB;
 
     public User UserData { get; set; }
     public List<Article> Bookmarks { get; private set; }
 
-    public Fetcher(GeneralDataBase generalDataBase)
+
+    public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
     {
 #if DEBUG_LOCALHOST
         // Set webservice
@@ -38,6 +40,8 @@ public class Fetcher
                                sslCertificate: true);
 #endif
         _generalDB = generalDataBase;
+        _backupDB = backUpDataBase;
+  
         GetSources().GetAwaiter();
     }
 
@@ -471,6 +475,27 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Load/Reload all the Bookmarks
+    /// </summary>
+    public async Task UpdateBackupSources ()
+    {
+        try
+        {
+            if (Fetcher.Sources is not null)
+                await _backupDB.UpdateSources([.. Fetcher.Sources]);
+
+        } catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+
+        }
+    }
+
+    /// <summary>
     /// Add a bookmark to an article
     /// </summary>
     /// <param name="article">article to be bookmarked</param>
@@ -483,5 +508,7 @@ public class Fetcher
             Bookmarks.Insert(0, article);
         return res;
     }
-    #endregion
+
+#endregion
+
 }
