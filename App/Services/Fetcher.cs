@@ -477,8 +477,20 @@ public class Fetcher
     /// </summary>
     public async Task UpdateBackupSources ()
     {
-        if (Fetcher.Sources?.Count > 0)
-            await _backupDB.UpdateSources([.. Fetcher.Sources]);
+        try
+        {
+            if (Fetcher.Sources is not null)
+                await _backupDB.UpdateSources([.. Fetcher.Sources]);
+
+        } catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+
+        }
     }
 
     /// <summary>
@@ -494,5 +506,5 @@ public class Fetcher
             Bookmarks.Insert(0, article);
         return res;
     }
-    #endregion
+#endregion
 }
