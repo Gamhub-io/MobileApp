@@ -28,20 +28,6 @@
     </ResourceDictionary>
 
     <!-- Buttons -->
-    <Style TargetType="Frame"
-               x:Key="ButtonFrame">
-        <Setter Property="HorizontalOptions" Value="End" />
-        <Setter Property="VerticalOptions" Value="Center" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="CornerRadius" Value="17" />
-        <Setter Property="Margin" Value="0,10,10,0" />
-        <Setter Property="HeightRequest" Value="40" />
-        <Setter Property="WidthRequest" Value="40" />
-        <Setter Property="HasShadow" Value="{OnPlatform Android='True', iOS='False'}" />
-        <Setter Property="IsClippedToBounds" Value="True" />
-        <Setter Property="BackgroundColor"
-                    Value="{StaticResource LightDark}" />
-    </Style>
     <Style TargetType="Border"
                x:Key="ButtonBorder">
         <Setter Property="HorizontalOptions" Value="End" />
