@@ -43,6 +43,13 @@
 	<UseInterpreter>true</UseInterpreter>
 	<CodesignProvision>VS: com.bricefriha.aresgaming Development</CodesignProvision>
 	</PropertyGroup>
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+		<GoogleServicesJson Include="Platforms\Android\Resources\google-services.json" Link="Platforms\Android\Resources\google-services.json" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
+		<BundleResource Include="Platforms\iOS\GoogleService-Info.plist" Link="GoogleService-Info.plist" />
+	</ItemGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' And '$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 	  <ProvisioningType>manual</ProvisioningType>
 	  <CodesignKey>Apple Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>		
