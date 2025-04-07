@@ -1,6 +1,9 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Services;
+using Microsoft.Extensions.Logging;
+using Plugin.FirebasePushNotifications;
+using System.Diagnostics;
 
 namespace GamHubApp.ViewModels;
 
@@ -18,6 +21,9 @@ public class AppShellViewModel : BaseViewModel
     public App CurrentApp { get; private set; }
 
     private Fetcher dataFetcher;
+    private ILogger<AppShellViewModel> _logger;
+    private IFirebasePushNotification _firebasePushNotification;
+    private INotificationPermissions _firebasePushPermissions;
 
     public AppShell MainShell { get; }
     private bool _authenticated;
@@ -48,18 +54,60 @@ public class AppShellViewModel : BaseViewModel
     }
 
 
-    public AppShellViewModel(Fetcher fetc)
+    public AppShellViewModel(Fetcher fetc,
+    ILogger<AppShellViewModel> logger,
+    IFirebasePushNotification firebasePushNotification,
+    INotificationPermissions firebasePushPermission)
     {
         CurrentApp = App.Current as App;
         dataFetcher = fetc;
 
+        _logger = logger;
+        
+        _firebasePushNotification = firebasePushNotification;
+        _firebasePushPermissions = firebasePushPermission;
 
         Task.Run(async () =>
         {
             await fetc.RestoreSession();
             UserProfile = fetc.UserData;
-
         });
+
+        NotificationSetup().GetAwaiter();
+    }
+
+    private async Task NotificationSetup()
+    {
+        if (await _firebasePushPermissions.GetAuthorizationStatusAsync() != Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted)
+            if (!await _firebasePushPermissions.RequestPermissionAsync()) return;
+        await Task.Delay(1000);
+        await _firebasePushNotification.RegisterForPushNotificationsAsync();
+#if IOS
+        // TODO: remove once https://github.com/thomasgalliker/Plugin.FirebasePushNotifications/issues/113 is sorted 
+        await Task.Delay(TimeSpan.FromSeconds(3));
+#endif
+
+        _firebasePushNotification.TokenRefreshed += this.OnTokenRefresh;
+        _firebasePushNotification.NotificationReceived += this.OnNotificationReceived;
+#if DEBUG
+        Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
+#endif
+        _firebasePushNotification.SubscribeTopic("daily_catchup");
+
+
+    }
+
+    private void OnNotificationReceived(object sender, FirebasePushNotificationDataEventArgs e)
+    {
+    }
+
+    private void OnTokenRefresh(object sender, FirebasePushNotificationTokenEventArgs e)
+    {
+#if DEBUG
+        Debug.WriteLine($"Notify token: {e.Token}");
+#endif
+
+        //this.UpdateSubscribedTopics();
     }
 
     public void PostAuthProcess(AuthResponse res) 

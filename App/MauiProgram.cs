@@ -4,6 +4,7 @@ using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using Plugin.FirebasePushNotifications;
+using Plugin.FirebasePushNotifications.Model.Queues;
 
 
 #if ANDROID
@@ -58,7 +59,12 @@ public static class MauiProgram
                .UseStrokedLabelBehavior()
                .UseMauiCommunityToolkit()
                .RegisterLocalStorage()
-               .UseFirebasePushNotifications()
+                .UseFirebasePushNotifications(o =>
+                {
+                    o.AutoInitEnabled = false;
+                    o.QueueFactory = new PersistentQueueFactory();
+
+                })
                .ConfigureMauiHandlers(handlers =>
                {
 #if ANDROID
