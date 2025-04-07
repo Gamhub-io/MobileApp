@@ -3,6 +3,8 @@ using Vapolia.StrokedLabels;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
+using Plugin.FirebasePushNotifications;
+
 
 #if ANDROID
 using GamHubApp.Platforms.Android.Renderers;
@@ -56,6 +58,7 @@ public static class MauiProgram
                .UseStrokedLabelBehavior()
                .UseMauiCommunityToolkit()
                .RegisterLocalStorage()
+               .UseFirebasePushNotifications()
                .ConfigureMauiHandlers(handlers =>
                {
 #if ANDROID
