@@ -37,7 +37,7 @@ jobs:
       project-file: ${{ needs.setup.outputs.csprojToBuild }}
       project-folder: ${{ needs.setup.outputs.projectFolder }}
       build-config: 'Release'
-      package-name: ${{ needs.setup.outputs.packageName }}
+      package-name: 'com.bricefriha.aresgaming'
       deploy-type: ${{ needs.setup.outputs.deploy-type }}
       build-version: ${{ needs.setup.outputs.buildVersion }}
     secrets:
