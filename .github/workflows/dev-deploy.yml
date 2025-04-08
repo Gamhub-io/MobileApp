@@ -21,7 +21,7 @@ jobs:
       dotnetVersionTargets: ${{ env.DOTNET_VERSION_TARGETS }}
       csprojToBuild: ${{ env.CSPROJ_TO_BUILD }}
       projectFolder: ${{ env.PROJECT_FOLDER }}
-      packageName: ${{ env.BUNDLE_ID }}
+      packageName: 'com.bricefriha.aresgaming'
       deploy-type: 'dev'
     steps:
       - run: echo "Exposing env setup, because they can't be passed to nested workflows."
