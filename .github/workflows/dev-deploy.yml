@@ -21,6 +21,7 @@ jobs:
       dotnetVersionTargets: ${{ env.DOTNET_VERSION_TARGETS }}
       csprojToBuild: ${{ env.CSPROJ_TO_BUILD }}
       projectFolder: ${{ env.PROJECT_FOLDER }}
+      packageName: ${{ env.BUNDLE_ID }}
       deploy-type: 'dev'
     steps:
       - run: echo "Exposing env setup, because they can't be passed to nested workflows."
@@ -35,7 +36,7 @@ jobs:
       project-file: ${{ needs.setup.outputs.csprojToBuild }}
       project-folder: ${{ needs.setup.outputs.projectFolder }}
       build-config: 'Release'
-      package-name: 'com.bricefriha.aresgaming'
+      package-name: ${{ needs.setup.outputs.packageName }}
       deploy-type: ${{ needs.setup.outputs.deploy-type }}
       build-version: ${{ needs.setup.outputs.buildVersion }}
     secrets:
@@ -59,7 +60,7 @@ jobs:
       build-version: ${{ needs.setup.outputs.buildVersion }}
       deploy-type: ${{ needs.setup.outputs.deploy-type }}
       generation: 'Atlas (BETA)'
-      package-name: 'com.bricefriha.aresgaming'
+      package-name: ${{ needs.setup.outputs.packageName }}
     secrets:
       keystore: ${{ secrets.PLAY_KEYSTORE }}
       keystore-alias: ${{ secrets.PLAY_KEYSTORE_ALIAS }}
