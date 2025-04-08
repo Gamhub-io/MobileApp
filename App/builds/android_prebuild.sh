@@ -18,7 +18,7 @@ fi
 
 APP_CONSTANT_FILE=$project_folder/App/Core/AppConstant.cs
 ## Install google services
-cat <<EOF > $project_folderApp/Platforms/Android/Resources/google-services.json
+cat <<EOF > $project_folder/App/Platforms/Android/Resources/google-services.json
 {
   "project_info": {
     "project_number": "$firebase_GCM_sender_ID",
