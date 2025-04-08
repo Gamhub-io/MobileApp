@@ -18,7 +18,8 @@ fi
 
 APP_CONSTANT_FILE=$project_folder/App/Core/AppConstant.cs
 ## Install google services
-"{
+cat <<EOF > $project_folderApp/Platforms/Android/Resources/google-services.json
+{
   "project_info": {
     "project_number": "$firebase_GCM_sender_ID",
     "project_id": "$firebase_project_id",
@@ -46,7 +47,8 @@ APP_CONSTANT_FILE=$project_folder/App/Core/AppConstant.cs
     }
   ],
   "configuration_version": "1"
-}">> $project_folderApp/Platforms/Android/Resources/google-services.json
+}
+EOF
 
 if [ -e "$APP_CONSTANT_FILE" ]
 then

@@ -19,7 +19,8 @@ fi
 APP_CONSTANT_FILE=$project_folder/App/Core/AppConstant.cs
 
 ## Install google services
-"<?xml version="1.0" encoding="UTF-8"?>
+cat <<EOF > $project_folder/App/Platforms/iOS/GoogleService-Info.plist
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -48,7 +49,8 @@ APP_CONSTANT_FILE=$project_folder/App/Core/AppConstant.cs
 	<key>GOOGLE_APP_ID</key>
 	<string>$google_app_id</string>
 </dict>
-</plist>">> $project_folder/App/Platforms/iOS/GoogleService-Info.plist
+</plist>
+EOF
 
 if [ -e "$APP_CONSTANT_FILE" ]
 then
