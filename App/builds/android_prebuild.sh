@@ -17,6 +17,36 @@ then
 fi
 
 APP_CONSTANT_FILE=$project_folder/App/Core/AppConstant.cs
+## Install google services
+"{
+  "project_info": {
+    "project_number": "$firebase_GCM_sender_ID",
+    "project_id": "$firebase_project_id",
+    "storage_bucket": "$firebase_storage_bucket"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "$google_app_id",
+        "android_client_info": {
+          "package_name": "com.bricefriha.aresgaming"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "$firebase_api_key"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}">> $project_folderApp/Platforms/Android/Resources/google-services.json
 
 if [ -e "$APP_CONSTANT_FILE" ]
 then
