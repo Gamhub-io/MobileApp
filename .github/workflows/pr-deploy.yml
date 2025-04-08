@@ -26,6 +26,7 @@ jobs:
       deploy-type: 'pr'
     steps:
       - run: echo "Exposing env setup, because they can't be passed to nested workflows."
+      - run: echo ${{ env.BUNDLE_ID }}"
   #
   build-ios:
     needs: setup
