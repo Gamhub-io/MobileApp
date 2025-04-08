@@ -45,6 +45,18 @@ on:
         required: true
       monitoring_key:
         required: true
+      firebase_api_key:
+        required: true
+      firebase_GCM_sender_ID:
+        required: true
+      firebase_plist_version:
+        required: true
+      firebase_project_id:
+        required: true
+      firebase_storage_bucket:
+        required: true
+      google_app_id:
+        required: true
 jobs:
   publish-android:
     runs-on: macos-latest

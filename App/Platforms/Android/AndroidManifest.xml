@@ -3,7 +3,14 @@
 	<application android:allowBackup="true" 
 				 android:supportsRtl="true" 
 				 android:icon="@mipmap/appicon"
-				 android:enableOnBackInvokedCallback="true"></application>
+				 android:enableOnBackInvokedCallback="true">
+	    <meta-data
+			     android:name="com.google.firebase.messaging.default_notification_icon"
+			     android:resource="@drawable/notification_icon" />
+		<meta-data
+				 android:name="com.google.firebase.messaging.default_notification_color"
+				 android:resource="@color/notification_color" />
+	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
 	<queries>
@@ -23,4 +30,5 @@
 			<action android:name="android.intent.action.TTS_SERVICE" />
 		</intent>
 	</queries>
+
 </manifest>

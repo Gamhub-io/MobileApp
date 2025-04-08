@@ -18,6 +18,40 @@ fi
 
 APP_CONSTANT_FILE=$project_folder/App/Core/AppConstant.cs
 
+## Install google services
+cat <<EOF > $project_folder/App/Platforms/iOS/GoogleService-Info.plist
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>$firebase_api_key</string>
+	<key>GCM_SENDER_ID</key>
+	<string>$firebase_GCM_sender_ID</string>
+	<key>PLIST_VERSION</key>
+	<string>$firebase_plist_version</string>
+	<key>BUNDLE_ID</key>
+	<string>com.bricefriha.aresgaming</string>
+	<key>PROJECT_ID</key>
+	<string>$firebase_project_id</string>
+	<key>STORAGE_BUCKET</key>
+	<string>$firebase_storage_bucket</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>$google_app_id</string>
+</dict>
+</plist>
+EOF
+
 if [ -e "$APP_CONSTANT_FILE" ]
 then
     echo "Updating AppConstant.cs"
