@@ -45,6 +45,7 @@
 	</PropertyGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
 		<GoogleServicesJson Include="Platforms\Android\Resources\google-services.json" Link="Platforms\Android\Resources\google-services.json" />
+		<None Remove="Platforms\Android\Resources\google-services.json" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
@@ -74,7 +75,6 @@
 	<ItemGroup>
 	  <None Remove="Config\AppSettings.json" />
 	  <None Remove="Platforms\Android\Resources\drawable\notification_icon.png" />
-	  <None Remove="Platforms\Android\Resources\google-services.json" />
 	  <None Remove="Resources\Fonts\FontAwesome6Brands-Regular-400.otf" />
 	  <None Remove="Resources\Fonts\FontAwesome6Free-Regular-400.otf" />
 	  <None Remove="Resources\Fonts\FontAwesome6Free-Solid-900.otf" />
