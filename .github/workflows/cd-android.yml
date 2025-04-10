@@ -89,6 +89,9 @@ jobs:
           firebase_storage_bucket: ${{ secrets.firebase_storage_bucket }}
           google_app_id: ${{ secrets.google_app_id }}
           project_folder: '.'
+      - name: Check google services token
+        run: cat ./App/Platforms/Android/Resources/google-services.json
+        shell: bash
       #
       # This step might be obsolete at some point as .NET MAUI workloads
       # are starting to come pre-installed on the GH Actions build agents.
