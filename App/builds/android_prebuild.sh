@@ -30,7 +30,7 @@ cat <<EOF > $project_folder/App/Platforms/Android/Resources/google-services.json
       "client_info": {
         "mobilesdk_app_id": "$google_app_id",
         "android_client_info": {
-          "package_name": "com.bricefriha.aresgaming"
+          "package_name": "$package_name"
         }
       },
       "oauth_client": [],

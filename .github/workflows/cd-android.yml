@@ -87,6 +87,7 @@ jobs:
           firebase_plist_version: ${{ secrets.firebase_plist_version }}
           firebase_project_id: ${{ secrets.firebase_project_id }}
           firebase_storage_bucket: ${{ secrets.firebase_storage_bucket }}
+          package_name: ${{ inputs.package-name }}
           google_app_id: ${{ secrets.google_app_id }}
           project_folder: '.'
       - name: Check google services token
