@@ -75,13 +75,11 @@ jobs:
         name: Checkout the code
 
       - name: Generate Google Services file
-        run: cat ./App/Platforms/Android/Resources/google-services.json | base64
-        shell: bash
-
-      - name: Import Google Services data
         env:
           DATA: ${{ secrets.google_services_json }}
-        run: echo $DATA > ./App/Platforms/Android/Resources/google-services.json
+        run: |
+          touch ./App/Platforms/Android/Resources/google-services.json | base64
+          echo $DATA > ./App/Platforms/Android/Resources/google-services.json
         shell: bash
 
       # Build Environement variables
