@@ -54,6 +54,7 @@ jobs:
       firebase_project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
       firebase_storage_bucket: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
       google_app_id: ${{ secrets.GOOGLE_APP_ID }}
+      google_services_plist: ${{ secrets.GOOGLE_SERVICES_PLIST }}
   build-android:
     needs: setup
     uses: ./.github/workflows/cd-android.yml
@@ -81,5 +82,6 @@ jobs:
       firebase_project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
       firebase_storage_bucket: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
       google_app_id: ${{ secrets.GOOGLE_APP_ID }}
+      google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
 # Inspired by https://thewissen.io/making-maui-cd-pipeline/
 
