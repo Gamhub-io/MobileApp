@@ -57,6 +57,8 @@ on:
         required: true
       google_app_id:
         required: true
+      google_services_json:
+        required: true
 jobs:
   publish-android:
     runs-on: macos-latest
@@ -71,6 +73,14 @@ jobs:
           dotnet-version: ${{ inputs.dotnet-version }}
       - uses: actions/checkout@v3
         name: Checkout the code
+
+      - name: Generate Google Services file
+        env:
+          DATA: ${{ secrets.google_services_json }}
+        run: |
+          cat ./App/Platforms/Android/Resources/google-services.json | base64
+          echo $DATA > ./App/Platforms/Android/Resources/google-services.json
+        shell: bash
 
       # Build Environement variables
       - name: Environement variables
@@ -90,9 +100,6 @@ jobs:
           package_name: ${{ inputs.package-name }}
           google_app_id: ${{ secrets.google_app_id }}
           project_folder: '.'
-      - name: Check google services token
-        run: cat ./App/Platforms/Android/Resources/google-services.json
-        shell: bash
       #
       # This step might be obsolete at some point as .NET MAUI workloads
       # are starting to come pre-installed on the GH Actions build agents.
