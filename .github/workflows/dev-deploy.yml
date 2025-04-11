@@ -70,12 +70,6 @@ jobs:
       discord_client_id: ${{ secrets.DISCORD_CLIENT_ID }}
       api_host: ${{ secrets.API_HOST }}
       monitoring_key: ${{ secrets.MONITORING_KEY }}
-      firebase_api_key: ${{ secrets.FIREBASE_API_KEY }}
-      firebase_GCM_sender_ID: ${{ secrets.FIREBASE_GCM_SENDER_ID }}
-      firebase_plist_version: ${{ secrets.FIREBASE_PLIST_VERSION }}
-      firebase_project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
-      firebase_storage_bucket: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
-      google_app_id: ${{ secrets.GOOGLE_APP_ID }}
       google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
 # Inspired by https://thewissen.io/making-maui-cd-pipeline/
 
