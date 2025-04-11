@@ -73,8 +73,8 @@ jobs:
         env:
           DATA: ${{ secrets.google_services_plist }}
         run: |
-          touch ./App/Platforms/iOS/google-service.plist | base64
-          echo $DATA > ./App/Platforms/iOS/google-service.plist
+          touch ./App/Platforms/iOS/GoogleService-Info.plist | base64
+          echo $DATA > ./App/Platforms/iOS/GoogleService-Info.plist
         shell: bash
 
       # Build Environement variables
