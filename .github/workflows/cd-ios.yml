@@ -59,6 +59,8 @@ on:
         required: true
       google_app_id:
         required: true
+      google_services_plist:
+        required: true
 jobs:
   publish-ios:
     runs-on: macos-15
@@ -79,12 +81,13 @@ jobs:
       - uses: actions/checkout@v3
         name: Checkout the code
 
-      # - uses: futureware-tech/simulator-action@v4
-      #   name: setup simulator
-      #   id: simulator
-      #   with:
-      #     model: 'iPhone 16'
-      #     os_version: 18.2
+      - name: Generate Google Services file
+        env:
+          DATA: ${{ secrets.google_services_plist }}
+        run: |
+          touch ./App/Platforms/iOS/google-services.plist | base64
+          echo $DATA > ./App/Platforms/iOS/google-services.plist
+        shell: bash
 
       # Build Environement variables
       - name: Environement variables
