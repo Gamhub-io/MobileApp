@@ -45,18 +45,6 @@ on:
         required: true
       monitoring_key:
         required: true
-      firebase_api_key:
-        required: true
-      firebase_GCM_sender_ID:
-        required: true
-      firebase_plist_version:
-        required: true
-      firebase_project_id:
-        required: true
-      firebase_storage_bucket:
-        required: true
-      google_app_id:
-        required: true
       google_services_json:
         required: true
 jobs:
@@ -92,13 +80,6 @@ jobs:
           discord_client_id: ${{ secrets.discord_client_id }}
           api_host: ${{ secrets.api_host }}
           monitoring_key: ${{ secrets.monitoring_key }}
-          firebase_api_key: ${{ secrets.firebase_api_key }}
-          firebase_GCM_sender_ID: ${{ secrets.firebase_GCM_sender_ID }}
-          firebase_plist_version: ${{ secrets.firebase_plist_version }}
-          firebase_project_id: ${{ secrets.firebase_project_id }}
-          firebase_storage_bucket: ${{ secrets.firebase_storage_bucket }}
-          package_name: ${{ inputs.package-name }}
-          google_app_id: ${{ secrets.google_app_id }}
           project_folder: '.'
       #
       # This step might be obsolete at some point as .NET MAUI workloads
