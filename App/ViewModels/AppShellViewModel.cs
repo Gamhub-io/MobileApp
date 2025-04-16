@@ -80,7 +80,12 @@ public class AppShellViewModel : BaseViewModel
     private async Task NotificationSetup()
     {
         if (await _firebasePushPermissions.GetAuthorizationStatusAsync() != Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted)
+#if ANDROID
+            // For android let's use the native aproach since the other one is a bit wanky
+            if (PermissionStatus.Granted != await Permissions.RequestAsync <Permissions.PostNotifications>()) return;
+#else
             if (!await _firebasePushPermissions.RequestPermissionAsync()) return;
+#endif
         await Task.Delay(1000);
         await _firebasePushNotification.RegisterForPushNotificationsAsync();
 #if IOS
