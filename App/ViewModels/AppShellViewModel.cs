@@ -101,16 +101,23 @@ public class AppShellViewModel : BaseViewModel
 
     private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
     {
+        (App.Current as App).ShowLoadingIndicator();
         string articleId = e.Data["articleId"].ToString();
-        if (articleId is null) return;
-
+        if (articleId is null) 
+        {
+            (App.Current as App).RemoveLoadingIndicator();
+            return;
+        }
 
         // Handle the nafication to the page on the main thread
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            Article article = await dataFetcher.GetArticle(articleId);
-            if (article is null) return;
-            (App.Current as App).ShowLoadingIndicator();
+            Article article = await dataFetcher.GetArticle("67ff86106d8c39c6e8ebaa37");
+            if (article is null)
+            {
+                (App.Current as App).RemoveLoadingIndicator();
+                return;
+            }
 
             var articlePage = new ArticlePage(article);
 
