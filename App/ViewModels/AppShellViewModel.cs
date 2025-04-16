@@ -1,6 +1,7 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Services;
+using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
 using System.Diagnostics;
@@ -89,12 +90,34 @@ public class AppShellViewModel : BaseViewModel
 
         _firebasePushNotification.TokenRefreshed += this.OnTokenRefresh;
         _firebasePushNotification.NotificationReceived += this.OnNotificationReceived;
+        _firebasePushNotification.NotificationOpened += OnNotificationOpened;
 #if DEBUG
         Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
 #endif
         _firebasePushNotification.SubscribeTopic("daily_catchup");
 
 
+    }
+
+    private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
+    {
+        var articleId = e.Data["articleId"];
+        if (articleId is null) return;
+
+
+        // Handle the nafication to the page on the main thread
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            Article article = await dataFetcher.GetArticle(articleId);
+            if (article is null) return;
+            (App.Current as App).ShowLoadingIndicator();
+
+            var articlePage = new ArticlePage(article);
+
+            await App.Current.Windows[0].Page.Navigation.PushAsync(articlePage);
+            (App.Current as App).RemoveLoadingIndicator();
+
+        });
     }
 
     private void OnNotificationReceived(object sender, FirebasePushNotificationDataEventArgs e)
