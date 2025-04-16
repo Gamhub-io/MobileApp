@@ -101,7 +101,7 @@ public class AppShellViewModel : BaseViewModel
 
     private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
     {
-        var articleId = e.Data["articleId"];
+        string articleId = e.Data["articleId"].ToString();
         if (articleId is null) return;
 
 
