@@ -96,6 +96,7 @@ public class AppShellViewModel : BaseViewModel
         _firebasePushNotification.TokenRefreshed += this.OnTokenRefresh;
         _firebasePushNotification.NotificationReceived += this.OnNotificationReceived;
         _firebasePushNotification.NotificationOpened += OnNotificationOpened;
+        _firebasePushNotification.NotificationAction += OnNotificationAction;
 #if DEBUG
         Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
 #endif
@@ -104,10 +105,41 @@ public class AppShellViewModel : BaseViewModel
 
     }
 
+    private void OnNotificationAction(object sender, FirebasePushNotificationActionEventArgs e)
+    {
+        switch (e.Action.Id)
+        {
+            case "open_in_app":
+                OpenArticleInApp(e.Data["articleId"].ToString());
+                break;
+            case "open_in_browser":
+                MainThread.BeginInvokeOnMainThread(async () =>
+                    await Browser.OpenAsync(e.Data["url"].ToString(), new BrowserLaunchOptions
+                    {
+                        LaunchMode = BrowserLaunchMode.SystemPreferred,
+                        TitleMode = BrowserTitleMode.Default,
+                    }));
+                break;
+            default:
+                OpenArticleInApp(e.Data["articleId"].ToString());
+                break;
+
+
+        }
+    }
+
     private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
     {
+        OpenArticleInApp(e.Data["articleId"].ToString());
+    }
+
+    /// <summary>
+    /// Open an article in the app 
+    /// </summary>
+    /// <param name="articleId">id of the article to open</param>
+    private void OpenArticleInApp(string articleId)
+    {
         (App.Current as App).ShowLoadingIndicator();
-        string articleId = e.Data["articleId"].ToString();
         if (articleId is null) 
         {
             (App.Current as App).RemoveLoadingIndicator();
