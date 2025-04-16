@@ -1,6 +1,7 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Services;
+using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
 using System.Diagnostics;
@@ -79,7 +80,12 @@ public class AppShellViewModel : BaseViewModel
     private async Task NotificationSetup()
     {
         if (await _firebasePushPermissions.GetAuthorizationStatusAsync() != Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted)
+#if ANDROID
+            // For android let's use the native aproach since the other one is a bit wanky
+            if (PermissionStatus.Granted != await Permissions.RequestAsync <Permissions.PostNotifications>()) return;
+#else
             if (!await _firebasePushPermissions.RequestPermissionAsync()) return;
+#endif
         await Task.Delay(1000);
         await _firebasePushNotification.RegisterForPushNotificationsAsync();
 #if IOS
@@ -89,12 +95,73 @@ public class AppShellViewModel : BaseViewModel
 
         _firebasePushNotification.TokenRefreshed += this.OnTokenRefresh;
         _firebasePushNotification.NotificationReceived += this.OnNotificationReceived;
+        _firebasePushNotification.NotificationOpened += OnNotificationOpened;
+        _firebasePushNotification.NotificationAction += OnNotificationAction;
 #if DEBUG
         Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
 #endif
         _firebasePushNotification.SubscribeTopic("daily_catchup");
 
 
+    }
+
+    private void OnNotificationAction(object sender, FirebasePushNotificationActionEventArgs e)
+    {
+        switch (e.Action.Id)
+        {
+            case "open_in_app":
+                OpenArticleInApp(e.Data["articleId"].ToString());
+                break;
+            case "open_in_browser":
+                MainThread.BeginInvokeOnMainThread(async () =>
+                    await Browser.OpenAsync(e.Data["url"].ToString(), new BrowserLaunchOptions
+                    {
+                        LaunchMode = BrowserLaunchMode.SystemPreferred,
+                        TitleMode = BrowserTitleMode.Default,
+                    }));
+                break;
+            default:
+                OpenArticleInApp(e.Data["articleId"].ToString());
+                break;
+
+
+        }
+    }
+
+    private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
+    {
+        OpenArticleInApp(e.Data["articleId"].ToString());
+    }
+
+    /// <summary>
+    /// Open an article in the app 
+    /// </summary>
+    /// <param name="articleId">id of the article to open</param>
+    private void OpenArticleInApp(string articleId)
+    {
+        (App.Current as App).ShowLoadingIndicator();
+        if (articleId is null) 
+        {
+            (App.Current as App).RemoveLoadingIndicator();
+            return;
+        }
+
+        // Handle the nafication to the page on the main thread
+        MainThread.BeginInvokeOnMainThread(async () =>
+        {
+            Article article = await dataFetcher.GetArticle("67ff86106d8c39c6e8ebaa37");
+            if (article is null)
+            {
+                (App.Current as App).RemoveLoadingIndicator();
+                return;
+            }
+
+            var articlePage = new ArticlePage(article);
+
+            await App.Current.Windows[0].Page.Navigation.PushAsync(articlePage);
+            (App.Current as App).RemoveLoadingIndicator();
+
+        });
     }
 
     private void OnNotificationReceived(object sender, FirebasePushNotificationDataEventArgs e)

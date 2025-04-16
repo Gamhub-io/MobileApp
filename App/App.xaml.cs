@@ -119,8 +119,8 @@ public partial class App : Application
     {
         LoadingIndicator = new LoadingPopUp();
 
-        _generalDb.Init().GetAwaiter();
-        _backupDb.Init().GetAwaiter();
+        _generalDb.Init()?.GetAwaiter();
+        _backupDb.Init()?.GetAwaiter();
         DataFetcher.LoadBookmarks().GetAwaiter();
         DataFetcher.UpdateBackupSources().GetAwaiter();
         
