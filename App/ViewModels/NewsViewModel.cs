@@ -544,24 +544,23 @@ public class NewsViewModel : BaseViewModel
     /// <returns></returns>
     private Task RefreshDB()
     {
-        try
-        {
             return Task.Run(async () =>
             {
-                await _backUpDataBase.UpdateArticles(_articles);
-            });
-        }
-        catch (Exception ex)
-        {
+                try
+                {
+                     await _backUpDataBase.UpdateArticles(_articles);
+                }
+                catch (Exception ex)
+                {
 
 #if DEBUG
-            Debug.WriteLine(ex);
+                    Debug.WriteLine(ex);
 
 #else
                 SentrySdk.CaptureException(ex);
 #endif
-            return null;
-        }
+                }
+            });
         
     }
 

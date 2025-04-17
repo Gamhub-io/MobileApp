@@ -23,7 +23,8 @@ public class Article
     [JsonProperty("author")]
     public string Author { get; set; }
     [JsonProperty("image")]
-    public string Image { get; set; }[JsonProperty("sourceId")]
+    public string Image { get; set; }
+    [JsonProperty("sourceId")]
     public string SourceId { get; set; }
     [JsonProperty("blocked")]
     public bool? Blocked { get; set; }

@@ -6,6 +6,7 @@ using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using GamHubApp.Views.PopUps;
 using Newtonsoft.Json;
+using Plugin.FirebasePushNotifications;
 using System.Collections.ObjectModel;
 
 
@@ -104,13 +105,22 @@ public partial class App : Application
             Preferences.Set("date", DateFirstRun);
 
         }
+
+        IFirebasePushNotification.Current.RegisterNotificationCategories(new[]
+        {
+            new NotificationCategory("daily_catchup", new[]
+            {
+                new NotificationAction("open_in_app", "Open in the app", NotificationActionType.Foreground),
+                new NotificationAction("open_in_browser", "Open in the browser", NotificationActionType.Foreground),
+            })
+        });
     }
     protected override Window CreateWindow(IActivationState activationState)
     {
         LoadingIndicator = new LoadingPopUp();
 
-        _generalDb.Init().GetAwaiter();
-        _backupDb.Init().GetAwaiter();
+        _generalDb.Init()?.GetAwaiter();
+        _backupDb.Init()?.GetAwaiter();
         DataFetcher.LoadBookmarks().GetAwaiter();
         DataFetcher.UpdateBackupSources().GetAwaiter();
         

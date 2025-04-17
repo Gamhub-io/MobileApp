@@ -340,3 +340,5 @@ ASALocalRun/
 healthchecksdb
 Config/AppSettings.json
 /App/Config/AppSettings.json
+/App/Platforms/Android/Resources/google-services.json
+/App/Platforms/iOS/GoogleService-Info.plist
