@@ -192,6 +192,12 @@
                 Icon="&#xf05a;">
         <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
     </FlyoutItem>
+    
+    <!-- About Page -->
+    <FlyoutItem Title="Settings"
+                Icon="&#xf1de;">
+        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
+    </FlyoutItem>
 
 
 

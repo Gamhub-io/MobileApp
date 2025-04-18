@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GamHubApp.Views.SettingsPage"
+             Title="Settings"
+             BackgroundColor="{StaticResource BackgroundColor}">
+    <VerticalStackLayout Margin="5"
+                         Spacing="10">
+        <Label 
+            Text="Notifications"
+            FontFamily="P-Medium"
+            FontSize="15"
+            TextColor="{StaticResource FontColor}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Start" />
+        <Border StrokeShape="RoundRectangle 20"
+                BackgroundColor="{DynamicResource LightDark}">
+            <Grid RowDefinitions="50,1,auto"
+                  ColumnDefinitions="*,*"
+                  Padding="10,5">
+                <Label Text="All Notifications"
+                       FontFamily="P-Medium"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       TextColor="{StaticResource FontColor}"/>
+                <Switch Grid.Column="1"
+                        OnColor="{StaticResource Primary}"
+                        ThumbColor="{StaticResource FontColor}"/>
+                <BoxView BackgroundColor="{StaticResource FontColor}"
+                         Grid.Row="1"
+                         Opacity="0.6"
+                         Grid.ColumnSpan="2"
+                         />
+
+            </Grid>
+        </Border>
+    </VerticalStackLayout>
+</ContentPage>
