@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GamHubApp.Views.SettingsPage"
              Title="Settings"
-             BackgroundColor="{StaticResource BackgroundColor}">
+             BackgroundColor="{StaticResource BackgroundColor}"
+             xmlns:vm="clr-namespace:GamHubApp.ViewModels"
+             x:DataType="vm:SettingsViewModel">
     <VerticalStackLayout Margin="5"
                          Spacing="10">
         <Label 
@@ -18,16 +20,22 @@
             <Grid RowDefinitions="50,1,auto"
                   ColumnDefinitions="*,*"
                   Padding="10,5">
-                <Label Text="All Notifications"
+                <Label Text="Notification settings"
                        FontFamily="P-Medium"
                        VerticalOptions="Center"
                        FontSize="20"
                        Grid.Row="0"
                        Grid.Column="0"
                        TextColor="{StaticResource FontColor}"/>
-                <Switch Grid.Column="1"
-                        OnColor="{StaticResource Primary}"
-                        ThumbColor="{StaticResource FontColor}"/>
+                <Button Grid.Column="1"
+                        TextColor="{StaticResource FontColor}"
+                        Text="&#xf08e;"
+                        FontFamily="FaSolid"
+                        HorizontalOptions="End"
+                        WidthRequest="50"
+                        Command="{Binding OpenSettingsCommand}"
+                        Background="Transparent"
+                        FontSize="20"/>
                 <BoxView BackgroundColor="{StaticResource FontColor}"
                          Grid.Row="1"
                          Opacity="0.6"
