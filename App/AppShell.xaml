@@ -154,7 +154,6 @@
         <ShellContent FlyoutItemIsVisible="False"
                       Route="NewsPage"
                       Title="News Feed"
-                      
                       ContentTemplate="{DataTemplate views:NewsPage}">
             <ShellContent.Icon Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,-30'}"
                                >
@@ -191,6 +190,12 @@
     <FlyoutItem Title="About"
                 Icon="&#xf05a;">
         <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
+    </FlyoutItem>
+    
+    <!-- About Page -->
+    <FlyoutItem Title="Settings"
+                Icon="&#xf1de;">
+        <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
     </FlyoutItem>
 
 

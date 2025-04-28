@@ -74,21 +74,30 @@ public class AppShellViewModel : BaseViewModel
             UserProfile = fetc.UserData;
         });
 
-        NotificationSetup().GetAwaiter();
     }
+    const string _notificationKey = "Notification";
 
-    private async Task NotificationSetup()
+    /// <summary>
+    /// Setup notification
+    /// </summary>
+    public async Task NotificationSetup()
     {
-        if (await _firebasePushPermissions.GetAuthorizationStatusAsync() != Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted)
+        if ((await _firebasePushPermissions.GetAuthorizationStatusAsync() is not Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted)
+            && Preferences.Get(_notificationKey, true))
 #if ANDROID
-            // For android let's use the native aproach since the other one is a bit wanky
-            if (PermissionStatus.Granted != await Permissions.RequestAsync <Permissions.PostNotifications>()) return;
+            // For android we need to make sure it runs on the main thread
+            MainThread.BeginInvokeOnMainThread(async () =>
+#endif 
+            {
+                bool newStatus = await _firebasePushPermissions.RequestPermissionAsync();
+                Preferences.Set(_notificationKey, newStatus);
+                if (!newStatus) return;
+                await Task.Delay(1000);
+                await _firebasePushNotification.RegisterForPushNotificationsAsync();
+#if ANDROID
+            });
 #else
-            if (!await _firebasePushPermissions.RequestPermissionAsync()) return;
-#endif
-        await Task.Delay(1000);
-        await _firebasePushNotification.RegisterForPushNotificationsAsync();
-#if IOS
+        }
         // TODO: remove once https://github.com/thomasgalliker/Plugin.FirebasePushNotifications/issues/113 is sorted 
         await Task.Delay(TimeSpan.FromSeconds(3));
 #endif

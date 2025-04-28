@@ -32,7 +32,9 @@ public partial class AppShell : Shell
         base.OnAppearing();
 
         _currentApp = (App.Current as App);
-        await _currentApp.LoadPartners();
+        Task partnersTask = _currentApp.LoadPartners();
+        Task notifTask = _vm.NotificationSetup();
+        await Task.WhenAll(partnersTask, notifTask);
     }
 
     private void Auth_Tapped(object sender, TappedEventArgs e)
