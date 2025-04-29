@@ -1,6 +1,4 @@
-﻿
-using GamHubApp.Models;
-using GamHubApp.Services;
+﻿using GamHubApp.Models;
 using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels;
