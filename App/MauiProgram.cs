@@ -89,6 +89,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<FeedsViewModel>();
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
         mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
+        mauiAppBuilder.Services.AddSingleton<DealsViewModel>();
 
         return mauiAppBuilder;
     }
@@ -110,6 +111,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<AboutPage>();
         mauiAppBuilder.Services.AddSingleton<FeedsPage>();
         mauiAppBuilder.Services.AddSingleton<BookmarkPage>();
+        mauiAppBuilder.Services.AddSingleton<DealsPage>();
         mauiAppBuilder.Services.AddSingleton<DeleteFeedPopUp>();
         mauiAppBuilder.Services.AddSingleton<RenameFeedPopUp>();
         mauiAppBuilder.Services.AddSingleton<SettingsPage>();
