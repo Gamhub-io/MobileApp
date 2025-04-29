@@ -3,8 +3,11 @@ using Vapolia.StrokedLabels;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
+using Plugin.FirebasePushNotifications;
+using Plugin.FirebasePushNotifications.Model.Queues;
 
 #if ANDROID
+using GamHubApp.Platforms.Android.Notifications;
 using GamHubApp.Platforms.Android.Renderers;
 #endif
 
@@ -56,15 +59,22 @@ public static class MauiProgram
                .UseStrokedLabelBehavior()
                .UseMauiCommunityToolkit()
                .RegisterLocalStorage()
+                .UseFirebasePushNotifications(o =>
+                {
+                    o.AutoInitEnabled = false;
+                    o.QueueFactory = new PersistentQueueFactory();
+#if ANDROID
+                    o.Android.NotificationChannels = NotificationChannelGamHub.GetAll().ToArray();
+#endif
+
+                })
                .ConfigureMauiHandlers(handlers =>
                {
 #if ANDROID
                    handlers.AddHandler(typeof(Shell), typeof(AndroidShellRenderer));
 #endif
                });
-#if DEBUG
-        //builder.Logging.AddDebug();
-#endif
+
         builder.Services.AddSingleton<Fetcher>();
 
         builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
@@ -78,6 +88,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<BookmarkViewModel>();
         mauiAppBuilder.Services.AddSingleton<FeedsViewModel>();
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
+        mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
 
         return mauiAppBuilder;
     }
@@ -101,6 +112,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<BookmarkPage>();
         mauiAppBuilder.Services.AddSingleton<DeleteFeedPopUp>();
         mauiAppBuilder.Services.AddSingleton<RenameFeedPopUp>();
+        mauiAppBuilder.Services.AddSingleton<SettingsPage>();
         return mauiAppBuilder;
     }
 }

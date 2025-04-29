@@ -45,6 +45,8 @@ on:
         required: true
       monitoring_key:
         required: true
+      google_services_json:
+        required: true
 jobs:
   publish-android:
     runs-on: macos-latest
@@ -59,6 +61,14 @@ jobs:
           dotnet-version: ${{ inputs.dotnet-version }}
       - uses: actions/checkout@v3
         name: Checkout the code
+
+      - name: Generate Google Services file
+        env:
+          DATA: ${{ secrets.google_services_json }}
+        run: |
+          touch ./App/Platforms/Android/Resources/google-services.json | base64
+          echo $DATA > ./App/Platforms/Android/Resources/google-services.json
+        shell: bash
 
       # Build Environement variables
       - name: Environement variables

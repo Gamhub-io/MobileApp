@@ -61,8 +61,8 @@
             <CollectionView.EmptyView>
 
                 <ContentView>
-                    <StackLayout VerticalOptions="CenterAndExpand"
-                                    HorizontalOptions="CenterAndExpand">
+                    <StackLayout VerticalOptions="Center"
+                                    HorizontalOptions="Center">
                         <Label Text="&#xf02e;"
                                FontFamily="FaRegular"
                                TextColor="{StaticResource Primary}"

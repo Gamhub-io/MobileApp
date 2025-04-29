@@ -7,7 +7,7 @@ on:
 env:
   BUILD_VERSION: '1.6'
   DOTNET_VERSION: 9.0.x
-  XCODE_VERSION: 16.2
+  XCODE_VERSION: 16.3
   DOTNET_VERSION_TARGETS: net9.0
   CSPROJ_TO_BUILD: ./App/GamHubApp.csproj
   PROJECT_FOLDER: App
@@ -21,6 +21,7 @@ jobs:
       dotnetVersionTargets: ${{ env.DOTNET_VERSION_TARGETS }}
       csprojToBuild: ${{ env.CSPROJ_TO_BUILD }}
       projectFolder: ${{ env.PROJECT_FOLDER }}
+      packageName: 'com.bricefriha.aresgaming'
       deploy-type: 'prod'
     steps:
       - run: echo "Exposing env setup, because they can't be passed to nested workflows."
@@ -35,7 +36,7 @@ jobs:
       project-file: ${{ needs.setup.outputs.csprojToBuild }}
       project-folder: ${{ needs.setup.outputs.projectFolder }}
       build-config: 'Release'
-      package-name: 'com.bricefriha.aresgaming'
+      package-name: ${{ needs.setup.outputs.packageName }}
       deploy-type: ${{ needs.setup.outputs.deploy-type }}
       build-version: ${{ needs.setup.outputs.buildVersion }}
     secrets:
@@ -47,6 +48,7 @@ jobs:
       discord_client_id: ${{ secrets.DISCORD_CLIENT_ID }}
       api_host: ${{ secrets.API_HOST }}
       monitoring_key: ${{ secrets.MONITORING_KEY }}
+      google_services_plist: ${{ secrets.GOOGLE_SERVICES_PLIST }}
   build-android:
     needs: setup
     uses: ./.github/workflows/cd-android.yml
@@ -59,7 +61,7 @@ jobs:
       build-version: ${{ needs.setup.outputs.buildVersion }}
       deploy-type: ${{ needs.setup.outputs.deploy-type }}
       generation: 'Atlas'
-      package-name: 'com.bricefriha.aresgaming'
+      package-name: ${{ needs.setup.outputs.packageName }}
     secrets:
       keystore: ${{ secrets.PLAY_KEYSTORE }}
       keystore-alias: ${{ secrets.PLAY_KEYSTORE_ALIAS }}
@@ -68,5 +70,6 @@ jobs:
       discord_client_id: ${{ secrets.DISCORD_CLIENT_ID }}
       api_host: ${{ secrets.API_HOST }}
       monitoring_key: ${{ secrets.MONITORING_KEY }}
+      google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
 # Inspired by https://thewissen.io/making-maui-cd-pipeline/
 

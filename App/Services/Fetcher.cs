@@ -254,6 +254,31 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Get an article
+    /// </summary>
+    /// <param name="articleId">id of the article we want</param>
+    /// <returns>retrun the article</returns>
+    public async Task<Article> GetArticle(string articleId)
+    {
+        try
+        {
+            return await this.WebService.Get<Article>(controller: "article",
+                                                      parameters: new string[] { articleId },
+                                                      unSuccessCallback: e => _ = HandleHttpException(e));
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return null;
+        }
+    }
+
+    /// <summary>
     /// Save all the tokens of a session and expiration
     /// </summary>
     /// <param name="newSession"></param>

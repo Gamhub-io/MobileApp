@@ -1,11 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:allowBackup="true" 
-				 android:supportsRtl="true" 
-				 android:icon="@mipmap/appicon"
-				 android:enableOnBackInvokedCallback="true"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+	<uses-sdk
+			android:minSdkVersion="23"
+			android:targetSdkVersion="35"
+            />
+	<application android:allowBackup="true" android:supportsRtl="true" android:icon="@mipmap/appicon" android:enableOnBackInvokedCallback="true">
+		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/notification_icon" />
+		<meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/notification_color" />
+	</application>
 	<queries>
 		<intent>
 			<action android:name="android.intent.action.SENDTO" />
@@ -13,11 +18,11 @@
 		</intent>
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
-			<data android:scheme="http"/>
+			<data android:scheme="http" />
 		</intent>
 		<intent>
 			<action android:name="android.intent.action.VIEW" />
-			<data android:scheme="https"/>
+			<data android:scheme="https" />
 		</intent>
 		<intent>
 			<action android:name="android.intent.action.TTS_SERVICE" />
