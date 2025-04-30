@@ -168,7 +168,7 @@ public class AppShellViewModel : BaseViewModel
         // Handle the nafication to the page on the main thread
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            Article article = await dataFetcher.GetArticle("67ff86106d8c39c6e8ebaa37");
+            Article article = await dataFetcher.GetArticle(articleId);
             if (article is null)
             {
                 (App.Current as App).RemoveLoadingIndicator();
