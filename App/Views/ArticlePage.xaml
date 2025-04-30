@@ -287,7 +287,7 @@
                                                 HeightRequest="20"
                                                 WidthRequest="50"
                                                 IsVisible="{Binding Discount, Converter={StaticResource NotNullOrEmptyStringConverter}}"
-                                                BackgroundColor="{StaticResource PrimaryAccent}">
+                                                BackgroundColor="{StaticResource DiscountColor}">
                                             <Label 
                                                    Text="{Binding Discount}"
                                                    TextColor="{StaticResource FontColor}"
