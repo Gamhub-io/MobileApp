@@ -139,6 +139,11 @@ public class AppShellViewModel : BaseViewModel
         }
     }
 
+    /// <summary>
+    /// Event that gets triggered when a notification is opened
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
     {
         if (e.Data?.Count <= 0)
