@@ -116,6 +116,10 @@ public class AppShellViewModel : BaseViewModel
 
     private void OnNotificationAction(object sender, FirebasePushNotificationActionEventArgs e)
     {
+
+        if (e.Action?.Id == null)
+            return;
+
         switch (e.Action.Id)
         {
             case "open_in_app":
@@ -137,9 +141,19 @@ public class AppShellViewModel : BaseViewModel
         }
     }
 
+
+    /// <summary>
+    /// Event that gets triggered when a notification is opened
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
     {
-        OpenArticleInApp(e.Data["articleId"].ToString());
+        if (e.Data?.Count <= 0)
+            return;
+        if (e.Data.ContainsKey ("articleId"))
+            OpenArticleInApp(e.Data["articleId"].ToString());
+
     }
 
     /// <summary>
@@ -158,7 +172,8 @@ public class AppShellViewModel : BaseViewModel
         // Handle the nafication to the page on the main thread
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            Article article = await dataFetcher.GetArticle("67ff86106d8c39c6e8ebaa37");
+            Article article = await dataFetcher.GetArticle(articleId);
+
             if (article is null)
             {
                 (App.Current as App).RemoveLoadingIndicator();
