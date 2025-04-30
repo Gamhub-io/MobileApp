@@ -22,6 +22,7 @@ public class Fetcher
 
     private GeneralDataBase _generalDB;
     private BackUpDataBase _backupDB;
+    private Collection<Deal> _deals;
 
     public User UserData { get; set; }
     public List<Article> Bookmarks { get; private set; }
@@ -238,7 +239,7 @@ public class Fetcher
     {
         try
         {
-            return await this.WebService.Get<Collection<Deal>>(controller: "deals",
+            return _deals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
         }
 
@@ -532,6 +533,15 @@ public class Fetcher
         if (res == 1)
             Bookmarks.Insert(0, article);
         return res;
+    }
+
+    /// <summary>
+    /// Update deals
+    /// </summary>
+    /// <returns>count of new deals</returns>
+    public async Task<int> UpdateDeals()
+    {
+        return await _generalDB.UpdateDeals(_deals);
     }
 
 #endregion
