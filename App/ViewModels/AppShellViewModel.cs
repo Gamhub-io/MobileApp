@@ -1,6 +1,7 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Services;
+using GamHubApp.Services.UI;
 using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
@@ -97,7 +98,8 @@ public class AppShellViewModel : BaseViewModel
     /// <returns></returns>
     public async Task UpdateDeals()
     {
-        NewDealsCount = await dataFetcher.UpdateDeals();
+        //NewDealsCount = await dataFetcher.UpdateDeals();
+        BadgeCounterService.SetCount(await dataFetcher.UpdateDeals());
     }
 
     const string _notificationKey = "Notification";

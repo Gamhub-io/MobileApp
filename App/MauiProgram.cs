@@ -6,6 +6,10 @@ using GamHubApp.Views;
 using Plugin.FirebasePushNotifications;
 using Plugin.FirebasePushNotifications.Model.Queues;
 
+#if IOS
+using GamHubApp.Platforms.iOS.Renderers;
+#endif
+
 #if ANDROID
 using GamHubApp.Platforms.Android.Notifications;
 using GamHubApp.Platforms.Android.Renderers;
@@ -73,6 +77,7 @@ public static class MauiProgram
 #if ANDROID
                    handlers.AddHandler(typeof(Shell), typeof(AndroidShellRenderer));
 #endif
+                   handlers.AddHandler(typeof(Shell), typeof(TabbarBadgeRenderer));
                });
 
         builder.Services.AddSingleton<Fetcher>();
