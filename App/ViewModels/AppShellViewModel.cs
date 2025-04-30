@@ -143,7 +143,8 @@ public class AppShellViewModel : BaseViewModel
     {
         if (e.Data?.Count <= 0)
             return;
-        OpenArticleInApp(e.Data["articleId"].ToString());
+        if (e.Data.ContainsKey ("articleId"))
+            OpenArticleInApp(e.Data["articleId"].ToString());
     }
 
     /// <summary>
