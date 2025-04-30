@@ -116,6 +116,8 @@ public class AppShellViewModel : BaseViewModel
 
     private void OnNotificationAction(object sender, FirebasePushNotificationActionEventArgs e)
     {
+        if (e.Action?.Id == null)
+            return;
         switch (e.Action.Id)
         {
             case "open_in_app":
@@ -139,6 +141,8 @@ public class AppShellViewModel : BaseViewModel
 
     private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
     {
+        if (e.Data?.Count <= 0)
+            return;
         OpenArticleInApp(e.Data["articleId"].ToString());
     }
 
