@@ -217,9 +217,17 @@
                       Grid.Row="5"
                       RowSpacing="10"
                       IsVisible="{Binding Deals.Count, Converter={StaticResource ZeroToFalseConverter}}">
+                    <Grid.Triggers>
+                        <DataTrigger TargetType="Grid"
+                                     Binding="{Binding DealEnabled}"
+                                     Value="false">
+                            <Setter Property="IsVisible" 
+                                    Value="false" />
+                        </DataTrigger>
+                    </Grid.Triggers>
                     <Label Grid.Row="0"
                            HorizontalOptions="Start"
-                           Text="Related"
+                           Text="Related deals"
                            TextColor="{StaticResource FontColor}"
                            Margin="25,5"
                            FontFamily="P-Bold"

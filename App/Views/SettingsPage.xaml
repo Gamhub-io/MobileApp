@@ -53,11 +53,11 @@
             HorizontalOptions="Start" />
         <Border StrokeShape="RoundRectangle 20"
                 BackgroundColor="{DynamicResource LightDark}">
-            <Grid RowDefinitions="50,1,auto"
-                  ColumnDefinitions="*,*"
+            <Grid RowDefinitions="50,1,50"
+                  ColumnDefinitions="*,50"
                   Padding="10,5">
                 <Label Text="Deals page"
-                       FontFamily="P-Medium"
+                       FontFamily="P-Regular"
                        VerticalOptions="Center"
                        FontSize="20"
                        Grid.Row="0"
@@ -75,6 +75,21 @@
                          Opacity="0.3"
                          Grid.ColumnSpan="2"
                          />
+                <Label Text="Deals on article pages"
+                       FontFamily="P-Regular"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       Grid.Row="2"
+                       Grid.Column="0"
+                       TextColor="{StaticResource FontColor}"/>
+                <Switch OnColor="{StaticResource PrimaryAccent}"
+                        ThumbColor="{StaticResource PrimaryAccent}"
+                        HorizontalOptions="End"
+                        WidthRequest="50"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        IsToggled="{Binding DealViewSett}"
+                        Background="Transparent"/>
 
             </Grid>
         </Border>
