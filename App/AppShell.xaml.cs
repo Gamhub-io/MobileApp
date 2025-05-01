@@ -26,6 +26,12 @@ public partial class AppShell : Shell
                 (this.CurrentPage as NewsPage).ScrollFeed();
             }
         }
+        else
+            Task.Run (async () =>
+            { 
+                if (_vm != null)
+                    await _vm.UpdateDeals();
+            });
     }
     protected override async void OnAppearing()
     {

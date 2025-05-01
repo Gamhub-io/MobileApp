@@ -1,4 +1,5 @@
-﻿using GamHubApp.Models;
+﻿using GamHubApp.Core;
+using GamHubApp.Models;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Services;
 using GamHubApp.Services.UI;
@@ -37,6 +38,20 @@ public class AppShellViewModel : BaseViewModel
         {
             _authenticated = value;
             OnPropertyChanged(nameof(Authenticated));
+        }
+    }
+
+    private bool _dealEnabled;
+    public bool DealEnabled
+    {
+        get
+        {
+            return _dealEnabled;
+        }
+        set
+        {
+            _dealEnabled = value;
+            OnPropertyChanged(nameof(DealEnabled));
         }
     }
 
@@ -98,7 +113,9 @@ public class AppShellViewModel : BaseViewModel
     /// <returns></returns>
     public async Task UpdateDeals()
     {
-        //NewDealsCount = await dataFetcher.UpdateDeals();
+        DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true);
+
+        // Set the deal count
         BadgeCounterService.SetCount(await dataFetcher.UpdateDeals());
     }
 

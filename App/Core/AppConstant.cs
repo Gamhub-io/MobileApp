@@ -25,5 +25,8 @@ namespace GamHubApp.Core
 
         public static string PathDBBackUp =>
             Path.Combine(FileSystem.AppDataDirectory, DbBackUpFilename);
+
+        // Settings - preferences
+        public const string DealPageEnable = "DEAL_PAGE_ENABLE";
     }
 }
