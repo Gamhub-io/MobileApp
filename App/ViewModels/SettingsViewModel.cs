@@ -1,4 +1,5 @@
-﻿using GamHubApp.Core;
+﻿using CommunityToolkit.Maui.Alerts;
+using GamHubApp.Core;
 
 namespace GamHubApp.ViewModels;
 
@@ -10,7 +11,9 @@ public class SettingsViewModel : BaseViewModel
         get => _dealPageSett;
         set
         {
-            Preferences.Set(AppConstant.DealPageEnable, _dealPageSett = value);
+            if (_dealPageSett == value) return;
+            UpdateSettings(AppConstant.DealPageEnable, _dealPageSett = value);
+
             OnPropertyChanged(nameof(DealPageSett));
         }
     }
@@ -21,7 +24,8 @@ public class SettingsViewModel : BaseViewModel
         get => _dealViewSett;
         set
         {
-            Preferences.Set(AppConstant.DealArticleEnable, _dealViewSett = value);
+            if (_dealViewSett == value) return;
+            UpdateSettings(AppConstant.DealArticleEnable, _dealViewSett = value);
             OnPropertyChanged(nameof(DealViewSett));
         }
     }
@@ -34,6 +38,21 @@ public class SettingsViewModel : BaseViewModel
     {
         _dealPageSett = Preferences.Get(AppConstant.DealPageEnable, true);
         _dealViewSett = Preferences.Get(AppConstant.DealArticleEnable, true);
+    }
+
+    /// <summary>
+    /// Update boolean settings
+    /// </summary>
+    /// <param name="settingsKey">Key of settings</param>
+    /// <param name="value">the new bool value</param>
+    private void UpdateSettings(string settingsKey, bool value)
+    {
+        Preferences.Set(settingsKey, value);
+
+        // Notify the user we are updating the preferences
+        // - Making sure we do it on the main thread
+        MainThread.BeginInvokeOnMainThread(async () =>
+                   await (Toast.Make("Settings changes saved")).Show());
     }
 
 }
