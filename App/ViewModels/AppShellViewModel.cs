@@ -1,4 +1,5 @@
-﻿using GamHubApp.Core;
+﻿using CommunityToolkit.Maui.ApplicationModel;
+using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Services;
@@ -149,12 +150,21 @@ public class AppShellViewModel : BaseViewModel
         _firebasePushNotification.TokenRefreshed += this.OnTokenRefresh;
         _firebasePushNotification.NotificationOpened += OnNotificationOpened;
         _firebasePushNotification.NotificationAction += OnNotificationAction;
+        _firebasePushNotification.NotificationReceived += OnNotificationReceived;
 #if DEBUG
         Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
 #endif
         _firebasePushNotification.SubscribeTopic("daily_catchup");
 
 
+    }
+
+    private void OnNotificationReceived(object sender, FirebasePushNotificationDataEventArgs e)
+    {
+        if (e.Data == null)
+            return;
+
+        Badge.Default.SetCount((uint)e.Data.Count);
     }
 
     private void OnNotificationAction(object sender, FirebasePushNotificationActionEventArgs e)
