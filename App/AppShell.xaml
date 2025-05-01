@@ -185,6 +185,7 @@
             
         </ShellContent>
         <ShellContent FlyoutItemIsVisible="False"
+                      IsVisible="{Binding DealEnabled}"
                       Route="MyDealsPage"
                       Title="My Deals"
                       ContentTemplate="{DataTemplate views:DealsPage}">
