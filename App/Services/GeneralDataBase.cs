@@ -1,4 +1,5 @@
 ﻿using GamHubApp.Core;
+using GamHubApp.Helpers.Comparers;
 using GamHubApp.Models;
 using SQLite;
 using System.Collections.ObjectModel;
@@ -120,7 +121,7 @@ public sealed class GeneralDataBase
     public async Task<List<Deal>> GetDeals()
     {
         return (await database.Table<Deal>().ToListAsync())?.Where(
-            d => d.Expires < DateTime.UtcNow
+            d => d.Expires > DateTime.UtcNow
             ).ToList() ?? new List<Deal>();
     }
 
@@ -136,11 +137,19 @@ public sealed class GeneralDataBase
 
         await _creatingDeal;
         var currD = await GetDeals();
+        DealComparer dealComp = new ();
+        List<Task> insertJobs = new List<Task> ();
         for (int i = 0; newDeals.Count > i; i++)
         {
-            if (!currD.Contains(newDeals[i]))
+            var newDeal = newDeals[i];
+            if (!currD.Contains(newDeal, dealComp))
+            {
                 ++newCount;
+                insertJobs.Add(database.InsertOrReplaceAsync(newDeal));
+            }
         }
+
+        await Task.WhenAll(insertJobs);
         return newCount;
     }
 
