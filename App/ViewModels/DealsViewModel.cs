@@ -30,6 +30,8 @@ public class DealsViewModel : BaseViewModel
     private async Task UpdateDeals()
     {
         Deals = new (await CurrentApp.DataFetcher.GetDeals());
+
+        CurrentApp.RemoveLoadingIndicator();
     }
 
 }

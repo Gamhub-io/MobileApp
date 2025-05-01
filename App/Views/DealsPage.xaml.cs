@@ -13,5 +13,6 @@ public partial class DealsPage : ContentPage
     protected override void OnAppearing()
 	{
         BadgeCounterService.SetCount(0);
+		(App.Current as App).ShowLoadingIndicator();
     }
 }
