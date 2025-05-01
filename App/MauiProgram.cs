@@ -6,6 +6,10 @@ using GamHubApp.Views;
 using Plugin.FirebasePushNotifications;
 using Plugin.FirebasePushNotifications.Model.Queues;
 
+#if IOS
+using GamHubApp.Platforms.iOS.Renderers;
+#endif
+
 #if ANDROID
 using GamHubApp.Platforms.Android.Notifications;
 using GamHubApp.Platforms.Android.Renderers;
@@ -73,6 +77,7 @@ public static class MauiProgram
 #if ANDROID
                    handlers.AddHandler(typeof(Shell), typeof(AndroidShellRenderer));
 #endif
+                   handlers.AddHandler(typeof(Shell), typeof(TabbarBadgeRenderer));
                });
 
         builder.Services.AddSingleton<Fetcher>();
@@ -89,6 +94,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<FeedsViewModel>();
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
         mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
+        mauiAppBuilder.Services.AddSingleton<DealsViewModel>();
 
         return mauiAppBuilder;
     }
@@ -110,6 +116,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<AboutPage>();
         mauiAppBuilder.Services.AddSingleton<FeedsPage>();
         mauiAppBuilder.Services.AddSingleton<BookmarkPage>();
+        mauiAppBuilder.Services.AddSingleton<DealsPage>();
         mauiAppBuilder.Services.AddSingleton<DeleteFeedPopUp>();
         mauiAppBuilder.Services.AddSingleton<RenameFeedPopUp>();
         mauiAppBuilder.Services.AddSingleton<SettingsPage>();

@@ -1,25 +1,36 @@
 ﻿using GamHubApp.Core;
+using GamHubApp.Helpers.Comparers;
 using GamHubApp.Models;
 using SQLite;
+using System.Collections.ObjectModel;
 
 namespace GamHubApp.Services;
 
 public sealed class GeneralDataBase
 {
     SQLiteAsyncConnection database;
+    private Task<CreateTableResult> _creatingSource;
+    private Task<CreateTableResult> _creatingArticle;
+    private Task<CreateTableResult> _creatingFeed;
+    private Task<CreateTableResult> _creatingDeal;
+
     public List<Source> Sources { get; private set; }
-    public Task Init()
+    public async Task Init()
     {
         if (database is not null)
-            return null;
+            return;
 
         database = new SQLiteAsyncConnection(AppConstant.GeneralDBpath, AppConstant.Flags);
-        var creatingSource = database.CreateTableAsync<Source>();
-        var creatingArticle = database.CreateTableAsync<Article>();
-        var creatingFeed = database.CreateTableAsync<Feed>();
+        _creatingSource = database.CreateTableAsync<Source>();
+        _creatingArticle = database.CreateTableAsync<Article>();
+        _creatingFeed = database.CreateTableAsync<Feed>();
+        _creatingDeal = database.CreateTableAsync<Deal>();
 
 
-        return Task.WhenAll(creatingSource, creatingArticle, creatingFeed);
+        await Task.WhenAll( _creatingSource, 
+                            _creatingArticle, 
+                            _creatingFeed,
+                            _creatingDeal);
     }
 
     /// <summary>
@@ -101,6 +112,45 @@ public sealed class GeneralDataBase
     public async Task<List<Feed>> GetFeeds()
     {
         return await database.Table<Feed>().ToListAsync() ?? new List<Feed>();
+    }
+
+    /// <summary>
+    /// Get all deals
+    /// </summary>
+    /// <returns>all deals stored so far</returns>
+    public async Task<List<Deal>> GetDeals()
+    {
+        return (await database.Table<Deal>().ToListAsync())?.Where(
+            d => d.Expires > DateTime.UtcNow
+            ).ToList() ?? new List<Deal>();
+    }
+
+    /// <summary>
+    /// Update deals
+    /// </summary>
+    /// <returns>count of new deals</returns>
+    public async Task<int> UpdateDeals(Collection<Deal> newDeals)
+    {
+        if (newDeals == null)
+            return 0;
+        int newCount = 0;
+
+        await _creatingDeal;
+        var currD = await GetDeals();
+        DealComparer dealComp = new ();
+        List<Task> insertJobs = new List<Task> ();
+        for (int i = 0; newDeals.Count > i; i++)
+        {
+            var newDeal = newDeals[i];
+            if (!currD.Contains(newDeal, dealComp))
+            {
+                ++newCount;
+                insertJobs.Add(database.InsertOrReplaceAsync(newDeal));
+            }
+        }
+
+        await Task.WhenAll(insertJobs);
+        return newCount;
     }
 
     /// <summary>
