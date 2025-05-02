@@ -26,6 +26,12 @@ public partial class AppShell : Shell
                 (this.CurrentPage as NewsPage).ScrollFeed();
             }
         }
+        else
+            Task.Run (async () =>
+            { 
+                if (_vm != null)
+                    await _vm.UpdateDeals();
+            });
     }
     protected override async void OnAppearing()
     {
@@ -35,6 +41,7 @@ public partial class AppShell : Shell
         Task partnersTask = _currentApp.LoadPartners();
         Task notifTask = _vm.NotificationSetup();
         await Task.WhenAll(partnersTask, notifTask);
+        await _vm.UpdateDeals(); 
     }
 
     private void Auth_Tapped(object sender, TappedEventArgs e)

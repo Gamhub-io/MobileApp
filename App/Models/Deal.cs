@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SQLite;
 
 namespace GamHubApp.Models;
 
@@ -22,7 +23,7 @@ public class Deal
     public DateTime Created { get; set; }
     [JsonProperty("expiresAt")]
     public DateTime Expires { get; set; }
-    [JsonProperty("partner")]
+    [JsonProperty("partner"), Ignore]
     public Partner Partner { get; set; }
     public Command Navigate
     {

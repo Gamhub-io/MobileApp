@@ -1,4 +1,5 @@
-﻿using GamHubApp.Models;
+﻿using GamHubApp.Core;
+using GamHubApp.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -74,6 +75,19 @@ public class ArticleViewModel : BaseViewModel
         {
             _ttsColour = value; 
             OnPropertyChanged(nameof(TtsColour));
+        }
+    }
+    private bool _dealEnabled;
+    public bool DealEnabled
+    {
+        get
+        {
+            return _dealEnabled;
+        }
+        set
+        {
+            _dealEnabled = value;
+            OnPropertyChanged(nameof(DealEnabled));
         }
     }
 
@@ -165,18 +179,20 @@ public class ArticleViewModel : BaseViewModel
 
     public ArticleViewModel(Article article)
     {
-        Deals = new ObservableCollection<Deal>((App.Current as App).Deals.Where(deal => 
-        {
-            for (int i = 0; i < article.Categories?.Count(); i++) 
-                if (deal.Title.ToLower().Contains(article.Categories[i].ToLower()) 
-                ||
-                deal.Description.ToLower().Contains(article.Categories[i].ToLower()))
-                    return true;
-            return false;
-        }).ToList());
+
+        if (_dealEnabled = Preferences.Get(AppConstant.DealArticleEnable, true))
+            Deals = new ObservableCollection<Deal>((App.Current as App).Deals.Where(deal => 
+            {
+                for (int i = 0; i < article.Categories?.Count(); i++) 
+                    if (deal.Title.ToLower().Contains(article.Categories[i].ToLower()) 
+                    ||
+                    deal.Description.ToLower().Contains(article.Categories[i].ToLower()))
+                        return true;
+                return false;
+            }).ToList());
+
         _ttsIcon = "\uf028";
         _ttsColour = "#36383c";
-
 #if !DEBUG
         // Register Hook
         _ =(App.Current as App).DataFetcher.RegisterHook(article);

@@ -184,6 +184,18 @@
             </ShellContent.Icon>
             
         </ShellContent>
+        <ShellContent FlyoutItemIsVisible="False"
+                      IsVisible="{Binding DealEnabled}"
+                      Route="MyDealsPage"
+                      Title="My Deals"
+                      ContentTemplate="{DataTemplate views:DealsPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FaSolid" 
+                                 Glyph="&#xf02c;" 
+                                 Size="{OnPlatform Android='26', iOS='25'}"/>
+            </ShellContent.Icon>
+            
+        </ShellContent>
     </FlyoutItem>
     
     <!-- About Page -->

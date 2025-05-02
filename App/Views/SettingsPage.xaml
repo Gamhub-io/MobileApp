@@ -44,5 +44,54 @@
 
             </Grid>
         </Border>
+        <Label 
+            Text="Deals"
+            FontFamily="P-Medium"
+            FontSize="15"
+            TextColor="{StaticResource FontColor}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Start" />
+        <Border StrokeShape="RoundRectangle 20"
+                BackgroundColor="{DynamicResource LightDark}">
+            <Grid RowDefinitions="50,1,50"
+                  ColumnDefinitions="*,50"
+                  Padding="10,5">
+                <Label Text="Deals page"
+                       FontFamily="P-Regular"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       Grid.Row="0"
+                       Grid.Column="0"
+                       TextColor="{StaticResource FontColor}"/>
+                <Switch Grid.Column="1"
+                        OnColor="{StaticResource PrimaryAccent}"
+                        ThumbColor="{StaticResource PrimaryAccent}"
+                        HorizontalOptions="End"
+                        WidthRequest="50"
+                        IsToggled="{Binding DealPageSett}"
+                        Background="Transparent"/>
+                <BoxView BackgroundColor="{StaticResource FontColor}"
+                         Grid.Row="1"
+                         Opacity="0.3"
+                         Grid.ColumnSpan="2"
+                         />
+                <Label Text="Deals on article pages"
+                       FontFamily="P-Regular"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       Grid.Row="2"
+                       Grid.Column="0"
+                       TextColor="{StaticResource FontColor}"/>
+                <Switch OnColor="{StaticResource PrimaryAccent}"
+                        ThumbColor="{StaticResource PrimaryAccent}"
+                        HorizontalOptions="End"
+                        WidthRequest="50"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        IsToggled="{Binding DealViewSett}"
+                        Background="Transparent"/>
+
+            </Grid>
+        </Border>
     </VerticalStackLayout>
 </ContentPage>

@@ -217,9 +217,17 @@
                       Grid.Row="5"
                       RowSpacing="10"
                       IsVisible="{Binding Deals.Count, Converter={StaticResource ZeroToFalseConverter}}">
+                    <Grid.Triggers>
+                        <DataTrigger TargetType="Grid"
+                                     Binding="{Binding DealEnabled}"
+                                     Value="false">
+                            <Setter Property="IsVisible" 
+                                    Value="false" />
+                        </DataTrigger>
+                    </Grid.Triggers>
                     <Label Grid.Row="0"
                            HorizontalOptions="Start"
-                           Text="Related"
+                           Text="Related deals"
                            TextColor="{StaticResource FontColor}"
                            Margin="25,5"
                            FontFamily="P-Bold"
@@ -284,10 +292,10 @@
                                                 StrokeShape="RoundRectangle 0,8,8,0"
                                                 HorizontalOptions="Start"
                                                 VerticalOptions="End"
-                                                HeightRequest="20"
-                                                WidthRequest="50"
+                                                HeightRequest="30"
+                                                WidthRequest="60"
                                                 IsVisible="{Binding Discount, Converter={StaticResource NotNullOrEmptyStringConverter}}"
-                                                BackgroundColor="{StaticResource PrimaryAccent}">
+                                                BackgroundColor="{StaticResource DiscountColor}">
                                             <Label 
                                                    Text="{Binding Discount}"
                                                    TextColor="{StaticResource FontColor}"
@@ -296,7 +304,7 @@
                                                    stroked:StrokedLabel.StrokeWidth="2"
                                                    HorizontalOptions="Center"
                                                    VerticalOptions="Center"
-                                                   FontSize="12"
+                                                   FontSize="15"
                                                    />
                                         </Border>
                                     </Grid>

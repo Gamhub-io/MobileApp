@@ -1,6 +1,9 @@
-﻿using GamHubApp.Models;
+﻿using CommunityToolkit.Maui.ApplicationModel;
+using GamHubApp.Core;
+using GamHubApp.Models;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Services;
+using GamHubApp.Services.UI;
 using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
@@ -20,11 +23,11 @@ public class AppShellViewModel : BaseViewModel
     }
 
     public App CurrentApp { get; private set; }
-
     private Fetcher dataFetcher;
     private ILogger<AppShellViewModel> _logger;
     private IFirebasePushNotification _firebasePushNotification;
     private INotificationPermissions _firebasePushPermissions;
+    private GeneralDataBase _generalDB;
 
     public AppShell MainShell { get; }
     private bool _authenticated;
@@ -36,6 +39,20 @@ public class AppShellViewModel : BaseViewModel
         {
             _authenticated = value;
             OnPropertyChanged(nameof(Authenticated));
+        }
+    }
+
+    private bool _dealEnabled;
+    public bool DealEnabled
+    {
+        get
+        {
+            return _dealEnabled;
+        }
+        set
+        {
+            _dealEnabled = value;
+            OnPropertyChanged(nameof(DealEnabled));
         }
     }
 
@@ -54,11 +71,25 @@ public class AppShellViewModel : BaseViewModel
         }
     }
 
+    private int _newDealsCount;
+    public int NewDealsCount
+    {
+       get
+       {
+           return _newDealsCount;
+       }
+       set
+       {
+           _newDealsCount = value;
+           OnPropertyChanged(nameof(NewDealsCount));
+       }    
+    }
 
     public AppShellViewModel(Fetcher fetc,
     ILogger<AppShellViewModel> logger,
     IFirebasePushNotification firebasePushNotification,
-    INotificationPermissions firebasePushPermission)
+    INotificationPermissions firebasePushPermission,
+        GeneralDataBase generalDB)
     {
         CurrentApp = App.Current as App;
         dataFetcher = fetc;
@@ -67,6 +98,7 @@ public class AppShellViewModel : BaseViewModel
         
         _firebasePushNotification = firebasePushNotification;
         _firebasePushPermissions = firebasePushPermission;
+        (_generalDB = generalDB).Init().GetAwaiter();
 
         Task.Run(async () =>
         {
@@ -75,6 +107,19 @@ public class AppShellViewModel : BaseViewModel
         });
 
     }
+
+    /// <summary>
+    /// Update the deals stored in the database
+    /// </summary>
+    /// <returns></returns>
+    public async Task UpdateDeals()
+    {
+        DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true);
+
+        // Set the deal count
+        BadgeCounterService.SetCount(await dataFetcher.UpdateDeals());
+    }
+
     const string _notificationKey = "Notification";
 
     /// <summary>
@@ -103,15 +148,23 @@ public class AppShellViewModel : BaseViewModel
 #endif
 
         _firebasePushNotification.TokenRefreshed += this.OnTokenRefresh;
-        _firebasePushNotification.NotificationReceived += this.OnNotificationReceived;
         _firebasePushNotification.NotificationOpened += OnNotificationOpened;
         _firebasePushNotification.NotificationAction += OnNotificationAction;
+        _firebasePushNotification.NotificationReceived += OnNotificationReceived;
 #if DEBUG
         Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
 #endif
         _firebasePushNotification.SubscribeTopic("daily_catchup");
 
 
+    }
+
+    private void OnNotificationReceived(object sender, FirebasePushNotificationDataEventArgs e)
+    {
+        if (e.Data == null)
+            return;
+
+        Badge.Default.SetCount((uint)e.Data.Count);
     }
 
     private void OnNotificationAction(object sender, FirebasePushNotificationActionEventArgs e)
@@ -186,10 +239,6 @@ public class AppShellViewModel : BaseViewModel
             (App.Current as App).RemoveLoadingIndicator();
 
         });
-    }
-
-    private void OnNotificationReceived(object sender, FirebasePushNotificationDataEventArgs e)
-    {
     }
 
     private void OnTokenRefresh(object sender, FirebasePushNotificationTokenEventArgs e)

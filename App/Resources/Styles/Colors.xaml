@@ -19,6 +19,7 @@
             <Color x:Key="FontColor" >#ecebeb</Color>
             <Color x:Key="BgBannerColor" >#262626</Color>
             <Color x:Key="DiscordPurple" >#5d6af2</Color>
+            <Color x:Key="DiscountColor" >#FF5733</Color>
         </ResourceDictionary>
 
 </ResourceDictionary>
