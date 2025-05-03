@@ -32,5 +32,4 @@ public class DealsViewModel : BaseViewModel
 
         CurrentApp.RemoveLoadingIndicator();
     }
-
 }
