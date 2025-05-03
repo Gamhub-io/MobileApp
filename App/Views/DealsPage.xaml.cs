@@ -11,11 +11,13 @@ public partial class DealsPage : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = _vm = vm;
+
 	}
     protected override void OnAppearing()
 	{
         BadgeCounterService.SetCount(0);
 		(App.Current as App).ShowLoadingIndicator();
+
         _vm.UpdateDeals().GetAwaiter();
     }
 }
