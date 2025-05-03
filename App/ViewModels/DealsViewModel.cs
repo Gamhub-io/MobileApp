@@ -24,10 +24,9 @@ public class DealsViewModel : BaseViewModel
     public DealsViewModel()
     {
         CurrentApp = App.Current as App;
-        UpdateDeals().GetAwaiter();
     }
 
-    private async Task UpdateDeals()
+    public async Task UpdateDeals()
     {
         Deals = new ((await CurrentApp.DataFetcher.GetDeals()).OrderByDescending(d => d.Created));
 
