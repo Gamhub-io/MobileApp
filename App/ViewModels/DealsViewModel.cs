@@ -28,7 +28,7 @@ public class DealsViewModel : BaseViewModel
 
     public async Task UpdateDeals()
     {
-        Deals = new ((await CurrentApp.DataFetcher.GetDeals()).OrderByDescending(d => d.Created));
+        Deals = new ((await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires));
 
         CurrentApp.RemoveLoadingIndicator();
     }
