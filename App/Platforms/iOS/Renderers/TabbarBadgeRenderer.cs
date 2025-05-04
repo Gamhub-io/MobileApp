@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls.Handlers.Compatibility;
 using Microsoft.Maui.Controls.Platform.Compatibility;
 using Microsoft.Maui.Platform;
+using System.Diagnostics;
 using UIKit;
 
 namespace GamHubApp.Platforms.iOS.Renderers;
@@ -21,12 +22,12 @@ class BadgeShellTabbarAppearanceTracker : ShellTabBarAppearanceTracker
     {
         base.UpdateLayout(controller);
 
-        if (_cartTabbarItem is null)
+        if (_cartTabbarItem is null
+            && controller.TabBar.Items?.Length == 4)
         {
             // TODO: the index is hardcoded here, it would be nice to find a way to set this programatically or otherwise
             const int dealsTabbarItemIndex = 3;
-
-            _cartTabbarItem = controller.TabBar.Items?[dealsTabbarItemIndex];
+            _cartTabbarItem = controller.TabBar.Items[dealsTabbarItemIndex];
             if (_cartTabbarItem is not null)
             {
                 UpdateBadge(0);
