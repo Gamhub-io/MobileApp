@@ -179,17 +179,29 @@ public class ArticleViewModel : BaseViewModel
 
     public ArticleViewModel(Article article)
     {
-
-        if (_dealEnabled = Preferences.Get(AppConstant.DealArticleEnable, true))
-            Deals = new ObservableCollection<Deal>((App.Current as App).Deals.Where(deal => 
-            {
-                for (int i = 0; i < article.Categories?.Count(); i++) 
-                    if (deal.Title.ToLower().Contains(article.Categories[i].ToLower()) 
-                    ||
-                    deal.Description.ToLower().Contains(article.Categories[i].ToLower()))
-                        return true;
-                return false;
-            }).ToList());
+        try
+        {
+            Collection<Deal> deals = (App.Current as App).Deals;
+            if (_dealEnabled = Preferences.Get(AppConstant.DealArticleEnable, true)
+                && deals is not null)
+                Deals = new ObservableCollection<Deal>(deals.Where(deal =>
+                {
+                    for (int i = 0; i < article.Categories?.Count(); i++)
+                        if (deal.Title.ToLower().Contains(article.Categories[i].ToLower())
+                        ||
+                        deal.Description.ToLower().Contains(article.Categories[i].ToLower()))
+                            return true;
+                    return false;
+                }).ToList());
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex.Message);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
 
         _ttsIcon = "\uf028";
         _ttsColour = "#36383c";
