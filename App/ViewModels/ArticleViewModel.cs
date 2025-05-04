@@ -181,17 +181,18 @@ public class ArticleViewModel : BaseViewModel
     {
         try
         {
-            if (_dealEnabled = Preferences.Get(AppConstant.DealArticleEnable, true))
-                Deals = new ObservableCollection<Deal>((App.Current as App).Deals?.Where(deal => 
+            Collection<Deal> deals = (App.Current as App).Deals;
+            if (_dealEnabled = Preferences.Get(AppConstant.DealArticleEnable, true)
+                && deals is not null)
+                Deals = new ObservableCollection<Deal>(deals.Where(deal =>
                 {
-                    for (int i = 0; i < article.Categories?.Count(); i++) 
-                        if (deal.Title.ToLower().Contains(article.Categories[i].ToLower()) 
+                    for (int i = 0; i < article.Categories?.Count(); i++)
+                        if (deal.Title.ToLower().Contains(article.Categories[i].ToLower())
                         ||
                         deal.Description.ToLower().Contains(article.Categories[i].ToLower()))
                             return true;
                     return false;
                 }).ToList());
-
         }
         catch (Exception ex)
         {
