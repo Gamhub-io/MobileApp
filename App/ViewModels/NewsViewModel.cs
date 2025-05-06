@@ -375,6 +375,10 @@ public class NewsViewModel : BaseViewModel
                 await SearchArticles();
                 return;
             }
+
+            // Refresh the time displayed
+            RefreshArticlesTime();
+
             // Fetch the article
             await FetchNewerArticles().ContinueWith(res => IsRefreshing = false );
         });
@@ -660,6 +664,9 @@ public class NewsViewModel : BaseViewModel
 
 
         }
+        // Refresh the time displayed when be comeback
+        RefreshArticlesTime();
+
         ObservableCollection <Feed> curFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
 
         // We try to figure out if the two feed lists contains the same items
@@ -671,4 +678,14 @@ public class NewsViewModel : BaseViewModel
 
     }
 
+    /// <summary>
+    /// Refresh the timspan of all the articles currently in display
+    /// </summary>
+    public void RefreshArticlesTime()
+    {
+        if (Articles is null)
+            return;
+        for (int i = 0; i < Articles.Count; i++)
+            _articles[i].RefreshTimeCommand.Execute(null);
+    }
 }
