@@ -42,6 +42,7 @@ public partial class NewsPage : ContentPage
 
         _vm.Resume().GetAwaiter();
     }
+
     public async void DisplayOfflineMessage(string msg = null)
     {
         var current = Connectivity.NetworkAccess;
