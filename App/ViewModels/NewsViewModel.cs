@@ -664,8 +664,9 @@ public class NewsViewModel : BaseViewModel
 
 
         }
-        // Refresh the time displayed when be comeback
-        RefreshArticlesTime();
+        else
+            // Refresh the time displayed when be comeback
+            RefreshArticlesTime();
 
         ObservableCollection <Feed> curFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
 
@@ -681,7 +682,7 @@ public class NewsViewModel : BaseViewModel
     /// <summary>
     /// Refresh the timspan of all the articles currently in display
     /// </summary>
-    public void RefreshArticlesTime()
+    private void RefreshArticlesTime()
     {
         if (Articles is null)
             return;
