@@ -74,10 +74,7 @@ public static class MauiProgram
                 })
                .ConfigureMauiHandlers(handlers =>
                {
-#if ANDROID
-                   handlers.AddHandler(typeof(Shell), typeof(AndroidShellRenderer));
-#endif
-                   handlers.AddHandler(typeof(Shell), typeof(TabbarBadgeRenderer));
+                   handlers.AddHandler<Shell, TabbarBadgeRenderer>();
                });
 
         builder.Services.AddSingleton<Fetcher>();
