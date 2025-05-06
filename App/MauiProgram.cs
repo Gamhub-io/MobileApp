@@ -75,7 +75,7 @@ public static class MauiProgram
                .ConfigureMauiHandlers(handlers =>
                {
 #if ANDROID
-                   handlers.AddHandler(typeof(Shell), typeof(AndroidShellRenderer));
+                   handlers.AddHandler<Shell, AndroidShellRenderer>();
 #endif
                    handlers.AddHandler(typeof(Shell), typeof(TabbarBadgeRenderer));
                });
