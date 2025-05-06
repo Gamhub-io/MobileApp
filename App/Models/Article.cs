@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace GamHubApp.Models;
 
-public class Article
+public class Article : SelectableModel
 {
 
     [PrimaryKey, Column("_id"), JsonProperty("uuid")]
@@ -131,6 +131,18 @@ public class Article
                     Text = Title
                 });
             }); ;
+        }
+    }
+
+    [Ignore]
+    public Command RefreshTimeCommand
+    {
+        get
+        {
+            return new Command(() =>
+            {
+                OnPropertyChanged(nameof(Time));
+            }); 
         }
     }
 

@@ -36,12 +36,18 @@ public partial class NewsPage : ContentPage
         });
 
     }
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
 
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        OnResume();
+    }
+
+    public void OnResume()
+    {
         _vm.Resume().GetAwaiter();
     }
+
     public async void DisplayOfflineMessage(string msg = null)
     {
         var current = Connectivity.NetworkAccess;

@@ -51,7 +51,10 @@
 
                     <!-- Time ago -->
                     <Label Grid.Row="1" 
-                       Text="{Binding Article.Time, Source={x:Reference preview}, Converter={StaticResource TimeSpanConverter}}"
+                       Text="{Binding Article.Time, 
+                                      Source={x:Reference preview}, 
+                                      Converter={StaticResource TimeSpanConverter},
+                                      Mode=TwoWay}"
                        TextColor="{StaticResource FontColor}"
                        Margin="10,0"
                        VerticalOptions="Center"

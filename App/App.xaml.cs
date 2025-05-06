@@ -151,6 +151,12 @@ public partial class App : Application
 
              ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
          }
+
+         if (currentPage.ToString() == "GamHubApp.Views.NewsPage")
+         {
+
+             ((NewsPage)currentPage).OnResume();
+         }
      }
      /// <summary>
      /// Open any popup
