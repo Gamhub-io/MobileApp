@@ -487,7 +487,9 @@ public class Fetcher
     /// <returns>true -> exist; false -> doesn't</returns>
     public bool ArticleExist (string articleId)
     {
-        //return await _generalDB.GetArticleById(articleId) is not null;
+        if (Bookmarks is null)
+            return false;
+
         return Bookmarks.SingleOrDefault(a => a.MongooseId == articleId) is not null;
     }
 
