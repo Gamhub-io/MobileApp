@@ -17,14 +17,14 @@
             </Grid.ColumnDefinitions>
 
             <Label Text="Settings"
-               Grid.Column="1"
-               FontSize="30"
-               VerticalOptions="Center"
+                   Grid.Column="1"
+                   FontSize="30"
+                   VerticalOptions="Center"
                    HorizontalTextAlignment="Center"
-               TextColor="{StaticResource FontColor}"
-               Margin="{OnPlatform Android='0,0,40,5', 
-                                   iOS='40,0,40,5'}"
-               FontFamily="P-Bold"/>
+                   TextColor="{StaticResource FontColor}"
+                   Margin="{OnPlatform Android='0,0,40,5', 
+                                       iOS='40,0,40,5'}"
+                   FontFamily="P-Bold"/>
         </Grid>
 
     </Shell.TitleView>
