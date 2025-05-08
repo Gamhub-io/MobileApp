@@ -6,6 +6,28 @@
              BackgroundColor="{StaticResource BackgroundColor}"
              xmlns:vm="clr-namespace:GamHubApp.ViewModels"
              x:DataType="vm:SettingsViewModel">
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="{OnPlatform Android='1.9*', 
+                                                 iOS='2*'}"/>
+
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Settings"
+               Grid.Column="1"
+               FontSize="30"
+               VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+               TextColor="{StaticResource FontColor}"
+               Margin="{OnPlatform Android='0,0,40,5', 
+                                   iOS='40,0,40,5'}"
+               FontFamily="P-Bold"/>
+        </Grid>
+
+    </Shell.TitleView>
     <VerticalStackLayout Margin="5"
                          Spacing="10">
         <Label 
