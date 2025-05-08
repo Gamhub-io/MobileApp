@@ -6,6 +6,28 @@
              BackgroundColor="{StaticResource BackgroundColor}"
              xmlns:vm="clr-namespace:GamHubApp.ViewModels"
              x:DataType="vm:SettingsViewModel">
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="{OnPlatform Android='1.9*', 
+                                                 iOS='2*'}"/>
+
+            </Grid.ColumnDefinitions>
+
+            <Label Text="Settings"
+                   Grid.Column="1"
+                   FontSize="30"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   TextColor="{StaticResource FontColor}"
+                   Margin="{OnPlatform Android='0,0,40,5', 
+                                       iOS='40,0,40,5'}"
+                   FontFamily="P-Bold"/>
+        </Grid>
+
+    </Shell.TitleView>
     <VerticalStackLayout Margin="5"
                          Spacing="10">
         <Label 
@@ -18,7 +40,7 @@
         <Border StrokeShape="RoundRectangle 20"
                 BackgroundColor="{DynamicResource LightDark}">
             <Grid RowDefinitions="50,1,auto"
-                  ColumnDefinitions="*,*"
+                  ColumnDefinitions="*,50"
                   Padding="10,5">
                 <Label Text="Notification settings"
                        FontFamily="P-Medium"
@@ -65,11 +87,20 @@
                        TextColor="{StaticResource FontColor}"/>
                 <Switch Grid.Column="1"
                         OnColor="{StaticResource PrimaryAccent}"
-                        ThumbColor="{StaticResource PrimaryAccent}"
+                        ThumbColor="{StaticResource Primary}"
                         HorizontalOptions="End"
+                        VerticalOptions="Center"
                         WidthRequest="50"
                         IsToggled="{Binding DealPageSett}"
-                        Background="Transparent"/>
+                        Background="Transparent">
+                    <Switch.Triggers>
+                        <DataTrigger TargetType="Switch"
+                                     Binding="{Binding DealViewSett}"
+                                     Value="false">
+                            <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
+                        </DataTrigger>
+                    </Switch.Triggers>
+                </Switch>
                 <BoxView BackgroundColor="{StaticResource FontColor}"
                          Grid.Row="1"
                          Opacity="0.3"
@@ -83,13 +114,22 @@
                        Grid.Column="0"
                        TextColor="{StaticResource FontColor}"/>
                 <Switch OnColor="{StaticResource PrimaryAccent}"
-                        ThumbColor="{StaticResource PrimaryAccent}"
+                        ThumbColor="{StaticResource Primary}"
                         HorizontalOptions="End"
+                        VerticalOptions="Center"
                         WidthRequest="50"
                         Grid.Row="2"
                         Grid.Column="1"
                         IsToggled="{Binding DealViewSett}"
-                        Background="Transparent"/>
+                        Background="Transparent">
+                    <Switch.Triggers>
+                        <DataTrigger TargetType="Switch"
+                                     Binding="{Binding DealViewSett}"
+                                     Value="false">
+                            <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
+                        </DataTrigger>
+                    </Switch.Triggers>
+                </Switch>
 
             </Grid>
         </Border>
