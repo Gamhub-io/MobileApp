@@ -95,7 +95,7 @@
                         Background="Transparent">
                     <Switch.Triggers>
                         <DataTrigger TargetType="Switch"
-                                     Binding="{Binding DealViewSett}"
+                                     Binding="{Binding DealPageSett}"
                                      Value="false">
                             <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
                         </DataTrigger>
