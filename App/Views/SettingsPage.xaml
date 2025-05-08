@@ -89,6 +89,7 @@
                         OnColor="{StaticResource PrimaryAccent}"
                         ThumbColor="{StaticResource PrimaryAccent}"
                         HorizontalOptions="End"
+                        VerticalOptions="Center"
                         WidthRequest="50"
                         IsToggled="{Binding DealPageSett}"
                         Background="Transparent"/>
@@ -107,6 +108,7 @@
                 <Switch OnColor="{StaticResource PrimaryAccent}"
                         ThumbColor="{StaticResource PrimaryAccent}"
                         HorizontalOptions="End"
+                        VerticalOptions="Center"
                         WidthRequest="50"
                         Grid.Row="2"
                         Grid.Column="1"
