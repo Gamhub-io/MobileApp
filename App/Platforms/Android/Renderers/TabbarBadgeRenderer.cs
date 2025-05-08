@@ -12,7 +12,13 @@ public class TabbarBadgeRenderer : ShellRenderer
 {
     protected override IShellBottomNavViewAppearanceTracker CreateBottomNavViewAppearanceTracker(ShellItem shellItem)
     {
+        if (shellItem.Items.Count == 1)
+            return base.CreateBottomNavViewAppearanceTracker(shellItem);
         return new BadgeShellBottomNavViewAppearanceTracker(this, shellItem);
+    }
+    protected override IShellItemRenderer CreateShellItemRenderer(ShellItem shellItem)
+    {
+        return new ActionableTabItemRenderer(this);
     }
 }
 
