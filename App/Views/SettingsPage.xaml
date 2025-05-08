@@ -40,7 +40,7 @@
         <Border StrokeShape="RoundRectangle 20"
                 BackgroundColor="{DynamicResource LightDark}">
             <Grid RowDefinitions="50,1,auto"
-                  ColumnDefinitions="*,*"
+                  ColumnDefinitions="*,50"
                   Padding="10,5">
                 <Label Text="Notification settings"
                        FontFamily="P-Medium"
