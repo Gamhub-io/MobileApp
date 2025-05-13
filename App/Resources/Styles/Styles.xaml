@@ -19,6 +19,7 @@
     <helpers:ZeroToFalseConverter x:Key="ZeroToFalseConverter"/>
     <helpers:ZeroToTrueConverter x:Key="ZeroToTrueConverter"/>
     <helpers:NotNullOrEmptyStringConverter x:Key="NotNullOrEmptyStringConverter"/>
+    <helpers:NullOrEmptyStringConverter x:Key="NullOrEmptyStringConverter"/>
 
     <ResourceDictionary>
         <OnPlatform x:Key="TitleRightMargin" x:TypeArguments="x:Double">
