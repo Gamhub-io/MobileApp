@@ -89,13 +89,23 @@
                         HeightRequest="25"
                         Padding="4,0"
                         BackgroundColor="{Binding Article.Source.PrimaryColour, Mode=OneWay, Source={x:Reference preview}}">
-                    <Label FontSize="13"
+                    <Grid>
+                        <Label FontSize="13"
                            HorizontalOptions="Center"
                            VerticalOptions="Center"
                            Text="{Binding Article.Source.Name, Mode=OneWay, Source={x:Reference preview}}"
                            FontFamily="P-Bold"
+                           IsVisible="{Binding Article.Source.Logo, Converter={StaticResource NullOrEmptyStringConverter}, Source={x:Reference preview}}"
                            TextColor="{Binding Article.Source.SecondaryColour, Mode=OneWay, Source={x:Reference preview}}"
-                           />
+                           
+                           >
+                        </Label>
+                        <Image HorizontalOptions="Fill"
+                               MaximumWidthRequest="90"
+                               MaximumHeightRequest="25"
+                               Source="{Binding Article.Source.Logo, Source={x:Reference preview}}"/>
+
+                    </Grid>
                 </Border>
 
                  <!-- Share and save-->
