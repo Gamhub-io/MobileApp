@@ -83,7 +83,7 @@ public class Fetcher
     {
         return Fetcher.Sources =  await WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
-                                                         unSuccessCallback: e => _ = HandleHttpException(e));
+                                                        unSuccessCallback: e => _ = HandleHttpException(e));
     }
     /// <summary>
     /// Get the feed of an article
@@ -430,13 +430,14 @@ public class Fetcher
     private async Task HandleHttpException(HttpResponseMessage err)
     {
         string errMsg = await err.Content.ReadAsStringAsync();
+
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet
+            && (errMsg.Contains("internet connection") || errMsg.Contains("Connection failure")))
+            // If the error is being thrown because there is no internet: there is no point reporting it 
+            return;
 #if DEBUG
         throw new Exception(errMsg);
 #else
-        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet
-            && errMsg.Contains("internet connection"))
-            // If the error is being thrown because there is no internet: there is no point reporting it 
-            return;
         SentrySdk.CaptureException(new Exception(errMsg));
 #endif
     }
