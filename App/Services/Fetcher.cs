@@ -429,10 +429,15 @@ public class Fetcher
     /// <exception cref="Exception"></exception>
     private async Task HandleHttpException(HttpResponseMessage err)
     {
+        string errMsg = await err.Content.ReadAsStringAsync();
 #if DEBUG
-        throw new Exception(await err.Content.ReadAsStringAsync());
+        throw new Exception(errMsg);
 #else
-        SentrySdk.CaptureException(new Exception(await err.Content.ReadAsStringAsync()));
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet
+            && errMsg.Contains("internet connection"))
+            // If the error is being thrown because there is no internet: there is no point reporting it 
+            return;
+        SentrySdk.CaptureException(new Exception(errMsg));
 #endif
     }
 
