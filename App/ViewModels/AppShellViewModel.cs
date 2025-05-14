@@ -127,6 +127,9 @@ public class AppShellViewModel : BaseViewModel
     /// </summary>
     public async Task NotificationSetup()
     {
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+            return;
+
         if ((await _firebasePushPermissions.GetAuthorizationStatusAsync() is not Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted)
             && Preferences.Get(_notificationKey, true))
 #if ANDROID
