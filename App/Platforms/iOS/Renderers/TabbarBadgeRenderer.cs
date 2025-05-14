@@ -41,18 +41,21 @@ class BadgeShellTabbarAppearanceTracker : ShellTabBarAppearanceTracker
     }
     private void UpdateBadge(int count)
     {
-        if (_cartTabbarItem is not null)
+        MainThread.BeginInvokeOnMainThread(() => 
         {
-            if (count <= 0)
+            if (_cartTabbarItem is not null)
             {
-                _cartTabbarItem.BadgeValue = null;
+                if (count <= 0)
+                {
+                    _cartTabbarItem.BadgeValue = null;
+                }
+                else
+                {
+                    _cartTabbarItem.BadgeValue = count.ToString();
+                    _cartTabbarItem.BadgeColor = (App.Current.Resources["DiscountColor"] as Color).ToPlatform();
+                }
             }
-            else
-            {
-                _cartTabbarItem.BadgeValue = count.ToString();
-                _cartTabbarItem.BadgeColor = (App.Current.Resources["DiscountColor"] as Color).ToPlatform();
-            }
-        }
+        });
     }
     protected override void Dispose(bool disposing)
     {
