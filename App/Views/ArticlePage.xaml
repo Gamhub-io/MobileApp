@@ -16,14 +16,32 @@
     <Shell.TitleView>
         <ContentView Margin="0,0,0,0" >
             <Grid ColumnDefinitions="4*,*">
-                
-                <Label Text="{Binding SelectedArticle.Source.Name}"
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center"
-                       FontSize="20"
-                       TextColor="{StaticResource FontColor}"
-                       FontFamily="P-Bold"
-                       Grid.Column="0" />
+
+                <Border Grid.Column="0"
+                        Grid.Row="0"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        StrokeShape="RoundRectangle 8"
+                        HeightRequest="35"
+                        Padding="4,0"
+                        BackgroundColor="{Binding SelectedArticle.Source.PrimaryColour, Mode=OneWay}">
+                    <Grid>
+                        <Label FontSize="13"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            Text="{Binding SelectedArticle.Source.Name, Mode=OneWay}"
+                            FontFamily="P-Bold"
+                            IsVisible="{Binding SelectedArticle.Source.Logo, Converter={StaticResource NullOrEmptyStringConverter}}"
+                            TextColor="{Binding SelectedArticle.Source.SecondaryColour, Mode=OneWay}"
+                            >
+                        </Label>
+                        <Image HorizontalOptions="Fill"
+                               MaximumWidthRequest="120"
+                               MaximumHeightRequest="35"
+                               Source="{Binding SelectedArticle.Source.Logo}"/>
+
+                    </Grid>
+                </Border>
 
 
                 <!-- Sub Menu button -->

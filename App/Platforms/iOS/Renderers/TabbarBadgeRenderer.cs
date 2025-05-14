@@ -2,6 +2,7 @@
 using Microsoft.Maui.Controls.Handlers.Compatibility;
 using Microsoft.Maui.Controls.Platform.Compatibility;
 using Microsoft.Maui.Platform;
+using Sentry;
 using System.Diagnostics;
 using UIKit;
 
@@ -41,17 +42,31 @@ class BadgeShellTabbarAppearanceTracker : ShellTabBarAppearanceTracker
     }
     private void UpdateBadge(int count)
     {
-        if (_cartTabbarItem is not null)
+        try
         {
-            if (count <= 0)
+            MainThread.BeginInvokeOnMainThread(() => 
             {
-                _cartTabbarItem.BadgeValue = null;
-            }
-            else
-            {
-                _cartTabbarItem.BadgeValue = count.ToString();
-                _cartTabbarItem.BadgeColor = (App.Current.Resources["DiscountColor"] as Color).ToPlatform();
-            }
+                if (_cartTabbarItem is not null)
+                {
+                    if (count <= 0)
+                    {
+                        _cartTabbarItem.BadgeValue = null;
+                    }
+                    else
+                    {
+                        _cartTabbarItem.BadgeValue = count.ToString();
+                        _cartTabbarItem.BadgeColor = (App.Current.Resources["DiscountColor"] as Color).ToPlatform();
+                    }
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
         }
     }
     protected override void Dispose(bool disposing)

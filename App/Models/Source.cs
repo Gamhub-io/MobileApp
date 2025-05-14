@@ -21,6 +21,8 @@ public class Source
     public string SecondaryColour { get; set; }
     [JsonProperty("domain")]
     public string Domain { get; set; }
+    [JsonProperty("logo")]
+    public string Logo { get; set; }
     [JsonProperty("isActive")]
     public bool IsActive { get; set; }
     [OneToMany(CascadeOperations = CascadeOperation.All)]
