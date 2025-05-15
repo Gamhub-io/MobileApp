@@ -71,15 +71,17 @@
                             HeightRequest="30"
                             BackgroundColor="{StaticResource BackgroundColor}"
                             StrokeThickness="1"
-                            Stroke="{StaticResource LightDark}"
+                            Stroke="{Binding Expires, Converter={StaticResource TimeUntilColourConverter}}"
                             Margin="2,5"
                             Padding="5,2">
                         <Label TextColor="{StaticResource FontColor}"
                                VerticalTextAlignment="Center">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span FontFamily="P-Medium" Text="Ends in "></Span>
-                                    <Span FontFamily="P-Bold" Text="{Binding Expires, Converter={StaticResource TimeUntilConverter}}"></Span>
+                                    <Span FontFamily="P-Medium" Text="Ends in "/>
+                                    <Span FontFamily="P-Bold" 
+                                          Text="{Binding Expires, Converter={StaticResource TimeUntilConverter}}"
+                                          TextColor="{Binding Expires, Converter={StaticResource TimeUntilColourConverter}}"/>
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>

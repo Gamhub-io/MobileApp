@@ -20,6 +20,10 @@
             <Color x:Key="BgBannerColor" >#262626</Color>
             <Color x:Key="DiscordPurple" >#5d6af2</Color>
             <Color x:Key="DiscountColor" >#FF5733</Color>
-        </ResourceDictionary>
+            <!-- deals -->
+            <Color x:Key="DealExpiresSoonColor" >#FFEEEA</Color>
+            <Color x:Key="DealExpiresVerySoonColor" >#FFAB99</Color>
+            <Color x:Key="DealExpiringColor" >#FF6747</Color>
+    </ResourceDictionary>
 
 </ResourceDictionary>
