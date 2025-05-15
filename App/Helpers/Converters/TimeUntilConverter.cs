@@ -15,7 +15,7 @@ public class TimeUntilConverter : IValueConverter
             if (timeremaining < TimeSpan.Zero)
                 return "expired";
             else if (timeremaining < new TimeSpan(days: 30, 0, 0, 0))
-                return $"Ends in {timeremaining.Days}d {timeremaining.Days}hrs {timeremaining.Minutes}mins";
+                return $"{timeremaining.Days}d {timeremaining.Days}h {timeremaining.Minutes}m";
 
         }
         return null;

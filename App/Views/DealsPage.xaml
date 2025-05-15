@@ -6,8 +6,7 @@
              xmlns:models="clr-namespace:GamHubApp.Models"
              xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
              x:DataType="viewmodels:DealsViewModel"
-             xmlns:stroked="https://vapolia.eu/Vapolia.StrokedLabel"
-             Title="DealsPage">
+             xmlns:stroked="https://vapolia.eu/Vapolia.StrokedLabel">
     <Shell.TitleView>
         <Grid ColumnDefinitions="4*,*">
             <Label Text="My Deals"
@@ -64,6 +63,26 @@
                         <Image Source="{Binding Partner.Logo}"
                                HorizontalOptions="Fill"
                                VerticalOptions="Fill"/>
+                    </Border>
+                    <Border Grid.Row="0"
+                            StrokeShape="RoundRectangle 10"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Start"
+                            HeightRequest="30"
+                            BackgroundColor="{StaticResource BackgroundColor}"
+                            StrokeThickness="1"
+                            Stroke="{StaticResource LightDark}"
+                            Margin="2,5"
+                            Padding="5,2">
+                        <Label TextColor="{StaticResource FontColor}"
+                               VerticalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span FontFamily="P-Medium" Text="Ends in: "></Span>
+                                    <Span FontFamily="P-Bold" Text="{Binding Expires, Converter={StaticResource TimeUntilConverter}}"></Span>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
                     </Border>
                     <Label Grid.Row="1"
                            HorizontalOptions="Center"
