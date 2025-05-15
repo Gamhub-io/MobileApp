@@ -78,7 +78,7 @@
                                VerticalTextAlignment="Center">
                             <Label.FormattedText>
                                 <FormattedString>
-                                    <Span FontFamily="P-Medium" Text="Ends in: "></Span>
+                                    <Span FontFamily="P-Medium" Text="Ends in "></Span>
                                     <Span FontFamily="P-Bold" Text="{Binding Expires, Converter={StaticResource TimeUntilConverter}}"></Span>
                                 </FormattedString>
                             </Label.FormattedText>
