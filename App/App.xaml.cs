@@ -157,7 +157,13 @@ public partial class App : Application
 
              ((NewsPage)currentPage).OnResume();
          }
-     }
+
+        if (currentPage.ToString() == "GamHubApp.Views.DealsPage")
+        {
+
+            ((DealsPage)currentPage).Resume();
+        }
+    }
      /// <summary>
      /// Open any popup
      /// </summary>

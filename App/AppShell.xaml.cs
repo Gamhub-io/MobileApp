@@ -41,6 +41,11 @@ public partial class AppShell : Shell
         Task partnersTask = _currentApp.LoadPartners();
         Task notifTask = _vm.NotificationSetup();
         await Task.WhenAll(partnersTask, notifTask);
+    }
+
+    protected override async void OnNavigated(ShellNavigatedEventArgs args)
+    {
+        base.OnNavigated(args);
         await _vm.UpdateDeals(); 
     }
 
