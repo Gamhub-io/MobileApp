@@ -114,7 +114,10 @@ public class AppShellViewModel : BaseViewModel
     /// <returns></returns>
     public async Task UpdateDeals()
     {
-        DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true);
+        if (!(DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true)))
+            return;
+
+        await dataFetcher.GetDeals();
 
         // Set the deal count
         BadgeCounterService.SetCount(await dataFetcher.UpdateDeals());
