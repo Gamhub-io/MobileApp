@@ -19,7 +19,7 @@ public class TimeUntilConverter : IValueConverter
             else if (timeremaining.TotalDays < 0)
                 return $"{timeremaining.Days} hours {timeremaining.Minutes} minutes ";
             else if (timeremaining.TotalDays < 30)
-                return $"{timeremaining.Days} days {timeremaining.Hours} hours {timeremaining.Minutes} minutes";
+                return $"{timeremaining.Days} days {timeremaining.Hours} hours";
 
         }
         return null;
