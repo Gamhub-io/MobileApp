@@ -17,7 +17,7 @@ public class TimeUntilConverter : IValueConverter
             else if (timeremaining.Days < 0)
                 return $"{timeremaining.Days} hours {timeremaining.Minutes} minutes";
             else if (timeremaining < new TimeSpan(days: 30, 0, 0, 0))
-                return $"{timeremaining.Days} days {timeremaining.Days} hours";
+                return $"{timeremaining.Days} days {timeremaining.Hours} hours";
 
         }
         return null;
