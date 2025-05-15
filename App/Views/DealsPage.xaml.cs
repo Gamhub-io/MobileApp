@@ -18,6 +18,10 @@ public partial class DealsPage : ContentPage
         BadgeCounterService.SetCount(0);
 		(App.Current as App).ShowLoadingIndicator();
 
+        Resume();
+    }
+    public void Resume()
+    {
         _vm.UpdateDeals().GetAwaiter();
     }
 }
