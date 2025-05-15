@@ -18,6 +18,7 @@
     <helpers:BoolInverseConverter x:Key="BoolInverseConverter"/>
     <helpers:ZeroToFalseConverter x:Key="ZeroToFalseConverter"/>
     <helpers:ZeroToTrueConverter x:Key="ZeroToTrueConverter"/>
+    <helpers:TimeUntilConverter x:Key="TimeUntilConverter"/>
     <helpers:NotNullOrEmptyStringConverter x:Key="NotNullOrEmptyStringConverter"/>
     <helpers:NullOrEmptyStringConverter x:Key="NullOrEmptyStringConverter"/>
 
