@@ -12,11 +12,9 @@ public class TimeUntilColourConverter : IValueConverter
         {
             var timeremaining = enddate - DateTime.Now;
 
-            if (timeremaining < TimeSpan.Zero)
-                return App.Current.Resources["DealExpiringColor"];
-            else if (timeremaining.Days < 0)
-                return timeremaining.Hours < 20? App.Current.Resources["DealExpiringColor"]: App.Current.Resources["DealExpiresVerySoonColor"];
-            else if (timeremaining < new TimeSpan(days: 30, 0, 0, 0))
+            if (timeremaining.TotalDays < 5)
+                return timeremaining.TotalHours < 20? App.Current.Resources["DealExpiringColor"]: App.Current.Resources["DealExpiresVerySoonColor"];
+            else if (timeremaining.TotalDays < 30)
                 return App.Current.Resources["DealExpiresSoonColor"];
 
         }
