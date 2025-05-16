@@ -37,4 +37,6 @@ public class Deal
                 }));
         }
     }
+    [JsonIgnore, Ignore]
+    public bool EpirationDisplayed { get => (Expires - DateTime.Now).TotalDays < 30; }
 }
