@@ -65,6 +65,7 @@
                                VerticalOptions="Fill"/>
                     </Border>
                     <Border Grid.Row="0"
+                            IsVisible="{Binding EpirationDisplayed}"
                             StrokeShape="RoundRectangle 10"
                             HorizontalOptions="Start"
                             VerticalOptions="Start"
