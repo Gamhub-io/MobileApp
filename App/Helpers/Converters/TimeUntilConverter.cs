@@ -15,11 +15,25 @@ public class TimeUntilConverter : IValueConverter
             if (timeremaining < TimeSpan.Zero)
                 return "expired";
             else if (timeremaining.TotalHours < 0)
-                return $"{timeremaining.Minutes} minutes";
+            {
+                if (timeremaining.Minutes > 1)
+                    return $"{timeremaining.Minutes} minutes"; 
+                return $"1 minute"; 
+            }
             else if (timeremaining.TotalDays < 0)
-                return $"{timeremaining.Days} hours {timeremaining.Minutes} minutes ";
+            {
+                string hoursStr = timeremaining.Hours > 1? $"{timeremaining.Hours} hours": "1 hour";
+                string minutesStr = timeremaining.Minutes > 1? $"{timeremaining.Minutes} minutes" : "1 minute";
+
+                return $"{hoursStr} {minutesStr}";
+            }
             else if (timeremaining.TotalDays < 30)
-                return $"{timeremaining.Days} days {timeremaining.Hours} hours";
+            {
+                string hoursStr = timeremaining.Hours > 1 ? $"{timeremaining.Hours} hours" : "1 hour";
+                string daysStr = timeremaining.Days > 1 ? $"{timeremaining.Days} days" : "1 day";
+
+                return $"{daysStr} {hoursStr}";
+            }
 
         }
         return null;
