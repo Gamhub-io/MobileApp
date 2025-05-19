@@ -280,6 +280,40 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Register a notification entity
+    /// </summary>
+    /// <param name="token">notification token</param>
+    /// <returns>retrun the article</returns>
+    public async Task RegisterNotificationEntity(string token)
+    {
+        try
+        {
+#if DEBUG
+            string res =
+#endif
+                await this.WebService.Post(controller: "monitor",
+                                                  action: "NE/create",
+                                                  parameters: new Dictionary<string, string>
+                                                  {
+                                                      { "token", token }
+                                                  },
+                                                  unSuccessCallback: e => _ = HandleHttpException(e));
+#if DEBUG
+            Debug.WriteLine($"NE/create: {res}");
+#endif
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
+    }
+
+    /// <summary>
     /// Save all the tokens of a session and expiration
     /// </summary>
     /// <param name="newSession"></param>

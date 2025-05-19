@@ -138,13 +138,13 @@ public class AppShellViewModel : BaseViewModel
 #if ANDROID
             // For android we need to make sure it runs on the main thread
             MainThread.BeginInvokeOnMainThread(async () =>
-#endif 
-            {
-                bool newStatus = await _firebasePushPermissions.RequestPermissionAsync();
-                Preferences.Set(_notificationKey, newStatus);
-                if (!newStatus) return;
-                await Task.Delay(1000);
-                await _firebasePushNotification.RegisterForPushNotificationsAsync();
+#endif
+        {
+            bool newStatus = await _firebasePushPermissions.RequestPermissionAsync();
+            Preferences.Set(_notificationKey, newStatus);
+            if (!newStatus) return;
+            await Task.Delay(1000);
+            await _firebasePushNotification.RegisterForPushNotificationsAsync();
 #if ANDROID
             });
 #else
@@ -158,12 +158,32 @@ public class AppShellViewModel : BaseViewModel
         _firebasePushNotification.NotificationAction += OnNotificationAction;
         _firebasePushNotification.NotificationReceived += OnNotificationReceived;
 #if DEBUG
-        Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
+        Debug.WriteLine($"Current notification token: {_firebasePushNotification.Token}");
 #endif
+
+        // NOTE: this is mostly here for the devices that already have a token but don't have a notification entity
+        // TODO: we may need to remove this at some point
+        if (await SecureStorage.GetAsync(AppConstant.NotificationToken) is null)
+            await RegisterNotificationEntity(_firebasePushNotification.Token);
+
         _firebasePushNotification.SubscribeTopic("daily_catchup");
         _firebasePushNotification.SubscribeTopic("feed_subscription");
+    }
 
-
+    /// <summary>
+    /// Register a new notification Entry
+    /// </summary>
+    /// <remarks>
+    /// This should only be used if no other token is saved on this device
+    /// </remarks>
+    /// <param name="token">token for the NE</param>
+    private async Task RegisterNotificationEntity(string token)
+    {
+        if (!string.IsNullOrEmpty(token))
+        {
+            await SecureStorage.SetAsync(AppConstant.NotificationToken, _firebasePushNotification.Token);
+            await dataFetcher.RegisterNotificationEntity(token);
+        }
     }
 
     private void OnNotificationReceived(object sender, FirebasePushNotificationDataEventArgs e)
@@ -248,13 +268,21 @@ public class AppShellViewModel : BaseViewModel
         });
     }
 
-    private void OnTokenRefresh(object sender, FirebasePushNotificationTokenEventArgs e)
+    private async void OnTokenRefresh(object sender, FirebasePushNotificationTokenEventArgs e)
     {
 #if DEBUG
-        Debug.WriteLine($"Notify token: {e.Token}");
+        Debug.WriteLine($"New notification token: {e.Token}");
 #endif
 
-        //this.UpdateSubscribedTopics();
+        if (await SecureStorage.GetAsync(AppConstant.NotificationToken) is null)
+        {
+            await RegisterNotificationEntity(e.Token);
+            return;
+        }
+
+        // Update Notification Entity otherwise
+
+
     }
 
     public void PostAuthProcess(AuthResponse res) 

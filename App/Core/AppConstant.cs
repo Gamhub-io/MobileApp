@@ -26,6 +26,9 @@ namespace GamHubApp.Core
         public static string PathDBBackUp =>
             Path.Combine(FileSystem.AppDataDirectory, DbBackUpFilename);
 
+        // secure storage - keys
+        public const string NotificationToken = "NOTIFICATION_TOKEN";
+
         // Settings - preferences
         public const string DealArticleEnable = "DEAL_ARTICLE_ENABLE";
         public const string DealPageEnable = "DEAL_PAGE_ENABLE";
