@@ -295,11 +295,47 @@ public class Fetcher
                                                   action: "NE/create",
                                                   parameters: new Dictionary<string, string>
                                                   {
-                                                      { "token", token }
+                                                      { nameof(token), token }
                                                   },
                                                   unSuccessCallback: e => _ = HandleHttpException(e));
 #if DEBUG
             Debug.WriteLine($"NE/create: {res}");
+#endif
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
+    }
+
+    /// <summary>
+    /// Update a notification entity
+    /// </summary>
+    /// <param name="newToken">new notification token</param>
+    /// <param name="oldToken">former notification token</param>
+    /// <returns>retrun the article</returns>
+    public async Task UpdateNotificationEntity(string newToken, string oldToken)
+    {
+        try
+        {
+#if DEBUG
+            string res =
+#endif
+                await this.WebService.Put(controller: "monitor",
+                                           action: "NE/update",
+                                           parameters: new Dictionary<string, string>
+                                           {
+                                               { nameof(oldToken), oldToken },
+                                               { nameof(newToken), newToken }
+                                           },
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
+#if DEBUG
+            Debug.WriteLine($"NE/update: {res}");
 #endif
         }
 

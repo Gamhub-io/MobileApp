@@ -7,7 +7,9 @@ using GamHubApp.Services.UI;
 using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
+#if DEBUG
 using System.Diagnostics;
+#endif
 
 namespace GamHubApp.ViewModels;
 
@@ -181,8 +183,47 @@ public class AppShellViewModel : BaseViewModel
     {
         if (!string.IsNullOrEmpty(token))
         {
-            await SecureStorage.SetAsync(AppConstant.NotificationToken, _firebasePushNotification.Token);
-            await dataFetcher.RegisterNotificationEntity(token);
+            try
+            {
+                await SecureStorage.SetAsync(AppConstant.NotificationToken, token);
+                await dataFetcher.RegisterNotificationEntity(token);
+
+            } 
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            }
+        }
+    }
+
+    /// <summary>
+    /// update a new notification Entry
+    /// </summary>
+    /// <param name="newToken">new notification token</param>
+    /// <param name="oldToken">former notification token</param>
+    private async Task UpdateNotificationEntity(string newToken, string oldToken)
+    {
+        if (!string.IsNullOrEmpty(newToken) &&
+            !string.IsNullOrEmpty(oldToken))
+        {
+            try
+            {
+                await SecureStorage.SetAsync(AppConstant.NotificationToken, newToken);
+                await dataFetcher.UpdateNotificationEntity(newToken, oldToken);
+
+            } 
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            }
         }
     }
 
@@ -273,15 +314,16 @@ public class AppShellViewModel : BaseViewModel
 #if DEBUG
         Debug.WriteLine($"New notification token: {e.Token}");
 #endif
-
-        if (await SecureStorage.GetAsync(AppConstant.NotificationToken) is null)
+        string newToken = e.Token;
+        string oldToken = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        if (string.IsNullOrEmpty(oldToken))
         {
-            await RegisterNotificationEntity(e.Token);
+            await RegisterNotificationEntity(newToken);
             return;
         }
 
         // Update Notification Entity otherwise
-
+        await UpdateNotificationEntity(newToken, oldToken);
 
     }
 
