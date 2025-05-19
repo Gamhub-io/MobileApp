@@ -161,6 +161,7 @@ public class AppShellViewModel : BaseViewModel
         Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
 #endif
         _firebasePushNotification.SubscribeTopic("daily_catchup");
+        _firebasePushNotification.SubscribeTopic("feed_subscription");
 
 
     }
