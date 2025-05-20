@@ -333,7 +333,7 @@ public class AppShellViewModel : BaseViewModel
         dataFetcher.SaveUserInfo(res.UserData);
 
         // Save the session
-        dataFetcher.SaveSession(res.Session);
+        _ = dataFetcher.SaveSession(res.Session);
 
         // Set user data
         UserProfile = res.UserData;

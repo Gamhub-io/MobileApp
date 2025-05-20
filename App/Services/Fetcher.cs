@@ -288,16 +288,20 @@ public class Fetcher
     {
         try
         {
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
 #if DEBUG
             string res =
 #endif
                 await this.WebService.Post(controller: "monitor",
-                                                  action: "NE/create",
-                                                  parameters: new Dictionary<string, string>
-                                                  {
-                                                      { nameof(token), token }
-                                                  },
-                                                  unSuccessCallback: e => _ = HandleHttpException(e));
+                                           action: "NE/create",
+                                           parameters: new Dictionary<string, string>
+                                           {
+                                               { nameof(token), token }
+                                           },
+                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
 #if DEBUG
             Debug.WriteLine($"NE/create: {res}");
 #endif
@@ -323,6 +327,10 @@ public class Fetcher
     {
         try
         {
+            Dictionary<string, string> rqHeaders = new()
+            {
+                { "Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}" }
+            };
 #if DEBUG
             string res =
 #endif
@@ -333,6 +341,7 @@ public class Fetcher
                                                { nameof(oldToken), oldToken },
                                                { nameof(newToken), newToken }
                                            },
+                                           singleUseHeaders: rqHeaders,
                                            unSuccessCallback: e => _ = HandleHttpException(e));
 #if DEBUG
             Debug.WriteLine($"NE/update: {res}");
@@ -353,17 +362,24 @@ public class Fetcher
     /// Save all the tokens of a session and expiration
     /// </summary>
     /// <param name="newSession"></param>
-    public void SaveSession (Session newSession)
+    public async Task SaveSession (Session newSession)
     {
         // Keep the current session
         CurrentSession = newSession;
 
-        // Save sensitive data
-        var accessTask = SecureStorage.SetAsync(nameof(Session.AccessToken), newSession.AccessToken);
-        var refreshTask = SecureStorage.SetAsync(nameof(Session.RefreshToken), newSession.RefreshToken);
-        var tokenTypeTask = SecureStorage.SetAsync(nameof(Session.TokenType), newSession.TokenType);
+        List<Task> tasks =
+        [
+            // Save sensitive data
+            SecureStorage.SetAsync(nameof(Session.AccessToken), newSession.AccessToken),
+            SecureStorage.SetAsync(nameof(Session.RefreshToken), newSession.RefreshToken),
+            SecureStorage.SetAsync(nameof(Session.TokenType), newSession.TokenType),
+        ];
+        
+        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        if (!string.IsNullOrEmpty(token))
+            tasks.Add(UpdateNotificationEntity(token, token));
 
-        _ = Task.WhenAll(accessTask, refreshTask, tokenTypeTask);
+        await Task.WhenAll(tasks);
 
         // Save regular data about the session
         Preferences.Set(nameof(Session.ExpiresIn), newSession.ExpiresIn);
@@ -388,7 +404,7 @@ public class Fetcher
         if ((DateTime.UtcNow - dt).TotalSeconds >= exp)
         {
             // Refresh the token
-            SaveSession(await RefreshDiscordSession(refreshToken));
+            await SaveSession(await RefreshDiscordSession(refreshToken));
 
             return;
         }
