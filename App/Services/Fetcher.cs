@@ -318,6 +318,44 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Get the status of a feed notification subscription
+    /// </summary>
+    /// <param name="feedID">ID of the feed concerned by the subscription</param>
+    /// <param name="token">notification token link to the NE of the user</param>
+    /// <returns>retrun the article</returns>
+    public async Task<bool> CheckSubStatus(string feedID, string token)
+    {
+        try
+        {
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            var res = await this.WebService.Post<SubStatusRes>(controller: "monitor",
+                                                               action: "NE/feedstatus",
+                                                               parameters: new Dictionary<string, string>
+                                                               {
+                                                                   { nameof(token), token }
+                                                               },
+                                                               singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+            if (res is not null)
+                return res.Enabled;
+            return false;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Update a notification entity
     /// </summary>
     /// <param name="newToken">new notification token</param>
