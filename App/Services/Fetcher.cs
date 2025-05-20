@@ -320,10 +320,10 @@ public class Fetcher
     /// <summary>
     /// Get the status of a feed notification subscription
     /// </summary>
-    /// <param name="feedID">ID of the feed concerned by the subscription</param>
+    /// <param name="feed">ID of the feed concerned by the subscription</param>
     /// <param name="token">notification token link to the NE of the user</param>
     /// <returns>retrun the article</returns>
-    public async Task<bool> CheckSubStatus(string feedID, string token)
+    public async Task<bool> CheckSubStatus(string feed, string token)
     {
         try
         {
@@ -331,10 +331,133 @@ public class Fetcher
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
 
-            var res = await this.WebService.Post<SubStatusRes>(controller: "monitor",
+            var res = await this.WebService.Get<SubStatusRes>(controller: "monitor",
                                                                action: "NE/feedstatus",
                                                                parameters: new Dictionary<string, string>
                                                                {
+                                                                   { nameof(token), token },
+                                                                   { nameof(feed), feed }
+                                                               },
+                                                               singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+            if (res is not null)
+                return res.Enabled;
+            return false;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Subcribe to a feed notification subscription
+    /// </summary>
+    /// <param name="feedID">ID of the feed concerned by the subscription</param>
+    /// <param name="token">notification token link to the NE of the user</param>
+    /// <returns>retrun the article</returns>
+    public async Task<bool> SubscribeToFeed(string feedID, string token)
+    {
+        try
+        {
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            FeedSubPayload rqBody = new() 
+            {
+                Feed= feedID,
+                Token= token,
+            };
+
+            var res = await this.WebService.Post<SubStatusRes>(controller: "monitor",
+                                                               action: "NE/subscribe",
+                                                               payload: rqBody,
+                                                               singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+            if (res is not null)
+                return res.Enabled;
+            return false;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Subcribe to a feed notification subscription
+    /// </summary>
+    /// <param name="feedID">ID of the feed concerned by the subscription</param>
+    /// <param name="token">notification token link to the NE of the user</param>
+    /// <returns>retrun the article</returns>
+    public async Task<bool> UnsubscribeToFeed(string feedID, string token)
+    {
+        try
+        {
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            FeedSubPayload rqBody = new() 
+            {
+                Feed= feedID,
+                Token= token,
+            };
+
+            var res = await this.WebService.Delete<SubStatusRes>(controller: "monitor",
+                                                               action: "NE/unsubscribe",
+                                                               payload: rqBody,
+                                                               singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+            if (res is not null)
+                return res.Enabled;
+            return false;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Unsubcribe to a feed notification subscription
+    /// </summary>
+    /// <param name="feedID">ID of the feed concerned by the subscription</param>
+    /// <param name="token">notification token link to the NE of the user</param>
+    /// <returns>retrun the article</returns>
+    public async Task<bool> UnsubscribeToFeed(string feedID, string token)
+    {
+        try
+        {
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+
+            var res = await this.WebService.Post<SubStatusRes>(controller: "monitor",
+                                                               action: "NE/unsubscribe",
+                                                               parameters: new Dictionary<string, string>
+                                                               {
+                                                                   { nameof(token), token },
                                                                    { nameof(token), token }
                                                                },
                                                                singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
