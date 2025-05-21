@@ -284,13 +284,17 @@ public class Fetcher
     /// </summary>
     /// <param name="token">notification token</param>
     /// <returns>retrun the article</returns>
-    public async Task RegisterNotificationEntity(string token)
+    public async Task RegisterNotificationEntity(string token, Dictionary<string, string> rqHeaders = null )
     {
         try
         {
-            Dictionary<string, string> rqHeaders = new();
-            if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+            if (rqHeaders is null)
+            {
+                rqHeaders = new();
+                if (UserData != null)
+                    rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            }
 #if DEBUG
             string res =
 #endif
@@ -560,10 +564,7 @@ public class Fetcher
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
 
-#if DEBUG
-            string res =
-#endif
-                await this.WebService.Put(controller: "monitor",
+            NEupdateResponse res =await this.WebService.Put<NEupdateResponse>(controller: "monitor",
                                            action: "NE/update",
                                            parameters: new Dictionary<string, string>
                                            {
@@ -572,9 +573,12 @@ public class Fetcher
                                            },
                                            singleUseHeaders: rqHeaders,
                                            unSuccessCallback: e => _ = HandleHttpException(e));
+
 #if DEBUG
-            Debug.WriteLine($"NE/update: {res}");
+            Debug.WriteLine($"NE/update: {res.Msg}");
 #endif
+            if (!res.Success)
+                await RegisterNotificationEntity(newToken, rqHeaders);
         }
 
         catch (Exception ex)
