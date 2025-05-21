@@ -61,7 +61,7 @@ public class EditFeedViewModel : BaseViewModel
 
         // Update feed
         Context.UpdateCurrentFeed(_feed);
-        await _generalDB.UpdateFeed(_feed);
+        await CurrentApp.DataFetcher.UpdateFeed(_feed);
 
         _context.ListHasBeenUpdated = true;
 

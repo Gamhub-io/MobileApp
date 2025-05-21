@@ -430,13 +430,60 @@ public class Fetcher
 
             // Subscribe by default
             feed.MongoID = res.Data.MongoID;
-            int d = await _generalDB.UpdateFeed(feed);
+            await _generalDB.UpdateFeed(feed);
             string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
 
             if (string.IsNullOrEmpty(token))
                 return feed;
             
             await SubscribeToFeed(feed.MongoID, token);
+
+            return res.Data;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Create a feed
+    /// </summary>
+    /// <param name="feed">ID of the feed concerned by the subscription</param>
+    public async Task<Feed> UpdateFeed(Feed feed)
+    {
+        try
+        {
+            string name = feed.Title;
+            string keyword = feed.Keywords;
+            string id = feed.MongoID;
+            await _generalDB.UpdateFeed(feed);
+
+            if (string.IsNullOrEmpty(id) || Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                return feed;
+
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+
+            var res = await this.WebService.Put<FeedResponse>(controller: "feeds",
+                                           action: "custom/update",
+                                           parameters: new Dictionary<string, string>
+                                           {
+                                                { nameof(name), name },
+                                                { nameof(keyword), keyword },
+                                                { nameof(id), id },
+                                            },
+                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
+
 
             return res.Data;
         }
@@ -708,16 +755,6 @@ public class Fetcher
     }
 
     #region Local Actions
-
-    /// <summary>
-    /// Update a feed
-    /// </summary>
-    /// <param name="feed">Feed we want to update</param>
-    /// <returns>Update status</returns>
-    public async Task<int> UpdateFeed(Feed feed)
-    {
-        return await _generalDB.UpdateFeed(feed);
-    }
 
     /// <summary>
     /// Delete a feed
