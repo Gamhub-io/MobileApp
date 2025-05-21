@@ -238,9 +238,14 @@ public class FeedsViewModel : BaseViewModel
 
         // Instantiate definitions 
         FeedTabs = new ObservableRangeCollection<TabButton>();
-        Task.Run(async () =>
+        _ = Task.Run(async () =>
         {
             Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
+            List<Task> tasks = new ();
+            for (int i = 0; i < _feeds.Count; i++)
+                if (string.IsNullOrEmpty(_feeds[i].MongoID))
+                    tasks.Add(CurrentApp.DataFetcher.CreateFeed(_feeds[i]));
+            await Task.WhenAll(tasks);
         });
         _articles = new ObservableRangeCollection<Article>();
 
@@ -343,11 +348,12 @@ public class FeedsViewModel : BaseViewModel
         IsBusy = true;
         CurrentApp.ShowLoadingIndicator();
 
-        // Determine whether or not it's the first time loading the article of this feed
-        bool isFirstLoad = _articles == null || _articles.Count <= 0;
-
-        Task.Run(async () =>
+        _= Task.Run(async () =>
         {
+
+            // Determine whether or not it's the first time loading the article of this feed
+            bool isFirstLoad = _articles == null || _articles.Count <= 0;
+
             try
             {
                 await AggregateFeed(feed, isFirstLoad || force).ContinueWith(res =>
@@ -372,64 +378,64 @@ public class FeedsViewModel : BaseViewModel
     /// <param name="feed">feed we are searching</param>
     private async Task AggregateFeed(Feed feed, bool force = true)
     {
-        int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
+            int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == feed.Id));
 
         List<Article> articles = new ();
-        
-        // Figure out if the feed deserve an update
-        string timeUpdate = string.Empty;
-        if (force)
-        {
-            Articles.Clear();
-            UnnoticedArticles.Clear();
-        }
 
-        if (Articles?.Count != 0)
-            timeUpdate = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
-
-        bool needUpdate = feed.IsLoaded && !string.IsNullOrEmpty(timeUpdate);
-
-        // Make sure we have internet connection
-        if (Connectivity.NetworkAccess == NetworkAccess.Internet)
-            articles = (await CurrentApp.DataFetcher.GetFeedArticles(feed.Keywords, 
-                                                                     timeUpdate, 
-                                                                     needUpdate)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive).ToList();
-
-        // Offline search
-        else
-        {
-            var words = feed.Keywords.Split(' ');
-            for (int i = 0; i < words.Count(); i++)
+            // Figure out if the feed deserve an update
+            string timeUpdate = string.Empty;
+            if (force)
             {
-                var word = words[i];
-                articles.AddRange(feed.Articles?.Where((e) => e.Title.Contains(word)));
+                Articles.Clear();
+                UnnoticedArticles.Clear();
             }
 
-        }
-        if (force)
-        {
-            // Update list of articles
-            InsertArticles(articles, force);
+            if (Articles?.Count != 0)
+                timeUpdate = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+
+            bool needUpdate = feed.IsLoaded && !string.IsNullOrEmpty(timeUpdate);
+
+            // Make sure we have internet connection
+            if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+                articles = (await CurrentApp.DataFetcher.GetFeedArticles(feed.Keywords,
+                                                                         timeUpdate,
+                                                                         needUpdate)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive).ToList();
+
+            // Offline search
+            else
+            {
+                var words = feed.Keywords.Split(' ');
+                for (int i = 0; i < words.Count(); i++)
+                {
+                    var word = words[i];
+                    articles.AddRange(feed.Articles?.Where((e) => e.Title.Contains(word)));
+                }
+
+            }
+            if (force)
+            {
+                // Update list of articles
+                InsertArticles(articles, force);
+                SelectedFeed.IsLoaded = true;
+
+                IsRefreshing = false;
+                return;
+            }
+
+            if (needUpdate)
+            {
+                if (articles.Count > 0)
+                    if (OnTopScroll || _articles?.Count < 1)
+                        UpdateArticles(articles, feed, indexFeed);
+                    else
+                    UnnoticedArticles = new ObservableCollection<Article>( articles);
+            }
+            else
+                // Update list of articles
+                InsertArticles(articles);
             SelectedFeed.IsLoaded = true;
 
             IsRefreshing = false;
-            return;
-        }
-
-        if (needUpdate)
-        {
-            if (articles.Count > 0)
-                if (OnTopScroll || _articles?.Count < 1)
-                    UpdateArticles(articles, feed, indexFeed);
-                else
-                    UnnoticedArticles = new ObservableCollection<Article>( articles);
-        }
-        else
-            // Update list of articles
-            InsertArticles(articles);
-        SelectedFeed.IsLoaded = true;
-
-        IsRefreshing = false;
 
     }
 

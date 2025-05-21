@@ -15,6 +15,7 @@
             <Color x:Key="Dark" >#191414</Color>
             <Color x:Key="DarkSecondary" >#4A4A4A</Color>
             <Color x:Key="LightDark" >#404348</Color>
+            <Color x:Key="VeryLightDark" >#D8D9DA</Color>
             <Color x:Key="Light" >#8EDCA9</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
             <Color x:Key="BgBannerColor" >#262626</Color>
