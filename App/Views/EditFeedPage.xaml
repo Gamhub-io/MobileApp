@@ -39,8 +39,9 @@
             <!-- Notifications -->
             <Border StrokeShape="RoundRectangle 20"
                     BackgroundColor="{DynamicResource LightDark}"
-                    WidthRequest="350">
-                <Grid ColumnDefinitions="50,auto,60"
+                    WidthRequest="350"
+                    HeightRequest="50">
+                <Grid ColumnDefinitions="50,100,60"
                       HorizontalOptions="Center">
                     <!--Label-->
                     <Label Text="&#xf0f3;"
@@ -61,7 +62,6 @@
                             HorizontalOptions="End"
                             VerticalOptions="Center"
                             IsToggled="{Binding FeedNotification}"
-                            WidthRequest="100"
                             Grid.Column="2"
                             Background="Transparent">
                         <Switch.Triggers>
@@ -89,12 +89,13 @@
                     <Label Text="Title"
                        FontSize="{StaticResource catFontSize}"
                        TextColor="{StaticResource FontColor}"
-                       FontFamily="P-Bold"/>
+                       FontFamily="P-Medium"/>
                     <Border Style="{StaticResource entryBorders}"
-                        Grid.Row="1">
-
+                            BackgroundColor="{DynamicResource VeryLightDark}"
+                            Grid.Row="1">
                         <controls:BorderlessEntry Text="{Binding Feed.Title}"
-                                              Style="{StaticResource EntryStyle}"/>
+                                                  TextColor="{DynamicResource LightDark}"
+                                                  Style="{StaticResource EntryStyle}"/>
                     </Border>
                 </Grid>
             </Border>
@@ -111,15 +112,17 @@
                       VerticalOptions="Center">
                     <!--Label-->
                     <Label Text="Keywords"
-                       FontSize="{StaticResource catFontSize}"
-                       TextColor="{StaticResource FontColor}"
-                       FontFamily="P-Bold"/>
+                           FontSize="{StaticResource catFontSize}"
+                           TextColor="{StaticResource FontColor}"
+                           FontFamily="P-Medium"/>
                     <Border Style="{StaticResource entryBorders}"
+                            BackgroundColor="{DynamicResource VeryLightDark}"
                             Grid.Row="1">
 
                         <controls:BorderlessEntry BackgroundColor="Transparent"
-                                              Text="{Binding Feed.Keywords}"
-                                              Style="{StaticResource EntryStyle}"/>
+                                                  TextColor="{DynamicResource LightDark}"
+                                                  Text="{Binding Feed.Keywords}"
+                                                  Style="{StaticResource EntryStyle}"/>
                     </Border>
                 </Grid>
             </Border>
