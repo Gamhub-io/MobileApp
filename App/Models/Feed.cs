@@ -10,11 +10,12 @@ public class Feed : SelectableModel
 {
     [PrimaryKey, Column("_id")]
     public string Id { get; set; }
-    [Ignore, JsonProperty("_id")]
+    [JsonProperty("_id"), Column("mongoID")]
     public string MongoID { get; set; }
     public string Title { get; set; }
 
     private string _keywords;
+    [JsonProperty("keyword")]
     public string Keywords
     {
         get { return _keywords; }

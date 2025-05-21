@@ -364,6 +364,9 @@ public class Fetcher
     {
         try
         {
+            if (string.IsNullOrEmpty(feedID) || string.IsNullOrEmpty(token))
+                return;
+
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
@@ -396,6 +399,56 @@ public class Fetcher
             SentrySdk.CaptureException(ex);
 #endif
             return;
+        }
+    }
+
+    /// <summary>
+    /// Create a feed
+    /// </summary>
+    /// <param name="feed">ID of the feed concerned by the subscription</param>
+    public async Task<Feed> CreateFeed(Feed feed)
+    {
+        try
+        {
+            string name = feed.Title;
+            string keyword = feed.Keywords;
+
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+
+            var res = await this.WebService.Post<FeedResponse>(controller: "feeds",
+                                           action: "custom/create",
+                                           parameters: new Dictionary<string, string>
+                                           {
+                                                { nameof(name), name },
+                                                { nameof(keyword), keyword },
+                                            },
+                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
+
+            // Subscribe by default
+            feed.MongoID = res.Data.MongoID;
+            int d = await _generalDB.UpdateFeed(feed);
+            string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+
+            if (string.IsNullOrEmpty(token))
+                return feed;
+            
+            await SubscribeToFeed(feed.MongoID, token);
+
+            return res.Data;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return null;
         }
     }
 
