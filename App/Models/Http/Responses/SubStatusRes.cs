@@ -7,6 +7,6 @@ public sealed class SubStatusRes
 {
     [JsonProperty("message")]
     public string msg { get; set; }
-    [JsonProperty("Enabled")]
+    [JsonProperty("enabled")]
     public bool Enabled { get; set; }
 }
