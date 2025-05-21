@@ -38,6 +38,7 @@
 
             <!-- Notifications -->
             <Border StrokeShape="RoundRectangle 20"
+                    IsVisible="{Binding IsOnline}"
                     BackgroundColor="{DynamicResource LightDark}"
                     WidthRequest="350"
                     HeightRequest="50">

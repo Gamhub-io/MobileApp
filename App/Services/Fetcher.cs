@@ -330,6 +330,9 @@ public class Fetcher
     {
         try
         {
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+                return false;
+
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");

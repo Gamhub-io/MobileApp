@@ -98,6 +98,7 @@ public class EditFeedViewModel : BaseViewModel
 
 
     public App CurrentApp { get; }
+    public bool IsOnline { get; } = Connectivity.NetworkAccess == NetworkAccess.Internet;
 
     public EditFeedViewModel(Feed feed, FeedsViewModel vm, GeneralDataBase generalDB)
     {
