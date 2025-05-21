@@ -580,7 +580,7 @@ public class NewsViewModel : BaseViewModel
         if (Connectivity.NetworkAccess == NetworkAccess.Internet)
         {
             if (isUpdate)
-                timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+                timeParam = _articles?.FirstOrDefault().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
 
             List<Article> collection = new();
             try

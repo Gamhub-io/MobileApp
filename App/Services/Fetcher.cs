@@ -556,10 +556,10 @@ public class Fetcher
     {
         try
         {
-            Dictionary<string, string> rqHeaders = new()
-            {
-                { "Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}" }
-            };
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
 #if DEBUG
             string res =
 #endif
