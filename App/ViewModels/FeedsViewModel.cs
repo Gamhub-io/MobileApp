@@ -241,6 +241,9 @@ public class FeedsViewModel : BaseViewModel
         Task.Run(async () =>
         {
             Feeds = new ObservableCollection<Feed>(await generalDataBase.GetFeeds());
+            for (int i = 0; i < _feeds.Count; i++)
+                if (string.IsNullOrEmpty(_feeds[i].MongoID))
+                    await CurrentApp.DataFetcher.CreateFeed(_feeds[i]);
         });
         _articles = new ObservableRangeCollection<Article>();
 
