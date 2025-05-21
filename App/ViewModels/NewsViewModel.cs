@@ -133,7 +133,8 @@ public class NewsViewModel : BaseViewModel
                     await _generalDB.InsertFeed(_currentFeed);
                     Feeds.Add(_currentFeed);
 
-                    // Update the feeds remotely
+                    // Update the feeds on the servers
+                    await Task.Run(async () => await CurrentApp.DataFetcher.CreateFeed(_currentFeed));
                     return;
 
                 }
