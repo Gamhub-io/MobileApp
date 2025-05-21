@@ -31,7 +31,7 @@ public static class NotificationChannelGamHub
         yield return new NotificationChannelRequest
         {
             ChannelId = "feed_subscription",
-            ChannelName = "Your feed",
+            ChannelName = "Your feeds",
             Description = "Notifying you of news articles comming up in your feed",
             LockscreenVisibility = NotificationVisibility.Public,
 #pragma warning disable CA1416 // Validate platform compatibility
