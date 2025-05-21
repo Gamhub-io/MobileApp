@@ -76,6 +76,17 @@ public class EditFeedViewModel : BaseViewModel
         _context.FeedTabs[index].Title = _feed.Title;
         WeakReferenceMessenger.Default.Send(new FeedUpdatedMessage(_feed));
 
+        string id = _feed.MongoID;
+        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        
+        if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(token))
+            return;
+
+        // Update subcription 
+        if (_feedNotification)
+            await CurrentApp.DataFetcher.SubscribeToFeed(id, token);
+        else
+            await CurrentApp.DataFetcher.UnsubscribeToFeed(id, token);
     });
 
     public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(async () =>
@@ -87,6 +98,7 @@ public class EditFeedViewModel : BaseViewModel
 
 
     public App CurrentApp { get; }
+
     public EditFeedViewModel(Feed feed, FeedsViewModel vm, GeneralDataBase generalDB)
     {
         _generalDB = generalDB;
