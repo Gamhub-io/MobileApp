@@ -410,6 +410,9 @@ public class Fetcher
     {
         try
         {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                return null;
+
             string name = feed.Title;
             string keyword = feed.Keywords;
 
