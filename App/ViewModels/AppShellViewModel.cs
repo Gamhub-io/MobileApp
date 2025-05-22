@@ -119,10 +119,16 @@ public class AppShellViewModel : BaseViewModel
         if (!(DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true)))
             return;
 
+
         await dataFetcher.GetDeals();
 
+        int newDealsCount = Preferences.Get(AppConstant.NewDealCount,0) + await dataFetcher.UpdateDeals();
+
+        // Store the new value
+        Preferences.Set(AppConstant.NewDealCount, newDealsCount);
+
         // Set the deal count
-        BadgeCounterService.SetCount(await dataFetcher.UpdateDeals());
+        BadgeCounterService.SetCount(newDealsCount);
     }
 
     const string _notificationKey = "Notification";
