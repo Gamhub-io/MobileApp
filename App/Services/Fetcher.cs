@@ -280,20 +280,342 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Register a notification entity
+    /// </summary>
+    /// <param name="token">notification token</param>
+    /// <returns>retrun the article</returns>
+    public async Task RegisterNotificationEntity(string token, Dictionary<string, string> rqHeaders = null )
+    {
+        try
+        {
+            if (rqHeaders is null)
+            {
+                rqHeaders = new();
+                if (UserData != null)
+                    rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            }
+#if DEBUG
+            string res =
+#endif
+                await this.WebService.Post(controller: "monitor",
+                                           action: "NE/create",
+                                           parameters: new Dictionary<string, string>
+                                           {
+                                               { nameof(token), token }
+                                           },
+                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
+#if DEBUG
+            Debug.WriteLine($"NE/create: {res}");
+#endif
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
+    }
+
+    /// <summary>
+    /// Get the status of a feed notification subscription
+    /// </summary>
+    /// <param name="feed">ID of the feed concerned by the subscription</param>
+    /// <param name="token">notification token link to the NE of the user</param>
+    public async Task<bool> CheckSubStatus(string feed, string token)
+    {
+        try
+        {
+            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+                return false;
+
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            var res = await this.WebService.Get<SubStatusRes>(controller: "monitor",
+                                                               action: "NE/feedstatus",
+                                                               parameters: new Dictionary<string, string>
+                                                               {
+                                                                   { nameof(token), token },
+                                                                   { nameof(feed), feed }
+                                                               },
+                                                               singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+            if (res is not null)
+                return res.Enabled;
+            return false;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Subcribe to a feed notification subscription
+    /// </summary>
+    /// <param name="feedID">ID of the feed concerned by the subscription</param>
+    /// <param name="token">notification token link to the NE of the user</param>
+    public async Task SubscribeToFeed(string feedID, string token)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(feedID) || string.IsNullOrEmpty(token))
+                return;
+
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            FeedSubPayload rqBody = new() 
+            {
+                Feed= feedID,
+                Token= token,
+            };
+
+#if DEBUG
+            string res =
+#endif
+                await this.WebService.Post(controller: "monitor",
+                                           action: "NE/subscribe",
+                                           payload: rqBody,
+                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
+#if DEBUG
+            Debug.WriteLine($"NE/subscribe: {res}");
+#endif         
+            return;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Create a feed
+    /// </summary>
+    /// <param name="feed">ID of the feed concerned by the subscription</param>
+    public async Task<Feed> CreateFeed(Feed feed)
+    {
+        try
+        {
+            if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                return null;
+
+            string name = feed.Title;
+            string keyword = feed.Keywords;
+
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+
+            var res = await this.WebService.Post<FeedResponse>(controller: "feeds",
+                                           action: "custom/create",
+                                           parameters: new Dictionary<string, string>
+                                           {
+                                                { nameof(name), name },
+                                                { nameof(keyword), keyword },
+                                            },
+                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
+
+            // Subscribe by default
+            feed.MongoID = res.Data.MongoID;
+            await _generalDB.UpdateFeed(feed);
+            string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+
+            if (string.IsNullOrEmpty(token))
+                return feed;
+            
+            await SubscribeToFeed(feed.MongoID, token);
+
+            return res.Data;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Create a feed
+    /// </summary>
+    /// <param name="feed">ID of the feed concerned by the subscription</param>
+    public async Task<Feed> UpdateFeed(Feed feed)
+    {
+        try
+        {
+            string name = feed.Title;
+            string keyword = feed.Keywords;
+            string id = feed.MongoID;
+            await _generalDB.UpdateFeed(feed);
+
+            if (string.IsNullOrEmpty(id) || Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+                return feed;
+
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+
+            var res = await this.WebService.Put<FeedResponse>(controller: "feeds",
+                                           action: "custom/update",
+                                           parameters: new Dictionary<string, string>
+                                           {
+                                                { nameof(name), name },
+                                                { nameof(keyword), keyword },
+                                                { nameof(id), id },
+                                            },
+                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
+
+
+            return res.Data;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Subcribe to a feed notification subscription
+    /// </summary>
+    /// <param name="feedID">ID of the feed concerned by the subscription</param>
+    /// <param name="token">notification token link to the NE of the user</param>
+    /// <returns>retrun the article</returns>
+    public async Task UnsubscribeToFeed(string feedID, string token)
+    {
+        try
+        {
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            FeedSubPayload rqBody = new() 
+            {
+                Feed= feedID,
+                Token= token,
+            };
+#if DEBUG
+            string res =
+#endif
+            await this.WebService.Delete(controller: "monitor",
+                                         action: "NE/unsubscribe",
+                                         payload: rqBody,
+                                         singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                         unSuccessCallback: e => _ = HandleHttpException(e));
+#if DEBUG
+            Debug.WriteLine($"NE/unsubscribe: {res}");
+#endif
+            return;
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Update a notification entity
+    /// </summary>
+    /// <param name="newToken">new notification token</param>
+    /// <param name="oldToken">former notification token</param>
+    /// <returns>retrun the article</returns>
+    public async Task UpdateNotificationEntity(string newToken, string oldToken)
+    {
+        try
+        {
+            Dictionary<string, string> rqHeaders = new();
+            if (UserData != null)
+                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+            NEupdateResponse res =await this.WebService.Put<NEupdateResponse>(controller: "monitor",
+                                           action: "NE/update",
+                                           parameters: new Dictionary<string, string>
+                                           {
+                                               { nameof(oldToken), oldToken },
+                                               { nameof(newToken), newToken }
+                                           },
+                                           singleUseHeaders: rqHeaders,
+                                           unSuccessCallback: e => _ = HandleHttpException(e));
+
+#if DEBUG
+            Debug.WriteLine($"NE/update: {res.Msg}");
+#endif
+            if (!res.Success)
+                await RegisterNotificationEntity(newToken, rqHeaders);
+        }
+
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
+    }
+
+    /// <summary>
     /// Save all the tokens of a session and expiration
     /// </summary>
     /// <param name="newSession"></param>
-    public void SaveSession (Session newSession)
+    public async Task SaveSession (Session newSession)
     {
         // Keep the current session
         CurrentSession = newSession;
 
-        // Save sensitive data
-        var accessTask = SecureStorage.SetAsync(nameof(Session.AccessToken), newSession.AccessToken);
-        var refreshTask = SecureStorage.SetAsync(nameof(Session.RefreshToken), newSession.RefreshToken);
-        var tokenTypeTask = SecureStorage.SetAsync(nameof(Session.TokenType), newSession.TokenType);
+        List<Task> tasks =
+        [
+            // Save sensitive data
+            SecureStorage.SetAsync(nameof(Session.AccessToken), newSession.AccessToken),
+            SecureStorage.SetAsync(nameof(Session.RefreshToken), newSession.RefreshToken),
+            SecureStorage.SetAsync(nameof(Session.TokenType), newSession.TokenType),
+        ];
+        
+        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        if (!string.IsNullOrEmpty(token))
+            tasks.Add(UpdateNotificationEntity(token, token));
 
-        _ = Task.WhenAll(accessTask, refreshTask, tokenTypeTask);
+        await Task.WhenAll(tasks);
 
         // Save regular data about the session
         Preferences.Set(nameof(Session.ExpiresIn), newSession.ExpiresIn);
@@ -318,7 +640,7 @@ public class Fetcher
         if ((DateTime.UtcNow - dt).TotalSeconds >= exp)
         {
             // Refresh the token
-            SaveSession(await RefreshDiscordSession(refreshToken));
+            await SaveSession(await RefreshDiscordSession(refreshToken));
 
             return;
         }
@@ -443,16 +765,6 @@ public class Fetcher
     }
 
     #region Local Actions
-
-    /// <summary>
-    /// Update a feed
-    /// </summary>
-    /// <param name="feed">Feed we want to update</param>
-    /// <returns>Update status</returns>
-    public async Task<int> UpdateFeed(Feed feed)
-    {
-        return await _generalDB.UpdateFeed(feed);
-    }
 
     /// <summary>
     /// Delete a feed

@@ -35,39 +35,102 @@
     <ContentPage.Content>
         <StackLayout Padding="50,0">
 
+
+            <!-- Notifications -->
+            <Border StrokeShape="RoundRectangle 20"
+                    IsVisible="{Binding IsOnline}"
+                    BackgroundColor="{DynamicResource LightDark}"
+                    WidthRequest="350"
+                    HeightRequest="50">
+                <Grid ColumnDefinitions="50,100,60"
+                      HorizontalOptions="Center">
+                    <!--Label-->
+                    <Label Text="&#xf0f3;"
+                           FontSize="25"
+                           TextColor="{StaticResource FontColor}"
+                            Grid.Column="0"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           FontFamily="FaSolid"/>
+                    <Label Text="Notifications"
+                           FontSize="{StaticResource catFontSize}"
+                           TextColor="{StaticResource FontColor}"
+                            Grid.Column="1"
+                           VerticalOptions="Center"
+                           FontFamily="P-Bold"/>
+                    <Switch OnColor="{StaticResource PrimaryAccent}"
+                            ThumbColor="{StaticResource Primary}"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"
+                            IsToggled="{Binding FeedNotification}"
+                            Grid.Column="2"
+                            Background="Transparent">
+                        <Switch.Triggers>
+                            <DataTrigger TargetType="Switch"
+                                         Binding="{Binding FeedNotification}"
+                                         Value="false">
+                                <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
+                            </DataTrigger>
+                        </Switch.Triggers>
+                    </Switch>
+                </Grid>
+
+            </Border>
+
             <!-- Edit name -->
-            <Grid RowDefinitions="auto,60">
-                <!--Label-->
-                <Label Text="Title"
+            <Border StrokeShape="RoundRectangle 15"
+                    BackgroundColor="{DynamicResource LightDark}"
+                    HeightRequest="100"
+                    WidthRequest="350"
+                    Margin="10">
+                <Grid RowDefinitions="auto,60"
+                      HorizontalOptions="Center"
+                      VerticalOptions="Center">
+                    <!--Label-->
+                    <Label Text="Title"
                        FontSize="{StaticResource catFontSize}"
                        TextColor="{StaticResource FontColor}"
-                       FontFamily="P-Bold"/>
-                <Border Style="{StaticResource entryBorders}"
-                        Grid.Row="1">
-
-                    <controls:BorderlessEntry Text="{Binding Feed.Title}"
-                                              Style="{StaticResource EntryStyle}"/>
-                </Border>
-            </Grid>
+                       FontFamily="P-Medium"/>
+                    <Border Style="{StaticResource entryBorders}"
+                            BackgroundColor="{DynamicResource VeryLightDark}"
+                            Grid.Row="1">
+                        <controls:BorderlessEntry Text="{Binding Feed.Title}"
+                                                  TextColor="{DynamicResource LightDark}"
+                                                  Style="{StaticResource EntryStyle}"/>
+                    </Border>
+                </Grid>
+            </Border>
 
 
             <!-- Keywords -->
-            <Grid RowDefinitions="auto,60">
-                <!--Label-->
-                <Label Text="Keywords"
-                       FontSize="{StaticResource catFontSize}"
-                       TextColor="{StaticResource FontColor}"
-                       FontFamily="P-Bold"/>
-                <Border Style="{StaticResource entryBorders}"
-                        Grid.Row="1">
+            <Border StrokeShape="RoundRectangle 15"
+                    BackgroundColor="{DynamicResource LightDark}"
+                    HeightRequest="100"
+                    WidthRequest="350"
+                    Margin="10">
+                <Grid RowDefinitions="auto,60"
+                      HorizontalOptions="Center"
+                      VerticalOptions="Center">
+                    <!--Label-->
+                    <Label Text="Keywords"
+                           FontSize="{StaticResource catFontSize}"
+                           TextColor="{StaticResource FontColor}"
+                           FontFamily="P-Medium"/>
+                    <Border Style="{StaticResource entryBorders}"
+                            BackgroundColor="{DynamicResource VeryLightDark}"
+                            Grid.Row="1">
 
-                    <controls:BorderlessEntry BackgroundColor="Transparent"
-                                              Text="{Binding Feed.Keywords}"
-                                              Style="{StaticResource EntryStyle}"/>
-                </Border>
-            </Grid>
+                        <controls:BorderlessEntry BackgroundColor="Transparent"
+                                                  TextColor="{DynamicResource LightDark}"
+                                                  Text="{Binding Feed.Keywords}"
+                                                  Style="{StaticResource EntryStyle}"/>
+                    </Border>
+                </Grid>
+            </Border>
+            
             <Grid HorizontalOptions="Center" 
-                  ColumnDefinitions="auto,auto">
+                  ColumnDefinitions="auto,auto"
+                  Margin="0,20,0,0">
                 <Button Text="Cancel"
                         Command="{Binding Cancel}"
                         Style="{StaticResource PrimaryActionButtonStyle}"

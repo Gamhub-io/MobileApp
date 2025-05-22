@@ -7,7 +7,9 @@ using GamHubApp.Services.UI;
 using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
+#if DEBUG
 using System.Diagnostics;
+#endif
 
 namespace GamHubApp.ViewModels;
 
@@ -117,10 +119,16 @@ public class AppShellViewModel : BaseViewModel
         if (!(DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true)))
             return;
 
+
         await dataFetcher.GetDeals();
 
+        int newDealsCount = Preferences.Get(AppConstant.NewDealCount,0) + await dataFetcher.UpdateDeals();
+
+        // Store the new value
+        Preferences.Set(AppConstant.NewDealCount, newDealsCount);
+
         // Set the deal count
-        BadgeCounterService.SetCount(await dataFetcher.UpdateDeals());
+        BadgeCounterService.SetCount(newDealsCount);
     }
 
     const string _notificationKey = "Notification";
@@ -138,13 +146,13 @@ public class AppShellViewModel : BaseViewModel
 #if ANDROID
             // For android we need to make sure it runs on the main thread
             MainThread.BeginInvokeOnMainThread(async () =>
-#endif 
-            {
-                bool newStatus = await _firebasePushPermissions.RequestPermissionAsync();
-                Preferences.Set(_notificationKey, newStatus);
-                if (!newStatus) return;
-                await Task.Delay(1000);
-                await _firebasePushNotification.RegisterForPushNotificationsAsync();
+#endif
+        {
+            bool newStatus = await _firebasePushPermissions.RequestPermissionAsync();
+            Preferences.Set(_notificationKey, newStatus);
+            if (!newStatus) return;
+            await Task.Delay(1000);
+            await _firebasePushNotification.RegisterForPushNotificationsAsync();
 #if ANDROID
             });
 #else
@@ -158,11 +166,71 @@ public class AppShellViewModel : BaseViewModel
         _firebasePushNotification.NotificationAction += OnNotificationAction;
         _firebasePushNotification.NotificationReceived += OnNotificationReceived;
 #if DEBUG
-        Debug.WriteLine($"Notify token: {_firebasePushNotification.Token}");
+        Debug.WriteLine($"Current notification token: {_firebasePushNotification.Token}");
 #endif
+
+        // NOTE: this is mostly here for the devices that already have a token but don't have a notification entity
+        // TODO: we may need to remove this at some point
+        if (await SecureStorage.GetAsync(AppConstant.NotificationToken) is null)
+            await RegisterNotificationEntity(_firebasePushNotification.Token);
+
         _firebasePushNotification.SubscribeTopic("daily_catchup");
+        _firebasePushNotification.SubscribeTopic("feed_subscription");
+    }
 
+    /// <summary>
+    /// Register a new notification Entry
+    /// </summary>
+    /// <remarks>
+    /// This should only be used if no other token is saved on this device
+    /// </remarks>
+    /// <param name="token">token for the NE</param>
+    private async Task RegisterNotificationEntity(string token)
+    {
+        if (!string.IsNullOrEmpty(token))
+        {
+            try
+            {
+                await SecureStorage.SetAsync(AppConstant.NotificationToken, token);
+                await dataFetcher.RegisterNotificationEntity(token);
 
+            } 
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            }
+        }
+    }
+
+    /// <summary>
+    /// update a new notification Entry
+    /// </summary>
+    /// <param name="newToken">new notification token</param>
+    /// <param name="oldToken">former notification token</param>
+    private async Task UpdateNotificationEntity(string newToken, string oldToken)
+    {
+        if (!string.IsNullOrEmpty(newToken) &&
+            !string.IsNullOrEmpty(oldToken))
+        {
+            try
+            {
+                await SecureStorage.SetAsync(AppConstant.NotificationToken, newToken);
+                await dataFetcher.UpdateNotificationEntity(newToken, oldToken);
+
+            } 
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            }
+        }
     }
 
     private void OnNotificationReceived(object sender, FirebasePushNotificationDataEventArgs e)
@@ -247,13 +315,22 @@ public class AppShellViewModel : BaseViewModel
         });
     }
 
-    private void OnTokenRefresh(object sender, FirebasePushNotificationTokenEventArgs e)
+    private async void OnTokenRefresh(object sender, FirebasePushNotificationTokenEventArgs e)
     {
 #if DEBUG
-        Debug.WriteLine($"Notify token: {e.Token}");
+        Debug.WriteLine($"New notification token: {e.Token}");
 #endif
+        string newToken = e.Token;
+        string oldToken = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        if (string.IsNullOrEmpty(oldToken))
+        {
+            await RegisterNotificationEntity(newToken);
+            return;
+        }
 
-        //this.UpdateSubscribedTopics();
+        // Update Notification Entity otherwise
+        await UpdateNotificationEntity(newToken, oldToken);
+
     }
 
     public void PostAuthProcess(AuthResponse res) 
@@ -262,7 +339,7 @@ public class AppShellViewModel : BaseViewModel
         dataFetcher.SaveUserInfo(res.UserData);
 
         // Save the session
-        dataFetcher.SaveSession(res.Session);
+        _ = dataFetcher.SaveSession(res.Session);
 
         // Set user data
         UserProfile = res.UserData;

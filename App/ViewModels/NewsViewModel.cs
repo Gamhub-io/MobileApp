@@ -133,7 +133,8 @@ public class NewsViewModel : BaseViewModel
                     await _generalDB.InsertFeed(_currentFeed);
                     Feeds.Add(_currentFeed);
 
-                    // Update the feeds remotely
+                    // Update the feeds on the servers
+                    await Task.Run(async () => await CurrentApp.DataFetcher.CreateFeed(_currentFeed));
                     return;
 
                 }
@@ -580,7 +581,7 @@ public class NewsViewModel : BaseViewModel
         if (Connectivity.NetworkAccess == NetworkAccess.Internet)
         {
             if (isUpdate)
-                timeParam = _articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+                timeParam = _articles?.FirstOrDefault().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
 
             List<Article> collection = new();
             try

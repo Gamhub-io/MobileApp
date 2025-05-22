@@ -28,6 +28,17 @@ public static class NotificationChannelGamHub
 #pragma warning restore CA1416 // Validate platform compatibility
         };
 
+        yield return new NotificationChannelRequest
+        {
+            ChannelId = "feed_subscription",
+            ChannelName = "Your feeds",
+            Description = "Notifying you of news articles comming up in your feed",
+            LockscreenVisibility = NotificationVisibility.Public,
+#pragma warning disable CA1416 // Validate platform compatibility
+            Importance = OperatingSystem.IsAndroidVersionAtLeast(24)? NotificationImportance.High : NotificationImportance.Default,
+#pragma warning restore CA1416 // Validate platform compatibility
+        };
+
         // TODO: add more in the future
     }
 }

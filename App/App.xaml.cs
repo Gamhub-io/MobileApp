@@ -92,9 +92,29 @@ public partial class App : Application
         });
     }
 
+    /// <summary>
+    /// Process ran if the app was previously used in offline mode
+    /// </summary>
+    private async Task RecoverFromOffline()
+    {
+        bool connectivity = Connectivity.NetworkAccess == NetworkAccess.Internet;
+        if (Preferences.Get(AppConstant.OfflineLastRun, false) &&
+            connectivity)
+        {
+            var feeds = new ObservableCollection<Feed>(await _generalDb.GetFeeds());
+            List<Task> tasks = new List<Task>();
+            for (int i = 0; i < feeds.Count; i++)
+                tasks.Add(DataFetcher.UpdateFeed(feeds[i]));
+
+            await Task.WhenAll(tasks);
+        }
+        Preferences.Set(AppConstant.OfflineLastRun, !connectivity);
+    }
+
     protected override void OnStart()
     {
-            // Register the date of the first run
+        Task.Run(RecoverFromOffline);
+        // Register the date of the first run
         DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
         if (DateFirstRun == DateTime.MinValue)
         {

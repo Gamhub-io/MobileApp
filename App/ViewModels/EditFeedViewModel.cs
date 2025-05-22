@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.Views;
@@ -20,6 +21,18 @@ public class EditFeedViewModel : BaseViewModel
             OnPropertyChanged(nameof(Feed));
         }
     }
+
+    private bool _feedNotification;
+    public bool FeedNotification
+    {
+        get { return _feedNotification; }
+        set
+        {
+            _feedNotification = value;
+            OnPropertyChanged(nameof(FeedNotification));
+        }
+    }
+
     private FeedsViewModel _context;
 
     public FeedsViewModel Context
@@ -48,7 +61,7 @@ public class EditFeedViewModel : BaseViewModel
 
         // Update feed
         Context.UpdateCurrentFeed(_feed);
-        await _generalDB.UpdateFeed(_feed);
+        await CurrentApp.DataFetcher.UpdateFeed(_feed);
 
         _context.ListHasBeenUpdated = true;
 
@@ -63,6 +76,17 @@ public class EditFeedViewModel : BaseViewModel
         _context.FeedTabs[index].Title = _feed.Title;
         WeakReferenceMessenger.Default.Send(new FeedUpdatedMessage(_feed));
 
+        string id = _feed.MongoID;
+        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        
+        if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(token))
+            return;
+
+        // Update subcription 
+        if (_feedNotification)
+            await CurrentApp.DataFetcher.SubscribeToFeed(id, token);
+        else
+            await CurrentApp.DataFetcher.UnsubscribeToFeed(id, token);
     });
 
     public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(async () =>
@@ -71,11 +95,34 @@ public class EditFeedViewModel : BaseViewModel
         await App.Current.Windows[0].Page.Navigation.PopAsync();
 
     });
+
+
+    public App CurrentApp { get; }
+    public bool IsOnline { get; } = Connectivity.NetworkAccess == NetworkAccess.Internet;
+
     public EditFeedViewModel(Feed feed, FeedsViewModel vm, GeneralDataBase generalDB)
     {
         _generalDB = generalDB;
         _feed = feed;
         _initialKeyWords = feed.Keywords;
         _context = vm;
+
+        CurrentApp = App.Current as App;
+
+        RefreshFeedSubStatus();
+
+    }
+    /// <summary>
+    /// Manually refresh the feed subscription status
+    /// </summary>
+    private async void RefreshFeedSubStatus ()
+    {
+        string id = _feed.MongoID;
+        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(token))
+        {
+            FeedNotification = await CurrentApp.DataFetcher.CheckSubStatus(id, token);
+        }
+        return;
     }
 }
