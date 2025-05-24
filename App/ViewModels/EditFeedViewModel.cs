@@ -22,6 +22,7 @@ public class EditFeedViewModel : BaseViewModel
         }
     }
 
+    private bool? _feedNotificationPrev;
     private bool _feedNotification;
     public bool FeedNotification
     {
@@ -29,6 +30,8 @@ public class EditFeedViewModel : BaseViewModel
         set
         {
             _feedNotification = value;
+            if (_feedNotificationPrev is null)
+                _feedNotificationPrev = _feedNotification;
             OnPropertyChanged(nameof(FeedNotification));
         }
     }
@@ -83,7 +86,7 @@ public class EditFeedViewModel : BaseViewModel
             return;
 
         // Update subcription 
-        if (_feedNotification)
+        if (_feedNotification && !(_feedNotificationPrev != _feedNotification))
             await CurrentApp.DataFetcher.SubscribeToFeed(id, token);
         else
             await CurrentApp.DataFetcher.UnsubscribeToFeed(id, token);
@@ -109,13 +112,13 @@ public class EditFeedViewModel : BaseViewModel
 
         CurrentApp = App.Current as App;
 
-        RefreshFeedSubStatus();
+        RefreshFeedSubStatus().GetAwaiter();
 
     }
     /// <summary>
     /// Manually refresh the feed subscription status
     /// </summary>
-    private async void RefreshFeedSubStatus ()
+    private async Task RefreshFeedSubStatus ()
     {
         string id = _feed.MongoID;
         string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
