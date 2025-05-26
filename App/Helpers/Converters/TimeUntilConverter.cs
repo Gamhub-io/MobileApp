@@ -14,13 +14,13 @@ public class TimeUntilConverter : IValueConverter
 
             if (timeremaining < TimeSpan.Zero)
                 return "expired";
-            else if (timeremaining.TotalHours < 0)
+            else if (timeremaining.TotalHours < 1)
             {
                 if (timeremaining.Minutes > 1)
                     return $"{timeremaining.Minutes} minutes"; 
                 return $"1 minute"; 
             }
-            else if (timeremaining.TotalDays < 0)
+            else if (timeremaining.TotalDays < 1)
             {
                 string hoursStr = timeremaining.Hours > 1? $"{timeremaining.Hours} hours": "1 hour";
                 string minutesStr = timeremaining.Minutes > 1? $"{timeremaining.Minutes} minutes" : "1 minute";
