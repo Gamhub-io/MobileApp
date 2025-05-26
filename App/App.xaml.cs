@@ -50,10 +50,6 @@ public partial class App : Application
         _generalDb = generalDataBase;
         _backupDb = backUpDataBase;
 
-#if DEBUG
-        // Run the debug setup
-            EnvironementSetup.DebugSetup();
-#endif
        DataFetcher = fetc;
        Shell = shell;
 
