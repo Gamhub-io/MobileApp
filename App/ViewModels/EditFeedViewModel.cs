@@ -30,8 +30,10 @@ public class EditFeedViewModel : BaseViewModel
         set
         {
             _feedNotification = value;
+
             if (_feedNotificationPrev is null)
                 _feedNotificationPrev = _feedNotification;
+
             OnPropertyChanged(nameof(FeedNotification));
         }
     }
@@ -113,6 +115,7 @@ public class EditFeedViewModel : BaseViewModel
         CurrentApp = App.Current as App;
 
         RefreshFeedSubStatus().GetAwaiter();
+
 
     }
     /// <summary>
