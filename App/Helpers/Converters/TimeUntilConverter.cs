@@ -10,7 +10,7 @@ public class TimeUntilConverter : IValueConverter
     {
         if (value is DateTime enddate) 
         {
-            var timeremaining = enddate - DateTime.Now;
+            var timeremaining = enddate - DateTime.UtcNow;
 
             if (timeremaining < TimeSpan.Zero)
                 return "expired";
