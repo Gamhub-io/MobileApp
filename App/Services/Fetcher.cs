@@ -52,6 +52,8 @@ public class Fetcher
     /// <returns>last 2 months worth of feed</returns>
     public async Task<Collection<Article>> GetMainFeedUpdate()
     {
+        if (!Fetcher.CheckFeasability())
+            return null;
         try
         {
 
@@ -81,6 +83,8 @@ public class Fetcher
     /// <exception cref="Exception"></exception>
     public async Task<Collection<Source>> GetSources()
     {
+        if (!Fetcher.CheckFeasability())
+            return null;
         return Fetcher.Sources =  await WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
                                                         unSuccessCallback: e => _ = HandleHttpException(e));
@@ -94,6 +98,8 @@ public class Fetcher
     /// <returns></returns>
     public async Task<Collection<Article>> GetFeedArticles(string keywords, string timeUpdate = null, bool needUpdate = false)
     {
+        if (!Fetcher.CheckFeasability())
+            return new Collection<Article>();
         try
         {
             if (string.IsNullOrEmpty(keywords))
@@ -123,6 +129,8 @@ public class Fetcher
     /// <returns></returns>
     public async Task<Session> RefreshDiscordSession(string refreshToken)
     {
+        if (!Fetcher.CheckFeasability())
+            return null;
         try
         {
             RefreshDiscordPayload payload = new()
@@ -157,6 +165,8 @@ public class Fetcher
     /// <returns>latest articles the date provided</returns>
     public async Task<Collection<Article>> GetMainFeedUpdate(string dateUpdate)
     {
+        if (!Fetcher.CheckFeasability())
+            return new Collection<Article>();
         try
         {
 
@@ -184,6 +194,8 @@ public class Fetcher
     /// <returns>chunk articles the date provided</returns>
     public async Task<Collection<Article>> GetFeedChunk(DateTime dateFrom, int length)
     {
+        if (!Fetcher.CheckFeasability())
+            return null;
         try
         {
             //dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, 0);
@@ -214,6 +226,8 @@ public class Fetcher
     /// <returns>partners</returns>
     public async Task<Collection<Partner>> GetPartners()
     {
+        if (!Fetcher.CheckFeasability())
+            return null;
         try
         {
             return await this.WebService.Get<Collection<Partner>>(controller: "partners",
@@ -237,6 +251,8 @@ public class Fetcher
     /// <returns>all the deals</returns>
     public async Task<Collection<Deal>> GetDeals()
     {
+        if (!Fetcher.CheckFeasability())
+            return null;
         try
         {
             return _deals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
@@ -261,6 +277,8 @@ public class Fetcher
     /// <returns>retrun the article</returns>
     public async Task<Article> GetArticle(string articleId)
     {
+        if (!Fetcher.CheckFeasability())
+            return null;
         try
         {
             return await this.WebService.Get<Article>(controller: "article",
@@ -286,6 +304,8 @@ public class Fetcher
     /// <returns>retrun the article</returns>
     public async Task RegisterNotificationEntity(string token, Dictionary<string, string> rqHeaders = null )
     {
+        if (!Fetcher.CheckFeasability())
+            return;
         try
         {
             if (rqHeaders is null)
@@ -330,7 +350,7 @@ public class Fetcher
     {
         try
         {
-            if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+            if (!Fetcher.CheckFeasability())
                 return false;
 
             Dictionary<string, string> rqHeaders = new();
@@ -468,6 +488,8 @@ public class Fetcher
     /// <param name="feed">ID of the feed concerned by the subscription</param>
     public async Task<Feed> UpdateFeed(Feed feed)
     {
+        if (!Fetcher.CheckFeasability())
+            return null;
         try
         {
             string name = feed.Title;
@@ -517,6 +539,8 @@ public class Fetcher
     /// <returns>retrun the article</returns>
     public async Task UnsubscribeToFeed(string feedID, string token)
     {
+        if (!Fetcher.CheckFeasability())
+            return ;
         try
         {
             Dictionary<string, string> rqHeaders = new();
@@ -561,6 +585,8 @@ public class Fetcher
     /// <returns>retrun the article</returns>
     public async Task UpdateNotificationEntity(string newToken, string oldToken)
     {
+        if (!Fetcher.CheckFeasability())
+            return;
         try
         {
             Dictionary<string, string> rqHeaders = new();
@@ -627,6 +653,8 @@ public class Fetcher
     /// </summary>
     public async Task RestoreSession ()
     {
+        if (!Fetcher.CheckFeasability())
+            return;
         // Save regular data about the session
         int exp = Preferences.Get(nameof(Session.ExpiresIn), Int16.MinValue);
         string refreshToken = await SecureStorage.GetAsync(nameof(Session.RefreshToken)).ConfigureAwait(false);
@@ -687,6 +715,8 @@ public class Fetcher
     /// <param name="article">article hooked</param>
     public async Task RegisterHook(Article article)
     {
+        if (!Fetcher.CheckFeasability())
+            return ;
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
@@ -762,6 +792,16 @@ public class Fetcher
 #else
         SentrySdk.CaptureException(new Exception(errMsg));
 #endif
+    }
+
+    /// <summary>
+    /// check feasability of the request
+    /// </summary>
+    /// <remarks> This method is static for now be we can change that</remarks>
+    /// <returns>true == Feasable</returns>
+    private static bool CheckFeasability()
+    {
+        return Connectivity.NetworkAccess == NetworkAccess.Internet;
     }
 
     #region Local Actions
