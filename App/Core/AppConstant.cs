@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace GamHubApp.Core
 {
     public static class AppConstant
