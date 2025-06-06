@@ -1,5 +1,3 @@
-﻿using System;
-
 namespace GamHubApp.Core
 {
     public static class AppConstant
@@ -34,5 +32,6 @@ namespace GamHubApp.Core
         public const string DealPageEnable = "DEAL_PAGE_ENABLE";
         public const string OfflineLastRun = "OFFLINE_LAST";
         public const string NewDealCount = "NEW_DEAL_COUNT";
+        public const string ReviewAsked = "REVIEW_ASKED";
     }
 }
