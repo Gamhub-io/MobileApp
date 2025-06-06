@@ -99,8 +99,8 @@
                             StrokeShape="RoundRectangle 0,8,8,0"
                             HorizontalOptions="Start"
                             VerticalOptions="End"
-                            HeightRequest="30"
-                            WidthRequest="80"
+                            HeightRequest="40"
+                            WidthRequest="100"
                             IsVisible="{Binding Discount, Converter={StaticResource NotNullOrEmptyStringConverter}}"
                             BackgroundColor="{StaticResource DiscountColor}">
                         <Label 
@@ -111,7 +111,7 @@
                                stroked:StrokedLabel.StrokeWidth="2"
                                HorizontalOptions="Center"
                                VerticalOptions="Center"
-                               FontSize="18"
+                               FontSize="20"
                                />
                     </Border>
                 </Grid>
