@@ -1,6 +1,10 @@
-﻿using GamHubApp.Models;
+﻿using GamHubApp.Core;
+using GamHubApp.Models;
 using GamHubApp.ViewModels;
 using Plugin.StoreReview;
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 namespace GamHubApp.Views;
 
@@ -28,7 +32,7 @@ namespace GamHubApp.Views;
             BindingContext = _vm = new ArticleViewModel(article);
         }
 
-        protected override void OnDisappearing()
+    protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
         {
             // Stop the timer
             StopTimer();
@@ -37,7 +41,7 @@ namespace GamHubApp.Views;
             // Stop all text to speech
             _vm.StopTtS();
 
-            base.OnDisappearing();
+        base.OnNavigatedFrom(args);
              
 
         }
@@ -58,8 +62,21 @@ namespace GamHubApp.Views;
             // Save the Time spent
             Preferences.Set(TimeSpentKey, timeSpentOnArticles);
 
-            if (TimeSpan.FromMilliseconds(timeSpentOnArticles) >= TimeSpan.FromMinutes(TimeMaxArticles) && (App.Current as App).DateFirstRun.Date < DateTime.Now.Date)
-                await CrossStoreReview.Current.RequestReview(_isTest);;
+        if (TimeSpan.FromMilliseconds(timeSpentOnArticles).TotalMinutes >= TimeMaxArticles
+             && !Preferences.Get(AppConstant.ReviewAsked, false))
+            try
+            {
+                await CrossStoreReview.Current.RequestReview(_isTest);
+                Preferences.Set(AppConstant.ReviewAsked, true);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                    Debug.WriteLine(ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            }
 
 
 
