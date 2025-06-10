@@ -116,7 +116,7 @@
     <PackageReference Include="Plugin.FirebasePushNotifications" Version="3.0.28" />
     <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
-    <PackageReference Include="Sentry.Maui" Version="5.0.1" />
+    <PackageReference Include="Sentry.Maui" Version="5.10.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
 	<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0" />	  
@@ -139,7 +139,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.30" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.70" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
