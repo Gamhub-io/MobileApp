@@ -277,10 +277,32 @@ public class AppShellViewModel : BaseViewModel
     /// <param name="e"></param>
     private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
     {
-        if (e.Data?.Count <= 0)
-            return;
-        if (e.Data.ContainsKey ("articleId"))
-            OpenArticleInApp(e.Data["articleId"].ToString());
+        try
+        {
+            if (e.Data?.Count <= 0)
+                return;
+            if (e.Data.ContainsKey ("articleId"))
+                OpenArticleInApp(e.Data["articleId"].ToString());
+            else if (e.Data.ContainsKey("dealId") && e.Data.ContainsKey("url"))
+            {
+                MainThread.BeginInvokeOnMainThread(async () => 
+                {
+                    await Shell.Current.GoToAsync("///MyDealsPage");
+
+                    await Browser.OpenAsync(e.Data["url"].ToString());
+                }); 
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
 
     }
 
