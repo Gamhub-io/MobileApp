@@ -176,6 +176,7 @@ public class AppShellViewModel : BaseViewModel
 
         _firebasePushNotification.SubscribeTopic("daily_catchup");
         _firebasePushNotification.SubscribeTopic("feed_subscription");
+        _firebasePushNotification.SubscribeTopic("deal_reminder");
     }
 
     /// <summary>
