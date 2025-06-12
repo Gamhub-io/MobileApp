@@ -921,7 +921,8 @@ public class Fetcher
     /// <returns></returns>
     public async Task SetupNotificationEntity (string token)
     {
-        if (!string.IsNullOrEmpty(await SecureStorage.GetAsync(nameof(NeID))))
+        NeID = await SecureStorage.GetAsync(nameof(NeID));
+        if (!string.IsNullOrEmpty(NeID))
             return;
 
         await SecureStorage.SetAsync(nameof(NeID), NeID = (await GetNotificationEntity(token)).Id);
