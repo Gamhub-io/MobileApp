@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GamHubApp.Core;
+using Newtonsoft.Json;
 using SQLite;
 
 namespace GamHubApp.Models;
@@ -37,7 +38,7 @@ public class Deal
                         TitleMode = BrowserTitleMode.Default,
                     });
                     TimeSpan timeRemainingToExpiration = (Expires - DateTime.UtcNow);
-                    if (timeRemainingToExpiration.TotalHours > 5)
+                    if (Preferences.Get(AppConstant.DealReminderEnabled, true) && timeRemainingToExpiration.TotalHours > 5)
                         await (App.Current as App).DataFetcher.SetDealReminder(this);
                 });
         }

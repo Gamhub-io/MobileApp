@@ -39,10 +39,10 @@
             HorizontalOptions="Start" />
         <Border StrokeShape="RoundRectangle 20"
                 BackgroundColor="{DynamicResource LightDark}">
-            <Grid RowDefinitions="50,1,auto"
+            <Grid RowDefinitions="50,1,50,auto"
                   ColumnDefinitions="*,50"
                   Padding="10,5">
-                <Label Text="Notification settings"
+                <Label Text="General settings"
                        FontFamily="P-Medium"
                        VerticalOptions="Center"
                        FontSize="20"
@@ -63,6 +63,30 @@
                          Opacity="0.6"
                          Grid.ColumnSpan="2"
                          />
+                <Label Text="Deals reminders"
+                       FontFamily="P-Regular"
+                       VerticalOptions="Center"
+                       FontSize="20"
+                       Grid.Row="2"
+                       Grid.Column="0"
+                       TextColor="{StaticResource FontColor}"/>
+                <Switch Grid.Column="1"
+                        Grid.Row="2"
+                        OnColor="{StaticResource PrimaryAccent}"
+                        ThumbColor="{StaticResource Primary}"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"
+                        WidthRequest="50"
+                        IsToggled="{Binding DealReminderSett}"
+                        Background="Transparent">
+                    <Switch.Triggers>
+                        <DataTrigger TargetType="Switch"
+                                     Binding="{Binding DealReminderSett}"
+                                     Value="false">
+                            <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
+                        </DataTrigger>
+                    </Switch.Triggers>
+                </Switch>
 
             </Grid>
         </Border>
