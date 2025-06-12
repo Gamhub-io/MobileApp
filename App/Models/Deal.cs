@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GamHubApp.Core;
+using Newtonsoft.Json;
 using SQLite;
 
 namespace GamHubApp.Models;
@@ -30,11 +31,15 @@ public class Deal
         get 
         {
             return new Command(async () => 
-                await Browser.OpenAsync(Url, new BrowserLaunchOptions
                 {
-                    LaunchMode = BrowserLaunchMode.External,
-                    TitleMode = BrowserTitleMode.Default,
-                }));
+                    await Browser.OpenAsync(Url, new BrowserLaunchOptions
+                    {
+                        LaunchMode = BrowserLaunchMode.External,
+                        TitleMode = BrowserTitleMode.Default,
+                    });
+                    if (Preferences.Get(AppConstant.DealReminderEnabled, true) && (Expires - DateTime.UtcNow).TotalHours > 5)
+                        await (App.Current as App).DataFetcher.SetDealReminder(this);
+                });
         }
     }
     [JsonIgnore, Ignore]

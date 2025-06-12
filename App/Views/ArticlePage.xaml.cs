@@ -17,7 +17,7 @@ public partial class ArticlePage : ContentPage
         private const double TimeMaxArticles = 0;
         private const bool _isTest = true;
 #else
-        private const double TimeMaxArticles = 10;
+        private const double TimeMaxArticles = 3;
         private const bool _isTest = false;
 #endif
     private ArticleViewModel _vm;

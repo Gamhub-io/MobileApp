@@ -168,6 +168,7 @@ public class AppShellViewModel : BaseViewModel
 #if DEBUG
         Debug.WriteLine($"Current notification token: {_firebasePushNotification.Token}");
 #endif
+        await dataFetcher.SetupNotificationEntity(_firebasePushNotification.Token);
 
         // NOTE: this is mostly here for the devices that already have a token but don't have a notification entity
         // TODO: we may need to remove this at some point
@@ -176,6 +177,7 @@ public class AppShellViewModel : BaseViewModel
 
         _firebasePushNotification.SubscribeTopic("daily_catchup");
         _firebasePushNotification.SubscribeTopic("feed_subscription");
+        _firebasePushNotification.SubscribeTopic("deal_reminder");
     }
 
     /// <summary>
@@ -193,7 +195,6 @@ public class AppShellViewModel : BaseViewModel
             {
                 await SecureStorage.SetAsync(AppConstant.NotificationToken, token);
                 await dataFetcher.RegisterNotificationEntity(token);
-
             } 
             catch (Exception ex)
             {
@@ -276,10 +277,32 @@ public class AppShellViewModel : BaseViewModel
     /// <param name="e"></param>
     private void OnNotificationOpened(object sender, FirebasePushNotificationResponseEventArgs e)
     {
-        if (e.Data?.Count <= 0)
-            return;
-        if (e.Data.ContainsKey ("articleId"))
-            OpenArticleInApp(e.Data["articleId"].ToString());
+        try
+        {
+            if (e.Data?.Count <= 0)
+                return;
+            if (e.Data.ContainsKey ("articleId"))
+                OpenArticleInApp(e.Data["articleId"].ToString());
+            else if (e.Data.ContainsKey("dealId") && e.Data.ContainsKey("url"))
+            {
+                MainThread.BeginInvokeOnMainThread(async () => 
+                {
+                    await Shell.Current.GoToAsync("///MyDealsPage");
+
+                    await Browser.OpenAsync(e.Data["url"].ToString());
+                }); 
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
 
     }
 
