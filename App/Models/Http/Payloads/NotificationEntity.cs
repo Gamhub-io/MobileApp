@@ -5,8 +5,8 @@ namespace GamHubApp.Models.Http.Payloads;
 
 public class NotificationEntity
 {
+    [JsonProperty("_id")]
+    public string Id { get; set; }
     [JsonProperty("token")]
     public string Token { get; set; }
-    [JsonProperty("feed")]
-    public string Feed { get; set; }
 }

@@ -30,6 +30,18 @@ public class SettingsViewModel : BaseViewModel
         }
     }
 
+    private bool _dealReminderSett;
+    public bool DealReminderSett
+    {
+        get => _dealReminderSett;
+        set
+        {
+            if (_dealReminderSett == value) return;
+            UpdateSettings(AppConstant.DealReminderEnabled, _dealReminderSett = value);
+            OnPropertyChanged(nameof(DealReminderSett));
+        }
+    }
+
     public Command OpenSettingsCommand
     {
         get => new Command(() => AppInfo.Current.ShowSettingsUI());
@@ -38,6 +50,7 @@ public class SettingsViewModel : BaseViewModel
     {
         _dealPageSett = Preferences.Get(AppConstant.DealPageEnable, true);
         _dealViewSett = Preferences.Get(AppConstant.DealArticleEnable, true);
+        _dealReminderSett = Preferences.Get(AppConstant.DealReminderEnabled, true);
     }
 
     /// <summary>

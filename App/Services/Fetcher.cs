@@ -26,6 +26,7 @@ public class Fetcher
 
     public User UserData { get; set; }
     public List<Article> Bookmarks { get; private set; }
+    public string NeID { get; private set; }
 
 
     public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
@@ -329,6 +330,7 @@ public class Fetcher
 #if DEBUG
             Debug.WriteLine($"NE/create: {res}");
 #endif
+            await SetupNotificationEntity(token);
         }
 
         catch (Exception ex)
@@ -608,6 +610,9 @@ public class Fetcher
 #endif
             if (!res.Success)
                 await RegisterNotificationEntity(newToken, rqHeaders);
+            else
+
+                await SetupNotificationEntity(newToken);
         }
 
         catch (Exception ex)
@@ -732,6 +737,64 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Set a reminder for a deal
+    /// </summary>
+    /// <param name="deal"></param>
+    /// <returns></returns>
+    public async Task SetDealReminder(Deal deal)
+    {
+        if (!Fetcher.CheckFeasability())
+            return ;
+        Dictionary<string, string> rqHeaders = new();
+        if (UserData != null)
+            rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+#if DEBUG
+        var res =
+#endif
+        await WebService.Post<ReminderResponse>(controller: "deals",
+                                               action: "reminder/set",
+                                               singleUseHeaders: rqHeaders,
+                                               parameters: new Dictionary<string, string>
+                                               {
+                                                   { nameof(deal), deal.Id },
+                                                   { "ne", NeID }
+                                               },
+                                               unSuccessCallback: e => _ = HandleHttpException(e)
+                                                );
+#if DEBUG
+        Debug.WriteLine($"Reminder set: {res.Response}");
+#endif
+    }
+
+    /// <summary>
+    /// Get the notification entity of a token
+    /// </summary>
+    /// <param name="token">token linked to the notification entity</param>
+    /// <returns></returns>
+    public async Task<NotificationEntity> GetNotificationEntity(string token)
+    {
+        if (!Fetcher.CheckFeasability())
+            return null;
+
+
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+        };
+
+       return (await WebService.Get<NeResponse>(controller: "monitor",
+                                               action: "NE",
+                                               singleUseHeaders: headers,
+                                               parameters: new Dictionary<string, string>
+                                               {
+                                                   { nameof(token), token },
+                                               },
+                                               unSuccessCallback: e => _ = HandleHttpException(e)
+                                                ))?.Data;
+    }
+
+    /// <summary>
     /// Kill a session
     /// </summary>
     public void KillSession()
@@ -742,6 +805,7 @@ public class Fetcher
         // Clear all data stored
         SecureStorage.Remove(nameof(Session.AccessToken));
         SecureStorage.Remove(nameof(Session.TokenType));
+        SecureStorage.Remove(nameof(NeID));
 
 
     }
@@ -879,6 +943,20 @@ public class Fetcher
 #endif
 
         }
+    }
+
+    /// <summary>
+    /// Set the notification id of the current session
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task SetupNotificationEntity (string token)
+    {
+        NeID = await SecureStorage.GetAsync(nameof(NeID));
+        if (!string.IsNullOrEmpty(NeID))
+            return;
+
+        await SecureStorage.SetAsync(nameof(NeID), NeID = (await GetNotificationEntity(token)).Id);
     }
 
     /// <summary>

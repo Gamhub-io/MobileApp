@@ -39,6 +39,17 @@ public static class NotificationChannelGamHub
 #pragma warning restore CA1416 // Validate platform compatibility
         };
 
+        yield return new NotificationChannelRequest
+        {
+            ChannelId = "deal_reminder",
+            ChannelName = "Deal reminder",
+            Description = "Reminds you of the deals you previously visited before they expire. So you don't miss out on them",
+            LockscreenVisibility = NotificationVisibility.Public,
+#pragma warning disable CA1416 // Validate platform compatibility
+            Importance = OperatingSystem.IsAndroidVersionAtLeast(24)? NotificationImportance.High : NotificationImportance.Default,
+#pragma warning restore CA1416 // Validate platform compatibility
+        };
+
         // TODO: add more in the future
     }
 }

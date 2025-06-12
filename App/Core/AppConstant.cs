@@ -30,6 +30,7 @@ namespace GamHubApp.Core
         // Settings - preferences
         public const string DealArticleEnable = "DEAL_ARTICLE_ENABLE";
         public const string DealPageEnable = "DEAL_PAGE_ENABLE";
+        public const string DealReminderEnabled = "DEAL_REMINDERS_ENABLE";
         public const string OfflineLastRun = "OFFLINE_LAST";
         public const string NewDealCount = "NEW_DEAL_COUNT";
         public const string ReviewAsked = "REVIEW_ASKED";
