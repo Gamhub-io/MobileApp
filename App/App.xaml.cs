@@ -20,6 +20,7 @@ public partial class App : Application
 {
     private GeneralDataBase _generalDb;
     private BackUpDataBase _backupDb;
+    private Window _window;
 
     public bool IsLoading { get; private set; }
     private AppShell Shell { get; set; }
@@ -139,8 +140,21 @@ public partial class App : Application
         _backupDb.Init()?.GetAwaiter();
         DataFetcher.LoadBookmarks().GetAwaiter();
         DataFetcher.UpdateBackupSources().GetAwaiter();
-        
-        return new Window(Shell);
+        try
+        {
+
+            return _window = new Window(Shell);
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return _window;
+
+        }
     }
     protected override void OnSleep()
      {
