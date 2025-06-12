@@ -26,6 +26,7 @@ public class Fetcher
 
     public User UserData { get; set; }
     public List<Article> Bookmarks { get; private set; }
+    public string NeID { get; private set; }
 
 
     public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
@@ -329,6 +330,7 @@ public class Fetcher
 #if DEBUG
             Debug.WriteLine($"NE/create: {res}");
 #endif
+            await SetupNotificationEntity(token);
         }
 
         catch (Exception ex)
@@ -608,6 +610,9 @@ public class Fetcher
 #endif
             if (!res.Success)
                 await RegisterNotificationEntity(newToken, rqHeaders);
+            else
+
+                await SetupNotificationEntity(newToken);
         }
 
         catch (Exception ex)
@@ -732,6 +737,33 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Get the notification entity of a token
+    /// </summary>
+    /// <param name="token">token linked to the notification entity</param>
+    /// <returns></returns>
+    public async Task<NotificationEntity> GetNotificationEntity(string token)
+    {
+        if (!Fetcher.CheckFeasability())
+            return null;
+
+
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+        };
+
+       return (await WebService.Get<NeResponse>(controller: "monitor",
+                                               action: "NE",
+                                               singleUseHeaders: headers,
+                                               parameters: new Dictionary<string, string>
+                                               {
+                                                   { nameof(token), token },
+                                               },
+                                               unSuccessCallback: e => _ = HandleHttpException(e)
+                                                ))?.Data;
+    }
+
+    /// <summary>
     /// Kill a session
     /// </summary>
     public void KillSession()
@@ -742,6 +774,7 @@ public class Fetcher
         // Clear all data stored
         SecureStorage.Remove(nameof(Session.AccessToken));
         SecureStorage.Remove(nameof(Session.TokenType));
+        SecureStorage.Remove(nameof(NeID));
 
 
     }
@@ -879,6 +912,19 @@ public class Fetcher
 #endif
 
         }
+    }
+
+    /// <summary>
+    /// Set the notification id of the current session
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public async Task SetupNotificationEntity (string token)
+    {
+        if (!string.IsNullOrEmpty(await SecureStorage.GetAsync(nameof(NeID))))
+            return;
+
+        await SecureStorage.SetAsync(nameof(NeID), NeID = (await GetNotificationEntity(token)).Id);
     }
 
     /// <summary>
