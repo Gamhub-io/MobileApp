@@ -37,8 +37,7 @@ public class Deal
                         LaunchMode = BrowserLaunchMode.External,
                         TitleMode = BrowserTitleMode.Default,
                     });
-                    TimeSpan timeRemainingToExpiration = (Expires - DateTime.UtcNow);
-                    if (Preferences.Get(AppConstant.DealReminderEnabled, true) && timeRemainingToExpiration.TotalHours > 5)
+                    if (Preferences.Get(AppConstant.DealReminderEnabled, true) && (Expires - DateTime.UtcNow).TotalHours > 5)
                         await (App.Current as App).DataFetcher.SetDealReminder(this);
                 });
         }
