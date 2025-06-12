@@ -956,7 +956,7 @@ public class Fetcher
         if (!string.IsNullOrEmpty(NeID) || !string.IsNullOrEmpty(token))
             return;
 
-        await SecureStorage.SetAsync(nameof(NeID), NeID = (await GetNotificationEntity(token)).Id);
+        await SecureStorage.SetAsync(nameof(NeID), NeID = (await GetNotificationEntity(token))?.Id);
     }
 
     /// <summary>
