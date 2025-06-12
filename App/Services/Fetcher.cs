@@ -737,6 +737,37 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Set a reminder for a deal
+    /// </summary>
+    /// <param name="deal"></param>
+    /// <returns></returns>
+    public async Task SetDealReminder(Deal deal)
+    {
+        if (!Fetcher.CheckFeasability())
+            return ;
+        Dictionary<string, string> rqHeaders = new();
+        if (UserData != null)
+            rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+#if DEBUG
+        var res =
+#endif
+        await WebService.Post<ReminderResponse>(controller: "deals",
+                                               action: "reminder/set",
+                                               singleUseHeaders: rqHeaders,
+                                               parameters: new Dictionary<string, string>
+                                               {
+                                                   { nameof(deal), deal.Id },
+                                                   { "ne", NeID }
+                                               },
+                                               unSuccessCallback: e => _ = HandleHttpException(e)
+                                                );
+#if DEBUG
+        Debug.WriteLine($"Reminder set: {res.Response}");
+#endif
+    }
+
+    /// <summary>
     /// Get the notification entity of a token
     /// </summary>
     /// <param name="token">token linked to the notification entity</param>

@@ -30,11 +30,16 @@ public class Deal
         get 
         {
             return new Command(async () => 
-                await Browser.OpenAsync(Url, new BrowserLaunchOptions
                 {
-                    LaunchMode = BrowserLaunchMode.External,
-                    TitleMode = BrowserTitleMode.Default,
-                }));
+                    await Browser.OpenAsync(Url, new BrowserLaunchOptions
+                    {
+                        LaunchMode = BrowserLaunchMode.External,
+                        TitleMode = BrowserTitleMode.Default,
+                    });
+                    TimeSpan timeRemainingToExpiration = (Expires - DateTime.UtcNow);
+                    if (timeRemainingToExpiration.TotalHours > 5)
+                        await (App.Current as App).DataFetcher.SetDealReminder(this);
+                });
         }
     }
     [JsonIgnore, Ignore]
