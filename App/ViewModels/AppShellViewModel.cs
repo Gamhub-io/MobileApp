@@ -168,7 +168,7 @@ public class AppShellViewModel : BaseViewModel
 #if DEBUG
         Debug.WriteLine($"Current notification token: {_firebasePushNotification.Token}");
 #endif
-        await dataFetcher.SetupNotificationEntity(_firebasePushNotification.Token)
+        await dataFetcher.SetupNotificationEntity(_firebasePushNotification.Token);
 
         // NOTE: this is mostly here for the devices that already have a token but don't have a notification entity
         // TODO: we may need to remove this at some point
