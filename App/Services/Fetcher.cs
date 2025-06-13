@@ -749,7 +749,7 @@ public class Fetcher
         if (UserData != null)
             rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
 
-        if (!string.IsNullOrEmpty(NeID))
+        if (string.IsNullOrEmpty(NeID))
             await SetupNotificationEntity(await SecureStorage.GetAsync(AppConstant.NotificationToken));
         
 #if DEBUG
