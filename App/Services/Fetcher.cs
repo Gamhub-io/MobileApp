@@ -971,7 +971,7 @@ public class Fetcher
 
 
                 await RegisterNotificationEntity(token);
-                ne = await GetNotificationEntity(token);
+                return;
             }
             await SecureStorage.SetAsync(nameof(NeID), NeID = ne?.Id);
         } 
