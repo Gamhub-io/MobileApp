@@ -751,7 +751,7 @@ public class Fetcher
 
         if (string.IsNullOrEmpty(NeID))
             await SetupNotificationEntity(await SecureStorage.GetAsync(AppConstant.NotificationToken));
-        
+
 #if DEBUG
         var res =
 #endif
