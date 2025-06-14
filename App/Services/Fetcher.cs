@@ -749,6 +749,9 @@ public class Fetcher
         if (UserData != null)
             rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
 
+        if (string.IsNullOrEmpty(NeID))
+            await SetupNotificationEntity(await SecureStorage.GetAsync(AppConstant.NotificationToken));
+
 #if DEBUG
         var res =
 #endif
@@ -952,11 +955,35 @@ public class Fetcher
     /// <returns></returns>
     public async Task SetupNotificationEntity (string token)
     {
-        NeID = await SecureStorage.GetAsync(nameof(NeID));
-        if (!string.IsNullOrEmpty(NeID) || !string.IsNullOrEmpty(token))
-            return;
+        try 
+        { 
 
-        await SecureStorage.SetAsync(nameof(NeID), NeID = (await GetNotificationEntity(token))?.Id);
+            NeID = await SecureStorage.GetAsync(nameof(NeID));
+            if (!string.IsNullOrEmpty(NeID) || string.IsNullOrEmpty(token))
+                return;
+
+            var ne = await GetNotificationEntity(token);
+            if (ne is null)
+            {
+                Dictionary<string, string> rqHeaders = new();
+                if (UserData != null)
+                    rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+
+                await RegisterNotificationEntity(token);
+                return;
+            }
+            await SecureStorage.SetAsync(nameof(NeID), NeID = ne?.Id);
+        } 
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+
+        }
     }
 
     /// <summary>
