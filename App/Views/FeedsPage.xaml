@@ -250,27 +250,27 @@
                 </Grid.Triggers>
                 <ContentView x:DataType="vm:FeedsViewModel">
 
-                <StackLayout 
+                    <StackLayout 
                  VerticalOptions="Center">
-                    <Label Text="&#xf005;"
-             FontFamily="FaSolid"
-             TextColor="{StaticResource Primary}"
-             FontSize="50"
-             HorizontalOptions="Center"
-            />
+                        <Label Text="&#xf005;"
+                               FontFamily="FaSolid"
+                               TextColor="{StaticResource Primary}"
+                               FontSize="50"
+                               HorizontalOptions="Center"
+                              />
                     <Label Text="Ooopsi 😟"
-           FontFamily="P-Bold"
-           HorizontalOptions="Center"
-           FontSize="Title"
-           TextColor="{StaticResource FontColor}"
-           />
+                           FontFamily="P-Bold"
+                           HorizontalOptions="Center"
+                           FontSize="Title"
+                           TextColor="{StaticResource FontColor}"
+                           />
                     <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
-           FontFamily="P-Regular"
-           Margin="5,0"
-           HorizontalTextAlignment="Center"
-           FontSize="Subtitle"
-           TextColor="{StaticResource FontColor}"
-           />
+                           FontFamily="P-Regular"
+                           Margin="5,0"
+                           HorizontalTextAlignment="Center"
+                           FontSize="Subtitle"
+                           TextColor="{StaticResource FontColor}"
+                           />
                 </StackLayout>
             </ContentView>
             </Grid>
@@ -290,15 +290,18 @@
             
             <!-- Menu - Menu overlay-->
             <Border HorizontalOptions="End"
-                   x:Name="dropdownMenu"
-                   VerticalOptions="Start"
-                   BackgroundColor="{StaticResource LightDark}"
-                   HeightRequest="0"
-                   Padding="0"
-                   Grid.RowSpan="2"
-                   WidthRequest="50">
-                <StackLayout IsVisible="{Binding IsMenuOpen}">
-                    <Grid x:Name="editTab">
+                    x:Name="dropdownMenu"
+                    VerticalOptions="Start"
+                    BackgroundColor="{StaticResource LightDark}"
+                    HeightRequest="0"
+                    Padding="0"
+                    StrokeShape="RoundRectangle 0 0 6 0"
+                    Grid.RowSpan="2"
+                    WidthRequest="50"
+                    IsVisible="{Binding IsMenuOpen}">
+                <Grid RowDefinitions="*,1,*">
+                    <Grid x:Name="editTab"
+                          Grid.Row="0">
 
                         <Grid.Behaviors>
                             <mct:TouchBehavior Command="{Binding Edit}"
@@ -311,16 +314,18 @@
                                                   />
                         </Grid.GestureRecognizers>
                         <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
-                                   TextColor="{StaticResource FontColor}"
-                                   FontFamily="P-SemiBold"
-                                   FontSize="18"
-                                   HorizontalOptions="Center"/>
+                               TextColor="{StaticResource FontColor}"
+                               FontFamily="P-SemiBold"
+                               FontSize="18"
+                               HorizontalTextAlignment="Center"/>
                     </Grid>
                     <BoxView HeightRequest="1"
-                                 WidthRequest="30"
-                                 BackgroundColor="{StaticResource FontColor}"
-                                 Opacity="0.1"/>
-                    <Grid x:Name="deleteTab">
+                             Grid.Row="1"
+                             Margin="5,0"
+                             BackgroundColor="{StaticResource FontColor}"
+                             Opacity="0.1"/>
+                    <Grid x:Name="deleteTab"
+                          Grid.Row="2">
                         <Grid.Behaviors>
                             <mct:TouchBehavior Command="{Binding Delete}"
                                                BindingContext="{Binding BindingContext, 
@@ -331,12 +336,13 @@
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
                         <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Delete {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
-                                   TextColor="{StaticResource FontColor}"
-                                   FontFamily="P-SemiBold"
-                                   FontSize="18"
-                                   HorizontalOptions="Center"/>
+                               TextColor="{StaticResource FontColor}"
+                               FontFamily="P-SemiBold"
+                               FontSize="18"
+                               HorizontalTextAlignment="Center"
+                               VerticalOptions="Center"/>
                     </Grid>
-                </StackLayout>
+                </Grid>
             </Border>
             <!-- -->
         
