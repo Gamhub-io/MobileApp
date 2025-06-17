@@ -251,16 +251,7 @@
                 <ContentView x:DataType="vm:FeedsViewModel">
 
                 <StackLayout 
-                 VerticalOptions="Center"
-                    IsVisible="{Binding IsBusy, Converter={StaticResource BoolInverseConverter}}">
-                    <StackLayout.Triggers>
-                        <DataTrigger Binding="{Binding FeedTabs.Count}"
-                     TargetType="StackLayout"
-                     Value="0">
-                            <Setter Property="IsVisible" 
-                    Value="false" />
-                        </DataTrigger>
-                    </StackLayout.Triggers>
+                 VerticalOptions="Center">
                     <Label Text="&#xf005;"
              FontFamily="FaSolid"
              TextColor="{StaticResource Primary}"
