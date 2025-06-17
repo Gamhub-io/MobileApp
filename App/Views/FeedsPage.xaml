@@ -133,42 +133,6 @@
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Vertical"/>
                         </CollectionView.ItemsLayout>
-                        <CollectionView.EmptyView>
-                            <ContentView x:DataType="vm:FeedsViewModel"
-                                          IsVisible="{Binding IsBusy, Converter={StaticResource BoolInverseConverter}}">
-
-                                <StackLayout IsVisible="{Binding FeedTabs.Count}"
-                                             VerticalOptions="Center">
-                                    <StackLayout.Triggers>
-                                        <DataTrigger Binding="{Binding FeedTabs.Count}"
-                                                 TargetType="StackLayout"
-                                                 Value="0">
-                                            <Setter Property="IsVisible" 
-                                                Value="false" />
-                                        </DataTrigger>
-                                    </StackLayout.Triggers>
-                                    <Label Text="&#xf005;"
-                                         FontFamily="FaSolid"
-                                         TextColor="{StaticResource Primary}"
-                                         FontSize="50"
-                                         HorizontalOptions="Center"
-                                        />
-                                    <Label Text="Ooopsi 😟"
-                                       FontFamily="P-Bold"
-                                       HorizontalOptions="Center"
-                                       FontSize="Title"
-                                       TextColor="{StaticResource FontColor}"
-                                       />
-                                    <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
-                                       FontFamily="P-Regular"
-                                       Margin="5,0"
-                                       HorizontalTextAlignment="Center"
-                                       FontSize="Subtitle"
-                                       TextColor="{StaticResource FontColor}"
-                                       />
-                                </StackLayout>
-                            </ContentView>
-                        </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="model:Article">
                                 <controls:ArticlePreview 
@@ -198,7 +162,7 @@
 
 
             <!-- Feeds - List of feeds -->
-            <Grid Padding="4,10,4,0"
+            <Grid Padding="4,0"
                   BackgroundColor="{StaticResource BgBannerColor }"
                   Grid.Row="0"
                   RowDefinitions="*,1">
@@ -230,8 +194,7 @@
                         </DataTrigger>
                     </CollectionView.Triggers>
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" 
-                                           ItemSpacing="10" />
+                        <LinearItemsLayout Orientation="Horizontal"/>
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
@@ -242,6 +205,7 @@
                                     VerticalOptions="Center"
                                     FontFamily="P-SemiBold"
                                     FontSize="13"
+                                    Margin="5,6"
                                     Padding="0"
                                     CornerRadius="16"
                                     TextColor ="{StaticResource FontColor}"
@@ -274,6 +238,52 @@
                 </CollectionView>
 
             </Grid>
+            <Grid Grid.RowSpan="2"
+                  IsVisible="{Binding  FeedTabs.Count, Converter={StaticResource ZeroToTrueConverter}}">
+                <Grid.Triggers>
+                    <DataTrigger Binding="{Binding FeedTabs.Count}"
+                                 TargetType="Grid"
+                                 Value="0">
+                        <Setter Property="IsVisible" 
+                                Value="false" />
+                    </DataTrigger>
+                </Grid.Triggers>
+                <ContentView x:DataType="vm:FeedsViewModel">
+
+                <StackLayout 
+                 VerticalOptions="Center"
+                    IsVisible="{Binding IsBusy, Converter={StaticResource BoolInverseConverter}}">
+                    <StackLayout.Triggers>
+                        <DataTrigger Binding="{Binding FeedTabs.Count}"
+                     TargetType="StackLayout"
+                     Value="0">
+                            <Setter Property="IsVisible" 
+                    Value="false" />
+                        </DataTrigger>
+                    </StackLayout.Triggers>
+                    <Label Text="&#xf005;"
+             FontFamily="FaSolid"
+             TextColor="{StaticResource Primary}"
+             FontSize="50"
+             HorizontalOptions="Center"
+            />
+                    <Label Text="Ooopsi 😟"
+           FontFamily="P-Bold"
+           HorizontalOptions="Center"
+           FontSize="Title"
+           TextColor="{StaticResource FontColor}"
+           />
+                    <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
+           FontFamily="P-Regular"
+           Margin="5,0"
+           HorizontalTextAlignment="Center"
+           FontSize="Subtitle"
+           TextColor="{StaticResource FontColor}"
+           />
+                </StackLayout>
+            </ContentView>
+            </Grid>
+            
             <!---->
             <!-- HitBox - Layer that detect touch -->
             <BoxView BackgroundColor="Transparent"
