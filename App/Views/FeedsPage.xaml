@@ -131,45 +131,8 @@
                             </BoxView>
                         </CollectionView.Header>
                         <CollectionView.ItemsLayout>
-                            <LinearItemsLayout Orientation="Vertical"
-                                               ItemSpacing="1"/>
+                            <LinearItemsLayout Orientation="Vertical"/>
                         </CollectionView.ItemsLayout>
-                        <CollectionView.EmptyView>
-                            <ContentView x:DataType="vm:FeedsViewModel"
-                                          IsVisible="{Binding IsBusy, Converter={StaticResource BoolInverseConverter}}">
-
-                                <StackLayout IsVisible="{Binding FeedTabs.Count}"
-                                             VerticalOptions="Center">
-                                    <StackLayout.Triggers>
-                                        <DataTrigger Binding="{Binding FeedTabs.Count}"
-                                                 TargetType="StackLayout"
-                                                 Value="0">
-                                            <Setter Property="IsVisible" 
-                                                Value="false" />
-                                        </DataTrigger>
-                                    </StackLayout.Triggers>
-                                    <Label Text="&#xf005;"
-                                         FontFamily="FaSolid"
-                                         TextColor="{StaticResource Primary}"
-                                         FontSize="50"
-                                         HorizontalOptions="Center"
-                                        />
-                                    <Label Text="Ooopsi 😟"
-                                       FontFamily="P-Bold"
-                                       HorizontalOptions="Center"
-                                       FontSize="Title"
-                                       TextColor="{StaticResource FontColor}"
-                                       />
-                                    <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
-                                       FontFamily="P-Regular"
-                                       Margin="5,0"
-                                       HorizontalTextAlignment="Center"
-                                       FontSize="Subtitle"
-                                       TextColor="{StaticResource FontColor}"
-                                       />
-                                </StackLayout>
-                            </ContentView>
-                        </CollectionView.EmptyView>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="model:Article">
                                 <controls:ArticlePreview 
@@ -199,7 +162,7 @@
 
 
             <!-- Feeds - List of feeds -->
-            <Grid Padding="4,10,4,0"
+            <Grid Padding="4,0"
                   BackgroundColor="{StaticResource BgBannerColor }"
                   Grid.Row="0"
                   RowDefinitions="*,1">
@@ -231,8 +194,7 @@
                         </DataTrigger>
                     </CollectionView.Triggers>
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Horizontal" 
-                                           ItemSpacing="10" />
+                        <LinearItemsLayout Orientation="Horizontal"/>
                     </CollectionView.ItemsLayout>
 
                     <CollectionView.ItemTemplate>
@@ -243,6 +205,7 @@
                                     VerticalOptions="Center"
                                     FontFamily="P-SemiBold"
                                     FontSize="13"
+                                    Margin="5,6"
                                     Padding="0"
                                     CornerRadius="16"
                                     TextColor ="{StaticResource FontColor}"
@@ -275,6 +238,43 @@
                 </CollectionView>
 
             </Grid>
+            <Grid Grid.RowSpan="2"
+                  IsVisible="{Binding  FeedTabs.Count, Converter={StaticResource ZeroToTrueConverter}}">
+                <Grid.Triggers>
+                    <DataTrigger Binding="{Binding FeedTabs.Count}"
+                                 TargetType="Grid"
+                                 Value="0">
+                        <Setter Property="IsVisible" 
+                                Value="false" />
+                    </DataTrigger>
+                </Grid.Triggers>
+                <ContentView x:DataType="vm:FeedsViewModel">
+
+                    <StackLayout 
+                 VerticalOptions="Center">
+                        <Label Text="&#xf005;"
+                               FontFamily="FaSolid"
+                               TextColor="{StaticResource Primary}"
+                               FontSize="50"
+                               HorizontalOptions="Center"
+                              />
+                    <Label Text="Ooopsi 😟"
+                           FontFamily="P-Bold"
+                           HorizontalOptions="Center"
+                           FontSize="Title"
+                           TextColor="{StaticResource FontColor}"
+                           />
+                    <Label Text="it seems like no articles are matching the keyword set for this feed, you should try something else."
+                           FontFamily="P-Regular"
+                           Margin="5,0"
+                           HorizontalTextAlignment="Center"
+                           FontSize="Subtitle"
+                           TextColor="{StaticResource FontColor}"
+                           />
+                </StackLayout>
+            </ContentView>
+            </Grid>
+            
             <!---->
             <!-- HitBox - Layer that detect touch -->
             <BoxView BackgroundColor="Transparent"
@@ -290,15 +290,18 @@
             
             <!-- Menu - Menu overlay-->
             <Border HorizontalOptions="End"
-                   x:Name="dropdownMenu"
-                   VerticalOptions="Start"
-                   BackgroundColor="{StaticResource LightDark}"
-                   HeightRequest="0"
-                   Padding="0"
-                   Grid.RowSpan="2"
-                   WidthRequest="50">
-                <StackLayout IsVisible="{Binding IsMenuOpen}">
-                    <Grid x:Name="editTab">
+                    x:Name="dropdownMenu"
+                    VerticalOptions="Start"
+                    BackgroundColor="{StaticResource LightDark}"
+                    HeightRequest="0"
+                    Padding="0"
+                    StrokeShape="RoundRectangle 0 0 6 0"
+                    Grid.RowSpan="2"
+                    WidthRequest="50"
+                    IsVisible="{Binding IsMenuOpen}">
+                <Grid RowDefinitions="*,1,*">
+                    <Grid x:Name="editTab"
+                          Grid.Row="0">
 
                         <Grid.Behaviors>
                             <mct:TouchBehavior Command="{Binding Edit}"
@@ -311,16 +314,18 @@
                                                   />
                         </Grid.GestureRecognizers>
                         <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Edit {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
-                                   TextColor="{StaticResource FontColor}"
-                                   FontFamily="P-SemiBold"
-                                   FontSize="18"
-                                   HorizontalOptions="Center"/>
+                               TextColor="{StaticResource FontColor}"
+                               FontFamily="P-SemiBold"
+                               FontSize="18"
+                               HorizontalTextAlignment="Center"/>
                     </Grid>
                     <BoxView HeightRequest="1"
-                                 WidthRequest="30"
-                                 BackgroundColor="{StaticResource FontColor}"
-                                 Opacity="0.1"/>
-                    <Grid x:Name="deleteTab">
+                             Grid.Row="1"
+                             Margin="5,0"
+                             BackgroundColor="{StaticResource FontColor}"
+                             Opacity="0.1"/>
+                    <Grid x:Name="deleteTab"
+                          Grid.Row="2">
                         <Grid.Behaviors>
                             <mct:TouchBehavior Command="{Binding Delete}"
                                                BindingContext="{Binding BindingContext, 
@@ -331,12 +336,13 @@
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
                         </Grid.GestureRecognizers>
                         <Label Text="{Binding SelectedFeed.Title, StringFormat= 'Delete {0}', Converter={StaticResource MaxLengthConverter}, ConverterParameter=8}"
-                                   TextColor="{StaticResource FontColor}"
-                                   FontFamily="P-SemiBold"
-                                   FontSize="18"
-                                   HorizontalOptions="Center"/>
+                               TextColor="{StaticResource FontColor}"
+                               FontFamily="P-SemiBold"
+                               FontSize="18"
+                               HorizontalTextAlignment="Center"
+                               VerticalOptions="Center"/>
                     </Grid>
-                </StackLayout>
+                </Grid>
             </Border>
             <!-- -->
         
