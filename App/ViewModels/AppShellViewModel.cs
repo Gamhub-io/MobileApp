@@ -116,6 +116,13 @@ public class AppShellViewModel : BaseViewModel
     /// <returns></returns>
     public async Task UpdateDeals()
     {
+        if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+        {
+            // Disable the deals if we aren't connected to the internet
+            DealEnabled = false;
+            return;
+        }
+
         if (!(DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true)))
             return;
 
