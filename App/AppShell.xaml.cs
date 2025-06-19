@@ -72,6 +72,7 @@ public partial class AppShell : Shell
 
     public void Resume()
     {
-        _vm.DealEnabled = Connectivity.NetworkAccess == NetworkAccess.Internet;
+        //_vm.DealEnabled = Connectivity.NetworkAccess == NetworkAccess.Internet;
+        _vm.UpdateDeals().GetAwaiter();
     }
 }
