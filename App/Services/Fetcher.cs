@@ -850,8 +850,7 @@ public class Fetcher
     {
         string errMsg = await err.Content.ReadAsStringAsync();
 
-        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet
-            && (errMsg.Contains("internet connection") || errMsg.Contains("Connection failure")))
+        if (errMsg.Contains("internet connection") || errMsg.Contains("Connection failure"))
             // If the error is being thrown because there is no internet: there is no point reporting it 
             return;
 #if DEBUG
