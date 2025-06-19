@@ -175,6 +175,7 @@ public partial class App : Application
      {
          AppShell mainPage = ((AppShell)Current.Windows[0].Page);
          Page currentPage = mainPage.CurrentPage;
+         mainPage.Resume();
 
          if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
          {
