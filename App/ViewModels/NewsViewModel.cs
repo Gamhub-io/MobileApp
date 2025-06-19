@@ -652,7 +652,6 @@ public class NewsViewModel : BaseViewModel
      /// </summary>
     public async Task Resume()
     {
-
         if (IsFirstLoad)
         {
 
@@ -662,14 +661,16 @@ public class NewsViewModel : BaseViewModel
                 CurrentApp.RemoveLoadingIndicator();
                 IsFirstLoad = false;
             });
-
-
         }
         else
+        {
             // Refresh the time displayed when be comeback
             RefreshArticlesTime();
+            IsRefreshing = true;
+        }
 
-        ObservableCollection <Feed> curFeeds = new ObservableCollection<Feed>(await _generalDB.GetFeeds());
+
+        ObservableCollection <Feed> curFeeds = [.. await _generalDB.GetFeeds()];
 
         // We try to figure out if the two feed lists contains the same items
         if (!FeedToolkit.CampareItems(Feeds, curFeeds))

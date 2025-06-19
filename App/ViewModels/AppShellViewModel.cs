@@ -116,6 +116,13 @@ public class AppShellViewModel : BaseViewModel
     /// <returns></returns>
     public async Task UpdateDeals()
     {
+        if (Connectivity.NetworkAccess != NetworkAccess.Internet)
+        {
+            // Disable the deals if we aren't connected to the internet
+            DealEnabled = false;
+            return;
+        }
+
         if (!(DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true)))
             return;
 
@@ -287,7 +294,12 @@ public class AppShellViewModel : BaseViewModel
             {
                 MainThread.BeginInvokeOnMainThread(async () => 
                 {
-                    await Shell.Current.GoToAsync("///MyDealsPage");
+                    try
+                    {
+                        await Shell.Current.GoToAsync("///MyDealsPage");
+                    } 
+                    catch 
+                    {}
 
                     await Browser.OpenAsync(e.Data["url"].ToString());
                 }); 
