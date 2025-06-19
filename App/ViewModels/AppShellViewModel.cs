@@ -294,7 +294,12 @@ public class AppShellViewModel : BaseViewModel
             {
                 MainThread.BeginInvokeOnMainThread(async () => 
                 {
-                    await Shell.Current.GoToAsync("///MyDealsPage");
+                    try
+                    {
+                        await Shell.Current.GoToAsync("///MyDealsPage");
+                    } 
+                    catch 
+                    {}
 
                     await Browser.OpenAsync(e.Data["url"].ToString());
                 }); 
