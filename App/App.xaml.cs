@@ -243,7 +243,6 @@ public partial class App : Application
     public async Task LoadPartners()
     {
         Partners = await DataFetcher.GetPartners();
-        Deals = await DataFetcher.GetDeals();
 
     }
 
