@@ -29,7 +29,8 @@ public partial class AppShell : Shell
         else
             Task.Run (async () =>
             { 
-                if (_vm != null)
+                string target = args.Target.Location.OriginalString;
+                if (_vm != null && target != "//MyDealsPage" && !target.Contains("ArticlePage"))
                     await _vm.UpdateDeals();
             });
     }
@@ -41,11 +42,6 @@ public partial class AppShell : Shell
         Task partnersTask = _currentApp.LoadPartners();
         Task notifTask = _vm.NotificationSetup();
         await Task.WhenAll(partnersTask, notifTask);
-    }
-
-    protected override async void OnNavigated(ShellNavigatedEventArgs args)
-    {
-        base.OnNavigated(args);
         await _vm.UpdateDeals(); 
     }
 
@@ -72,7 +68,6 @@ public partial class AppShell : Shell
 
     public void Resume()
     {
-        //_vm.DealEnabled = Connectivity.NetworkAccess == NetworkAccess.Internet;
         _vm.UpdateDeals().GetAwaiter();
     }
 }

@@ -181,7 +181,7 @@ public class ArticleViewModel : BaseViewModel
     {
         try
         {
-            Collection<Deal> deals = (App.Current as App).Deals;
+            Collection<Deal> deals = (App.Current as App).DataFetcher.Deals;
             if (_dealEnabled = Preferences.Get(AppConstant.DealArticleEnable, true)
                 && deals is not null)
                 Deals = new ObservableCollection<Deal>(deals.Where(deal =>
