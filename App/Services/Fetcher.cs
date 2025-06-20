@@ -23,6 +23,10 @@ public class Fetcher
     private GeneralDataBase _generalDB;
     private BackUpDataBase _backupDB;
     private Collection<Deal> _deals;
+    public Collection<Deal> Deals
+    {
+        get => _deals;
+    }
 
     public User UserData { get; set; }
     public List<Article> Bookmarks { get; private set; }
