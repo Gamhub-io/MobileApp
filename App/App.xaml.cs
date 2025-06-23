@@ -1,10 +1,13 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Extensions;
+using CommunityToolkit.Maui.Views;
 using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using GamHubApp.Views.PopUps;
+using Microsoft.Maui.Controls.Shapes;
 using Newtonsoft.Json;
 using Plugin.FirebasePushNotifications;
 using System.Collections.ObjectModel;
@@ -67,7 +70,10 @@ public partial class App : Application
            return;
        IsLoading = true;
 
-       OpenPopUp (this.LoadingIndicator = new LoadingPopUp(), rootPage);
+       OpenPopUp (this.LoadingIndicator = new LoadingPopUp(), rootPage, new PopupOptions
+       {
+           CanBeDismissedByTappingOutsideOfPopup = false,
+       });
 
     }
 
@@ -80,12 +86,12 @@ public partial class App : Application
            return;
 
 
-       IsLoading = false;
        
        // Close the popup
-        MainThread.BeginInvokeOnMainThread(() =>
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-           this.LoadingIndicator.Close();
+           await this.LoadingIndicator.CloseAsync();
+           IsLoading = false;
         });
     }
 
@@ -200,19 +206,26 @@ public partial class App : Application
      /// </summary>
      /// <param name="popUp">pop up to open</param>
      /// <param name="page">parent page</param>
-     public void OpenPopUp(Popup popUp, Page page = null)
+     public void OpenPopUp(Popup popUp, Page page = null, PopupOptions options = null)
      {
          try
          {
-
+            
              if (popUp == null)
                  return;
+
+            options ??= new PopupOptions();
+            options.Shape = new RoundRectangle
+            {
+                CornerRadius = new CornerRadius(25),
+                Stroke = Colors.Transparent
+            };
 
              if (page == null)
                  page = GetCurrentPage();
              if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp!.Id))
                  return;
-         MainThread.BeginInvokeOnMainThread(() => page.ShowPopup(popUp));
+             MainThread.BeginInvokeOnMainThread(() => page.ShowPopup(popUp, options));
         }
 #if DEBUG
             catch (Exception ex)
@@ -311,7 +324,7 @@ public partial class App : Application
             await Task.Delay(10);
 
         // in any case close the pop up after receiving a response
-        popUp.Close();
+        await popUp.CloseAsync();
 
         return popUp.ResponseResult ?? false;
     }
