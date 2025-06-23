@@ -52,7 +52,7 @@
 	</ItemGroup>
 	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' And '$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 	  <ProvisioningType>manual</ProvisioningType>
-	  <CodesignKey>Apple Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>		
+	  <CodesignKey>iPhone Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>		
 	<UseInterpreter>true</UseInterpreter>
 		<MtouchLink>SdkOnly</MtouchLink>
 		<UseInterpreter>true</UseInterpreter>

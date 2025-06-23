@@ -59,7 +59,7 @@
                             VerticalOptions="Start"
                             HeightRequest="50"
                             WidthRequest="100"
-                            BackgroundColor="{StaticResource FontColor}">
+                            BackgroundColor="White">
                         <Image Source="{Binding Partner.Logo}"
                                HorizontalOptions="Fill"
                                VerticalOptions="Fill"/>
