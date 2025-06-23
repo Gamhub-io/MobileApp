@@ -4,24 +4,21 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="GamHubApp.Views.PopUps.LoadingPopUp"
-    CanBeDismissedByTappingOutsideOfPopup="False"
-    Color="Transparent">
-    <Border HeightRequest="150"
-            WidthRequest="140"
-            x:Name="popUpFrame"
-            StrokeShape =" RoundRectangle 25"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center"
-            Padding="0"
-            BackgroundColor="{StaticResource LightDark}">
-        <Grid RowDefinitions="*,*">
-            <ActivityIndicator Color="{OnPlatform iOS={StaticResource PrimaryAccent}, Android={StaticResource Primary}}"
+    BackgroundColor="{StaticResource LightDark}"
+    HeightRequest="90"
+    WidthRequest="80"
+    Padding="0"
+    IsClippedToBounds="True"
+    >
+    <Grid RowDefinitions="*,*"
+              Margin="0">
+        <ActivityIndicator Color="{OnPlatform iOS={StaticResource PrimaryAccent}, Android={StaticResource Primary}}"
                                IsRunning="True"
                                Grid.Row="0"
                                VerticalOptions="End"
                                Scale="{OnPlatform iOS='2'}"
                                x:Name="indicatorIcon"/>
-            <Label Grid.Row="1"
+        <Label Grid.Row="1"
                    Text="Loading"
                    x:Name="lblLoading"
                    FontSize="18"
@@ -29,6 +26,5 @@
                    HorizontalTextAlignment="Center"
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-SemiBold"/>
-        </Grid>
-    </Border>
+    </Grid>
 </toolkit:Popup>
