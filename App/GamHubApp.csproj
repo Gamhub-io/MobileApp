@@ -109,8 +109,8 @@
 	  <MauiImage Include="Platforms\Android\Resources\drawable\notification_icon.png" />
 	</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui" Version="10.0.0" />
-    <PackageReference Include="CommunityToolkit.Maui.Core" Version="10.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="12.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="12.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Custard" Version="0.3.7" />
     <PackageReference Include="Plugin.FirebasePushNotifications" Version="3.0.28" />
