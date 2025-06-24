@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:popups="clr-namespace:GamHubApp.ViewModels.PopUps"
+    xmlns:models="clr-namespace:GamHubApp.Models"
+    x:DataType="popups:DealsViewModel"
+    x:Class="GamHubApp.Views.DealFilterPopUp"
+    Color="Transparent">
+    <Border
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"
+           HeightRequest="570"
+           WidthRequest="360"
+           StrokeShape="RoundRectangle 20"
+           BackgroundColor="{DynamicResource LightDark}"
+           Padding="5">
+
+        <Grid RowSpacing="20"
+              RowDefinitions="30,20,*, 45">
+            <Label Text="Deal Filters"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   FontSize="25"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"
+                   Grid.Row="0"/>
+            <Label Text="Platforms:"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Start"
+                   FontSize="18"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"
+                   Grid.Row="1"
+                   Margin="5,0"/>
+            <CollectionView ItemsSource="{Binding Platforms}"
+                            Grid.Row="2">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:GamePlatform">
+                        <Grid 
+                            ColumnDefinitions="50,*,50"
+                            Padding="10,5">
+                            <Image Grid.Column="0"
+                                   Source="{Binding Logo}"
+                                   WidthRequest="40"/>
+                            <Label Text="{Binding DRM}"
+                                   FontFamily="P-Regular"
+                                   VerticalOptions="Center"
+                                   FontSize="20"
+                                   Margin="5,0"
+                                   Grid.Column="1"
+                                   TextColor="{StaticResource FontColor}"/>
+                            <Switch OnColor="{StaticResource PrimaryAccent}"
+                                    ThumbColor="{StaticResource Primary}"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center"
+                                    WidthRequest="80"
+                                    Grid.Column="1"
+                                    IsToggled="{Binding IsSelected}"
+                                    Background="Transparent">
+                                <Switch.Triggers>
+                                    <DataTrigger TargetType="Switch"
+                                                 Binding="{Binding DealViewSett}"
+                                                 Value="false">
+                                        <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
+                                    </DataTrigger>
+                                </Switch.Triggers>
+                            </Switch>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Grid Margin="10,0"
+                Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Text="Cancel"
+                        BackgroundColor="{StaticResource LightDark}"
+                        TextColor="{StaticResource Primary}"
+                        FontFamily="P-Bold"
+                        HeightRequest="40"
+                        WidthRequest="130"
+                        FontSize="15"
+                        Padding="1"
+                        Command="{Binding CancelFilter}"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Column="0"/>
+                <Button Text="Save"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="{StaticResource LightDark}"
+                        FontFamily="P-Bold"
+                        FontSize="15"
+                        Padding="1"
+                        HeightRequest="40"
+                        WidthRequest="130"
+                        Command="{Binding SaveFilter}"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Grid.Column="1"/>
+            </Grid>
+        </Grid>
+
+    </Border>
+</toolkit:Popup>
