@@ -26,6 +26,8 @@ public class Deal
     public DateTime Expires { get; set; }
     [JsonProperty("partner"), Ignore]
     public Partner Partner { get; set; }
+    [JsonProperty("drm"), Ignore]
+    public string DRM { get; set; }
     public Command Navigate
     {
         get 
