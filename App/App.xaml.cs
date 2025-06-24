@@ -323,4 +323,8 @@ public partial class App : Application
         return popUp.ResponseResult ?? false;
     }
 
+    internal void OpenPopUp(object value)
+    {
+        throw new NotImplementedException();
+    }
 }
