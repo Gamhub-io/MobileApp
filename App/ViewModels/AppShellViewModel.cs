@@ -305,6 +305,10 @@ public class AppShellViewModel : BaseViewModel
                 }); 
 
             }
+            Task.Run(async () =>
+            {
+                await UpdateDeals();
+            });
 
         }
         catch (Exception ex)
