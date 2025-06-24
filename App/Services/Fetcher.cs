@@ -81,6 +81,7 @@ public class Fetcher
         }
 #endif
     }
+
     /// <summary>
     /// Get all the sources
     /// </summary>
@@ -94,6 +95,20 @@ public class Fetcher
                                                         action: "getAll",
                                                         unSuccessCallback: e => _ = HandleHttpException(e));
     }
+
+    /// <summary>
+    /// Get all the DRMs for deals
+    /// </summary>
+    /// <returns>DRMs</returns>
+    public async Task<List<GamePlatform>> GetDRMs()
+    {
+        if (!CheckFeasability())
+            return null;
+        return (await WebService.Get<DrmResponse>(controller: "deals", 
+                                                 action: "platforms",
+                                                 unSuccessCallback: e => _ = HandleHttpException(e)))?.Data;
+    }
+
     /// <summary>
     /// Get the feed of an article
     /// </summary>
