@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.ApplicationModel;
+using CommunityToolkit.Maui.Views;
 using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Services;
@@ -131,6 +132,9 @@ public partial class App : Application
                 new NotificationAction("open_in_browser", "Open in the browser", NotificationActionType.Foreground),
             })
         });
+
+        // Reset notificaiton badges
+        Badge.Default.SetCount(0);
     }
     protected override Window CreateWindow(IActivationState activationState)
     {
@@ -194,6 +198,9 @@ public partial class App : Application
 
             ((DealsPage)currentPage).Resume();
         }
+
+        // Reset notificaiton badges
+        Badge.Default.SetCount(0);
     }
      /// <summary>
      /// Open any popup
