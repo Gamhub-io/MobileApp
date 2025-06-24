@@ -279,8 +279,8 @@ public class Fetcher
 
             //TODO: update this entire thing once we can just pass filtercode to the API
             if (filterCode == null)
-            return _deals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+                return _deals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                                   unSuccessCallback: e => _ = HandleHttpException(e));
 
             return _deals = [.. (await this.WebService.Get<Collection<Deal>>(controller: "deals",
                                                                         unSuccessCallback: e => _ = HandleHttpException(e)))

@@ -28,7 +28,7 @@ public class DealsViewModel : BaseViewModel
     public Command DealFilterCommand { get; }
     public Command SaveFilter { get; }
     public Command CancelFilter { get; }
-    private string filterCode = string.Empty;
+    private string filterCode = null;
 
     public DealsViewModel()
     {
@@ -66,7 +66,7 @@ public class DealsViewModel : BaseViewModel
 
         Task.Run(async () => {
             Platforms = new((await (App.Current as App).DataFetcher.GetDRMs()).OrderBy(plat => plat.DRM));
-            for (int i = 0; i < _platforms.Count && !string.IsNullOrEmpty(filterCode); i++)
+            for (int i = 0; i < _platforms.Count && filterCode!= null; i++)
             {
                 Platforms[i].IsSelected = filterCode.Split('_').Contains(_platforms[i].Id);
             }
