@@ -66,7 +66,10 @@ public class DealsViewModel : BaseViewModel
 
         Task.Run(async () => {
             Platforms = new((await (App.Current as App).DataFetcher.GetDRMs()).OrderBy(plat => plat.DRM));
-
+            for (int i = 0; i < _platforms.Count && !string.IsNullOrEmpty(filterCode); i++)
+            {
+                Platforms[i].IsSelected = filterCode.Split('_').Contains(_platforms[i].Id);
+            }
         });
     }
     private ObservableCollection<GamePlatform> _platforms;
