@@ -34,5 +34,6 @@ namespace GamHubApp.Core
         public const string OfflineLastRun = "OFFLINE_LAST";
         public const string NewDealCount = "NEW_DEAL_COUNT";
         public const string ReviewAsked = "REVIEW_ASKED";
+        public const string NotificationCount = "NOTIFICATION_COUNT";
     }
 }
