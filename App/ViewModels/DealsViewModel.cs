@@ -47,14 +47,13 @@ public class DealsViewModel : BaseViewModel
             {
                 if (drm.IsSelected)
                 {
-                    filterCode += drm.Id + '|';
+                    filterCode += drm.Id + '_';
                     drmIDs.Add(drm.Id);
                 }
             }
             Preferences.Set(AppConstant.DealFilterCode, filterCode = filterCode.TrimEnd());
-            var s = filterCode.Split('|');
 
-            Deals = new (_deals.Where(deal => filterCode.Split('|').Contains(deal.DRM)));
+            Deals = new (_deals.Where(deal => filterCode.Split('_').Contains(deal.DRM)));
 
 
             await _lastFilterPopUp?.CloseAsync();

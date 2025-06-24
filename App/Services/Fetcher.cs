@@ -275,8 +275,16 @@ public class Fetcher
             return null;
         try
         {
+            string filterCode = Preferences.Get(AppConstant.DealFilterCode, null);
+
+            //TODO: update this entire thing once we can just pass filtercode to the API
+            if (filterCode == null)
             return _deals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
+
+            return _deals = [.. (await this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                                        unSuccessCallback: e => _ = HandleHttpException(e)))
+                                                                        .Where((deal => filterCode.Split('_').Contains(deal.DRM))).ToList()];
         }
 
         catch (Exception ex)
