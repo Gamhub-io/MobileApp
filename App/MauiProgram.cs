@@ -116,6 +116,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<DealsPage>();
         mauiAppBuilder.Services.AddSingleton<DeleteFeedPopUp>();
         mauiAppBuilder.Services.AddSingleton<RenameFeedPopUp>();
+        mauiAppBuilder.Services.AddSingleton<DealFilterPopUp>();
         mauiAppBuilder.Services.AddSingleton<SettingsPage>();
         return mauiAppBuilder;
     }
