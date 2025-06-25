@@ -57,7 +57,7 @@
                                     HorizontalOptions="End"
                                     VerticalOptions="Center"
                                     WidthRequest="80"
-                                    Grid.Column="1"
+                                    Grid.Column="2"
                                     IsToggled="{Binding IsSelected}"
                                     Background="Transparent">
                                 <Switch.Triggers>
