@@ -332,7 +332,7 @@ its community's skills, knowledges and opinions.  "
                                          HeightRequest="108"
                                          CornerRadius="15"
                                          Margin="0,20"
-                                         BackgroundColor="{StaticResource FontColor}"/>
+                                         BackgroundColor="White"/>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
             </StackLayout>

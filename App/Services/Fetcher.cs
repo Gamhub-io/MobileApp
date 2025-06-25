@@ -81,6 +81,7 @@ public class Fetcher
         }
 #endif
     }
+
     /// <summary>
     /// Get all the sources
     /// </summary>
@@ -94,6 +95,20 @@ public class Fetcher
                                                         action: "getAll",
                                                         unSuccessCallback: e => _ = HandleHttpException(e));
     }
+
+    /// <summary>
+    /// Get all the DRMs for deals
+    /// </summary>
+    /// <returns>DRMs</returns>
+    public async Task<List<GamePlatform>> GetDRMs()
+    {
+        if (!CheckFeasability())
+            return null;
+        return (await WebService.Get<DrmResponse>(controller: "deals", 
+                                                 action: "platforms",
+                                                 unSuccessCallback: e => _ = HandleHttpException(e)))?.Data;
+    }
+
     /// <summary>
     /// Get the feed of an article
     /// </summary>
@@ -260,8 +275,16 @@ public class Fetcher
             return null;
         try
         {
-            return _deals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+            string filterCode = Preferences.Get(AppConstant.DealFilterCode, null);
+
+            //TODO: update this entire thing once we can just pass filtercode to the API
+            if (filterCode == null)
+                return _deals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                                   unSuccessCallback: e => _ = HandleHttpException(e));
+
+            return _deals = [.. (await this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                                        unSuccessCallback: e => _ = HandleHttpException(e)))
+                                                                        .Where((deal => filterCode.Split('_').Contains(deal.DRM))).ToList()];
         }
 
         catch (Exception ex)

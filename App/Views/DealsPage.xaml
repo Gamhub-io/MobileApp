@@ -8,7 +8,7 @@
              x:DataType="viewmodels:DealsViewModel"
              xmlns:stroked="https://vapolia.eu/Vapolia.StrokedLabel">
     <Shell.TitleView>
-        <Grid ColumnDefinitions="4*,*">
+        <Grid ColumnDefinitions="4*,60,2">
             <Label Text="My Deals"
                    VerticalOptions="Center"
                    HorizontalOptions="Center"
@@ -16,6 +16,15 @@
                    TextColor="{StaticResource FontColor}"
                    FontFamily="P-Bold"
                    Grid.Column="0"/>
+            <Button Text="&#xf160;"
+                   VerticalOptions="Center"
+                   HorizontalOptions="End"
+                   FontSize="25"
+                   TextColor="{StaticResource FontColor}"
+                    BackgroundColor="{DynamicResource LightDark}"
+                    Command="{Binding DealFilterCommand}"
+                   FontFamily="FaSolid"
+                   Grid.Column="1"/>
         </Grid>
     </Shell.TitleView>
     <ContentPage.Background>
@@ -59,7 +68,7 @@
                             VerticalOptions="Start"
                             HeightRequest="50"
                             WidthRequest="100"
-                            BackgroundColor="{StaticResource FontColor}">
+                            BackgroundColor="White">
                         <Image Source="{Binding Partner.Logo}"
                                HorizontalOptions="Fill"
                                VerticalOptions="Fill"/>

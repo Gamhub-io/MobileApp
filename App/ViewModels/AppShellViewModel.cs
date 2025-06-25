@@ -245,8 +245,11 @@ public class AppShellViewModel : BaseViewModel
     {
         if (e.Data == null)
             return;
-
-        Badge.Default.SetCount((uint)e.Data.Count);
+        
+        // Update notification count
+        int count = (Preferences.Get(AppConstant.NotificationCount, 0))+1;
+        Preferences.Set(AppConstant.NotificationCount, count);
+        Badge.Default.SetCount((uint)count);
     }
 
     private void OnNotificationAction(object sender, FirebasePushNotificationActionEventArgs e)
@@ -274,6 +277,11 @@ public class AppShellViewModel : BaseViewModel
 
 
         }
+        int count = (Preferences.Get(AppConstant.NotificationCount, 1))-1;
+        if (count < 0)
+            count = 0;
+        Preferences.Set(AppConstant.NotificationCount, count);
+        Badge.Default.SetCount((uint)count);
     }
 
 
@@ -305,6 +313,17 @@ public class AppShellViewModel : BaseViewModel
                 }); 
 
             }
+            Task.Run(async () =>
+            {
+                await UpdateDeals();
+            });
+
+            // Update notification count
+            int count = (Preferences.Get(AppConstant.NotificationCount, 1)) - 1;
+            if (count < 0)
+                count = 0;
+            Preferences.Set(AppConstant.NotificationCount, count);
+            Badge.Default.SetCount((uint)count);
 
         }
         catch (Exception ex)
