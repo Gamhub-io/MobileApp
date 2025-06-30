@@ -2,6 +2,7 @@
 using GamHubApp.Helpers.Tools;
 using GamHubApp.Models;
 using GamHubApp.Services;
+using GamHubApp.Services.ChangedMessages;
 using GamHubApp.Views;
 using MvvmHelpers;
 using System.Collections.ObjectModel;
@@ -17,7 +18,6 @@ public class NewsViewModel : BaseViewModel
     private const int _refreshInterval = 24;
     private string _prevSearch;
     private string _lastCallDateTime;
-    private static object collisionLock = new();
     private bool _isSearching;
     public bool IsSearching
     {
@@ -310,11 +310,11 @@ public class NewsViewModel : BaseViewModel
 
             _ = Task.Run( () =>
             {
-                // Scroll up
-                WeakReferenceMessenger.Default.Send(this);
-
                 // Add the unnoticed articles
                 UpdateArticles(UnnoticedArticles);
+
+                // Scroll up
+                WeakReferenceMessenger.Default.Send(new ScrollMainPageChangedMessage(this));
 
                 UnnoticedArticles.Clear();
 
