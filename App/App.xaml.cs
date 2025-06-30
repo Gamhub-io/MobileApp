@@ -1,4 +1,3 @@
-﻿
 using CommunityToolkit.Maui.ApplicationModel;
 using CommunityToolkit.Maui.Views;
 using GamHubApp.Core;
