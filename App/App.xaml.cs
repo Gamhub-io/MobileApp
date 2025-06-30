@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.ApplicationModel;
+﻿
+using CommunityToolkit.Maui.ApplicationModel;
 using CommunityToolkit.Maui.Views;
 using GamHubApp.Core;
 using GamHubApp.Models;
@@ -13,6 +14,10 @@ using System.Collections.ObjectModel;
 
 #if DEBUG
 using System.Diagnostics;
+#endif
+#if ANDROID
+using static Android.Provider.Settings;
+using Android.Content;
 #endif
 
 namespace GamHubApp;
@@ -32,6 +37,7 @@ public partial class App : Application
     public User SaveInfo { get; private set; }
     public Collection<Partner> Partners { get; private set; }
     public Collection<Deal> Deals { get; private set; }
+    public string InstanceID { get; set; }
     /// <summary>
     /// Date first registered to determin when is the best time to ask for user review
     /// </summary>
@@ -52,10 +58,16 @@ public partial class App : Application
         _generalDb = generalDataBase;
         _backupDb = backUpDataBase;
 
-       DataFetcher = fetc;
-       Shell = shell;
+        DataFetcher = fetc;
+        Shell = shell;
 
-       InitializeComponent();
+#if ANDROID
+        SetupInstance();
+#elif IOS
+        SetupInstance().GetAwaiter();
+#endif
+
+        InitializeComponent();
     }
 
     /// <summary>
@@ -243,6 +255,33 @@ public partial class App : Application
         return mainPage;
     }
 
+#if ANDROID
+    private void SetupInstance()
+#elif IOS
+    private async Task SetupInstance()
+#endif
+    {
+
+#if IOS
+        SecureStorage.Remove(AppConstant.InstanceIdKey);
+        string instanceID = await SecureStorage.GetAsync(AppConstant.InstanceIdKey);
+        if (string.IsNullOrEmpty(instanceID))
+        {
+            await SecureStorage.SetAsync(AppConstant.InstanceIdKey, instanceID = Guid.NewGuid().ToString().ToLower().Replace("-", string.Empty));
+
+        }
+#endif
+
+        InstanceID =
+#if ANDROID
+            Secure.GetString(Android.App.Application.Context.ContentResolver, Secure.AndroidId);
+#elif IOS
+            instanceID;
+#endif
+#if DEBUG
+        Debug.WriteLine($"Instance: {InstanceID}");
+#endif
+    }
     /// <summary>
     /// Load all the partners
     /// </summary>
