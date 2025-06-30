@@ -158,6 +158,6 @@ public partial class NewsPage : ContentPage
     /// </summary>
     public void RemoveRefreshButton()
     {
-        refreshButton.TranslateTo(refreshButton.X, rButtonYStart);
+        refreshButton.TranslateTo(refreshButton.X, 0);
     }
 }
