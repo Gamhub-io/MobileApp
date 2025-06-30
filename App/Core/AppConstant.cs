@@ -26,6 +26,7 @@ namespace GamHubApp.Core
 
         // secure storage - keys
         public const string NotificationToken = "NOTIFICATION_TOKEN";
+        public const string InstanceIdKey = "INSTANCE_ID";
 
         // Settings - preferences
         public const string DealArticleEnable = "DEAL_ARTICLE_ENABLE";
