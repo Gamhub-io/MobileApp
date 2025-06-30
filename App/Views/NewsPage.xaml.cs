@@ -20,7 +20,6 @@ public partial class NewsPage : ContentPage
 
         BindingContext = _vm = vm;
 
-        refreshButtonYPos = refreshButton.Y;
         refreshButton.TranslationY = rButtonYStart;
 
         WeakReferenceMessenger.Default.Register<UnnoticedArticlesChangedMessage>(this, (r, m) =>
