@@ -306,8 +306,6 @@ public class NewsViewModel : BaseViewModel
             if (UnnoticedArticles.Count <= 0)
                 return;
 
-            CurrentApp.ShowLoadingIndicator();
-
             _ = Task.Run( () =>
             {
                 // Add the unnoticed articles
@@ -318,7 +316,7 @@ public class NewsViewModel : BaseViewModel
 
                 UnnoticedArticles.Clear();
 
-            }).ContinueWith(res => CurrentApp.RemoveLoadingIndicator());
+            });
 
         });
 

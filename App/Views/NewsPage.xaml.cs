@@ -12,6 +12,7 @@ public partial class NewsPage : ContentPage
     private NewsViewModel _vm;
     private const int rButtonYStart = -10;
     private const int _searchbarEndingWidth = 270;
+    private double refreshButtonYPos;
     
     public NewsPage(NewsViewModel vm)
     {
@@ -150,7 +151,7 @@ public partial class NewsPage : ContentPage
     /// </summary>
     public void ShowRefreshButton()
     {
-        refreshButton.TranslateTo(refreshButton.X, 0, easing: Easing.BounceIn);
+        refreshButton.TranslateTo(0, refreshButtonYPos, easing: Easing.BounceOut);
     }
 
     /// <summary>
@@ -158,6 +159,6 @@ public partial class NewsPage : ContentPage
     /// </summary>
     public void RemoveRefreshButton()
     {
-        refreshButton.TranslateTo(refreshButton.X, rButtonYStart);
+        refreshButton.TranslateTo(0, refreshButtonYPos);
     }
 }
