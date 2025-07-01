@@ -44,6 +44,23 @@ public class Deal
                 });
         }
     }
+    [Ignore]
+    public Command ShareDeal
+    {
+        get
+        {
+            return new Command(() =>
+            {
+                _ = Share.RequestAsync(new ShareTextRequest
+                {
+                    Uri = Url,
+                    Title = "Share this deal with a friend",
+                    Subject = Title,
+                    Text = $"Check this out! {Title} is {(Discount.Contains('%') ? $" at {Discount} OFF" : Discount) } on {Partner.Name}"
+                });
+            }); ;
+        }
+    }
     [JsonIgnore, Ignore]
     public bool EpirationDisplayed { get => (Expires - DateTime.Now).TotalDays < 30; }
 }
