@@ -27,6 +27,7 @@ public class Fetcher
     {
         get => _deals;
     }
+  
     private Collection<Deal> _allDeals;
     public Collection<Deal> AllDeals
     {

@@ -72,6 +72,7 @@ public class DealsViewModel : BaseViewModel
             }
         });
     }
+    
     private DealFilterPopUp _lastFilterPopUp;
     private ObservableCollection<GamePlatform> _platforms;
 

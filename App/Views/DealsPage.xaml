@@ -109,6 +109,7 @@
                         </Border>
 
                     </Grid>
+
                     <Border Grid.Row="0"
                             IsVisible="{Binding EpirationDisplayed}"
                             StrokeShape="RoundRectangle 10"
