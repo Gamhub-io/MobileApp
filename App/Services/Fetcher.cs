@@ -27,6 +27,12 @@ public class Fetcher
     {
         get => _deals;
     }
+  
+    private Collection<Deal> _allDeals;
+    public Collection<Deal> AllDeals
+    {
+        get => _allDeals;
+    }
 
     public User UserData { get; set; }
     public List<Article> Bookmarks { get; private set; }
@@ -277,14 +283,13 @@ public class Fetcher
         {
             string filterCode = Preferences.Get(AppConstant.DealFilterCode, null);
 
+            _allDeals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                                           unSuccessCallback: e => _ = HandleHttpException(e));
             //TODO: update this entire thing once we can just pass filtercode to the API
             if (filterCode == null)
-                return _deals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
-                                                                   unSuccessCallback: e => _ = HandleHttpException(e));
+                return _deals = _allDeals;
 
-            return _deals = [.. (await this.WebService.Get<Collection<Deal>>(controller: "deals",
-                                                                        unSuccessCallback: e => _ = HandleHttpException(e)))
-                                                                        .Where((deal => filterCode.Split('_').Contains(deal.DRM))).ToList()];
+            return _deals = [.. _allDeals.Where((deal => filterCode.Split('_').Contains(deal.DRM))).ToList()];
         }
 
         catch (Exception ex)

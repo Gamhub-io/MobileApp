@@ -36,12 +36,29 @@ public class Deal
                 {
                     await Browser.OpenAsync(Url, new BrowserLaunchOptions
                     {
-                        LaunchMode = BrowserLaunchMode.External,
+                        LaunchMode = BrowserLaunchMode.SystemPreferred,
                         TitleMode = BrowserTitleMode.Default,
                     });
                     if (Preferences.Get(AppConstant.DealReminderEnabled, true) && (Expires - DateTime.UtcNow).TotalHours > 5)
                         await (App.Current as App).DataFetcher.SetDealReminder(this);
                 });
+        }
+    }
+    [Ignore]
+    public Command ShareDeal
+    {
+        get
+        {
+            return new Command(() =>
+            {
+                _ = Share.RequestAsync(new ShareTextRequest
+                {
+                    Uri = Url,
+                    Title = "Share this deal with a friend",
+                    Subject = Title,
+                    Text = $"Check this out! {Title} is {(Discount.Contains('%') ? $" at {Discount} OFF" : Discount) } on {Partner.Name}"
+                });
+            }); ;
         }
     }
     [JsonIgnore, Ignore]

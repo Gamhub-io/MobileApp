@@ -53,7 +53,7 @@ public class DealsViewModel : BaseViewModel
             }
             Preferences.Set(AppConstant.DealFilterCode, filterCode = filterCode.TrimEnd());
 
-            Deals = new (_deals.Where(deal => filterCode.Split('_').Contains(deal.DRM)));
+            Deals = new (CurrentApp.DataFetcher.AllDeals.Where(deal => filterCode.Split('_').Contains(deal.DRM)).OrderBy(d => d.Expires));
 
 
             await _lastFilterPopUp?.CloseAsync();
@@ -72,8 +72,9 @@ public class DealsViewModel : BaseViewModel
             }
         });
     }
-    private ObservableCollection<GamePlatform> _platforms;
+    
     private DealFilterPopUp _lastFilterPopUp;
+    private ObservableCollection<GamePlatform> _platforms;
 
     public ObservableCollection<GamePlatform> Platforms
     {

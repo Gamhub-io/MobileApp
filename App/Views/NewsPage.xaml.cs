@@ -13,13 +13,13 @@ public partial class NewsPage : ContentPage
     private const int rButtonYStart = -10;
     private const int _searchbarEndingWidth = 270;
     private double refreshButtonYPos;
+    
     public NewsPage(NewsViewModel vm)
     {
         InitializeComponent();
 
         BindingContext = _vm = vm;
 
-        refreshButtonYPos = refreshButton.Y;
         refreshButton.TranslationY = rButtonYStart;
 
         WeakReferenceMessenger.Default.Register<UnnoticedArticlesChangedMessage>(this, (r, m) =>
@@ -151,7 +151,7 @@ public partial class NewsPage : ContentPage
     /// </summary>
     public void ShowRefreshButton()
     {
-        refreshButton.TranslateTo(refreshButton.X, refreshButtonYPos, easing: Easing.BounceOut);
+        refreshButton.TranslateTo(0, refreshButtonYPos, easing: Easing.BounceOut);
     }
 
     /// <summary>
@@ -159,6 +159,6 @@ public partial class NewsPage : ContentPage
     /// </summary>
     public void RemoveRefreshButton()
     {
-        refreshButton.TranslateTo(refreshButton.X, rButtonYStart);
+        refreshButton.TranslateTo(0, refreshButtonYPos);
     }
 }

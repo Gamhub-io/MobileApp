@@ -309,7 +309,11 @@ public class AppShellViewModel : BaseViewModel
                     catch 
                     {}
 
-                    await Browser.OpenAsync(e.Data["url"].ToString());
+                    await Browser.OpenAsync(e.Data["url"].ToString(), new BrowserLaunchOptions
+                    {
+                        LaunchMode = BrowserLaunchMode.SystemPreferred,
+                        TitleMode = BrowserTitleMode.Default,
+                    });
                 }); 
 
             }
