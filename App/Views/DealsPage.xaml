@@ -119,7 +119,8 @@
                             StrokeThickness="1"
                             Stroke="{Binding Expires, Converter={StaticResource TimeUntilColourConverter}}"
                             Margin="2,5"
-                            Padding="5,2">
+                            Padding="5,2"
+                            x:Name="timestampCard">
                         <Label TextColor="{StaticResource FontColor}"
                                VerticalTextAlignment="Center">
                             <Label.FormattedText>
@@ -131,6 +132,12 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
+                        <Border.Behaviors>
+                            <mct:TouchBehavior Command="{Binding Navigate}"
+                                                BindingContext="{Binding BindingContext, 
+                                                                         Source={x:Reference timestampCard},
+                                                                         x:DataType=Border}"/>
+                        </Border.Behaviors>
                     </Border>
                     <Label Grid.Row="1"
                            HorizontalOptions="Center"
@@ -138,8 +145,16 @@
                            Text="{Binding Title}"
                            TextColor="{StaticResource FontColor}"
                            FontFamily="P-Bold"
+                           x:Name="label"
                            FontSize="20"
-                           />
+                           >
+                        <Label.Behaviors>
+                            <mct:TouchBehavior Command="{Binding Navigate}"
+                                                BindingContext="{Binding BindingContext, 
+                                                                         Source={x:Reference label},
+                                                                         x:DataType=Label}"/>
+                        </Label.Behaviors>
+                    </Label>
                     <Border Grid.Row="0"
                             StrokeShape="RoundRectangle 0,20,8,0"
                             HorizontalOptions="Start"
