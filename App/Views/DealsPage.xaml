@@ -49,32 +49,34 @@
                 <Grid RowDefinitions="220,50"
                       x:Name="DealBlock"
                       Padding="10">
-                    <Grid.Behaviors>
-                        <mct:TouchBehavior Command="{Binding Navigate}"
-                                           BindingContext="{Binding BindingContext, 
-                                                                    Source={x:Reference DealBlock},
-                                                                    x:DataType=Grid}"/>
-                    </Grid.Behaviors>
                     <Border Grid.Row="0"
-                            StrokeShape="RoundRectangle 8">
+                            StrokeShape="RoundRectangle 8"
+                            x:Name="thumbnail">
                         <Image Source="{Binding Image}"
                                HorizontalOptions="Fill"
                                VerticalOptions="Fill"
                                Aspect="Fill"/>
+
+                        <Border.Behaviors>
+                            <mct:TouchBehavior Command="{Binding Navigate}"
+                                           BindingContext="{Binding BindingContext, 
+                                                                    Source={x:Reference thumbnail},
+                                                                    x:DataType=Border}"/>
+                        </Border.Behaviors>
                     </Border>
                     <Grid Grid.Row="0"
                           RowDefinitions="50,*">
-                    <Border Grid.Row="0"
+                        <Border Grid.Row="0"
                                 StrokeShape="RoundRectangle 0,8,20,0"
-                            HorizontalOptions="End"
-                            VerticalOptions="Start"
-                            HeightRequest="50"
-                            WidthRequest="100"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                HeightRequest="50"
+                                WidthRequest="100"
                                 x:Name="partner"
-                            BackgroundColor="White">
-                        <Image Source="{Binding Partner.Logo}"
-                               HorizontalOptions="Fill"
-                               VerticalOptions="Fill"/>
+                                BackgroundColor="White">
+                            <Image Source="{Binding Partner.Logo}"
+                                   HorizontalOptions="Fill"
+                                   VerticalOptions="Fill"/>
 
                             <Border.Behaviors>
                                 <mct:TouchBehavior Command="{Binding Navigate}"
@@ -104,7 +106,7 @@
                                    TextColor="{StaticResource Primary }"
                                    Text="&#xf14d;"
                                />
-                    </Border>
+                        </Border>
 
                     </Grid>
                     <Border Grid.Row="0"
@@ -139,13 +141,21 @@
                            FontSize="20"
                            />
                     <Border Grid.Row="0"
-                            StrokeShape="RoundRectangle 0,8,8,0"
+                            StrokeShape="RoundRectangle 0,20,8,0"
                             HorizontalOptions="Start"
                             VerticalOptions="End"
                             HeightRequest="40"
                             WidthRequest="100"
+                            x:Name="discountCard"
                             IsVisible="{Binding Discount, Converter={StaticResource NotNullOrEmptyStringConverter}}"
                             BackgroundColor="{StaticResource DiscountColor}">
+
+                        <Border.Behaviors>
+                            <mct:TouchBehavior Command="{Binding Navigate}"
+                                           BindingContext="{Binding BindingContext, 
+                                                                    Source={x:Reference discountCard},
+                                                                    x:DataType=Border}"/>
+                        </Border.Behaviors>
                         <Label 
                                Text="{Binding Discount}"
                                TextColor="{StaticResource FontColor}"
