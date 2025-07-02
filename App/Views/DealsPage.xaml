@@ -6,7 +6,8 @@
              xmlns:models="clr-namespace:GamHubApp.Models"
              xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
              x:DataType="viewmodels:DealsViewModel"
-             xmlns:stroked="https://vapolia.eu/Vapolia.StrokedLabel">
+             xmlns:stroked="https://vapolia.eu/Vapolia.StrokedLabel"
+             x:Name="page">
     <Shell.TitleView>
         <Grid ColumnDefinitions="4*,60,2">
             <Label Text="My Deals"
@@ -56,59 +57,7 @@
                                HorizontalOptions="Fill"
                                VerticalOptions="Fill"
                                Aspect="Fill"/>
-
-                        <Border.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Navigate}"
-                                           BindingContext="{Binding BindingContext, 
-                                                                    Source={x:Reference thumbnail},
-                                                                    x:DataType=Border}"/>
-                        </Border.Behaviors>
                     </Border>
-                    <Grid Grid.Row="0"
-                          RowDefinitions="50,*">
-                        <Border Grid.Row="0"
-                                StrokeShape="RoundRectangle 0,8,20,0"
-                                HorizontalOptions="End"
-                                VerticalOptions="Start"
-                                HeightRequest="50"
-                                WidthRequest="100"
-                                x:Name="partner"
-                                BackgroundColor="White">
-                            <Image Source="{Binding Partner.Logo}"
-                                   HorizontalOptions="Fill"
-                                   VerticalOptions="Fill"/>
-
-                            <Border.Behaviors>
-                                <mct:TouchBehavior Command="{Binding Navigate}"
-                                           BindingContext="{Binding BindingContext, 
-                                                                    Source={x:Reference partner},
-                                                                    x:DataType=Border}"/>
-                            </Border.Behaviors>
-                        </Border>
-                        <!-- Share button-->
-                        <Border Grid.Row="1"
-                                Style="{StaticResource ButtonBorder}" 
-                                WidthRequest="60"
-                                StrokeShape="RoundRectangle 20,0,0,8"
-                                VerticalOptions="End"
-                                HorizontalOptions="End"
-                                Margin="0"
-                                x:Name="share"
-                                BackgroundColor="{StaticResource BackgroundColor}"
-                                >
-                            <Border.Behaviors>
-                                <mct:TouchBehavior Command="{Binding ShareDeal}"
-                                                   BindingContext="{Binding BindingContext, 
-                                                                     Source={x:Reference share}, 
-                                                                     x:DataType=Border}"/>
-                            </Border.Behaviors>
-                            <Label Style="{StaticResource LabelButtonStyle}"
-                                   TextColor="{StaticResource Primary }"
-                                   Text="&#xf14d;"
-                               />
-                        </Border>
-
-                    </Grid>
 
                     <Border Grid.Row="0"
                             IsVisible="{Binding EpirationDisplayed}"
@@ -133,12 +82,6 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                        <Border.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Navigate}"
-                                                BindingContext="{Binding BindingContext, 
-                                                                         Source={x:Reference timestampCard},
-                                                                         x:DataType=Border}"/>
-                        </Border.Behaviors>
                     </Border>
                     <Label Grid.Row="1"
                            HorizontalOptions="Center"
@@ -147,13 +90,12 @@
                            TextColor="{StaticResource FontColor}"
                            FontFamily="P-Bold"
                            x:Name="label"
-                           FontSize="20"
-                           >
+                           FontSize="20">
                         <Label.Behaviors>
                             <mct:TouchBehavior Command="{Binding Navigate}"
-                                                BindingContext="{Binding BindingContext, 
-                                                                         Source={x:Reference label},
-                                                                         x:DataType=Label}"/>
+                                               BindingContext="{Binding BindingContext, 
+                                                                        Source={x:Reference label},
+                                                                        x:DataType=Label}"/>
                         </Label.Behaviors>
                     </Label>
                     <Border Grid.Row="0"
@@ -165,13 +107,6 @@
                             x:Name="discountCard"
                             IsVisible="{Binding Discount, Converter={StaticResource NotNullOrEmptyStringConverter}}"
                             BackgroundColor="{StaticResource DiscountColor}">
-
-                        <Border.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Navigate}"
-                                           BindingContext="{Binding BindingContext, 
-                                                                    Source={x:Reference discountCard},
-                                                                    x:DataType=Border}"/>
-                        </Border.Behaviors>
                         <Label 
                                Text="{Binding Discount}"
                                TextColor="{StaticResource FontColor}"
@@ -183,6 +118,48 @@
                                FontSize="20"
                                />
                     </Border>
+                    <Grid Grid.Row="0"
+                          RowDefinitions="50,*">
+                        <Border Grid.Row="0"
+                                StrokeShape="RoundRectangle 0,8,20,0"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                HeightRequest="50"
+                                WidthRequest="100"
+                                x:Name="partner"
+                                BackgroundColor="White">
+                            <Image Source="{Binding Partner.Logo}"
+                                   HorizontalOptions="Fill"
+                                   VerticalOptions="Fill"/>
+                        </Border>
+                        <Button Grid.Row="0"
+                            Grid.RowSpan="2"
+                            BackgroundColor="Transparent"
+                            Command="{Binding Navigate}"/>
+                        
+                        <!-- Share button-->
+                        <Border Grid.Row="1"
+                                Style="{StaticResource ButtonBorder}" 
+                                WidthRequest="60"
+                                StrokeShape="RoundRectangle 20,0,0,8"
+                                VerticalOptions="End"
+                                HorizontalOptions="End"
+                                Margin="0"
+                                x:Name="share"
+                                BackgroundColor="{StaticResource BackgroundColor}">
+                            <Border.Behaviors>
+                                <mct:TouchBehavior Command="{Binding ShareDeal}"
+                                                   BindingContext="{Binding BindingContext, 
+                                                                     Source={x:Reference share}, 
+                                                                     x:DataType=Border}"/>
+                            </Border.Behaviors>
+                            <Label Style="{StaticResource LabelButtonStyle}"
+                                   TextColor="{StaticResource Primary }"
+                                   Text="&#xf14d;"
+                               />
+                        </Border>
+
+                    </Grid>
                 </Grid>
             </DataTemplate>
         </CollectionView.ItemTemplate>
