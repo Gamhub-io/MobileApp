@@ -1,10 +1,7 @@
 ﻿using GamHubApp.Core;
 using GamHubApp.Models;
-using GamHubApp.ViewModels.PopUps;
 using GamHubApp.Views;
-using Microsoft.Maui;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace GamHubApp.ViewModels;
 
