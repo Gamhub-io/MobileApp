@@ -65,51 +65,6 @@
                                                                     x:DataType=Border}"/>
                         </Border.Behaviors>
                     </Border>
-                    <Grid Grid.Row="0"
-                          RowDefinitions="50,*">
-                        <Border Grid.Row="0"
-                                StrokeShape="RoundRectangle 0,8,20,0"
-                                HorizontalOptions="End"
-                                VerticalOptions="Start"
-                                HeightRequest="50"
-                                WidthRequest="100"
-                                x:Name="partner"
-                                BackgroundColor="White">
-                            <Image Source="{Binding Partner.Logo}"
-                                   HorizontalOptions="Fill"
-                                   VerticalOptions="Fill"/>
-
-                            <Border.Behaviors>
-                                <mct:TouchBehavior Command="{Binding Navigate}"
-                                           BindingContext="{Binding BindingContext, 
-                                                                    Source={x:Reference partner},
-                                                                    x:DataType=Border}"/>
-                            </Border.Behaviors>
-                        </Border>
-                        <!-- Share button-->
-                        <Border Grid.Row="1"
-                                Style="{StaticResource ButtonBorder}" 
-                                WidthRequest="60"
-                                StrokeShape="RoundRectangle 20,0,0,8"
-                                VerticalOptions="End"
-                                HorizontalOptions="End"
-                                Margin="0"
-                                x:Name="share"
-                                BackgroundColor="{StaticResource BackgroundColor}"
-                                >
-                            <Border.Behaviors>
-                                <mct:TouchBehavior Command="{Binding ShareDeal}"
-                                                   BindingContext="{Binding BindingContext, 
-                                                                     Source={x:Reference share}, 
-                                                                     x:DataType=Border}"/>
-                            </Border.Behaviors>
-                            <Label Style="{StaticResource LabelButtonStyle}"
-                                   TextColor="{StaticResource Primary }"
-                                   Text="&#xf14d;"
-                               />
-                        </Border>
-
-                    </Grid>
 
                     <Border Grid.Row="0"
                             IsVisible="{Binding EpirationDisplayed}"
