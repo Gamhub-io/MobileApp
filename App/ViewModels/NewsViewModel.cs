@@ -664,7 +664,16 @@ public class NewsViewModel : BaseViewModel
         {
             // Refresh the time displayed when be comeback
             RefreshArticlesTime();
+#if ANDROID
             IsRefreshing = true;
+#elif IOS
+            // NOTE: we can't always set `IsRefreshing` on iOS otherwise it would trigger a scroll upwards
+            // see more: https://github.com/Gamhub-io/MobileApp/issues/330
+            if (_onTopScroll)
+                IsRefreshing = true;
+            else
+                RefreshFeed.Execute(_isSearching);
+#endif
         }
 
 
