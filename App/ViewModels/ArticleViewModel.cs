@@ -192,7 +192,7 @@ public class ArticleViewModel : BaseViewModel
                         deal.Description.ToLower().Contains(article.Categories[i].ToLower()))
                             return true;
                     return false;
-                }).ToList());
+                }).Take(4).ToList());
         }
         catch (Exception ex)
         {
