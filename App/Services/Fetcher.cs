@@ -757,6 +757,7 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
         };
         var paramss = new string[] { article.MongooseId };
 
