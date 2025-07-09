@@ -311,8 +311,7 @@ public class AppShellViewModel : BaseViewModel
 
                     await Browser.OpenAsync(e.Data["url"].ToString(), new BrowserLaunchOptions
                     {
-                        LaunchMode = BrowserLaunchMode.SystemPreferred,
-                        TitleMode = BrowserTitleMode.Default,
+                        LaunchMode = BrowserLaunchMode.External
                     });
                 }); 
 
