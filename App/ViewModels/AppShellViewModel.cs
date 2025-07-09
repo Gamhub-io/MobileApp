@@ -267,7 +267,7 @@ public class AppShellViewModel : BaseViewModel
                 MainThread.BeginInvokeOnMainThread(async () =>
                     await Browser.OpenAsync(e.Data["url"].ToString(), new BrowserLaunchOptions
                     {
-                        LaunchMode = BrowserLaunchMode.SystemPreferred,
+                        LaunchMode = BrowserLaunchMode.External,
                         TitleMode = BrowserTitleMode.Default,
                     }));
                 break;
@@ -311,7 +311,7 @@ public class AppShellViewModel : BaseViewModel
 
                     await Browser.OpenAsync(e.Data["url"].ToString(), new BrowserLaunchOptions
                     {
-                        LaunchMode = BrowserLaunchMode.SystemPreferred,
+                        LaunchMode = BrowserLaunchMode.External,
                         TitleMode = BrowserTitleMode.Default,
                     });
                 }); 
