@@ -36,8 +36,7 @@ public class Deal
                 {
                     await Browser.OpenAsync(Url, new BrowserLaunchOptions
                     {
-                        LaunchMode = BrowserLaunchMode.External,
-                        TitleMode = BrowserTitleMode.Default,
+                        LaunchMode = BrowserLaunchMode.External
                     });
                     if (Preferences.Get(AppConstant.DealReminderEnabled, true) && (Expires - DateTime.UtcNow).TotalHours > 5)
                         await (App.Current as App).DataFetcher.SetDealReminder(this);
