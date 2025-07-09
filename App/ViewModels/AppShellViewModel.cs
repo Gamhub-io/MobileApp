@@ -267,7 +267,8 @@ public class AppShellViewModel : BaseViewModel
                 MainThread.BeginInvokeOnMainThread(async () =>
                     await Browser.OpenAsync(e.Data["url"].ToString(), new BrowserLaunchOptions
                     {
-                        LaunchMode = BrowserLaunchMode.External
+                        LaunchMode = BrowserLaunchMode.SystemPreferred,
+                        TitleMode = BrowserTitleMode.Default,
                     }));
                 break;
             default:
