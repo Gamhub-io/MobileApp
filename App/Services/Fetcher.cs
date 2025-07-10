@@ -663,6 +663,9 @@ public class Fetcher
     /// <param name="newSession"></param>
     public async Task SaveSession (Session newSession)
     {
+        if (newSession != null)
+            return;
+
         // Keep the current session
         CurrentSession = newSession;
 
