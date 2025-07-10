@@ -17,6 +17,7 @@
             <Color x:Key="LightDark" >#404348</Color>
             <Color x:Key="VeryLightDark" >#D8D9DA</Color>
             <Color x:Key="Light" >#8EDCA9</Color>
+            <Color x:Key="UnselectedTabFont" >#7FC698</Color>
             <Color x:Key="FontColor" >#ecebeb</Color>
             <Color x:Key="BgBannerColor" >#262626</Color>
             <Color x:Key="DiscordPurple" >#5d6af2</Color>
