@@ -23,6 +23,10 @@ public class AppShellViewModel : BaseViewModel
             return new Command<string>((address) => _ = Email.ComposeAsync(subject: "", body: "", to: new string[] { address }));
         }
     }
+    public Command TopUpGemsCommand
+    {
+        get;
+    }
 
     public App CurrentApp { get; private set; }
     private Fetcher dataFetcher;
@@ -30,7 +34,7 @@ public class AppShellViewModel : BaseViewModel
     private IFirebasePushNotification _firebasePushNotification;
     private INotificationPermissions _firebasePushPermissions;
     private GeneralDataBase _generalDB;
-
+    private GemTopUpPage _gemTopUpPage;
     public AppShell MainShell { get; }
     private bool _authenticated;
 
@@ -91,13 +95,14 @@ public class AppShellViewModel : BaseViewModel
     ILogger<AppShellViewModel> logger,
     IFirebasePushNotification firebasePushNotification,
     INotificationPermissions firebasePushPermission,
-        GeneralDataBase generalDB)
+        GeneralDataBase generalDB,
+        GemTopUpPage gemTopUpPage)
     {
         CurrentApp = App.Current as App;
         dataFetcher = fetc;
 
         _logger = logger;
-        
+
         _firebasePushNotification = firebasePushNotification;
         _firebasePushPermissions = firebasePushPermission;
         (_generalDB = generalDB).Init().GetAwaiter();
@@ -108,6 +113,8 @@ public class AppShellViewModel : BaseViewModel
             UserProfile = fetc.UserData;
         });
 
+        TopUpGemsCommand = new Command(() => (App.Current as App).Windows[0].Page.Navigation.PushAsync(_gemTopUpPage));
+        _gemTopUpPage = gemTopUpPage;
     }
 
     /// <summary>

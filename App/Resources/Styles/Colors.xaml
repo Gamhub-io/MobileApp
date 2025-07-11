@@ -15,6 +15,7 @@
             <Color x:Key="Dark" >#191414</Color>
             <Color x:Key="DarkSecondary" >#4A4A4A</Color>
             <Color x:Key="LightDark" >#404348</Color>
+            <Color x:Key="LightHeader" >#66686C</Color>
             <Color x:Key="VeryLightDark" >#D8D9DA</Color>
             <Color x:Key="Light" >#8EDCA9</Color>
             <Color x:Key="UnselectedTabFont" >#7FC698</Color>
