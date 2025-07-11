@@ -173,6 +173,9 @@
                                    FontFamily="FaSolid"
                                     HorizontalOptions="Center"
                                    VerticalOptions="Center"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding TopUpGemsCommand}"/>
+                            </Border.GestureRecognizers>
                         </Border>
 
                     </Grid>

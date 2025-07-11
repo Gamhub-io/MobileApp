@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GamHubApp.Views.GemTopUpPage"
+             BackgroundColor="{DynamicResource LightDark}"
+             Shell.TabBarIsVisible="False">
+    <Grid
+        RowDefinitions="*,2*,*">
+        <Label Grid.Column="0"
+                Margin="5"
+                FontSize="30"
+               Text="Need some extra Gems?" 
+               TextColor="{DynamicResource FontColor}"
+               FontFamily="P-Bold"
+                HorizontalOptions="Center"
+               VerticalOptions="End"/>
+        <Border StrokeShape="RoundRectangle 8"
+                Grid.Row="1"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                HeightRequest="150"
+                WidthRequest="150"
+                Padding="0"
+                BackgroundColor="{DynamicResource Dark}"
+                Stroke="{DynamicResource PrimaryAccent}">
+            <Grid RowDefinitions="*,*,20"
+                   VerticalOptions="Center">
+                <Label Grid.Row="1"
+                        Margin="5"
+                        FontSize="20"
+                       Text="20 Gems" 
+                       TextColor="{DynamicResource FontColor}"
+                       FontFamily="P-Bold"
+                        HorizontalOptions="Center"/>
+                <Label Grid.Row="0"
+                       Margin="5"
+                       FontSize="55"
+                       Text="&#xf3a5;" 
+                       FontFamily="FaSolid"
+                       TextColor="{DynamicResource DiscountColor}"
+                       HorizontalOptions="Center"/>
+                <Label Grid.Row="2"
+                        FontSize="15"
+                       Text="$2.99" 
+                       TextColor="{DynamicResource FontColor}"
+                       FontFamily="P-SemiBold"
+                        HorizontalOptions="Center"/>
+            </Grid>
+        </Border>
+        <Button Text="Purchase"
+                BackgroundColor="{DynamicResource DarkPrimary}"
+                TextColor="{DynamicResource FontColor}"
+                FontFamily="P-Bold"
+                FontSize="20"
+                Padding="1"
+                HeightRequest="50"
+                WidthRequest="150"
+                Clicked="Button_Clicked"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                CornerRadius="12"
+                Grid.Row="2"/>
+
+    </Grid>
+</ContentPage>
