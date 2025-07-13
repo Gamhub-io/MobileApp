@@ -9,6 +9,9 @@ public partial class GemTopUpPage : ContentPage
 
     private async void Button_Clicked(object sender, EventArgs e)
     {
-        await DisplayAlert("Confirm Your In-App Purchase", "Do you want to buy 20 Gems for $2.99 \n [Environment: SandBox]", "Cancel", "Buy");
+        if (await DisplayAlert("Confirm Your In-App Purchase", "Do you want to buy 20 Gems for $2.99 \n [Environment: SandBox]", "Cancel", "Buy"))
+        {
+            await DisplayAlert("Purchase successful", "20 Gems have now been added to your account enjoy!", "Thanks");
+        }
     }
 }
