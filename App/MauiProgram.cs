@@ -118,6 +118,8 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<RenameFeedPopUp>();
         mauiAppBuilder.Services.AddSingleton<DealFilterPopUp>();
         mauiAppBuilder.Services.AddSingleton<SettingsPage>();
+        mauiAppBuilder.Services.AddSingleton<GemTopUpPage>();
+
         return mauiAppBuilder;
     }
 }

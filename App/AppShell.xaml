@@ -5,11 +5,11 @@
        x:Class="GamHubApp.AppShell"
        xmlns:control="clr-namespace:GamHubApp.Controls"
        Shell.TabBarBackgroundColor="{DynamicResource LightDark}"
-       Shell.TabBarUnselectedColor="{DynamicResource Light}"
+       Shell.TabBarUnselectedColor="{DynamicResource UnselectedTabFont}"
        Shell.TabBarTitleColor="{DynamicResource Primary}"
        Shell.BackgroundColor="{DynamicResource LightDark}"
        FlyoutBackgroundColor="{DynamicResource LightDark}"
-       Shell.ForegroundColor="{DynamicResource Light}"
+       Shell.ForegroundColor="{DynamicResource Primary}"
        FlyoutWidth="270"
        xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
        xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
@@ -121,16 +121,65 @@
     </Shell.MenuItemTemplate>
     <Shell.FlyoutHeader >
         <Grid >
-            <Grid BackgroundColor="{DynamicResource Alternate}"
-                  HeightRequest="80"
+            <Grid BackgroundColor="{DynamicResource LightHeader}"
+                  RowDefinitions="*,auto"
+                  HeightRequest="90"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
                   x:Name="Header">
-                <Grid.GestureRecognizers>
+                <Image Source="ares.png"
+                       Grid.Row="0"
+                       HeightRequest="80"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center">
+                    <Image.GestureRecognizers>
                     <TapGestureRecognizer Tapped="Auth_Tapped"
                                           NumberOfTapsRequired="2"/>
                     <!-- Cannot set more than 2 taps https://github.com/dotnet/maui/issues/6407 -->
-                </Grid.GestureRecognizers>
-                <Image Source="ares.png"/>
+                    </Image.GestureRecognizers>
+
+                </Image>
+                <!--<Border StrokeShape="RoundRectangle 8"
+                        Grid.Row="1"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        BackgroundColor="{DynamicResource Dark}">
+                    <Grid ColumnDefinitions="*,40">
+                        <Label Grid.Column="0"
+                                Margin="5"
+                                FontSize="20"
+                                HorizontalOptions="End"
+                               VerticalOptions="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span 
+                                          Text="&#xf3a5;" 
+                                          FontFamily="FaSolid"
+                                          TextColor="{DynamicResource DiscountColor}"/>
+                                    <Span Text=" "/>
+                                    <Span Text="120"
+                                          FontFamily="P-SemiBold"
+                                          TextColor="{DynamicResource FontColor}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Border StrokeShape="RoundRectangle 0,8,8,8"
+                                Grid.Column="1"
+                                BackgroundColor="{DynamicResource PrimaryAccent}">
+                            <Label Grid.Column="0"
+                                    Margin="5"
+                                    FontSize="20"
+                                   Text="&#x2b;" 
+                                   TextColor="{DynamicResource LightDark}"
+                                   FontFamily="FaSolid"
+                                    HorizontalOptions="Center"
+                                   VerticalOptions="Center"/>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding TopUpGemsCommand}"/>
+                            </Border.GestureRecognizers>
+                        </Border>
+
+                    </Grid>
+                </Border>-->
             </Grid>
             <Grid BackgroundColor="{DynamicResource BgBannerColor}"
                   IsVisible="{Binding Authenticated}"

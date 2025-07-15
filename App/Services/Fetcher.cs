@@ -663,6 +663,9 @@ public class Fetcher
     /// <param name="newSession"></param>
     public async Task SaveSession (Session newSession)
     {
+        if (newSession != null)
+            return;
+
         // Keep the current session
         CurrentSession = newSession;
 
@@ -757,6 +760,7 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
         };
         var paramss = new string[] { article.MongooseId };
 
