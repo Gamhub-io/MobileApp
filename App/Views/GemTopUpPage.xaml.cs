@@ -20,4 +20,9 @@ public partial class GemTopUpPage : ContentPage
 
         });
     }
+    protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+    {
+        base.OnNavigatedFrom(args);
+        _vm.PlanSelected = false;
+    }
 }

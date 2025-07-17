@@ -8,7 +8,55 @@ namespace GamHubApp.ViewModels;
 
 public class GemTopUpViewModel : BaseViewModel
 {
-    public ObservableCollection<GemsPlan> Plans { get; set; }
+    private ObservableCollection<GemsPlan> _plans;
+    public ObservableCollection<GemsPlan> Plans
+    {
+        get
+        {
+            return _plans;
+        }
+        set
+        {
+            _plans = value;
+            OnPropertyChanged(nameof(Plans));
+        }
+    }
+    private bool _planSelected;
+    public bool PlanSelected
+    {
+        get
+        {
+            return _planSelected;
+        }
+        set
+        {
+            _planSelected = value;
+            OnPropertyChanged(nameof(PlanSelected));
+        }
+    }
+    private GemsPlan _selectedPlan;
+    public GemsPlan SelectedPlan
+    {
+        get
+        {
+            return _selectedPlan;
+        }
+        set
+        {
+            _selectedPlan = value;
+            PlanSelected = _selectedPlan != null;
+            for (int i = 0; i < _plans.Count; i++) 
+            {
+                if (SelectedPlan.Package.Identifier == _plans[i].Package.Identifier)
+                {
+                    Plans[i].IsSelected = true;
+                    continue;
+                }
+                Plans[i].IsSelected = false;
+            }
+            OnPropertyChanged(nameof(SelectedPlan));
+        }
+    }
     private readonly IRevenueCatBilling _revenueCatBilling;
 
     public GemTopUpViewModel (IRevenueCatBilling revenueCatBilling)
@@ -30,8 +78,9 @@ public class GemTopUpViewModel : BaseViewModel
                 Gems = Convert.ToInt16(p.Identifier.Split('_')[0]),
                 PriceDisplay = p.Product.Pricing.PriceLocalized,
                 Price = p.Product.Pricing.Price,
+                Package = p
 
-            }))
+            })).OrderBy(l => l.Gems)
             );
     }
 }
