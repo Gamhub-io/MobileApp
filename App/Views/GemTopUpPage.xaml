@@ -114,6 +114,7 @@
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 CornerRadius="12"
+                Command="{Binding PurchaseCommand}"
                 Grid.Row="2">
             <Button.Triggers>
                 <DataTrigger Binding="{Binding PlanSelected}"

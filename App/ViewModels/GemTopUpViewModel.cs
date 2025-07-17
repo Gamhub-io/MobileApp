@@ -57,11 +57,24 @@ public class GemTopUpViewModel : BaseViewModel
             OnPropertyChanged(nameof(SelectedPlan));
         }
     }
+
+    public Command PurchaseCommand { get; }
+
     private readonly IRevenueCatBilling _revenueCatBilling;
 
     public GemTopUpViewModel (IRevenueCatBilling revenueCatBilling)
     {
         _revenueCatBilling = revenueCatBilling;
+        PurchaseCommand = new(async () =>
+        {
+            var cur = App.Current as App;
+            if (_selectedPlan is null)
+                return;
+            cur.ShowLoadingIndicator();
+
+            await _revenueCatBilling.PurchaseProduct(_selectedPlan.Package);
+            cur.RemoveLoadingIndicator();
+        });
     }
     public async Task LoadOptionsAsync()
     {
