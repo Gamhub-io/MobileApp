@@ -764,7 +764,18 @@ public class Fetcher
             { "x-api-key", AppConstant.MonitoringKey},
             { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
         };
-        var paramss = new string[] { article.MongooseId };
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(article), article.MongooseId},
+        };
+
+      await WebService.Post(controller: "monitor",
+                              action: "register",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+    }
 
        await WebService.Post(controller: "monitor",
                               action: "register",
