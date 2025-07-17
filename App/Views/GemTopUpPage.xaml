@@ -84,7 +84,7 @@
                                        TextDecorations="Strikethrough"
                                        Text="{Binding OriginalPrice}" 
                                        IsVisible="{Binding DefaultDiscount}"
-                                       TextColor="{DynamicResource FontColor}"
+                                       TextColor="{DynamicResource DiscountColor}"
                                        FontFamily="P-Regular"
                                        HorizontalOptions="Center"/>
 
