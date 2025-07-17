@@ -44,7 +44,7 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:GemsPlan">
                     <Grid>
-                        <Border StrokeShape="RoundRectangle 8"
+                        <Border StrokeShape="RoundRectangle 20"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
                                 HeightRequest="180"
@@ -52,7 +52,7 @@
                                 Padding="0"
                                 Margin="5"
                                 BackgroundColor="{DynamicResource Dark}"
-                                Stroke="{DynamicResource FontColor}">
+                                Stroke="{DynamicResource LightDark}">
                             <Border.Triggers>
                                 <DataTrigger TargetType="Border"
                                              Binding="{Binding IsSelected}"
@@ -61,7 +61,7 @@
                                 </DataTrigger>
                             </Border.Triggers>
 
-                            <Grid RowDefinitions="80,30,auto, *"
+                            <Grid RowDefinitions="50,40,auto, *"
                                   VerticalOptions="Center">
                                 <Label Grid.Row="1"
                                        Margin="5"
@@ -72,7 +72,7 @@
                                        HorizontalOptions="Center"/>
                                 <Label Grid.Row="0"
                                        Margin="5"
-                                       FontSize="55"
+                                       FontSize="45"
                                        Text="&#xf3a5;" 
                                        FontFamily="FaSolid"
                                        TextColor="{DynamicResource DiscountColor}"
