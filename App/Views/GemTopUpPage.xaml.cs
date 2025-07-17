@@ -1,17 +1,23 @@
+using GamHubApp.ViewModels;
+
 namespace GamHubApp.Views;
 
 public partial class GemTopUpPage : ContentPage
 {
-	public GemTopUpPage()
+    private GemTopUpViewModel _vm;
+
+    public GemTopUpPage(GemTopUpViewModel viewModel)
 	{
+		BindingContext = _vm = viewModel;
 		InitializeComponent();
 	}
-
-    private async void Button_Clicked(object sender, EventArgs e)
+    protected override void OnAppearing()
     {
-        if (await DisplayAlert("Confirm Your In-App Purchase", "Do you want to buy 20 Gems for $2.99 \n [Environment: SandBox]", "Cancel", "Buy"))
+        base.OnAppearing();
+        Task.Run(() =>
         {
-            await DisplayAlert("Purchase successful", "20 Gems have now been added to your account enjoy!", "Thanks");
-        }
+           _= _vm.LoadOptionsAsync();
+
+        });
     }
 }

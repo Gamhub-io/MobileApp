@@ -6,6 +6,8 @@ namespace GamHubApp.Core
         public static string ApiHost = Environment.GetEnvironmentVariable("api_host");
         public static string MonitoringKey = Environment.GetEnvironmentVariable("monitoring_key");
         public static string Localhost = Environment.GetEnvironmentVariable("localhost");
+        public static string revenueCatApiKey_iOS = Environment.GetEnvironmentVariable("revenueCatApiKey_iOS");
+        public static string revenueCatApiKey_Android = Environment.GetEnvironmentVariable("revenueCatApiKey_Android");
 
         public const string DbFilename = "ares.db3";
         public const string DbBackUpFilename = "aresBackup.db3";

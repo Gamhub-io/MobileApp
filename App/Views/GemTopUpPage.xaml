@@ -55,7 +55,6 @@
                 Padding="1"
                 HeightRequest="50"
                 WidthRequest="150"
-                Clicked="Button_Clicked"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 CornerRadius="12"
