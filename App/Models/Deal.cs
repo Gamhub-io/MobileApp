@@ -38,6 +38,10 @@ public class Deal
                     {
                         LaunchMode = BrowserLaunchMode.External
                     });
+#if !DEBUG
+        // Register Hook
+        _ =(App.Current as App).DataFetcher.RegisterHook(this);
+#endif
                     if (Preferences.Get(AppConstant.DealReminderEnabled, true) && (Expires - DateTime.UtcNow).TotalHours > 5)
                         await (App.Current as App).DataFetcher.SetDealReminder(this);
                 });

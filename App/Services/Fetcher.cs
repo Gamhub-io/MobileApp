@@ -777,6 +777,24 @@ public class Fetcher
                                );
     }
 
+    /// <summary>
+    /// Adding a hook to a deal
+    /// </summary>
+    /// <param name="deal">deal to be hooked</param>
+    public async Task RegisterHook(Deal deal)
+    {
+        if (!Fetcher.CheckFeasability())
+            return ;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+        };
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(deal), deal.Id},
+        };
+
        await WebService.Post(controller: "monitor",
                               action: "register",
                               singleUseHeaders: headers,
