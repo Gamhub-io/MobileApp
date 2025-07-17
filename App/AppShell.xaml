@@ -156,7 +156,7 @@
                                           FontFamily="FaSolid"
                                           TextColor="{DynamicResource DiscountColor}"/>
                                     <Span Text=" "/>
-                                    <Span Text="120"
+                                    <Span Text="{Binding Gems.Count}"
                                           FontFamily="P-SemiBold"
                                           TextColor="{DynamicResource FontColor}"/>
                                 </FormattedString>

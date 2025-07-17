@@ -7,6 +7,8 @@ using GamHubApp.Services.UI;
 using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
+using System.Collections.ObjectModel;
+
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -45,6 +47,17 @@ public class AppShellViewModel : BaseViewModel
         {
             _authenticated = value;
             OnPropertyChanged(nameof(Authenticated));
+        }
+    }
+    private ObservableCollection<Gem> _gems;
+
+    public ObservableCollection<Gem> Gems
+    {
+        get { return _gems; }
+        set 
+        {
+            _gems = value;
+            OnPropertyChanged(nameof(Gems));
         }
     }
 
@@ -144,6 +157,18 @@ public class AppShellViewModel : BaseViewModel
         // Set the deal count
         BadgeCounterService.SetCount(newDealsCount);
     }
+
+#if IOS
+    /// <summary>
+    /// Update the gems
+    /// </summary>
+    /// <returns></returns>
+    public async Task UpdateGems()
+    {
+        Gems = new (await dataFetcher.GetGems());
+
+    }
+#endif
 
     const string _notificationKey = "Notification";
 

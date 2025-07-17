@@ -5,6 +5,7 @@ using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using Maui.RevenueCat.InAppBilling.Services;
 
 #if DEBUG
 using System.Diagnostics;
@@ -39,7 +40,8 @@ public class Fetcher
     public string NeID { get; private set; }
 
 
-    public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
+    private readonly IRevenueCatBilling _revenueCatBilling;
+    public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase, IRevenueCatBilling revenueCatBilling)
     {
 #if DEBUG_LOCALHOST
         // Set webservice
@@ -771,6 +773,29 @@ public class Fetcher
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                );
     }
+#if IOS
+    /// <summary>
+    /// Get all the gems from the user
+    /// </summary>
+    public async Task<List<Gem>> GetGems()
+    {
+        if (!Fetcher.CheckFeasability())
+            return null ;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+        };
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+
+        return (await WebService.Get<UserGemsResponse>(controller: "gems",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               ))?.Data;
+    }
+#endif
 
     /// <summary>
     /// Set a reminder for a deal
