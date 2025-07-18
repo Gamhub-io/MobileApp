@@ -2,7 +2,7 @@
 
 namespace GamHubApp.Models.Http.Responses;
 
-internal class UserGemsResponse
+public class UserGemsResponse
 {
     [JsonProperty("data")]
     public List<Gem> Data { get; set; }

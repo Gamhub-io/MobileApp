@@ -802,6 +802,33 @@ public class Fetcher
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                );
     }
+
+    /// <summary>
+    /// Adding a hook to an article
+    /// </summary>
+    /// <param name="article">article from which the reward is requested</param>
+    public async Task<bool> RequestReward(Article article)
+    {
+        if (!Fetcher.CheckFeasability())
+            return false;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+        };
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(article), article.MongooseId},
+        };
+
+       return (await WebService.Get<GemsRewardResponse>(controller: "gems",
+                              action: "request/article",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Rewarded;
+    }
+
 #if IOS
     /// <summary>
     /// Get all the gems from the user

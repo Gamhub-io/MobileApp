@@ -30,14 +30,15 @@ public partial class AppShell : Shell
             Task.Run (async () =>
             { 
                 string target = args.Target.Location.OriginalString;
-#if IOS
                 string origin = args.Current.Location.OriginalString;
+#if IOS
                 if (origin.Contains(nameof(GemTopUpPage)))
                     await _vm.UpdateGems();
 #endif
 
                 if (_vm != null && target != "//MyDealsPage" && !target.Contains("ArticlePage"))
                     await _vm.UpdateDeals();
+
             });
     }
     protected override async void OnAppearing()
