@@ -5,8 +5,9 @@ using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+#if IOS
 using Maui.RevenueCat.InAppBilling.Services;
-
+#endif
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -39,9 +40,16 @@ public class Fetcher
     public List<Article> Bookmarks { get; private set; }
     public string NeID { get; private set; }
 
-
+#if IOS
     private readonly IRevenueCatBilling _revenueCatBilling;
-    public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase, IRevenueCatBilling revenueCatBilling)
+#endif
+    public Fetcher(GeneralDataBase generalDataBase, 
+                   BackUpDataBase backUpDataBase
+#if IOS
+                   ,IRevenueCatBilling revenueCatBilling)
+#else
+        )
+#endif
     {
 #if DEBUG_LOCALHOST
         // Set webservice
@@ -450,7 +458,7 @@ public class Fetcher
                                            unSuccessCallback: e => _ = HandleHttpException(e));
 #if DEBUG
             Debug.WriteLine($"NE/subscribe: {res}");
-#endif         
+#endif
             return;
         }
 

@@ -6,7 +6,9 @@ using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using GamHubApp.Views.PopUps;
+#if IOS
 using Maui.RevenueCat.InAppBilling.Services;
+#endif
 using Newtonsoft.Json;
 using Plugin.FirebasePushNotifications;
 using System.Collections.ObjectModel;
@@ -42,8 +44,9 @@ public partial class App : Application
     public DateTime DateFirstRun { get; set; }
     public static string GeneralDBpath { get; private set; }
     public static string PathDBBackUp { get; private set; }
+#if IOS
     private readonly IRevenueCatBilling _revenueCat;
-
+#endif
     public enum PageType
     {
         about,
@@ -52,7 +55,15 @@ public partial class App : Application
         news,
         source
     }
-    public App(Fetcher fetc, AppShell shell, GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase, IRevenueCatBilling revenueCat)
+    public App(Fetcher fetc, 
+               AppShell shell, 
+               GeneralDataBase generalDataBase, 
+               BackUpDataBase backUpDataBase
+#if IOS
+                   ,IRevenueCatBilling revenueCat)
+#else
+        )
+#endif
     {
         _generalDb = generalDataBase;
         _backupDb = backUpDataBase;
@@ -67,7 +78,9 @@ public partial class App : Application
 #endif
 
         InitializeComponent();
+#if IOS
         _revenueCat = revenueCat;
+#endif
     }
 
     /// <summary>
@@ -148,15 +161,9 @@ public partial class App : Application
 
         // Reset notificaiton badges
         Badge.Default.SetCount(0);
-
-        string revenueCatApiKey =
-#if __ANDROID__
-        AppConstant.revenueCatApiKey_Android;
-#elif __IOS__
-        AppConstant.revenueCatApiKey_iOS;
+#if __IOS__
+        _revenueCat.Initialize(AppConstant.revenueCatApiKey_iOS);
 #endif
-
-        _revenueCat.Initialize(revenueCatApiKey);
         base.OnStart();
     }
     protected override Window CreateWindow(IActivationState activationState)
