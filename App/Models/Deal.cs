@@ -28,6 +28,8 @@ public class Deal
     public Partner Partner { get; set; }
     [JsonProperty("drm"), Ignore]
     public string DRM { get; set; }
+    [JsonProperty("gemRewards")]
+    public string GemRewards { get; set; } = null;
     public Command Navigate
     {
         get 
