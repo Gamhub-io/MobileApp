@@ -432,6 +432,9 @@ public class AppShellViewModel : BaseViewModel
 
         // Set user data
         UserProfile = res.UserData;
+
+        // Sync gems if any
+        _ = dataFetcher.UserGemsSync(); 
     }
 
 }

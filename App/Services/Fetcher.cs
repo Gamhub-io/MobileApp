@@ -821,6 +821,9 @@ public class Fetcher
             { "x-api-key", AppConstant.MonitoringKey},
             { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
         };
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
         var paramss = new Dictionary<string, string>
         {
             { nameof(deal), deal.Id},
@@ -847,6 +850,9 @@ public class Fetcher
             { "x-api-key", AppConstant.MonitoringKey},
             { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
         };
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
         var paramss = new Dictionary<string, string>
         {
             { nameof(article), article.MongooseId},
@@ -858,6 +864,30 @@ public class Fetcher
                               parameters: paramss,
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                )).Rewarded;
+    }
+
+    /// <summary>
+    /// SYnc users and their gems
+    /// </summary>
+    /// <returns> true ➡️ user gems have been synced | false ➡️ either user not logged in or gems can't be synced</returns>
+    public async Task<bool> UserGemsSync()
+    {
+        if (!Fetcher.CheckFeasability() || UserData is null)
+            return false;
+
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+            { "Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}"},
+        };
+
+       await WebService.Put<GemsRewardResponse>(controller: "gems",
+                              action: "sync",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+        return true;
     }
 
 #if IOS

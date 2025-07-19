@@ -70,9 +70,10 @@ public class GemTopUpViewModel : BaseViewModel
             var cur = App.Current as App;
             if (_selectedPlan is null)
                 return;
-            cur.ShowLoadingIndicator();
 
-            await _revenueCatBilling.PurchaseProduct(_selectedPlan.Package);
+            cur.ShowLoadingIndicator();
+            await _revenueCatBilling.PurchaseProduct(_selectedPlan.Package).ConfigureAwait(false);
+            _ = await cur.DataFetcher.UserGemsSync();
             cur.RemoveLoadingIndicator();
         });
     }
