@@ -49,6 +49,7 @@ jobs:
       api_host: ${{ secrets.API_HOST }}
       monitoring_key: ${{ secrets.MONITORING_KEY }}
       google_services_plist: ${{ secrets.GOOGLE_SERVICES_PLIST }}
+      revenueCatApiKey_iOS: ${{ secrets.revenueCatApiKey_iOS }}
   build-android:
     needs: setup
     uses: ./.github/workflows/cd-android.yml
