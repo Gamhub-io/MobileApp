@@ -122,8 +122,8 @@
     <Shell.FlyoutHeader >
         <Grid >
             <Grid BackgroundColor="{DynamicResource LightHeader}"
-                  RowDefinitions="{OnPlatform iOS='*,*', Android='*,0'}"
-                  HeightRequest="{OnPlatform iOS=120, Android=80}"
+                  RowDefinitions="{OnPlatform iOS='*,auto', Android='*,0'}"
+                  HeightRequest="{OnPlatform iOS=120, Android=90}"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
                   x:Name="Header">
                 <Image Source="ares.png"
@@ -138,7 +138,7 @@
                     </Image.GestureRecognizers>
 
                 </Image>
-                <Border StrokeShape="RoundRectangle 8"
+                <!--<Border StrokeShape="RoundRectangle 8"
                         Grid.Row="1"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
@@ -181,7 +181,7 @@
                         </Border>
 
                     </Grid>
-                </Border>
+                </Border>-->
             </Grid>
             <Grid BackgroundColor="{DynamicResource BgBannerColor}"
                   IsVisible="{Binding Authenticated}"
