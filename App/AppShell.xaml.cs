@@ -33,7 +33,7 @@ public partial class AppShell : Shell
                 string origin = args.Current.Location.OriginalString;
 #if IOS
                 if (origin.Contains(nameof(GemTopUpPage)))
-                    await _vm.UpdateGems();
+                    await RefreshGems();
 #endif
 
                 if (_vm != null && target != "//MyDealsPage" && !target.Contains("ArticlePage"))
@@ -78,5 +78,11 @@ public partial class AppShell : Shell
     public void Resume()
     {
         _vm.UpdateDeals().GetAwaiter();
+    }
+
+    public async Task RefreshGems()
+    {
+        await _vm.UpdateDeals();
+
     }
 }

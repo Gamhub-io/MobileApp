@@ -783,6 +783,8 @@ public class Fetcher
     /// <param name="deal">deal to be hooked</param>
     public async Task RegisterHook(Deal deal)
     {
+        if (deal is null)
+            return;
         if (!Fetcher.CheckFeasability())
             return ;
         var headers = new Dictionary<string, string>
@@ -795,12 +797,41 @@ public class Fetcher
             { nameof(deal), deal.Id},
         };
 
-       await WebService.Post(controller: "monitor",
+        await WebService.Post(controller: "monitor",
                               action: "register",
                               singleUseHeaders: headers,
                               parameters: paramss,
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                );
+    }
+
+    /// <summary>
+    /// Request rewards from deal
+    /// </summary>
+    /// <remarks>
+    /// If the user made a purchase on this deal. they will be rewarded the gem amount if no
+    /// </remarks>
+    /// <param name="deal">deal where reward is requested</param>
+    public async Task<bool> RequestReward(Deal deal)
+    {
+        if (!Fetcher.CheckFeasability())
+            return false;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+        };
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(deal), deal.Id},
+        };
+
+        return (await WebService.Get<GemsRewardResponse>(controller: "gems",
+                              action: "request/deal",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Rewarded;
     }
 
     /// <summary>

@@ -11,13 +11,11 @@ using Newtonsoft.Json;
 using Plugin.FirebasePushNotifications;
 using System.Collections.ObjectModel;
 
-
 #if DEBUG
 using System.Diagnostics;
 #endif
 #if ANDROID
 using static Android.Provider.Settings;
-using Android.Content;
 #endif
 
 namespace GamHubApp;
@@ -205,8 +203,37 @@ public partial class App : Application
          AppShell mainPage = ((AppShell)Current.Windows[0].Page);
          Page currentPage = mainPage.CurrentPage;
          mainPage.Resume();
+#if IOS
+        // Check if user was on a deal before that
+        string lastDealViewed = Preferences.Get(AppConstant.LastDealVisit, null);
 
-         if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
+        if (!string.IsNullOrEmpty(lastDealViewed))
+        {
+            try
+            {
+                Task.Run(async () => 
+                {
+                    if( await DataFetcher.RequestReward(JsonConvert.DeserializeObject<Deal>(lastDealViewed)))
+                    {
+                        _ = mainPage.RefreshGems().ConfigureAwait(false);
+                    }
+
+                });
+                Preferences.Clear(AppConstant.LastDealVisit);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw new Exception($"Deal - RequestReward: {ex.Message}",ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            }
+        }
+        
+#endif
+
+        if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
          {
 
              ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();

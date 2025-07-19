@@ -42,6 +42,7 @@ public class Deal
         // Register Hook
         _ =(App.Current as App).DataFetcher.RegisterHook(this);
 #endif
+                    Preferences.Set(AppConstant.LastDealVisit, JsonConvert.SerializeObject(this));
                     if (Preferences.Get(AppConstant.DealReminderEnabled, true) && (Expires - DateTime.UtcNow).TotalHours > 5)
                         await (App.Current as App).DataFetcher.SetDealReminder(this);
                 });

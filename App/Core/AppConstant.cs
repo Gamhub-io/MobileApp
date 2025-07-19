@@ -39,5 +39,6 @@ namespace GamHubApp.Core
         public const string ReviewAsked = "REVIEW_ASKED";
         public const string NotificationCount = "NOTIFICATION_COUNT";
         public const string DealFilterCode = "DEAL_FILTER_CODE";
+        public const string LastDealVisit = "LAST_DEAL_VISIT";
     }
 }

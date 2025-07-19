@@ -45,7 +45,7 @@ public partial class ArticlePage : ContentPage
            await (App.Current as App).DataFetcher.RequestReward(_article);
         });
 
-        
+
         base.OnNavigatedFrom(args);
 
 
