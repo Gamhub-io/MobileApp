@@ -64,7 +64,7 @@ public class Fetcher
 #endif
         _generalDB = generalDataBase;
         _backupDB = backUpDataBase;
-  
+
         Task.WhenAll([
             GetSources(),
             SetCultureInfo()

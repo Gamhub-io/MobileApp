@@ -52,6 +52,7 @@ public partial class AppShell : Shell
         Task notifTask = _vm.NotificationSetup();
         await Task.WhenAll(partnersTask, notifTask);
         await _vm.UpdateDeals(); 
+        _vm.Appearing();
     }
 
     private void Auth_Tapped(object sender, TappedEventArgs e)

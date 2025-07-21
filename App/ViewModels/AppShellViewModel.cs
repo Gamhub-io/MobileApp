@@ -40,6 +40,16 @@ public class AppShellViewModel : BaseViewModel
     public AppShell MainShell { get; }
     private bool _authenticated;
 
+    private bool _gemEnabled;
+    public bool GemEnabled { 
+        get=> _gemEnabled; 
+        private set 
+        {
+            _gemEnabled = value;
+            OnPropertyChanged(nameof(GemEnabled));
+        }
+    }
+
     public bool Authenticated
     {
         get { return _authenticated; }
@@ -435,6 +445,17 @@ public class AppShellViewModel : BaseViewModel
 
         // Sync gems if any
         _ = dataFetcher.UserGemsSync(); 
+    }
+
+    public void Appearing()
+    {
+#if IOS
+        GemEnabled = dataFetcher.Culture.RegionCode == "EU" ||
+                            dataFetcher.Culture.RegionCode == "NA";
+#else
+
+        GemEnabled = false;
+#endif
     }
 
 }

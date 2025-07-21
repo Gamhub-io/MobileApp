@@ -126,6 +126,20 @@
                   HeightRequest="{OnPlatform iOS=120, Android=90}"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
                   x:Name="Header">
+                <Grid.Triggers>
+                    <DataTrigger Binding="{Binding GemEnabled}"
+                                 TargetType="Grid"
+                                 Value="true">
+                        <Setter Property="RowDefinitions" Value="*,auto" />
+                        <Setter Property="HeightRequest" Value="120" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding GemEnabled}"
+                                 TargetType="Grid"
+                                 Value="false">
+                        <Setter Property="RowDefinitions" Value="*,0" />
+                        <Setter Property="HeightRequest" Value="90" />
+                    </DataTrigger>
+                </Grid.Triggers>
                 <Image Source="ares.png"
                        Grid.Row="0"
                        HeightRequest="80"
@@ -143,7 +157,7 @@
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
                         BackgroundColor="{DynamicResource Dark}"
-                        IsVisible="{OnPlatform iOS=true, Android=false}">
+                        IsVisible="{Binding GemEnabled}">
                     <Grid ColumnDefinitions="*,40">
                         <Label Grid.Column="0"
                                 Margin="5"
