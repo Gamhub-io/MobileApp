@@ -122,8 +122,6 @@
     <Shell.FlyoutHeader >
         <Grid >
             <Grid BackgroundColor="{DynamicResource LightHeader}"
-                  RowDefinitions="{OnPlatform iOS='*,auto', Android='*,0'}"
-                  HeightRequest="{OnPlatform iOS=120, Android=90}"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
                   x:Name="Header">
                 <Grid.Triggers>
