@@ -162,7 +162,7 @@ public partial class App : Application
         // Reset notificaiton badges
         Badge.Default.SetCount(0);
 #if __IOS__
-        _revenueCat.Initialize(AppConstant.revenueCatApiKey_iOS);
+        _revenueCat.Initialize(AppConstant.RevenueCatApiKey_iOS);
 #endif
         base.OnStart();
     }

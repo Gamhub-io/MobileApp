@@ -988,6 +988,27 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Get the culture infor of the device
+    /// </summary>
+    public async Task<DeviceCultureInfo> GetCultureInfo()
+    {
+        if (!Fetcher.CheckFeasability())
+            return null;
+
+
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+        };
+
+       return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
+                                               action: "culture",
+                                               singleUseHeaders: headers,
+                                               unSuccessCallback: e => _ = HandleHttpException(e)
+                                                );
+    }
+
+    /// <summary>
     /// Kill a session
     /// </summary>
     public void KillSession()
@@ -1058,6 +1079,25 @@ public class Fetcher
     private static bool CheckFeasability()
     {
         return Connectivity.NetworkAccess == NetworkAccess.Internet;
+    }
+
+    /// <summary>
+    /// Set the culture info of the device. either fetching it from the server of from the storage
+    /// </summary>
+    private async Task SetCultureInfo()
+    {
+        string ciRaw = Preferences.Get(PreferencesKeys.CultureInfo, string.Empty);
+
+        if (string.IsNullOrEmpty(ciRaw))
+        {
+            if ((Culture = await GetCultureInfo()) is null)
+                return;
+
+            Preferences.Set(PreferencesKeys.CultureInfo, JsonConvert.SerializeObject(Culture));
+            return;
+        }
+
+        Culture = JsonConvert.DeserializeObject<DeviceCultureInfo>(ciRaw);
     }
 
     #region Local Actions
