@@ -121,7 +121,7 @@ public partial class App : Application
     private async Task RecoverFromOffline()
     {
         bool connectivity = Connectivity.NetworkAccess == NetworkAccess.Internet;
-        if (Preferences.Get(AppConstant.OfflineLastRun, false) &&
+        if (Preferences.Get(PreferencesKeys.OfflineLastRun, false) &&
             connectivity)
         {
             var feeds = new ObservableCollection<Feed>(await _generalDb.GetFeeds());
@@ -131,7 +131,7 @@ public partial class App : Application
 
             await Task.WhenAll(tasks);
         }
-        Preferences.Set(AppConstant.OfflineLastRun, !connectivity);
+        Preferences.Set(PreferencesKeys.OfflineLastRun, !connectivity);
     }
 
     protected override void OnStart()
@@ -212,7 +212,7 @@ public partial class App : Application
          mainPage.Resume();
 #if IOS
         // Check if user was on a deal before that
-        string lastDealViewed = Preferences.Get(AppConstant.LastDealVisit, null);
+        string lastDealViewed = Preferences.Get(PreferencesKeys.LastDealVisit, null);
 
         if (!string.IsNullOrEmpty(lastDealViewed))
         {
@@ -226,7 +226,7 @@ public partial class App : Application
                     }
 
                 });
-                Preferences.Clear(AppConstant.LastDealVisit);
+                Preferences.Clear(PreferencesKeys.LastDealVisit);
             }
             catch (Exception ex)
             {

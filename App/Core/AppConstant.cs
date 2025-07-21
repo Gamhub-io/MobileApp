@@ -6,8 +6,8 @@ namespace GamHubApp.Core
         public static string ApiHost = Environment.GetEnvironmentVariable("api_host");
         public static string MonitoringKey = Environment.GetEnvironmentVariable("monitoring_key");
         public static string Localhost = Environment.GetEnvironmentVariable("localhost");
-        public static string revenueCatApiKey_iOS = Environment.GetEnvironmentVariable("revenueCatApiKey_iOS");
-        public static string revenueCatApiKey_Android = Environment.GetEnvironmentVariable("revenueCatApiKey_Android");
+        public static string RevenueCatApiKey_iOS { get => Environment.GetEnvironmentVariable("revenueCatApiKey_iOS"); }
+        public static string RevenueCatApiKey_Android { get => Environment.GetEnvironmentVariable("revenueCatApiKey_Android"); }
 
         public const string DbFilename = "ares.db3";
         public const string DbBackUpFilename = "aresBackup.db3";
@@ -29,16 +29,5 @@ namespace GamHubApp.Core
         // secure storage - keys
         public const string NotificationToken = "NOTIFICATION_TOKEN";
         public const string InstanceIdKey = "INSTANCE_ID";
-
-        // Settings - preferences
-        public const string DealArticleEnable = "DEAL_ARTICLE_ENABLE";
-        public const string DealPageEnable = "DEAL_PAGE_ENABLE";
-        public const string DealReminderEnabled = "DEAL_REMINDERS_ENABLE";
-        public const string OfflineLastRun = "OFFLINE_LAST";
-        public const string NewDealCount = "NEW_DEAL_COUNT";
-        public const string ReviewAsked = "REVIEW_ASKED";
-        public const string NotificationCount = "NOTIFICATION_COUNT";
-        public const string DealFilterCode = "DEAL_FILTER_CODE";
-        public const string LastDealVisit = "LAST_DEAL_VISIT";
     }
 }

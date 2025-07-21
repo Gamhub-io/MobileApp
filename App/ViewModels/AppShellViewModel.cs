@@ -143,16 +143,16 @@ public class AppShellViewModel : BaseViewModel
             return;
         }
 
-        if (!(DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true)))
+        if (!(DealEnabled = Preferences.Get(PreferencesKeys.DealPageEnable, true)))
             return;
 
 
         await dataFetcher.GetDeals();
 
-        int newDealsCount = Preferences.Get(AppConstant.NewDealCount,0) + await dataFetcher.UpdateDeals();
+        int newDealsCount = Preferences.Get(PreferencesKeys.NewDealCount,0) + await dataFetcher.UpdateDeals();
 
         // Store the new value
-        Preferences.Set(AppConstant.NewDealCount, newDealsCount);
+        Preferences.Set(PreferencesKeys.NewDealCount, newDealsCount);
 
         // Set the deal count
         BadgeCounterService.SetCount(newDealsCount);
@@ -279,8 +279,8 @@ public class AppShellViewModel : BaseViewModel
             return;
         
         // Update notification count
-        int count = (Preferences.Get(AppConstant.NotificationCount, 0))+1;
-        Preferences.Set(AppConstant.NotificationCount, count);
+        int count = (Preferences.Get(PreferencesKeys.NotificationCount, 0))+1;
+        Preferences.Set(PreferencesKeys.NotificationCount, count);
         Badge.Default.SetCount((uint)count);
     }
 
@@ -309,10 +309,10 @@ public class AppShellViewModel : BaseViewModel
 
 
         }
-        int count = (Preferences.Get(AppConstant.NotificationCount, 1))-1;
+        int count = (Preferences.Get(PreferencesKeys.NotificationCount, 1))-1;
         if (count < 0)
             count = 0;
-        Preferences.Set(AppConstant.NotificationCount, count);
+        Preferences.Set(PreferencesKeys.NotificationCount, count);
         Badge.Default.SetCount((uint)count);
     }
 
@@ -354,10 +354,10 @@ public class AppShellViewModel : BaseViewModel
             });
 
             // Update notification count
-            int count = (Preferences.Get(AppConstant.NotificationCount, 1)) - 1;
+            int count = (Preferences.Get(PreferencesKeys.NotificationCount, 1)) - 1;
             if (count < 0)
                 count = 0;
-            Preferences.Set(AppConstant.NotificationCount, count);
+            Preferences.Set(PreferencesKeys.NotificationCount, count);
             Badge.Default.SetCount((uint)count);
 
         }

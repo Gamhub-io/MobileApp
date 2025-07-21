@@ -68,11 +68,11 @@ public partial class ArticlePage : ContentPage
         Preferences.Set(TimeSpentKey, timeSpentOnArticles);
 
         if (TimeSpan.FromMilliseconds(timeSpentOnArticles).TotalMinutes >= TimeMaxArticles
-             && !Preferences.Get(AppConstant.ReviewAsked, false))
+             && !Preferences.Get(PreferencesKeys.ReviewAsked, false))
             try
             {
                 await CrossStoreReview.Current.RequestReview(_isTest);
-                Preferences.Set(AppConstant.ReviewAsked, true);
+                Preferences.Set(PreferencesKeys.ReviewAsked, true);
             }
             catch (Exception ex)
             {

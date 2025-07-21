@@ -37,6 +37,7 @@ public class Fetcher
     }
 
     public User UserData { get; set; }
+    public DeviceCultureInfo Culture { get; private set; }
     public List<Article> Bookmarks { get; private set; }
     public string NeID { get; private set; }
 
@@ -64,7 +65,10 @@ public class Fetcher
         _generalDB = generalDataBase;
         _backupDB = backUpDataBase;
   
-        GetSources().GetAwaiter();
+        Task.WhenAll([
+            GetSources(),
+            SetCultureInfo()
+            ]).GetAwaiter();
     }
 
     /// <summary>
@@ -291,7 +295,7 @@ public class Fetcher
             return null;
         try
         {
-            string filterCode = Preferences.Get(AppConstant.DealFilterCode, null);
+            string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
 
             _allDeals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
                                                                            unSuccessCallback: e => _ = HandleHttpException(e));
