@@ -134,6 +134,9 @@
     <MauiXaml Update="Views\PopUps\DealFilterPopUp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Views\PopUps\RewardPopUp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Views\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
