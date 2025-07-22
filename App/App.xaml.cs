@@ -71,11 +71,6 @@ public partial class App : Application
         DataFetcher = fetc;
         Shell = shell;
 
-#if ANDROID
-        SetupInstance();
-#elif IOS
-        SetupInstance().GetAwaiter();
-#endif
 
         InitializeComponent();
 #if IOS
@@ -136,6 +131,11 @@ public partial class App : Application
 
     protected override void OnStart()
     {
+#if ANDROID
+        SetupInstance();
+#elif IOS
+        SetupInstance().GetAwaiter();
+#endif
         Task.Run(RecoverFromOffline);
 
         // Register the date of the first run
