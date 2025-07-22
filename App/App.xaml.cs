@@ -193,11 +193,9 @@ public partial class App : Application
     protected override void OnSleep()
      {
          base.OnSleep();
+         Page currentPage = Shell?.CurrentPage;
 
-         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-         Page currentPage = mainPage.CurrentPage;
-
-         if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
+         if (currentPage?.ToString() == "GamHubApp.Views.ArticlePage")
          {
 
              ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Stop();
@@ -207,9 +205,8 @@ public partial class App : Application
 
      protected override void OnResume()
      {
-         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-         Page currentPage = mainPage.CurrentPage;
-         mainPage.Resume();
+         Page currentPage = Shell.CurrentPage;
+            Shell.Resume();
 #if IOS
         // Check if user was on a deal before that
         string lastDealViewed = Preferences.Get(PreferencesKeys.LastDealVisit, null);
@@ -222,7 +219,7 @@ public partial class App : Application
                 {
                     if( await DataFetcher.RequestReward(JsonConvert.DeserializeObject<Deal>(lastDealViewed)))
                     {
-                        _ = mainPage.RefreshGems().ConfigureAwait(false);
+                        _ = Shell.RefreshGems().ConfigureAwait(false);
                     }
 
                 });
@@ -275,7 +272,7 @@ public partial class App : Application
                  return;
 
              if (page == null)
-                 page = GetCurrentPage();
+                 page = Shell;
              if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp!.Id))
                  return;
          MainThread.BeginInvokeOnMainThread(() => page.ShowPopup(popUp));
@@ -291,15 +288,6 @@ public partial class App : Application
             SentrySdk.CaptureException(ex);
         }
 #endif
-    }
-    /// <summary>
-    /// Get the current page from the shell
-    /// </summary>
-    /// <returns></returns>
-    private Page GetCurrentPage ()
-    {
-        AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-        return mainPage;
     }
 
 #if ANDROID
