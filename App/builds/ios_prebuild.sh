@@ -29,7 +29,7 @@ then
     echo "MonitoringKey = "$monitoring_key
     sed -i '' 's#MonitoringKey = Environment.GetEnvironmentVariable("monitoring_key")#MonitoringKey = "'$monitoring_key'"#g' $APP_CONSTANT_FILE
     echo "revenueCatApiKey_iOS = "$revenueCatApiKey_iOS
-    sed -i '' 's#RevenueCatApiKey_iOS { get => Environment.GetEnvironmentVariable("revenueCatApiKey_iOS"); }#RevenueCatApiKey_iOS = "'$revenueCatApiKey_iOS'"#g' $APP_CONSTANT_FILE
+    sed -i '' 's#RevenueCatApiKey_iOS { get => Environment.GetEnvironmentVariable("revenueCatApiKey_iOS"); }#RevenueCatApiKey_iOS = "'$revenueCatApiKey_iOS'";#g' $APP_CONSTANT_FILE
     echo "File content:"
     cat $APP_CONSTANT_FILE
 else
