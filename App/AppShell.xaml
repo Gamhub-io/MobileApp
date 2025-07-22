@@ -122,10 +122,22 @@
     <Shell.FlyoutHeader >
         <Grid >
             <Grid BackgroundColor="{DynamicResource LightHeader}"
-                  RowDefinitions="*,auto"
-                  HeightRequest="90"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
                   x:Name="Header">
+                <Grid.Triggers>
+                    <DataTrigger Binding="{Binding GemEnabled}"
+                                 TargetType="Grid"
+                                 Value="true">
+                        <Setter Property="RowDefinitions" Value="*,auto" />
+                        <Setter Property="HeightRequest" Value="120" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding GemEnabled}"
+                                 TargetType="Grid"
+                                 Value="false">
+                        <Setter Property="RowDefinitions" Value="*,0" />
+                        <Setter Property="HeightRequest" Value="90" />
+                    </DataTrigger>
+                </Grid.Triggers>
                 <Image Source="ares.png"
                        Grid.Row="0"
                        HeightRequest="80"
@@ -138,11 +150,12 @@
                     </Image.GestureRecognizers>
 
                 </Image>
-                <!--<Border StrokeShape="RoundRectangle 8"
+                <Border StrokeShape="RoundRectangle 8"
                         Grid.Row="1"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
-                        BackgroundColor="{DynamicResource Dark}">
+                        BackgroundColor="{DynamicResource Dark}"
+                        IsVisible="{Binding GemEnabled}">
                     <Grid ColumnDefinitions="*,40">
                         <Label Grid.Column="0"
                                 Margin="5"
@@ -156,7 +169,7 @@
                                           FontFamily="FaSolid"
                                           TextColor="{DynamicResource DiscountColor}"/>
                                     <Span Text=" "/>
-                                    <Span Text="120"
+                                    <Span Text="{Binding Gems.Count}"
                                           FontFamily="P-SemiBold"
                                           TextColor="{DynamicResource FontColor}"/>
                                 </FormattedString>
@@ -165,11 +178,12 @@
                         <Border StrokeShape="RoundRectangle 0,8,8,8"
                                 Grid.Column="1"
                                 BackgroundColor="{DynamicResource PrimaryAccent}">
+                            
                             <Label Grid.Column="0"
                                     Margin="5"
                                     FontSize="20"
                                    Text="&#x2b;" 
-                                   TextColor="{DynamicResource LightDark}"
+                                   TextColor="{DynamicResource FontColor}"
                                    FontFamily="FaSolid"
                                     HorizontalOptions="Center"
                                    VerticalOptions="Center"/>
@@ -179,7 +193,7 @@
                         </Border>
 
                     </Grid>
-                </Border>-->
+                </Border>
             </Grid>
             <Grid BackgroundColor="{DynamicResource BgBannerColor}"
                   IsVisible="{Binding Authenticated}"

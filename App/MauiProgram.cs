@@ -5,6 +5,7 @@ using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using Plugin.FirebasePushNotifications;
 using Plugin.FirebasePushNotifications.Model.Queues;
+using Maui.RevenueCat.InAppBilling;
 
 #if IOS
 using GamHubApp.Platforms.iOS.Renderers;
@@ -80,6 +81,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<Fetcher>();
 
         builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
+        builder.Services.AddRevenueCatBilling(true);
         return builder.Build();
     }
 
@@ -92,6 +94,7 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
         mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
         mauiAppBuilder.Services.AddSingleton<DealsViewModel>();
+        mauiAppBuilder.Services.AddSingleton<GemTopUpViewModel>();
 
         return mauiAppBuilder;
     }

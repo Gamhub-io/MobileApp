@@ -7,6 +7,8 @@ using GamHubApp.Services.UI;
 using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
+using System.Collections.ObjectModel;
+
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -38,6 +40,16 @@ public class AppShellViewModel : BaseViewModel
     public AppShell MainShell { get; }
     private bool _authenticated;
 
+    private bool _gemEnabled;
+    public bool GemEnabled { 
+        get=> _gemEnabled; 
+        private set 
+        {
+            _gemEnabled = value;
+            OnPropertyChanged(nameof(GemEnabled));
+        }
+    }
+
     public bool Authenticated
     {
         get { return _authenticated; }
@@ -45,6 +57,17 @@ public class AppShellViewModel : BaseViewModel
         {
             _authenticated = value;
             OnPropertyChanged(nameof(Authenticated));
+        }
+    }
+    private ObservableCollection<Gem> _gems;
+
+    public ObservableCollection<Gem> Gems
+    {
+        get { return _gems; }
+        set 
+        {
+            _gems = value;
+            OnPropertyChanged(nameof(Gems));
         }
     }
 
@@ -130,20 +153,32 @@ public class AppShellViewModel : BaseViewModel
             return;
         }
 
-        if (!(DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true)))
+        if (!(DealEnabled = Preferences.Get(PreferencesKeys.DealPageEnable, true)))
             return;
 
 
         await dataFetcher.GetDeals();
 
-        int newDealsCount = Preferences.Get(AppConstant.NewDealCount,0) + await dataFetcher.UpdateDeals();
+        int newDealsCount = Preferences.Get(PreferencesKeys.NewDealCount,0) + await dataFetcher.UpdateDeals();
 
         // Store the new value
-        Preferences.Set(AppConstant.NewDealCount, newDealsCount);
+        Preferences.Set(PreferencesKeys.NewDealCount, newDealsCount);
 
         // Set the deal count
         BadgeCounterService.SetCount(newDealsCount);
     }
+
+#if IOS
+    /// <summary>
+    /// Update the gems
+    /// </summary>
+    /// <returns></returns>
+    public async Task UpdateGems()
+    {
+        Gems = new (await dataFetcher.GetGems());
+
+    }
+#endif
 
     const string _notificationKey = "Notification";
 
@@ -254,8 +289,8 @@ public class AppShellViewModel : BaseViewModel
             return;
         
         // Update notification count
-        int count = (Preferences.Get(AppConstant.NotificationCount, 0))+1;
-        Preferences.Set(AppConstant.NotificationCount, count);
+        int count = (Preferences.Get(PreferencesKeys.NotificationCount, 0))+1;
+        Preferences.Set(PreferencesKeys.NotificationCount, count);
         Badge.Default.SetCount((uint)count);
     }
 
@@ -284,10 +319,10 @@ public class AppShellViewModel : BaseViewModel
 
 
         }
-        int count = (Preferences.Get(AppConstant.NotificationCount, 1))-1;
+        int count = (Preferences.Get(PreferencesKeys.NotificationCount, 1))-1;
         if (count < 0)
             count = 0;
-        Preferences.Set(AppConstant.NotificationCount, count);
+        Preferences.Set(PreferencesKeys.NotificationCount, count);
         Badge.Default.SetCount((uint)count);
     }
 
@@ -329,10 +364,10 @@ public class AppShellViewModel : BaseViewModel
             });
 
             // Update notification count
-            int count = (Preferences.Get(AppConstant.NotificationCount, 1)) - 1;
+            int count = (Preferences.Get(PreferencesKeys.NotificationCount, 1)) - 1;
             if (count < 0)
                 count = 0;
-            Preferences.Set(AppConstant.NotificationCount, count);
+            Preferences.Set(PreferencesKeys.NotificationCount, count);
             Badge.Default.SetCount((uint)count);
 
         }
@@ -407,6 +442,20 @@ public class AppShellViewModel : BaseViewModel
 
         // Set user data
         UserProfile = res.UserData;
+
+        // Sync gems if any
+        _ = dataFetcher.UserGemsSync(); 
+    }
+
+    public void Appearing()
+    {
+#if IOS
+        GemEnabled = dataFetcher.Culture.RegionCode == "EU" ||
+                            dataFetcher.Culture.RegionCode == "NA";
+#else
+
+        GemEnabled = false;
+#endif
     }
 
 }

@@ -30,19 +30,29 @@ public partial class AppShell : Shell
             Task.Run (async () =>
             { 
                 string target = args.Target.Location.OriginalString;
+                string origin = args.Current.Location.OriginalString;
+#if IOS
+                if (origin.Contains(nameof(GemTopUpPage)))
+                    await RefreshGems();
+#endif
+
                 if (_vm != null && target != "//MyDealsPage" && !target.Contains("ArticlePage"))
                     await _vm.UpdateDeals();
+
             });
     }
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-
+#if IOS
+        await _vm.UpdateGems();
+#endif
         _currentApp = (App.Current as App);
         Task partnersTask = _currentApp.LoadPartners();
         Task notifTask = _vm.NotificationSetup();
         await Task.WhenAll(partnersTask, notifTask);
         await _vm.UpdateDeals(); 
+        _vm.Appearing();
     }
 
     private void Auth_Tapped(object sender, TappedEventArgs e)
@@ -69,5 +79,11 @@ public partial class AppShell : Shell
     public void Resume()
     {
         _vm.UpdateDeals().GetAwaiter();
+    }
+
+    public async Task RefreshGems()
+    {
+        await _vm.UpdateDeals();
+
     }
 }

@@ -5,7 +5,9 @@ using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-
+#if IOS
+using Maui.RevenueCat.InAppBilling.Services;
+#endif
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -35,11 +37,20 @@ public class Fetcher
     }
 
     public User UserData { get; set; }
+    public DeviceCultureInfo Culture { get; private set; }
     public List<Article> Bookmarks { get; private set; }
     public string NeID { get; private set; }
 
-
-    public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
+#if IOS
+    private readonly IRevenueCatBilling _revenueCatBilling;
+#endif
+    public Fetcher(GeneralDataBase generalDataBase, 
+                   BackUpDataBase backUpDataBase
+#if IOS
+                   ,IRevenueCatBilling revenueCatBilling)
+#else
+        )
+#endif
     {
 #if DEBUG_LOCALHOST
         // Set webservice
@@ -53,8 +64,11 @@ public class Fetcher
 #endif
         _generalDB = generalDataBase;
         _backupDB = backUpDataBase;
-  
-        GetSources().GetAwaiter();
+
+        Task.WhenAll([
+            GetSources(),
+            SetCultureInfo()
+            ]).GetAwaiter();
     }
 
     /// <summary>
@@ -281,7 +295,7 @@ public class Fetcher
             return null;
         try
         {
-            string filterCode = Preferences.Get(AppConstant.DealFilterCode, null);
+            string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
 
             _allDeals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
                                                                            unSuccessCallback: e => _ = HandleHttpException(e));
@@ -448,7 +462,7 @@ public class Fetcher
                                            unSuccessCallback: e => _ = HandleHttpException(e));
 #if DEBUG
             Debug.WriteLine($"NE/subscribe: {res}");
-#endif         
+#endif
             return;
         }
 
@@ -762,15 +776,155 @@ public class Fetcher
             { "x-api-key", AppConstant.MonitoringKey},
             { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
         };
-        var paramss = new string[] { article.MongooseId };
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(article), article.MongooseId},
+        };
 
-       await WebService.Post(controller: "monitor",
+      await WebService.Post(controller: "monitor",
                               action: "register",
                               singleUseHeaders: headers,
                               parameters: paramss,
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                );
     }
+
+    /// <summary>
+    /// Adding a hook to a deal
+    /// </summary>
+    /// <param name="deal">deal to be hooked</param>
+    public async Task RegisterHook(Deal deal)
+    {
+        if (deal is null)
+            return;
+        if (!Fetcher.CheckFeasability())
+            return ;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+        };
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(deal), deal.Id},
+        };
+
+        await WebService.Post(controller: "monitor",
+                              action: "register",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+    }
+
+    /// <summary>
+    /// Request rewards from deal
+    /// </summary>
+    /// <remarks>
+    /// If the user made a purchase on this deal. they will be rewarded the gem amount if no
+    /// </remarks>
+    /// <param name="deal">deal where reward is requested</param>
+    public async Task<bool> RequestReward(Deal deal)
+    {
+        if (!Fetcher.CheckFeasability())
+            return false;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+        };
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(deal), deal.Id},
+        };
+
+        return (await WebService.Get<GemsRewardResponse>(controller: "gems",
+                              action: "request/deal",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Rewarded;
+    }
+
+    /// <summary>
+    /// Adding a hook to an article
+    /// </summary>
+    /// <param name="article">article from which the reward is requested</param>
+    public async Task<bool> RequestReward(Article article)
+    {
+        if (!Fetcher.CheckFeasability())
+            return false;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+        };
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(article), article.MongooseId},
+        };
+
+       return (await WebService.Get<GemsRewardResponse>(controller: "gems",
+                              action: "request/article",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Rewarded;
+    }
+
+    /// <summary>
+    /// SYnc users and their gems
+    /// </summary>
+    /// <returns> true ➡️ user gems have been synced | false ➡️ either user not logged in or gems can't be synced</returns>
+    public async Task<bool> UserGemsSync()
+    {
+        if (!Fetcher.CheckFeasability() || UserData is null)
+            return false;
+
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+            { "Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}"},
+        };
+
+       await WebService.Put<GemsRewardResponse>(controller: "gems",
+                              action: "sync",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+        return true;
+    }
+
+#if IOS
+    /// <summary>
+    /// Get all the gems from the user
+    /// </summary>
+    public async Task<List<Gem>> GetGems()
+    {
+        if (!Fetcher.CheckFeasability())
+            return null ;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+        };
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+
+
+        return (await WebService.Get<UserGemsResponse>(controller: "gems",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               ))?.Data;
+    }
+#endif
 
     /// <summary>
     /// Set a reminder for a deal
@@ -831,6 +985,27 @@ public class Fetcher
                                                },
                                                unSuccessCallback: e => _ = HandleHttpException(e)
                                                 ))?.Data;
+    }
+
+    /// <summary>
+    /// Get the culture infor of the device
+    /// </summary>
+    public async Task<DeviceCultureInfo> GetCultureInfo()
+    {
+        if (!Fetcher.CheckFeasability())
+            return null;
+
+
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+        };
+
+       return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
+                                               action: "culture",
+                                               singleUseHeaders: headers,
+                                               unSuccessCallback: e => _ = HandleHttpException(e)
+                                                );
     }
 
     /// <summary>
@@ -904,6 +1079,25 @@ public class Fetcher
     private static bool CheckFeasability()
     {
         return Connectivity.NetworkAccess == NetworkAccess.Internet;
+    }
+
+    /// <summary>
+    /// Set the culture info of the device. either fetching it from the server of from the storage
+    /// </summary>
+    private async Task SetCultureInfo()
+    {
+        string ciRaw = Preferences.Get(PreferencesKeys.CultureInfo, string.Empty);
+
+        if (string.IsNullOrEmpty(ciRaw))
+        {
+            if ((Culture = await GetCultureInfo()) is null)
+                return;
+
+            Preferences.Set(PreferencesKeys.CultureInfo, JsonConvert.SerializeObject(Culture));
+            return;
+        }
+
+        Culture = JsonConvert.DeserializeObject<DeviceCultureInfo>(ciRaw);
     }
 
     #region Local Actions

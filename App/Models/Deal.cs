@@ -28,6 +28,8 @@ public class Deal
     public Partner Partner { get; set; }
     [JsonProperty("drm"), Ignore]
     public string DRM { get; set; }
+    [JsonProperty("gemRewards")]
+    public string GemRewards { get; set; } = null;
     public Command Navigate
     {
         get 
@@ -38,7 +40,12 @@ public class Deal
                     {
                         LaunchMode = BrowserLaunchMode.External
                     });
-                    if (Preferences.Get(AppConstant.DealReminderEnabled, true) && (Expires - DateTime.UtcNow).TotalHours > 5)
+#if !DEBUG
+        // Register Hook
+        _ =(App.Current as App).DataFetcher.RegisterHook(this);
+#endif
+                    Preferences.Set(PreferencesKeys.LastDealVisit, JsonConvert.SerializeObject(this));
+                    if (Preferences.Get(PreferencesKeys.DealReminderEnabled, true) && (Expires - DateTime.UtcNow).TotalHours > 5)
                         await (App.Current as App).DataFetcher.SetDealReminder(this);
                 });
         }

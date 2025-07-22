@@ -30,7 +30,7 @@ public class DealsViewModel : BaseViewModel
     public DealsViewModel()
     {
         CurrentApp = App.Current as App;
-        filterCode = Preferences.Get(AppConstant.DealFilterCode, filterCode);
+        filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, filterCode);
         DealFilterCommand = new Command(() =>
         {
             CurrentApp.OpenPopUp(_lastFilterPopUp = new DealFilterPopUp(this));
@@ -48,7 +48,7 @@ public class DealsViewModel : BaseViewModel
                     drmIDs.Add(drm.Id);
                 }
             }
-            Preferences.Set(AppConstant.DealFilterCode, filterCode = filterCode.TrimEnd());
+            Preferences.Set(PreferencesKeys.DealFilterCode, filterCode = filterCode.TrimEnd());
 
             Deals = new (CurrentApp.DataFetcher.AllDeals.Where(deal => filterCode.Split('_').Contains(deal.DRM)).OrderBy(d => d.Expires));
 
