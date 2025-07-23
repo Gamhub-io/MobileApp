@@ -302,10 +302,10 @@ public partial class App : Application
 
 #if IOS
         SecureStorage.Remove(AppConstant.InstanceIdKey);
-        string instanceID = await SecureStorage.GetAsync(AppConstant.InstanceIdKey);
+        string instanceID = await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey);
         if (string.IsNullOrEmpty(instanceID))
         {
-            await SecureStorage.SetAsync(AppConstant.InstanceIdKey, instanceID = Guid.NewGuid().ToString().ToLower().Replace("-", string.Empty));
+            await SecureStorage.Default.SetAsync(AppConstant.InstanceIdKey, instanceID = UIKit.UIDevice.CurrentDevice.IdentifierForVendor.ToString().ToLower().Replace("-", string.Empty).Substring(0,30));
 
         }
 #endif

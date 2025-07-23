@@ -217,11 +217,11 @@ public class AppShellViewModel : BaseViewModel
 #if DEBUG
         Debug.WriteLine($"Current notification token: {_firebasePushNotification.Token}");
 #endif
-        await dataFetcher.SetupNotificationEntity((await SecureStorage.GetAsync(AppConstant.NotificationToken))?? _firebasePushNotification.Token);
+        await dataFetcher.SetupNotificationEntity((await SecureStorage.Default.GetAsync(AppConstant.NotificationToken))?? _firebasePushNotification.Token);
 
         // NOTE: this is mostly here for the devices that already have a token but don't have a notification entity
         // TODO: we may need to remove this at some point
-        if (await SecureStorage.GetAsync(AppConstant.NotificationToken) is null)
+        if (await SecureStorage.Default.GetAsync(AppConstant.NotificationToken) is null)
             await RegisterNotificationEntity(_firebasePushNotification.Token);
 
         _firebasePushNotification.SubscribeTopic("daily_catchup");
@@ -420,7 +420,7 @@ public class AppShellViewModel : BaseViewModel
         Debug.WriteLine($"New notification token: {e.Token}");
 #endif
         string newToken = e.Token;
-        string oldToken = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        string oldToken = await SecureStorage.Default.GetAsync(AppConstant.NotificationToken);
         if (string.IsNullOrEmpty(oldToken))
         {
             await RegisterNotificationEntity(newToken);

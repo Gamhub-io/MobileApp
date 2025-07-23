@@ -359,7 +359,7 @@ public class Fetcher
             {
                 rqHeaders = new();
                 if (UserData != null)
-                    rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                    rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             }
 #if DEBUG
@@ -403,7 +403,7 @@ public class Fetcher
 
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             var res = await this.WebService.Get<SubStatusRes>(controller: "monitor",
                                                                action: "NE/feedstatus",
@@ -444,7 +444,7 @@ public class Fetcher
 
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             FeedSubPayload rqBody = new() 
             {
@@ -493,7 +493,7 @@ public class Fetcher
 
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
             var res = await this.WebService.Post<FeedResponse>(controller: "feeds",
@@ -509,7 +509,7 @@ public class Fetcher
             // Subscribe by default
             feed.MongoID = res.Data.MongoID;
             await _generalDB.UpdateFeed(feed);
-            string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+            string token = await SecureStorage.Default.GetAsync(AppConstant.NotificationToken);
 
             if (string.IsNullOrEmpty(token))
                 return feed;
@@ -550,7 +550,7 @@ public class Fetcher
 
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
             var res = await this.WebService.Put<FeedResponse>(controller: "feeds",
@@ -593,7 +593,7 @@ public class Fetcher
         {
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             FeedSubPayload rqBody = new() 
             {
@@ -639,7 +639,7 @@ public class Fetcher
         {
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             NEupdateResponse res =await this.WebService.Put<NEupdateResponse>(controller: "monitor",
                                            action: "NE/update",
@@ -691,7 +691,7 @@ public class Fetcher
             SecureStorage.SetAsync(nameof(Session.TokenType), newSession.TokenType),
         ];
         
-        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        string token = await SecureStorage.Default.GetAsync(AppConstant.NotificationToken);
         if (!string.IsNullOrEmpty(token))
             tasks.Add(UpdateNotificationEntity(token, token));
 
@@ -711,7 +711,7 @@ public class Fetcher
             return;
         // Save regular data about the session
         int exp = Preferences.Get(nameof(Session.ExpiresIn), Int16.MinValue);
-        string refreshToken = await SecureStorage.GetAsync(nameof(Session.RefreshToken)).ConfigureAwait(false);
+        string refreshToken = await SecureStorage.Default.GetAsync(nameof(Session.RefreshToken)).ConfigureAwait(false);
 
         // If there was no session just leave
         if (string.IsNullOrEmpty(refreshToken)) return;
@@ -730,8 +730,8 @@ public class Fetcher
         if (!EvaluateCurrentSession()) return;
 
         // Save sensitive data
-        var accessTask = SecureStorage.GetAsync(nameof(Session.AccessToken));
-        var tokenTypeTask = SecureStorage.GetAsync(nameof(Session.TokenType));
+        var accessTask = SecureStorage.Default.GetAsync(nameof(Session.AccessToken));
+        var tokenTypeTask = SecureStorage.Default.GetAsync(nameof(Session.TokenType));
 
         await Task.WhenAll(accessTask, tokenTypeTask);
 
@@ -774,7 +774,7 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
         var paramss = new Dictionary<string, string>
         {
@@ -802,7 +802,7 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
         var paramss = new Dictionary<string, string>
         {
@@ -831,7 +831,7 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
@@ -860,7 +860,7 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
@@ -890,8 +890,8 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
-            { "Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}"},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
+            { "Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}"},
         };
 
        await WebService.Put<GemsRewardResponse>(controller: "gems",
@@ -913,10 +913,10 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
         if (UserData != null)
-            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
         return (await WebService.Get<UserGemsResponse>(controller: "gems",
@@ -937,10 +937,10 @@ public class Fetcher
             return ;
         Dictionary<string, string> rqHeaders = new();
         if (UserData != null)
-            rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+            rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
         if (string.IsNullOrEmpty(NeID))
-            await SetupNotificationEntity(await SecureStorage.GetAsync(AppConstant.NotificationToken));
+            await SetupNotificationEntity(await SecureStorage.Default.GetAsync(AppConstant.NotificationToken));
 
 #if DEBUG
         var res =
@@ -1187,7 +1187,7 @@ public class Fetcher
         try 
         { 
 
-            NeID = await SecureStorage.GetAsync(nameof(NeID));
+            NeID = await SecureStorage.Default.GetAsync(nameof(NeID));
             if (!string.IsNullOrEmpty(NeID) || string.IsNullOrEmpty(token))
                 return;
 
@@ -1196,7 +1196,7 @@ public class Fetcher
             {
                 Dictionary<string, string> rqHeaders = new();
                 if (UserData != null)
-                    rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                    rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
                 await RegisterNotificationEntity(token);
