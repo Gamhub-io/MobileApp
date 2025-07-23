@@ -73,7 +73,7 @@ public class GemTopUpViewModel : BaseViewModel
 
             cur.ShowLoadingIndicator();
             await _revenueCatBilling.PurchaseProduct(_selectedPlan.Package).ConfigureAwait(false);
-            _ = await cur.DataFetcher.UserGemsSync();
+            _ = await cur.DataFetcher.UserGemsSync().ConfigureAwait(false);
             cur.RemoveLoadingIndicator();
         });
     }
@@ -83,7 +83,7 @@ public class GemTopUpViewModel : BaseViewModel
         var loadedOfferings = await _revenueCatBilling.GetOfferings(true);
         if (!_revenueCatBilling.IsInitialized())
             return;
-        await _revenueCatBilling.Login(await SecureStorage.GetAsync(AppConstant.InstanceIdKey));
+        await _revenueCatBilling.Login(await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey));
         Plans = new(loadedOfferings
             .SelectMany(x => x.AvailablePackages
             .Where(x => x.OfferingIdentifier == "gems_top_ups")

@@ -12,7 +12,7 @@ public partial class RewardPopUp : Popup
         GemAmount = gemAmount;
     }
 
-    public string GemAmount { get; }
+    public string GemAmount { get; private set; }
 
     private void Close_Clicked (object sender, EventArgs e)
     {

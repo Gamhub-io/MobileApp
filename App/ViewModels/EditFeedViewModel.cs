@@ -82,7 +82,7 @@ public class EditFeedViewModel : BaseViewModel
         WeakReferenceMessenger.Default.Send(new FeedUpdatedMessage(_feed));
 
         string id = _feed.MongoID;
-        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        string token = await SecureStorage.Default.GetAsync(AppConstant.NotificationToken);
         
         if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(token))
             return;
@@ -124,7 +124,7 @@ public class EditFeedViewModel : BaseViewModel
     private async Task RefreshFeedSubStatus ()
     {
         string id = _feed.MongoID;
-        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        string token = await SecureStorage.Default.GetAsync(AppConstant.NotificationToken);
         if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(token))
         {
             FeedNotification = await CurrentApp.DataFetcher.CheckSubStatus(id, token);
