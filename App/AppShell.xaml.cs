@@ -36,7 +36,7 @@ public partial class AppShell : Shell
 #if DEBUG
             throw new Exception(ex.Message, ex);
 #else
-        SentrySdk.CaptureException(new Exception(errMsg));
+        SentrySdk.CaptureException(ex);
 #endif
         }
 
