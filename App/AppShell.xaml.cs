@@ -18,24 +18,38 @@ public partial class AppShell : Shell
     protected override void OnNavigating(ShellNavigatingEventArgs args)
     {
         base.OnNavigating(args);
-        if (args.Current?.Location == args.Target.Location)
+        try
         {
+            if (args.Current?.Location == args?.Target?.Location)
+            {
             if (this.CurrentPage is NewsPage)
             {
                 // scroll the feed all the way to the top
                 (this.CurrentPage as NewsPage).ScrollFeed();
             }
+                return;
+            }
+
+        } 
+        catch (Exception ex)
+        {
+#if DEBUG
+            throw new Exception(ex.Message, ex);
+#else
+        SentrySdk.CaptureException(ex);
+#endif
         }
-        else
+
             Task.Run (async () =>
             { 
-                string target = args.Target.Location.OriginalString;
-                string origin = args.Current.Location.OriginalString;
+            string target = args?.Target?.Location?.OriginalString;
+            string origin = args?.Current?.Location?.OriginalString;
 #if IOS
-                if (origin.Contains(nameof(GemTopUpPage)))
+            if (origin?.Contains(nameof(GemTopUpPage)) ?? false)
                     await RefreshGems();
 #endif
-
+            if (string.IsNullOrEmpty(target) || string.IsNullOrEmpty(origin))
+                return;
                 if (_vm != null && target != "//MyDealsPage" && !target.Contains("ArticlePage"))
                     await _vm.UpdateDeals();
 
