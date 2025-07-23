@@ -834,7 +834,7 @@ public class Fetcher
             { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
         if (UserData != null)
-            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
         var paramss = new Dictionary<string, string>
         {
@@ -863,7 +863,7 @@ public class Fetcher
             { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
         if (UserData != null)
-            headers.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
         var paramss = new Dictionary<string, string>
         {
