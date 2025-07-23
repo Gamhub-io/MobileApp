@@ -73,7 +73,7 @@ public class GemTopUpViewModel : BaseViewModel
 
             cur.ShowLoadingIndicator();
             await _revenueCatBilling.PurchaseProduct(_selectedPlan.Package).ConfigureAwait(false);
-            _ = await cur.DataFetcher.UserGemsSync();
+            _ = await cur.DataFetcher.UserGemsSync().ConfigureAwait(false);
             cur.RemoveLoadingIndicator();
         });
     }

@@ -218,10 +218,10 @@ public partial class App : Application
                 Task.Run(async () => 
                 {
                     Deal lastDeal = JsonConvert.DeserializeObject<Deal>(lastDealViewed);
+
                     if (await DataFetcher.RequestReward(lastDeal) && 
                         Convert.ToInt16(lastDeal.GemRewards) > 0)
                     {
-                        _ = Shell.RefreshGems().ConfigureAwait(false);
                         OpenPopUp(new RewardPopUp(lastDeal.GemRewards), Shell.CurrentPage);
                     }
 
@@ -237,6 +237,7 @@ public partial class App : Application
 #endif
             }
         }
+        _ = Shell.RefreshGems().ConfigureAwait(false);
         
 #endif
 

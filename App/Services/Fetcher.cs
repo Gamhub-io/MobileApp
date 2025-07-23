@@ -776,6 +776,9 @@ public class Fetcher
             { "x-api-key", AppConstant.MonitoringKey},
             { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
+#if DEBUG
+        Debug.WriteLine($"Instance: {headers["instance"]}");
+#endif
         var paramss = new Dictionary<string, string>
         {
             { nameof(article), article.MongooseId},
@@ -804,6 +807,10 @@ public class Fetcher
             { "x-api-key", AppConstant.MonitoringKey},
             { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
+#if DEBUG
+        Debug.WriteLine($"Instance: {headers["instance"]}");
+        Debug.WriteLine($"API Key: {headers["x-api-key"]}");
+#endif
         var paramss = new Dictionary<string, string>
         {
             { nameof(deal), deal.Id},
@@ -833,6 +840,11 @@ public class Fetcher
             { "x-api-key", AppConstant.MonitoringKey},
             { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
+
+#if DEBUG
+        Debug.WriteLine($"Instance: {headers["instance"]}");
+#endif
+
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
@@ -840,6 +852,10 @@ public class Fetcher
         {
             { nameof(deal), deal.Id},
         };
+
+#if DEBUG
+        Debug.WriteLine($"{nameof(deal)}: {paramss[nameof(deal)]}");
+#endif
 
         return (await WebService.Get<GemsRewardResponse>(controller: "gems",
                               action: "request/deal",
@@ -1060,7 +1076,9 @@ public class Fetcher
     private async Task HandleHttpException(HttpResponseMessage err)
     {
         string errMsg = await err.Content.ReadAsStringAsync();
-
+#if DEBUG
+        Debug.WriteLine(errMsg);
+#endif
         if (errMsg.Contains("internet connection") || errMsg.Contains("Connection failure"))
             // If the error is being thrown because there is no internet: there is no point reporting it 
             return;
