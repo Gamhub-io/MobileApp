@@ -10,7 +10,7 @@
     <Border
            VerticalOptions="Center" 
            HorizontalOptions="Center"
-           HeightRequest="250"
+           HeightRequest="290"
            WidthRequest="280"
            StrokeShape="RoundRectangle 20">
         <Border.Background>
@@ -50,9 +50,8 @@
                 <Label.FormattedText>
                     <FormattedString>
                         <Span Text="You just earned "/>
-                        <Span Text="{Binding GemAmount}"
+                        <Span Text="{Binding GemAmount,StringFormat='{0} Gems'}"
                               FontFamily="P-Bold"/>
-                        <Span Text=" Gems"/>
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
