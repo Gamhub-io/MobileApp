@@ -1,7 +1,6 @@
 ﻿
 
 using Maui.RevenueCat.InAppBilling.Models;
-using System.Globalization;
 
 namespace GamHubApp.Models;
 
@@ -16,24 +15,11 @@ public class GemsPlan: SelectableModel
             var value = Convert.ToInt16(Gems * 0.11);
             return (int)Math.Round((double)(100 * (value - Price)) / value);
         } }
-    public string OriginalPrice { get
-    {
-
-        return $"{GetCurrencySymbol(Package.Product.Pricing.CurrencyCode)}{Gems * 0.11}";
-        } }
-    public static string GetCurrencySymbol(string currencyCode)
-    {
-        var cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-        for (int i=0; i< cultures.Count(); i++)
+    public string OriginalPrice 
+    { 
+        get
         {
-            RegionInfo region = new RegionInfo(cultures[i].Name);
-
-            if (region.ISOCurrencySymbol.Equals(currencyCode, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return region.CurrencySymbol;
-            }
-        }
-
-        return "¤";
+            return (Gems * 0.11).ToString("C");
+        } 
     }
 }
