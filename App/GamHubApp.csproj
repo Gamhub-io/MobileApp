@@ -125,6 +125,11 @@
 	  
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\PopUps\PurchaseGemsPopUp.xaml.cs">
+      <DependentUpon>PurchaseGemsPopUp.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <MauiXaml Update="Resources\Styles\Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -132,6 +137,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\PopUps\DealFilterPopUp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\PopUps\PurchaseGemsPopUp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\PopUps\RewardPopUp.xaml">
