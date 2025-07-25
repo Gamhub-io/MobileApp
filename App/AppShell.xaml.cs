@@ -94,10 +94,11 @@ public partial class AppShell : Shell
     {
         _vm.UpdateDeals().GetAwaiter();
     }
-
+#if IOS
     public async Task RefreshGems()
     {
-        await _vm.UpdateDeals();
+        await _vm.UpdateGems();
 
     }
+#endif
 }

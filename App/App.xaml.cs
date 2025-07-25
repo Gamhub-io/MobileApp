@@ -302,7 +302,6 @@ public partial class App : Application
     {
 
 #if IOS
-        SecureStorage.Remove(AppConstant.InstanceIdKey);
         string instanceID = await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey);
         if (string.IsNullOrEmpty(instanceID))
         {
