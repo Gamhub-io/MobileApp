@@ -17,9 +17,6 @@ public class GemsPlan: SelectableModel
         } }
     public string OriginalPrice 
     { 
-        get
-        {
-            return (Gems * 0.11).ToString("C");
-        } 
+        get=> (Gems * 0.11).ToString("C");
     }
 }
