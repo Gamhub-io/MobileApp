@@ -1,6 +1,7 @@
 ﻿
 using GamHubApp.Core;
 using GamHubApp.Models;
+using GamHubApp.Views;
 using Maui.RevenueCat.InAppBilling.Services;
 using System.Collections.ObjectModel;
 
@@ -34,6 +35,21 @@ public class GemTopUpViewModel : BaseViewModel
             OnPropertyChanged(nameof(PlanSelected));
         }
     }
+
+    private string _gemAmount;
+    public string GemAmount
+    {
+        get
+        {
+            return _gemAmount;
+        }
+        set
+        {
+            _gemAmount = value;
+            OnPropertyChanged(nameof(GemAmount));
+        }
+    }
+
     private GemsPlan _selectedPlan;
     public GemsPlan SelectedPlan
     {
@@ -75,6 +91,9 @@ public class GemTopUpViewModel : BaseViewModel
             await _revenueCatBilling.PurchaseProduct(_selectedPlan.Package).ConfigureAwait(false);
             _ = await cur.DataFetcher.UserGemsSync().ConfigureAwait(false);
             cur.RemoveLoadingIndicator();
+            await Task.Delay(TimeSpan.FromMilliseconds(300));
+            GemAmount = _selectedPlan.Package.Identifier.Split('_')[0];
+            cur.OpenPopUp(new PurchaseGemsPopUp(this));
         });
     }
     public async Task LoadOptionsAsync()

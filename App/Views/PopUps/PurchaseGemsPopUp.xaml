@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:popups="clr-namespace:GamHubApp.Views" 
+    xmlns:vm="clr-namespace:GamHubApp.ViewModels" 
+    x:DataType="vm:GemTopUpViewModel"
+    x:Class="GamHubApp.Views.PurchaseGemsPopUp"
+    Color="Transparent">
+    <Border
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"
+           HeightRequest="350"
+           WidthRequest="280"
+           StrokeShape="RoundRectangle 20">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                 EndPoint="1,1">
+                <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                <GradientStop Color="#0d0d0d"
+                           Offset="0.65"/>
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <StackLayout Spacing="20"
+                    VerticalOptions="Center">
+
+            <Image Source="gemstone.gif"
+       HeightRequest="100" 
+       HorizontalOptions="Center" 
+       IsAnimationPlaying="True" />
+
+            <Label Text="Thanks for your purchase"
+                   FontSize="25"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="5,0"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"/>
+            <Label 
+                   FontSize="20"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="5,0"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-SemiBold">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="You're now the proud owner of "/>
+                        <Span Text="{Binding GemAmount,StringFormat='{0} more Gems!'}"
+                              FontFamily="P-Bold"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Button Text="GG!"
+                    BackgroundColor="{DynamicResource DarkPrimary}"
+                    TextColor="{DynamicResource FontColor}"
+                    FontFamily="P-Bold"
+                    FontSize="20"
+                    Padding="1"
+                    HeightRequest="50"
+                    WidthRequest="150"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    CornerRadius="12"
+                    Clicked="Close_Clicked"
+                    Grid.Row="2"/>
+        </StackLayout>
+
+    </Border>
+</toolkit:Popup>
