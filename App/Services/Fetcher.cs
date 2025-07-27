@@ -955,7 +955,8 @@ public class Fetcher
     public async Task SetDealReminder(Deal deal)
     {
         if (!Fetcher.CheckFeasability() || 
-            await _firebasePushPermissions.GetAuthorizationStatusAsync() is not Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted)
+            await _firebasePushPermissions.GetAuthorizationStatusAsync() is not Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted ||
+            !Preferences.Get(PreferencesKeys.DealReminderEnabled, true))
             return ;
 
         Dictionary<string, string> rqHeaders = new();
