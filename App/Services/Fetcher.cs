@@ -5,6 +5,8 @@ using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using Plugin.FirebasePushNotifications;
+
 #if IOS
 using Maui.RevenueCat.InAppBilling.Services;
 #endif
@@ -40,12 +42,14 @@ public class Fetcher
     public DeviceCultureInfo Culture { get; private set; }
     public List<Article> Bookmarks { get; private set; }
     public string NeID { get; private set; }
+    private INotificationPermissions _firebasePushPermissions;
 
 #if IOS
     private readonly IRevenueCatBilling _revenueCatBilling;
 #endif
     public Fetcher(GeneralDataBase generalDataBase, 
-                   BackUpDataBase backUpDataBase
+                   BackUpDataBase backUpDataBase,
+                   INotificationPermissions notificationPermissions
 #if IOS
                    ,IRevenueCatBilling revenueCatBilling)
 #else
@@ -64,6 +68,7 @@ public class Fetcher
 #endif
         _generalDB = generalDataBase;
         _backupDB = backUpDataBase;
+        _firebasePushPermissions = notificationPermissions;
 
         Task.WhenAll([
             GetSources(),
@@ -949,8 +954,10 @@ public class Fetcher
     /// <returns></returns>
     public async Task SetDealReminder(Deal deal)
     {
-        if (!Fetcher.CheckFeasability())
+        if (!Fetcher.CheckFeasability() || 
+            await _firebasePushPermissions.GetAuthorizationStatusAsync() is not Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted)
             return ;
+
         Dictionary<string, string> rqHeaders = new();
         if (UserData != null)
             rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
