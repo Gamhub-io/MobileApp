@@ -51,6 +51,8 @@ on:
         required: true
       revenueCatApiKey_iOS:
         required: true
+      sha_salt:
+        required: true
 jobs:
   publish-ios:
     runs-on: macos-15
@@ -90,6 +92,7 @@ jobs:
           api_host: ${{ secrets.api_host }}
           monitoring_key: ${{ secrets.monitoring_key }}
           revenueCatApiKey_iOS: ${{ secrets.revenueCatApiKey_iOS }}
+          sha_salt: ${{ secrets.sha_salt }}
           project_folder: '.'
 
       - name: Install MAUI Workload
