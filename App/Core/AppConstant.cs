@@ -6,6 +6,7 @@ namespace GamHubApp.Core
         public static string ApiHost = Environment.GetEnvironmentVariable("api_host");
         public static string MonitoringKey = Environment.GetEnvironmentVariable("monitoring_key");
         public static string Localhost = Environment.GetEnvironmentVariable("localhost");
+        public static string ShaSalt = Environment.GetEnvironmentVariable("shaSalt");
         public static string RevenueCatApiKey_iOS { get => Environment.GetEnvironmentVariable("revenueCatApiKey_iOS"); }
         public static string RevenueCatApiKey_Android { get => Environment.GetEnvironmentVariable("revenueCatApiKey_Android"); }
 

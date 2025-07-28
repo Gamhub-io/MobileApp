@@ -6,6 +6,8 @@ using GamHubApp.Views;
 using Plugin.FirebasePushNotifications;
 using Plugin.FirebasePushNotifications.Model.Queues;
 using Maui.RevenueCat.InAppBilling;
+using GamHubApp.Core;
+
 
 #if IOS
 using GamHubApp.Platforms.iOS.Renderers;
@@ -23,7 +25,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-#if Debug
+#if DEBUG
         EnvironementSetup.DebugSetup();
 #endif
         builder.UseMauiApp<App>()

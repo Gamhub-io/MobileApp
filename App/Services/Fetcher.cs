@@ -89,6 +89,7 @@ public class Fetcher
 
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
+                                                               singleUseHeaders: await GetHeaders(),
                                                                parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
@@ -154,6 +155,7 @@ public class Fetcher
 
             return await WebService.Get<Collection<Article>>(controller: "feeds",
                                                              action: needUpdate ? "update" : null,
+                                                             singleUseHeaders: await GetHeaders(),
                                                              parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
                                                              unSuccessCallback: (err) => _ = HandleHttpException(err));
         }
@@ -217,6 +219,7 @@ public class Fetcher
 
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
+                                                               singleUseHeaders: await GetHeaders(),
                                                                parameters: new string[] { dateUpdate },
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
@@ -243,14 +246,14 @@ public class Fetcher
             return null;
         try
         {
-            //dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, 0);
-            string[] parameters = new string[]
-            {
+            string[] parameters =
+            [
                dateFrom.AddHours(-length).ToString("dd-MM-yyy_HH:mm:ss"),
                dateFrom.AddMinutes(-1).ToString("dd-MM-yyy_HH:mm:ss"),
-            };
+            ];
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                parameters: parameters,
+                                                               singleUseHeaders: await GetHeaders(),
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
         }
@@ -335,6 +338,7 @@ public class Fetcher
         {
             return await this.WebService.Get<Article>(controller: "article",
                                                       parameters: new string[] { articleId },
+                                                      singleUseHeaders: await GetHeaders(),
                                                       unSuccessCallback: e => _ = HandleHttpException(e));
         }
 
@@ -406,7 +410,7 @@ public class Fetcher
             if (!Fetcher.CheckFeasability())
                 return false;
 
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
@@ -447,7 +451,7 @@ public class Fetcher
             if (string.IsNullOrEmpty(feedID) || string.IsNullOrEmpty(token))
                 return;
 
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
@@ -496,7 +500,7 @@ public class Fetcher
             string name = feed.Title;
             string keyword = feed.Keywords;
 
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
@@ -553,7 +557,7 @@ public class Fetcher
             if (string.IsNullOrEmpty(id) || Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
                 return feed;
 
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
@@ -596,7 +600,7 @@ public class Fetcher
             return ;
         try
         {
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
@@ -769,6 +773,23 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Get common header
+    /// </summary>
+    /// <returns></returns>
+    private async Task<Dictionary<string,string>> GetHeaders()
+    {
+#if DEBUG
+        Debug.WriteLine($"monitorkey: {AppConstant.MonitoringKey}");
+#endif
+        return new Dictionary<string, string>
+        {
+            { "x-api-key", Csign.GenerateApiKey()},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
+        };
+
+    }
+
+    /// <summary>
     /// Adding a hook to an article
     /// </summary>
     /// <param name="article">article hooked</param>
@@ -840,14 +861,11 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return false;
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
-        };
+        var headers = await GetHeaders();
 
 #if DEBUG
         Debug.WriteLine($"Instance: {headers["instance"]}");
+        Debug.WriteLine($"API Key: {headers["x-api-key"]}");
 #endif
 
         if (UserData != null)
@@ -878,11 +896,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return false;
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
-        };
+        var headers = await GetHeaders();
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
@@ -908,14 +922,11 @@ public class Fetcher
         if (!Fetcher.CheckFeasability() || UserData is null)
             return false;
 
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
-            { "Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}"},
-        };
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
-       await WebService.Put<GemsRewardResponse>(controller: "gems",
+        await WebService.Put<GemsRewardResponse>(controller: "gems",
                               action: "sync",
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
@@ -931,11 +942,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null ;
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
-        };
+        var headers = await GetHeaders();
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
@@ -993,16 +1000,11 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null;
-
-
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-        };
+ 
 
        return (await WebService.Get<NeResponse>(controller: "monitor",
                                                action: "NE",
-                                               singleUseHeaders: headers,
+                                               singleUseHeaders: await GetHeaders(),
                                                parameters: new Dictionary<string, string>
                                                {
                                                    { nameof(token), token },
@@ -1019,15 +1021,9 @@ public class Fetcher
         if (!Fetcher.CheckFeasability())
             return null;
 
-
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-        };
-
        return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
                                                action: "culture",
-                                               singleUseHeaders: headers,
+                                               singleUseHeaders: await GetHeaders(),
                                                unSuccessCallback: e => _ = HandleHttpException(e)
                                                 );
     }

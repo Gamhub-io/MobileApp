@@ -128,7 +128,6 @@ public class AppShellViewModel : BaseViewModel
 
         _firebasePushNotification = firebasePushNotification;
         _firebasePushPermissions = firebasePushPermission;
-        (_generalDB = generalDB).Init().GetAwaiter();
 
         Task.Run(async () =>
         {
