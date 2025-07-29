@@ -935,6 +935,26 @@ public class Fetcher
         return true;
     }
 
+    /// <summary>
+    /// Get the current Giveways
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                              action: "all",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Data;
+    }
+
 #if IOS
     /// <summary>
     /// Get all the gems from the user
