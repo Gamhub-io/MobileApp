@@ -42,6 +42,8 @@ public class Fetcher
     public DeviceCultureInfo Culture { get; private set; }
     public List<Article> Bookmarks { get; private set; }
     public string NeID { get; private set; }
+    public List<Gem> Gems { get; private set; }
+
     private INotificationPermissions _firebasePushPermissions;
 
 #if IOS
@@ -935,6 +937,7 @@ public class Fetcher
         return true;
     }
 
+#if IOS
     /// <summary>
     /// Get the current Giveways
     /// </summary>
@@ -955,7 +958,34 @@ public class Fetcher
                                )).Data;
     }
 
-#if IOS
+    /// <summary>
+    /// Get the current Giveways
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task EnterGiveaways(Giveaway giveaway)
+    {
+        if (!Fetcher.CheckFeasability() || giveaway.EntryCost > Gems.Count)
+            return;
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(giveaway), giveaway.Id},
+        };
+        await WebService.Post(controller: "giveaway",
+                              action: "enter",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              payload: new GemPayload
+                              {
+                                  Gems= [..Gems.Take(giveaway.EntryCost).Select(g => g.Hash)]
+                              },
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+        await GetGems();
+    }
     /// <summary>
     /// Get all the gems from the user
     /// </summary>
@@ -968,7 +998,7 @@ public class Fetcher
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
-        return (await WebService.Get<UserGemsResponse>(controller: "gems",
+        return Gems =  (await WebService.Get<UserGemsResponse>(controller: "gems",
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                ))?.Data;
