@@ -15,6 +15,8 @@ public class Giveaway
     public string Image { get; set; }
     [JsonProperty("entryCost")]
     public int EntryCost{ get; set; }
+    [JsonProperty("endDate")]
+    public DateTime EndDate { get; set; }
     [JsonProperty("drm")]
     public GamePlatform DRM { get; set; }
 }
