@@ -778,12 +778,13 @@ public class Fetcher
     /// <returns></returns>
     private async Task<Dictionary<string,string>> GetHeaders()
     {
+        var apiKey = Csign.GenerateApiKey();
 #if DEBUG
-        Debug.WriteLine($"monitorkey: {AppConstant.MonitoringKey}");
+        Debug.WriteLine($"ApiKey: {apiKey}");
 #endif
         return new Dictionary<string, string>
         {
-            { "x-api-key", Csign.GenerateApiKey()},
+            { "x-api-key", apiKey},
             { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
 
