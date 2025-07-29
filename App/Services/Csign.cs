@@ -14,7 +14,7 @@ public class Csign
     {
         DateTime date = DateTime.UtcNow;
 #if DEBUG
-        Debug.WriteLine($"ApiKey: {date}");
+        Debug.WriteLine($"Date: {date}");
         Debug.WriteLine($"salt: {AppConstant.ShaSalt}");
 #endif
         using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(AppConstant.ShaSalt));
