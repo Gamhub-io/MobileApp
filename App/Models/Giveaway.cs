@@ -19,4 +19,15 @@ public class Giveaway
     public DateTime EndDate { get; set; }
     [JsonProperty("drm")]
     public GamePlatform DRM { get; set; }
+    private bool _isEntered;
+
+    public bool IsEntered 
+    { 
+        get => _isEntered;
+        set
+        {
+            _isEntered = value;
+            OnPropertyChanged(nameof(IsEntered));
+        }
+    }
 }

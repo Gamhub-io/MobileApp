@@ -37,8 +37,15 @@
         <CollectionView.ItemTemplate>
             <DataTemplate x:DataType="models:Giveaway">
                 <Grid RowDefinitions="220,50"
-                  x:Name="DealBlock"
+                  x:Name="GiveawayBlock"
                   Padding="10">
+
+                    <Grid.Behaviors>
+                            <mct:TouchBehavior Command="{Binding EnterCommand}"
+                                       BindingContext="{Binding BindingContext, 
+                                                                Source={x:Reference GiveawayBlock},
+                                                                x:DataType=Grid}"/>
+                        </Grid.Behaviors>
                     <Border Grid.Row="0"
                         StrokeShape="RoundRectangle 8"
                         x:Name="thumbnail">
@@ -46,13 +53,6 @@
                            HorizontalOptions="Fill"
                            VerticalOptions="Fill"
                            Aspect="Fill"/>
-
-                        <!--<Border.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Navigate}"
-                                       BindingContext="{Binding BindingContext, 
-                                                                Source={x:Reference thumbnail},
-                                                                x:DataType=Border}"/>
-                        </Border.Behaviors>-->
                     </Border>
 
                     <Border Grid.Row="0"
@@ -77,12 +77,6 @@
                                 </FormattedString>
                             </Label.FormattedText>
                         </Label>
-                        <!--<Border.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Navigate}"
-                                            BindingContext="{Binding BindingContext, 
-                                                                     Source={x:Reference timestampCard},
-                                                                     x:DataType=Border}"/>
-                        </Border.Behaviors>-->
                     </Border>
                     <Label Grid.Row="1"
                        HorizontalOptions="Center"
@@ -92,13 +86,6 @@
                        FontFamily="P-Bold"
                        x:Name="label"
                        FontSize="20">
-                        <!--<Label.Behaviors>
-                            <mct:TouchBehavior Command="{Binding Navigate}"
-                                           BindingContext="{Binding BindingContext, 
-                                                                    Source={x:Reference label},
-                                                                    x:DataType=Label}"/>
-
-                        </Label.Behaviors>-->
                     </Label>
                     <Grid RowDefinitions="*,40,40"
                       Grid.Row="1"
@@ -109,16 +96,10 @@
                             VerticalOptions="Start"
                             HeightRequest="30"
                             Margin="5,0"
+                                IsVisible="{Binding IsEntered, Converter={StaticResource BoolInverseConverter}}"
                             Stroke="{DynamicResource BackgroundColor}"
                             StrokeThickness="2"
                             BackgroundColor="{StaticResource Dark}">
-
-                            <!--<Border.Behaviors>
-                                <mct:TouchBehavior Command="{Binding Navigate}"
-                                       BindingContext="{Binding BindingContext, 
-                                                                Source={x:Reference discountCard},
-                                                                x:DataType=Border}"/>
-                            </Border.Behaviors>-->
                             <Label Margin="5"
                                 FontSize="15"
                                Padding="0"
@@ -137,6 +118,34 @@
                                         <Span Text="{Binding EntryCost}"
                                           FontFamily="P-Bold"
                                           TextColor="{DynamicResource FontColor}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </Border>
+                        <Border Grid.Row="1"
+                                StrokeShape="RoundRectangle 8"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Start"
+                                HeightRequest="30"
+                                Margin="5,0"
+                                IsVisible="{Binding IsEntered}"
+                                Stroke="{DynamicResource DarkPrimary}"
+                                StrokeThickness="2"
+                                BackgroundColor="{StaticResource PrimaryAccent}">
+                            <Label Margin="5"
+                                FontSize="15"
+                               Padding="0"
+                                HorizontalOptions="End"
+                               VerticalOptions="Center"
+                                          TextColor="{DynamicResource FontColor}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span 
+                                            Text="&#xf00c;" 
+                                            FontFamily="FaSolid"/>
+                                        <Span Text=" "/>
+                                        <Span Text="Entered"
+                                          FontFamily="P-Bold"/>
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>

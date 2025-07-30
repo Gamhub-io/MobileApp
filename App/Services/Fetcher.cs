@@ -962,6 +962,26 @@ public class Fetcher
     /// Get the current Giveways
     /// </summary>
     /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetEnteredGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                              action: "entries",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Data;
+    }
+
+    /// <summary>
+    /// Get the current Giveways
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
     public async Task EnterGiveaways(Giveaway giveaway)
     {
         if (!Fetcher.CheckFeasability() || giveaway.EntryCost > Gems.Count)

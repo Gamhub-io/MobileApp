@@ -21,19 +21,48 @@ public class GiveawayViewModel : BaseViewModel
             OnPropertyChanged(nameof(Giveaways));
         }
     }
+    private ObservableCollection<Giveaway> _entries;
+    public ObservableCollection<Giveaway> Entries
+    {
+        get 
+        {
+            return _entries; 
+        }
+        set
+        {
+            _entries = value;
+            OnPropertyChanged(nameof(Entries));
+        }
+    }
     public GiveawayViewModel(Fetcher fetch)
     {
         _fetcher = fetch;
+#if IOS
         RefreshGiveawayList().GetAwaiter();
+#endif
         
     }
-
+#if IOS
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
     private async Task RefreshGiveawayList()
     {
-        Giveaways = new (await _fetcher.GetGiveaways());
+        Task<List<Giveaway>> giveawayTask = _fetcher.GetGiveaways();
+        Task<List<Giveaway>> entriesTask = _fetcher.GetGiveaways();
+
+        await Task.WhenAll(giveawayTask, entriesTask);    
+        Giveaways = new (await giveawayTask);
+        Entries = new(await entriesTask);
+
+        for (int i = 0; i< _entries.Count; i++)
+        {
+            var giveaway = _giveaways.Single(ga => ga.Id == _entries[i].Id);
+
+            if (giveaway?.IsEntered == false)
+                Giveaways[_giveaways.IndexOf(giveaway)].IsEntered = true;
+        }
     }
+#endif
 }
