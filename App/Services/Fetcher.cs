@@ -959,7 +959,7 @@ public class Fetcher
     }
 
     /// <summary>
-    /// Get the current Giveways
+    /// Get the Giveways entered by the user
     /// </summary>
     /// <returns>Return the giveaways</returns>
     public async Task<List<Giveaway>> GetEnteredGiveaways()
@@ -976,6 +976,26 @@ public class Fetcher
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                )).Data;
+    }
+
+    /// <summary>
+    /// Get the Giveways the user won
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetWonGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                                                      action: "wins",
+                                                      singleUseHeaders: headers,
+                                                      unSuccessCallback: e => _ = HandleHttpException(e)
+                                                      )).Data;
     }
 
     /// <summary>
