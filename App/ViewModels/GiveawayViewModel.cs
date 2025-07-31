@@ -50,7 +50,7 @@ public class GiveawayViewModel : BaseViewModel
     private async Task RefreshGiveawayList()
     {
         Task<List<Giveaway>> giveawayTask = _fetcher.GetGiveaways();
-        Task<List<Giveaway>> entriesTask = _fetcher.GetGiveaways();
+        Task<List<Giveaway>> entriesTask = _fetcher.GetEnteredGiveaways();
 
         await Task.WhenAll(giveawayTask, entriesTask);    
         Giveaways = new (await giveawayTask);

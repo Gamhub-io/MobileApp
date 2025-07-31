@@ -1,4 +1,4 @@
-#if IOS
+﻿#if IOS
 using GamHubApp.Views;
 #endif
 using Newtonsoft.Json;
@@ -33,6 +33,7 @@ public class Giveaway : SelectableModel
             {
                 await (App.Current as App).DataFetcher.EnterGiveaways(this);
 
+                IsEntered = true;
             }));
         });
 #else
@@ -49,6 +50,17 @@ public class Giveaway : SelectableModel
         {
             _isEntered = value;
             OnPropertyChanged(nameof(IsEntered));
+        }
+    }
+    private bool _unavailable;
+
+    public bool Unavailable 
+    { 
+        get => _unavailable;
+        set
+        {
+            _unavailable = value;
+            OnPropertyChanged(nameof(Unavailable));
         }
     }
 }

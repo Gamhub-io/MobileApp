@@ -42,6 +42,7 @@
 
                     <Grid.Behaviors>
                             <mct:TouchBehavior Command="{Binding EnterCommand}"
+                                               IsEnabled="{Binding Unavailable, Converter={StaticResource BoolInverseConverter}}"
                                        BindingContext="{Binding BindingContext, 
                                                                 Source={x:Reference GiveawayBlock},
                                                                 x:DataType=Grid}"/>
@@ -104,20 +105,26 @@
                                 FontSize="15"
                                Padding="0"
                                 HorizontalOptions="End"
-                               VerticalOptions="Center">
+                               VerticalOptions="Center"
+                                          TextColor="{DynamicResource FontColor}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                                 Binding="{Binding Unavailable}"
+                                                 Value="true">
+                                        <Setter Property="TextColor" Value="{StaticResource DealExpiringColor}" />
+                                    </DataTrigger>
+                                </Label.Triggers>
                                 <Label.FormattedText>
                                     <FormattedString>
                                         <Span Text="Cost "
-                                          FontFamily="P-Regular"
-                                          TextColor="{DynamicResource FontColor}"/>
+                                          FontFamily="P-Regular"/>
                                         <Span 
                                             Text="&#xf3a5;" 
                                             FontFamily="FaSolid"
                                             TextColor="{DynamicResource DiscountColor}"/>
                                         <Span Text=" "/>
                                         <Span Text="{Binding EntryCost}"
-                                          FontFamily="P-Bold"
-                                          TextColor="{DynamicResource FontColor}"/>
+                                          FontFamily="P-Bold"/>
                                     </FormattedString>
                                 </Label.FormattedText>
                             </Label>
