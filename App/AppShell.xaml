@@ -279,16 +279,6 @@
             </ShellContent.Icon>
         </ShellContent>
         <ShellContent FlyoutItemIsVisible="False"
-                   Route="UserGiveawayPage"
-                   Title="My Giveaways"
-                   ContentTemplate="{DataTemplate views:UserGiveawayPage}">
-            <ShellContent.Icon>
-                <FontImageSource FontFamily="FaSolid" 
-                              Glyph="&#xe4fb;" 
-                              Size="{OnPlatform Android='26', iOS='25'}"/>
-            </ShellContent.Icon>
-        </ShellContent>
-        <ShellContent FlyoutItemIsVisible="False"
                    Route="UserGiveawayWinsPage"
                    Title="My Wins"
                    ContentTemplate="{DataTemplate views:UserGiveawayWinsPage}">

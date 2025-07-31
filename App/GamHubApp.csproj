@@ -160,9 +160,6 @@
     <MauiXaml Update="Views\DealsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Views\UserGiveawayPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
     <MauiXaml Update="Views\UserGiveawayWinsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
