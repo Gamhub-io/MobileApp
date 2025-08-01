@@ -261,13 +261,43 @@
         </ShellContent>
     </FlyoutItem>
     
+    <!-- Giveaway Page -->
+    <FlyoutItem Title="Giveaways"
+                IsVisible="{Binding GemEnabled}"
+             Icon="&#xf06b;"
+             >
+        <ShellContent FlyoutItemIsVisible="False"
+                   Route="GiveawayPage"
+                   Title="Giveaways"
+                   ContentTemplate="{DataTemplate views:GiveawayPage}">
+            <ShellContent.Icon Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,-30'}"
+                            >
+                <FontImageSource FontFamily="FaSolid" 
+                              Glyph="&#xf79c;" 
+                              Size="{OnPlatform Android='26', iOS='25'}"
+                              />
+            </ShellContent.Icon>
+        </ShellContent>
+        <ShellContent FlyoutItemIsVisible="False"
+                   Route="UserGiveawayWinsPage"
+                   Title="My Wins"
+                   ContentTemplate="{DataTemplate views:UserGiveawayWinsPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FaSolid" 
+                              Glyph="&#xf091;" 
+                              Size="{OnPlatform Android='26', iOS='25'}"/>
+            </ShellContent.Icon>
+
+        </ShellContent>
+    </FlyoutItem>
+
     <!-- About Page -->
     <FlyoutItem Title="About"
                 Icon="&#xf05a;">
         <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
     </FlyoutItem>
     
-    <!-- About Page -->
+    <!-- Settings Page -->
     <FlyoutItem Title="Settings"
                 Icon="&#xf1de;">
         <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>

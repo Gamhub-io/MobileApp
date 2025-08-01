@@ -96,7 +96,9 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
         mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
         mauiAppBuilder.Services.AddSingleton<DealsViewModel>();
+        mauiAppBuilder.Services.AddSingleton<GiveawayViewModel>();
         mauiAppBuilder.Services.AddSingleton<GemTopUpViewModel>();
+        mauiAppBuilder.Services.AddSingleton<GiveawayWinsViewModel>();
 
         return mauiAppBuilder;
     }
@@ -124,6 +126,8 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<DealFilterPopUp>();
         mauiAppBuilder.Services.AddSingleton<SettingsPage>();
         mauiAppBuilder.Services.AddSingleton<GemTopUpPage>();
+        mauiAppBuilder.Services.AddSingleton<GiveawayPage>();
+        mauiAppBuilder.Services.AddSingleton<UserGiveawayWinsPage>();
 
         return mauiAppBuilder;
     }

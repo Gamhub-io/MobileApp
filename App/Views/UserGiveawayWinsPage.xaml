@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
+             x:DataType="viewmodels:GiveawayWinsViewModel"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             xmlns:models="clr-namespace:GamHubApp.Models"
+             x:Class="GamHubApp.Views.UserGiveawayWinsPage">
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="4*,60,2">
+            <Label Text="My Wins"
+                  VerticalOptions="Center"
+                  HorizontalOptions="Center"
+                  FontSize="20"
+                  TextColor="{StaticResource FontColor}"
+                  FontFamily="P-Bold"
+                  Grid.Column="0"/>
+        </Grid>
+    </Shell.TitleView>
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0"
+                     EndPoint="1,1">
+            <GradientStop Color="#262626"
+                   Offset="0.1"/>
+            <GradientStop Color="{StaticResource Dark}"
+                   Offset="0.75"/>
+            <GradientStop Color="#0d0d0d"
+                   Offset="65.0"/>
+            <GradientStop Color="Black"
+                   Offset="1.0"/>
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    <CollectionView 
+            ItemsSource="{Binding Wins}"
+            Margin="1,0"
+            >
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="models:Giveaway">
+                <Grid RowDefinitions="220,50"
+               x:Name="GiveawayBlock"
+               Padding="10">
+                    <Grid.Behaviors>
+                        <mct:TouchBehavior Command="{Binding ClaimCommand}"
+                           IsEnabled="{Binding Key, Converter={StaticResource NullOrEmptyStringConverter}}"
+                   BindingContext="{Binding BindingContext, 
+                                            Source={x:Reference GiveawayBlock},
+                                            x:DataType=Grid}"/>
+                        <mct:TouchBehavior Command="{Binding CopyKeyCommand}"
+                           IsEnabled="{Binding Key, Converter={StaticResource NotNullOrEmptyStringConverter}}"
+                   BindingContext="{Binding BindingContext, 
+                                            Source={x:Reference GiveawayBlock},
+                                            x:DataType=Grid}"/>
+                    </Grid.Behaviors>
+                    <Border Grid.Row="0"
+                     StrokeShape="RoundRectangle 8"
+                     x:Name="thumbnail">
+                        <Image Source="{Binding Image}"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill"
+                        Aspect="Fill"/>
+                    </Border>
+
+                    <Border Grid.Row="0"
+                     StrokeShape="RoundRectangle 10"
+                     HorizontalOptions="Start"
+                     VerticalOptions="Start"
+                     HeightRequest="30"
+                     BackgroundColor="{StaticResource BackgroundColor}"
+                     StrokeThickness="1"
+                     Stroke="{Binding EndDate, Converter={StaticResource TimeUntilColourConverter}}"
+                     Margin="2,5"
+                     Padding="5,2"
+                     x:Name="timestampCard">
+                        <Label TextColor="{StaticResource FontColor}"
+                        VerticalTextAlignment="Center">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span FontFamily="P-Medium" Text="Ends in "/>
+                                    <Span FontFamily="P-Bold" 
+                                   Text="{Binding EndDate, Converter={StaticResource TimeUntilConverter}}"
+                                   TextColor="{Binding EndDate, Converter={StaticResource TimeUntilColourConverter}}"/>
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                    </Border>
+                    <Label Grid.Row="1"
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Text="{Binding Title}"
+                    TextColor="{StaticResource FontColor}"
+                    FontFamily="P-Bold"
+                    x:Name="label"
+                    FontSize="20">
+                    </Label>
+                    <Grid RowDefinitions="*,40,50"
+                   Grid.Row="1"
+                   RowSpacing="5">
+
+                        <Border Grid.Row="1"
+                             HorizontalOptions="End"
+                             VerticalOptions="End"
+                             HeightRequest="40"
+                             Margin="5,0"
+                                BackgroundColor="{StaticResource PrimaryAccent}"
+                                StrokeThickness="1"
+                                Stroke="{StaticResource DarkPrimary}"
+                                StrokeShape="RoundRectangle 8"
+                                x:Name="keyBlock">
+                            <StackLayout Orientation="Horizontal">
+                            <Label TextColor="{StaticResource FontColor}"
+                                    VerticalTextAlignment="Center"
+                                   HorizontalTextAlignment="Center"
+                                    Text="Show Key"
+                                    FontFamily="P-Bold"
+                                    FontSize="15" >
+                                    <Label.Triggers>
+                                        <DataTrigger Binding="{Binding Key, Converter={StaticResource NotNullOrEmptyStringConverter}}"
+                                                     Value="true"
+                                                     TargetType="Label">
+                                            <Setter Property="Text" Value="Key: " />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Entry IsVisible="{Binding Key, Converter={StaticResource NotNullOrEmptyStringConverter}}"
+                                       Text="{Binding Key}"
+                                       WidthRequest="500"
+                                       IsReadOnly="True"/>
+
+                            </StackLayout>
+                        </Border>
+
+                    </Grid>
+                    <Grid Grid.Row="0"
+                   RowDefinitions="50,*">
+                        <Border Grid.Row="0"
+                         StrokeShape="RoundRectangle 0,8,20,0"
+                         HorizontalOptions="End"
+                         VerticalOptions="Start"
+                         HeightRequest="50"
+                         WidthRequest="100"
+                         x:Name="partner"
+                         BackgroundColor="White">
+                            <Image Source="{Binding DRM.Logo}"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill"/>
+                        </Border>
+
+                    </Grid>
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+</ContentPage>

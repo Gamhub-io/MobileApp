@@ -42,6 +42,8 @@ public class Fetcher
     public DeviceCultureInfo Culture { get; private set; }
     public List<Article> Bookmarks { get; private set; }
     public string NeID { get; private set; }
+    public List<Gem> Gems { get; private set; }
+
     private INotificationPermissions _firebasePushPermissions;
 
 #if IOS
@@ -937,6 +939,124 @@ public class Fetcher
 
 #if IOS
     /// <summary>
+    /// Get the current Giveways
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+#if DEBUG
+        headers.Add("include_dummies", "true");
+#endif
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                              action: "all",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Data;
+    }
+
+    /// <summary>
+    /// Get the Giveways entered by the user
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetEnteredGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+#if DEBUG
+        headers.Add("include_dummies", "true");
+#endif
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                              action: "entries",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Data;
+    }
+
+    /// <summary>
+    /// Get the Giveways the user won
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetWonGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                                                      action: "wins",
+                                                      singleUseHeaders: headers,
+                                                      unSuccessCallback: e => _ = HandleHttpException(e)
+                                                      )).Data;
+    }
+    /// <summary>
+    /// Get the key from a Giveway the user won
+    /// </summary>
+    /// <returns>The game key</returns>
+    public async Task<GivewayKeyResponse> GetGiveawayKey(Giveaway giveaway)
+    {
+        if (!Fetcher.CheckFeasability())
+            return null;
+
+        var headers = await GetHeaders();
+
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(giveaway), giveaway.Id},
+        };
+
+        return await WebService.Get<GivewayKeyResponse>(controller: "giveaway",
+                                                      action: "key",
+                                                      parameters: paramss,
+                                                      singleUseHeaders: headers,
+                                                      unSuccessCallback: e => _ = HandleHttpException(e)
+                                                      );
+    }
+
+    /// <summary>
+    /// Get the current Giveways
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task EnterGiveaways(Giveaway giveaway)
+    {
+        if (!Fetcher.CheckFeasability() || giveaway.EntryCost > Gems.Count)
+            return;
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(giveaway), giveaway.Id},
+        };
+        await WebService.Post(controller: "giveaway",
+                              action: "enter",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              payload: new GemPayload
+                              {
+                                  Gems= [..Gems.Take(giveaway.EntryCost).Select(g => g.Hash)]
+                              },
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+        await GetGems();
+    }
+    /// <summary>
     /// Get all the gems from the user
     /// </summary>
     public async Task<List<Gem>> GetGems()
@@ -948,7 +1068,7 @@ public class Fetcher
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
-        return (await WebService.Get<UserGemsResponse>(controller: "gems",
+        return Gems =  (await WebService.Get<UserGemsResponse>(controller: "gems",
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                ))?.Data;

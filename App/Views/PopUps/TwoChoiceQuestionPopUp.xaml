@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup 
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:popups="clr-namespace:GamHubApp.Views" 
+    x:DataType="popups:TwoChoiceQuestionPopUp"
+    x:Class="GamHubApp.Views.TwoChoiceQuestionPopUp"
+    Color="Transparent">
+    <Border
+           VerticalOptions="Center" 
+           HorizontalOptions="Center"
+           HeightRequest="290"
+           WidthRequest="280"
+           StrokeShape="RoundRectangle 20">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0"
+                                 EndPoint="1,1">
+                <GradientStop Color="#262626"
+                           Offset="0.1"/>
+                <GradientStop Color="{StaticResource Dark}"
+                           Offset="0.75"/>
+                <GradientStop Color="#0d0d0d"
+                           Offset="0.65"/>
+            </LinearGradientBrush>
+        </Border.Background>
+
+        <StackLayout Spacing="20"
+                    VerticalOptions="Center">
+
+            <Label x:Name="titlelbl"
+                   FontSize="25"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="5,0"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-Bold"/>
+            <Label x:Name="subtitlelbl"
+                   FontSize="20"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="5,0"
+                   TextColor="{StaticResource FontColor}"
+                   FontFamily="P-SemiBold"/>
+            <Grid ColumnDefinitions="*,*"
+                  Grid.Row="2">
+                <Button x:Name="primaryChoicelbl"
+                        BackgroundColor="{DynamicResource DarkPrimary}"
+                        TextColor="{DynamicResource FontColor}"
+                        Grid.Column="1"
+                        FontFamily="P-Bold"
+                        FontSize="20"
+                        Padding="1"
+                        HeightRequest="50"
+                        WidthRequest="100"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Clicked="Primary_Clicked"/>
+                <Button x:Name="secondaryChoicelbl"
+                        BackgroundColor="{DynamicResource BackgroundColor}"
+                        TextColor="{DynamicResource FontColor}"
+                        Grid.Column="0"
+                        FontFamily="P-Bold"
+                        FontSize="20"
+                        Padding="1"
+                        HeightRequest="50"
+                        WidthRequest="100"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        CornerRadius="12"
+                        Clicked="Secondary_Clicked"/>
+                
+            </Grid>
+        </StackLayout>
+
+    </Border>
+</toolkit:Popup>
