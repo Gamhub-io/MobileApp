@@ -1,4 +1,7 @@
 ﻿#if IOS
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core.Views;
+using GamHubApp.Models.Http.Responses;
 using GamHubApp.Views;
 #endif
 using Newtonsoft.Json;
@@ -12,8 +15,17 @@ public class Giveaway : SelectableModel
     public string Id { get; set; }
     [JsonProperty("title")]
     public string Title { get; set; }
+    private string _key { get; set; }
     [JsonProperty("key")]
-    public string Key { get; set; }
+    public string Key
+    {
+        get => _key;
+        set
+        {
+            _key = value;
+            OnPropertyChanged(nameof(Key));
+        }
+    }
     [JsonProperty("image")]
     public string Image { get; set; }
     [JsonProperty("entryCost")]
@@ -35,6 +47,45 @@ public class Giveaway : SelectableModel
 
                 IsEntered = true;
             }));
+        });
+#else
+        get;
+#endif
+    }
+    public Command ClaimCommand
+    {
+#if IOS
+        get => new(() =>
+        {
+            if (IsEntered)
+                return;
+            (App.Current as App).OpenPopUp(new TwoChoiceQuestionPopUp("Claim the game", $"Would you like to claim this game?", primaryChoice: "Yes", secondaryChoice: "No", async () =>
+            {
+
+                GivewayKeyResponse res = await (App.Current as App).DataFetcher.GetGiveawayKey(this);
+                
+                if (res is null)
+                    return;
+
+                Key = res.Data;
+                if (string.IsNullOrEmpty(res.Data))
+                {
+                    await (App.Current as App).Windows[0].Page.DisplayAlert("Error", res.Res, "OK");
+                }
+
+            }));
+        });
+#else
+        get;
+#endif
+    }
+    public Command CopyKeyCommand
+    {
+#if IOS
+        get => new(async () =>
+        {
+            await Clipboard.Default.SetTextAsync(Key);
+            await Toast.Make("Key copied").Show();
         });
 #else
         get;

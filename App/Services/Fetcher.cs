@@ -997,6 +997,32 @@ public class Fetcher
                                                       unSuccessCallback: e => _ = HandleHttpException(e)
                                                       )).Data;
     }
+    /// <summary>
+    /// Get the key from a Giveway the user won
+    /// </summary>
+    /// <returns>The game key</returns>
+    public async Task<GivewayKeyResponse> GetGiveawayKey(Giveaway giveaway)
+    {
+        if (!Fetcher.CheckFeasability())
+            return null;
+
+        var headers = await GetHeaders();
+
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(giveaway), giveaway.Id},
+        };
+
+        return await WebService.Get<GivewayKeyResponse>(controller: "giveaway",
+                                                      action: "key",
+                                                      parameters: paramss,
+                                                      singleUseHeaders: headers,
+                                                      unSuccessCallback: e => _ = HandleHttpException(e)
+                                                      );
+    }
 
     /// <summary>
     /// Get the current Giveways

@@ -39,6 +39,18 @@
                 <Grid RowDefinitions="220,50"
                x:Name="GiveawayBlock"
                Padding="10">
+                    <Grid.Behaviors>
+                        <mct:TouchBehavior Command="{Binding ClaimCommand}"
+                           IsEnabled="{Binding Key, Converter={StaticResource NullOrEmptyStringConverter}}"
+                   BindingContext="{Binding BindingContext, 
+                                            Source={x:Reference GiveawayBlock},
+                                            x:DataType=Grid}"/>
+                        <mct:TouchBehavior Command="{Binding CopyKeyCommand}"
+                           IsEnabled="{Binding Key, Converter={StaticResource NotNullOrEmptyStringConverter}}"
+                   BindingContext="{Binding BindingContext, 
+                                            Source={x:Reference GiveawayBlock},
+                                            x:DataType=Grid}"/>
+                    </Grid.Behaviors>
                     <Border Grid.Row="0"
                      StrokeShape="RoundRectangle 8"
                      x:Name="thumbnail">
@@ -88,16 +100,33 @@
                              HorizontalOptions="End"
                              VerticalOptions="End"
                              HeightRequest="40"
-                                WidthRequest="120"
                              Margin="5,0"
-                             BackgroundColor="{StaticResource DarkPrimary}"
-                                StrokeShape="RoundRectangle 8">
+                                BackgroundColor="{StaticResource PrimaryAccent}"
+                                StrokeThickness="1"
+                                Stroke="{StaticResource DarkPrimary}"
+                                StrokeShape="RoundRectangle 8"
+                                x:Name="keyBlock">
+                            <StackLayout Orientation="Horizontal">
                             <Label TextColor="{StaticResource FontColor}"
                                     VerticalTextAlignment="Center"
                                    HorizontalTextAlignment="Center"
                                     Text="Show Key"
                                     FontFamily="P-Bold"
-                                    FontSize="15" />
+                                    FontSize="15" >
+                                    <Label.Triggers>
+                                        <DataTrigger Binding="{Binding Key, Converter={StaticResource NotNullOrEmptyStringConverter}}"
+                                                     Value="true"
+                                                     TargetType="Label">
+                                            <Setter Property="Text" Value="Key: " />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Entry IsVisible="{Binding Key, Converter={StaticResource NotNullOrEmptyStringConverter}}"
+                                       Text="{Binding Key}"
+                                       WidthRequest="500"
+                                       IsReadOnly="True"/>
+
+                            </StackLayout>
                         </Border>
 
                     </Grid>
