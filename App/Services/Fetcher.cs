@@ -950,7 +950,9 @@ public class Fetcher
         var headers = await GetHeaders();
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
-
+#if DEBUG
+        headers.Add("include_dummies", "true");
+#endif
         return (await WebService.Get<GivewayResponse>(controller: "giveaway",
                               action: "all",
                               singleUseHeaders: headers,
@@ -970,7 +972,9 @@ public class Fetcher
         var headers = await GetHeaders();
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
-
+#if DEBUG
+        headers.Add("include_dummies", "true");
+#endif
         return (await WebService.Get<GivewayResponse>(controller: "giveaway",
                               action: "entries",
                               singleUseHeaders: headers,
