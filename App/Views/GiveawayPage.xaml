@@ -8,7 +8,7 @@
              x:Class="GamHubApp.Views.GiveawayPage">
     <Shell.TitleView>
         <Grid ColumnDefinitions="4*,60,2">
-            <Label Text="Giveways"
+            <Label Text="Giveaways"
                VerticalOptions="Center"
                HorizontalOptions="Center"
                FontSize="20"
@@ -92,15 +92,15 @@
                       Grid.Row="1"
                       RowSpacing="5">
                         <Border Grid.Row="1"
-                            StrokeShape="RoundRectangle 8"
-                            HorizontalOptions="Start"
-                            VerticalOptions="Start"
-                            HeightRequest="30"
-                            Margin="5,0"
+                                StrokeShape="RoundRectangle 8"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Start"
+                                HeightRequest="30"
+                                Margin="5,0"
                                 IsVisible="{Binding IsEntered, Converter={StaticResource BoolInverseConverter}}"
-                            Stroke="{DynamicResource BackgroundColor}"
-                            StrokeThickness="2"
-                            BackgroundColor="{StaticResource Dark}">
+                                Stroke="{DynamicResource BackgroundColor}"
+                                StrokeThickness="2"
+                                BackgroundColor="{StaticResource Dark}">
                             <Label Margin="5"
                                 FontSize="15"
                                Padding="0"
@@ -178,5 +178,8 @@
                 </Grid>
             </DataTemplate>
         </CollectionView.ItemTemplate>
+            <CollectionView.Footer>
+            <BoxView HeightRequest="50"/>
+        </CollectionView.Footer>
     </CollectionView>
 </ContentPage>
