@@ -43,11 +43,11 @@ public class GiveawayViewModel : BaseViewModel
         
     }
 #if IOS
+
     /// <summary>
-    /// 
+    /// Update the Giveaway list
     /// </summary>
-    /// <returns></returns>
-    private async Task RefreshGiveawayList()
+    public async Task RefreshGiveawayList()
     {
         Task<List<Giveaway>> giveawayTask = _fetcher.GetGiveaways();
         Task<List<Giveaway>> entriesTask = _fetcher.GetEnteredGiveaways();
