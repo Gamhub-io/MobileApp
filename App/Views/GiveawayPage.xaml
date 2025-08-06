@@ -7,14 +7,57 @@
              xmlns:models="clr-namespace:GamHubApp.Models"
              x:Class="GamHubApp.Views.GiveawayPage">
     <Shell.TitleView>
-        <Grid ColumnDefinitions="4*,60,2">
+        <Grid ColumnDefinitions="20,*,*">
             <Label Text="Giveaways"
                VerticalOptions="Center"
                HorizontalOptions="Center"
                FontSize="20"
                TextColor="{StaticResource FontColor}"
                FontFamily="P-Bold"
-               Grid.Column="0"/>
+               Grid.Column="1"/>
+            <Border StrokeShape="RoundRectangle 8"
+                    Grid.Column="2"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    BackgroundColor="{DynamicResource Dark}">
+                <Grid ColumnDefinitions="*,40">
+                    <Label Grid.Column="0"
+                           Margin="5"
+                           FontSize="20"
+                           HorizontalOptions="End"
+                           VerticalOptions="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span 
+                                      Text="&#xf3a5;" 
+                                      FontFamily="FaSolid"
+                                      TextColor="{DynamicResource DiscountColor}"/>
+                                <Span Text=" "/>
+                                <Span Text="{Binding Gems.Count}"
+                          FontFamily="P-SemiBold"
+                          TextColor="{DynamicResource FontColor}"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Border StrokeShape="RoundRectangle 0,8,8,8"
+                Grid.Column="1"
+                BackgroundColor="{DynamicResource PrimaryAccent}">
+
+                        <Label Grid.Column="0"
+                    Margin="5"
+                    FontSize="20"
+                   Text="&#x2b;" 
+                   TextColor="{DynamicResource FontColor}"
+                   FontFamily="FaSolid"
+                    HorizontalOptions="Center"
+                   VerticalOptions="Center"/>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding TopUpGemsCommand}"/>
+                        </Border.GestureRecognizers>
+                    </Border>
+
+                </Grid>
+            </Border>
         </Grid>
     </Shell.TitleView>
     <ContentPage.Background>

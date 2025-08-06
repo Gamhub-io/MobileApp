@@ -17,6 +17,7 @@ public partial class GiveawayPage : ContentPage
         base.OnNavigatedTo(args);
 #if IOS
         _vm.RefreshGiveawayList().GetAwaiter();
+        _vm.UpdateGems().GetAwaiter();
 #endif
     }
 }

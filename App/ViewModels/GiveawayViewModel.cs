@@ -34,15 +34,40 @@ public class GiveawayViewModel : BaseViewModel
             OnPropertyChanged(nameof(Entries));
         }
     }
-    public GiveawayViewModel(Fetcher fetch)
+    private ObservableCollection<Gem> _gems;
+
+    public ObservableCollection<Gem> Gems
+    {
+        get { return _gems; }
+        set
+        {
+            _gems = value;
+            OnPropertyChanged(nameof(Gems));
+        }
+    }
+
+    public Command TopUpGemsCommand { get; }
+
+    public GiveawayViewModel(Fetcher fetch,
+                            GemTopUpPage gemTopUpPage)
     {
         _fetcher = fetch;
 #if IOS
         RefreshGiveawayList().GetAwaiter();
 #endif
+        TopUpGemsCommand = new Command(() => (App.Current as App).Windows[0].Page.Navigation.PushAsync(gemTopUpPage));
         
     }
 #if IOS
+    /// <summary>
+    /// Update the gems
+    /// </summary>
+    /// <returns></returns>
+    public async Task UpdateGems()
+    {
+        Gems = new(await _fetcher.GetGems());
+
+    }
 
     /// <summary>
     /// Update the Giveaway list
