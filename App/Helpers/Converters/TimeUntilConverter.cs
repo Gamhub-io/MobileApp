@@ -27,7 +27,7 @@ public class TimeUntilConverter : IValueConverter
 
                 return $"{hoursStr} {minutesStr}";
             }
-            else if (timeremaining.TotalDays < 30)
+            else
             {
                 string hoursStr = timeremaining.Hours > 1 ? $"{timeremaining.Hours} hours" : "1 hour";
                 string daysStr = timeremaining.Days > 1 ? $"{timeremaining.Days} days" : "1 day";
