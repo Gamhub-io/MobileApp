@@ -41,7 +41,7 @@ public class Giveaway : SelectableModel
         {
             if (IsEntered)
                 return;
-            (App.Current as App).OpenPopUp(new TwoChoiceQuestionPopUp("Enter giveway", $"Would you like to enter this giveway? cost {EntryCost} Gems", primaryChoice: "Yes", secondaryChoice: "No", async () =>
+            (App.Current as App).OpenPopUp(new GiveawayEntryQuestionPopUp(EntryCost, async () =>
             {
                 await (App.Current as App).DataFetcher.EnterGiveaways(this);
 
