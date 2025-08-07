@@ -1,6 +1,11 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Services;
+using GamHubApp.Views;
 using System.Collections.ObjectModel;
+#if IOS
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services.ChangedMessages;
+#endif
 
 namespace GamHubApp.ViewModels;
 
@@ -34,20 +39,51 @@ public class GiveawayViewModel : BaseViewModel
             OnPropertyChanged(nameof(Entries));
         }
     }
-    public GiveawayViewModel(Fetcher fetch)
+    private ObservableCollection<Gem> _gems;
+
+    public ObservableCollection<Gem> Gems
+    {
+        get { return _gems; }
+        set
+        {
+            _gems = value;
+            OnPropertyChanged(nameof(Gems));
+        }
+    }
+
+    public Command TopUpGemsCommand { get; }
+
+    public GiveawayViewModel(Fetcher fetch,
+                            GemTopUpPage gemTopUpPage)
     {
         _fetcher = fetch;
 #if IOS
         RefreshGiveawayList().GetAwaiter();
 #endif
+        TopUpGemsCommand = new Command(() => (App.Current as App).Windows[0].Page.Navigation.PushAsync(gemTopUpPage));
+#if IOS
+        WeakReferenceMessenger.Default.Register<GemsUpdatedMessage>(this, async(_, _) =>
+        {
+            await UpdateGems();
+        });
+#endif
         
     }
 #if IOS
     /// <summary>
-    /// 
+    /// Update the gems
     /// </summary>
     /// <returns></returns>
-    private async Task RefreshGiveawayList()
+    public async Task UpdateGems()
+    {
+        Gems = new(await _fetcher.GetGems());
+
+    }
+
+    /// <summary>
+    /// Update the Giveaway list
+    /// </summary>
+    public async Task RefreshGiveawayList()
     {
         Task<List<Giveaway>> giveawayTask = _fetcher.GetGiveaways();
         Task<List<Giveaway>> entriesTask = _fetcher.GetEnteredGiveaways();

@@ -128,6 +128,9 @@
     <Compile Update="Views\PopUps\PurchaseGemsPopUp.xaml.cs">
       <DependentUpon>PurchaseGemsPopUp.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PopUps\GiveawayEntryQuestionPopUp.xaml.cs">
+      <DependentUpon>GiveawayEntryQuestionPopUp.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\PopUps\TwoChoiceQuestionPopUp.xaml.cs">
       <DependentUpon>TwoChoiceQuestionPopUp.xaml</DependentUpon>
     </Compile>
@@ -146,6 +149,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\PopUps\PurchaseGemsPopUp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\PopUps\GiveawayEntryQuestionPopUp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\PopUps\TwoChoiceQuestionPopUp.xaml">
