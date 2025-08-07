@@ -178,11 +178,10 @@
                         <Border StrokeShape="RoundRectangle 0,8,8,8"
                                 Grid.Column="1"
                                 BackgroundColor="{DynamicResource PrimaryAccent}">
-                            
                             <Label Grid.Column="0"
                                     Margin="5"
                                     FontSize="20"
-                                   Text="&#x2b;" 
+                                   Text="&#x2b;"
                                    TextColor="{DynamicResource FontColor}"
                                    FontFamily="FaSolid"
                                     HorizontalOptions="Center"
