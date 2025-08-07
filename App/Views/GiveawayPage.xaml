@@ -7,7 +7,7 @@
              xmlns:models="clr-namespace:GamHubApp.Models"
              x:Class="GamHubApp.Views.GiveawayPage">
     <Shell.TitleView>
-        <Grid ColumnDefinitions="20,*,*">
+        <Grid ColumnDefinitions="60,*,*">
             <Label Text="Giveaways"
                VerticalOptions="Center"
                HorizontalOptions="Center"
@@ -18,7 +18,7 @@
             <Border StrokeShape="RoundRectangle 8"
                     Grid.Column="2"
                     VerticalOptions="Center"
-                    HorizontalOptions="Center"
+                    HorizontalOptions="End"
                     BackgroundColor="{DynamicResource Dark}">
                 <Grid ColumnDefinitions="*,40">
                     <Label Grid.Column="0"

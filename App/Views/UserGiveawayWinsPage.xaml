@@ -59,30 +59,6 @@
                         VerticalOptions="Fill"
                         Aspect="Fill"/>
                     </Border>
-
-                    <Border Grid.Row="0"
-                     StrokeShape="RoundRectangle 10"
-                     HorizontalOptions="Start"
-                     VerticalOptions="Start"
-                     HeightRequest="30"
-                     BackgroundColor="{StaticResource BackgroundColor}"
-                     StrokeThickness="1"
-                     Stroke="{Binding EndDate, Converter={StaticResource TimeUntilColourConverter}}"
-                     Margin="2,5"
-                     Padding="5,2"
-                     x:Name="timestampCard">
-                        <Label TextColor="{StaticResource FontColor}"
-                        VerticalTextAlignment="Center">
-                            <Label.FormattedText>
-                                <FormattedString>
-                                    <Span FontFamily="P-Medium" Text="Ends in "/>
-                                    <Span FontFamily="P-Bold" 
-                                   Text="{Binding EndDate, Converter={StaticResource TimeUntilConverter}}"
-                                   TextColor="{Binding EndDate, Converter={StaticResource TimeUntilColourConverter}}"/>
-                                </FormattedString>
-                            </Label.FormattedText>
-                        </Label>
-                    </Border>
                     <Label Grid.Row="1"
                     HorizontalOptions="Center"
                     HorizontalTextAlignment="Center"
@@ -123,7 +99,9 @@
                                 </Label>
                                 <Entry IsVisible="{Binding Key, Converter={StaticResource NotNullOrEmptyStringConverter}}"
                                        Text="{Binding Key}"
-                                       WidthRequest="500"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       WidthRequest="300"
                                        IsReadOnly="True"/>
 
                             </StackLayout>
