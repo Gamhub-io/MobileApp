@@ -1,6 +1,11 @@
 ﻿using GamHubApp.Models;
 using GamHubApp.Services;
+using GamHubApp.Views;
 using System.Collections.ObjectModel;
+#if IOS
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services.ChangedMessages;
+#endif
 
 namespace GamHubApp.ViewModels;
 
@@ -56,6 +61,12 @@ public class GiveawayViewModel : BaseViewModel
         RefreshGiveawayList().GetAwaiter();
 #endif
         TopUpGemsCommand = new Command(() => (App.Current as App).Windows[0].Page.Navigation.PushAsync(gemTopUpPage));
+#if IOS
+        WeakReferenceMessenger.Default.Register<GemsUpdatedMessage>(this, async(_, _) =>
+        {
+            await UpdateGems();
+        });
+#endif
         
     }
 #if IOS

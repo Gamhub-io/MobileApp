@@ -38,8 +38,8 @@ public partial class GiveawayEntryQuestionPopUp : Popup
 
     private void Primary_Clicked (object sender, EventArgs e)
     {
-		this.CloseAsync().GetAwaiter();
         _primaryCallback();
+		this.CloseAsync().GetAwaiter();
     }
     private void Secondary_Clicked (object sender, EventArgs e)
     {

@@ -1,7 +1,9 @@
 ﻿#if IOS
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core.Views;
+using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Models.Http.Responses;
+using GamHubApp.Services.ChangedMessages;
 using GamHubApp.Views;
 #endif
 using Newtonsoft.Json;
@@ -41,11 +43,18 @@ public class Giveaway : SelectableModel
         {
             if (IsEntered)
                 return;
-            (App.Current as App).OpenPopUp(new GiveawayEntryQuestionPopUp(EntryCost, async () =>
+            App app = (App.Current as App);
+            app.ShowLoadingIndicator();
+            app.OpenPopUp(new GiveawayEntryQuestionPopUp(EntryCost, async () =>
             {
-                await (App.Current as App).DataFetcher.EnterGiveaways(this);
+
+                await app.DataFetcher.EnterGiveaways(this);
 
                 IsEntered = true;
+
+                WeakReferenceMessenger.Default.Send(new GemsUpdatedMessage());
+
+                app.RemoveLoadingIndicator();
             }));
         });
 #else

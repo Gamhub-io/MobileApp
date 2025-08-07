@@ -13,6 +13,11 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 #endif
 
+#if IOS
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services.ChangedMessages;
+#endif
+
 namespace GamHubApp.ViewModels;
 
 public class AppShellViewModel : BaseViewModel
@@ -137,6 +142,12 @@ public class AppShellViewModel : BaseViewModel
 
         TopUpGemsCommand = new Command(() => (App.Current as App).Windows[0].Page.Navigation.PushAsync(_gemTopUpPage));
         _gemTopUpPage = gemTopUpPage;
+#if IOS
+        WeakReferenceMessenger.Default.Register<GemsUpdatedMessage>(this, async (_, _) =>
+        {
+            await UpdateGems();
+        });
+#endif
     }
 
     /// <summary>
