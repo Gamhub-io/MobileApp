@@ -83,17 +83,29 @@ public class GemTopUpViewModel : BaseViewModel
         _revenueCatBilling = revenueCatBilling;
         PurchaseCommand = new(async () =>
         {
-            var cur = App.Current as App;
             if (_selectedPlan is null)
                 return;
-
+            var cur = App.Current as App;
             cur.ShowLoadingIndicator();
-            await _revenueCatBilling.PurchaseProduct(_selectedPlan.Package).ConfigureAwait(false);
-            _ = await cur.DataFetcher.UserGemsSync().ConfigureAwait(false);
+            
+            //
+            // Purchase the gems
+            await _revenueCatBilling.PurchaseProduct(_selectedPlan.Package).ContinueWith(async (res) =>
+            {
+                if (!res.Result.IsSuccess)
+                    return;
+                // sync the gems to the user (is logged in)
+                await cur.DataFetcher.UserGemsSync();
+
+                GemAmount = _selectedPlan.Package.Identifier.Split('_')[0];
+                (App.Current as App).OpenPopUp(new PurchaseGemsPopUp(this), ((App.Current as App).Windows[0].Page as AppShell).CurrentPage);
+            }).ContinueWith(async (_) =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5));
             cur.RemoveLoadingIndicator();
-            await Task.Delay(TimeSpan.FromMilliseconds(300));
-            GemAmount = _selectedPlan.Package.Identifier.Split('_')[0];
-            cur.OpenPopUp(new PurchaseGemsPopUp(this));
+            }).ConfigureAwait(false);
+
+
         });
     }
     public async Task LoadOptionsAsync()

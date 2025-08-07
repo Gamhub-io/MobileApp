@@ -25,105 +25,125 @@
             </Setter>
         </Style>
     </ContentPage.Resources>
-    <Grid
-        RowDefinitions="100,auto,*"
-        RowSpacing="10">
-        <Label Margin="5"
-                FontSize="30"
-               Text="Need some extra Gems?" 
-               TextColor="{DynamicResource FontColor}"
-               FontFamily="P-Bold"
-                HorizontalOptions="Center"
-               VerticalOptions="Center"
-                        Grid.Row="0"/>
-        <CollectionView ItemsSource="{Binding Plans}"
-                        ItemsLayout="VerticalGrid, 2"
-                        SelectionMode="Single"
-                        SelectedItem="{Binding SelectedPlan}"
-                        Grid.Row="1">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:GemsPlan">
-                    <Grid>
-                        <Border StrokeShape="RoundRectangle 20"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                HeightRequest="180"
-                                WidthRequest="150"
-                                Padding="0"
-                                Margin="5"
-                                BackgroundColor="{DynamicResource Dark}"
-                                Stroke="{DynamicResource LightDark}">
-                            <Border.Triggers>
-                                <DataTrigger TargetType="Border"
-                                             Binding="{Binding IsSelected}"
-                                             Value="true">
-                                    <Setter Property="Stroke" Value="{DynamicResource PrimaryAccent}" />
-                                </DataTrigger>
-                            </Border.Triggers>
+    <ScrollView>
+        <Grid
+            RowDefinitions="50,80,100,auto,50,5"
+            RowSpacing="10">
+            <Label Margin="5"
+                   FontSize="30"
+                   Text="Earn your Gems" 
+                   TextColor="{DynamicResource FontColor}"
+                   FontFamily="P-Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Grid.Row="0"/>
+            <Label Margin="5"
+                   FontSize="15"
+                   Text="You earn Gems, in the app, every time you read articles or make a purchase from a deal." 
+                   HorizontalTextAlignment="Center"
+                   TextColor="{DynamicResource FontColor}"
+                   FontFamily="P-Regular"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Grid.Row="1"/>
+            <Label Margin="5"
+                   FontSize="30"
+                   Text="Need some extra Gems?" 
+                   TextColor="{DynamicResource FontColor}"
+                   FontFamily="P-Bold"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Grid.Row="2"/>
+            <CollectionView ItemsSource="{Binding Plans}"
+                     ItemsLayout="VerticalGrid, 2"
+                     SelectionMode="Single"
+                     SelectedItem="{Binding SelectedPlan}"
+                     Grid.Row="3">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:GemsPlan">
+                        <Grid>
+                            <Border StrokeShape="RoundRectangle 20"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             HeightRequest="180"
+                             WidthRequest="150"
+                             Padding="0"
+                             Margin="5"
+                             BackgroundColor="{DynamicResource Dark}"
+                             Stroke="{DynamicResource LightDark}">
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border"
+                                          Binding="{Binding IsSelected}"
+                                          Value="true">
+                                        <Setter Property="Stroke" Value="{DynamicResource PrimaryAccent}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
 
-                            <Grid RowDefinitions="50,40,auto, *"
-                                  VerticalOptions="Center">
-                                <Label Grid.Row="1"
-                                       Margin="5"
-                                       FontSize="20"
-                                       Text="{Binding Gems, StringFormat='{0} Gems'}" 
-                                       TextColor="{DynamicResource FontColor}"
-                                       FontFamily="P-Bold"
-                                       HorizontalOptions="Center"/>
-                                <Label Grid.Row="0"
-                                       Margin="5"
-                                       FontSize="45"
-                                       Text="&#xf3a5;" 
-                                       FontFamily="FaSolid"
-                                       TextColor="{DynamicResource DiscountColor}"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
-                                <Label Margin="5"
-                                       Grid.Row="2"
-                                       FontSize="18"
-                                       TextDecorations="Strikethrough"
-                                       Text="{Binding OriginalPrice}" 
-                                       IsVisible="{Binding DefaultDiscount}"
-                                       TextColor="{DynamicResource DiscountColor}"
-                                       FontFamily="P-Regular"
-                                       HorizontalOptions="Center"/>
+                                <Grid RowDefinitions="50,40,auto, *"
+                               VerticalOptions="Center">
+                                    <Label Grid.Row="1"
+                                    Margin="5"
+                                    FontSize="20"
+                                    Text="{Binding Gems, StringFormat='{0} Gems'}" 
+                                    TextColor="{DynamicResource FontColor}"
+                                    FontFamily="P-Bold"
+                                    HorizontalOptions="Center"/>
+                                    <Label Grid.Row="0"
+                                    Margin="5"
+                                    FontSize="45"
+                                    Text="&#xf3a5;" 
+                                    FontFamily="FaSolid"
+                                    TextColor="{DynamicResource DiscountColor}"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+                                    <Label Margin="5"
+                                    Grid.Row="2"
+                                    FontSize="18"
+                                    TextDecorations="Strikethrough"
+                                    Text="{Binding OriginalPrice}" 
+                                    IsVisible="{Binding DefaultDiscount}"
+                                    TextColor="{DynamicResource DiscountColor}"
+                                    FontFamily="P-Regular"
+                                    HorizontalOptions="Center"/>
 
-                                <Label Grid.Row="3"
-                                       FontSize="20"
-                                       Text="{Binding PriceDisplay}" 
-                                       TextColor="{DynamicResource FontColor}"
-                                       FontFamily="P-SemiBold"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center"/>
-                            </Grid>
-                        </Border>
+                                    <Label Grid.Row="3"
+                                    FontSize="20"
+                                    Text="{Binding PriceDisplay}" 
+                                    TextColor="{DynamicResource FontColor}"
+                                    FontFamily="P-SemiBold"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+                                </Grid>
+                            </Border>
 
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-        <Button Text="Purchase"
-                BackgroundColor="{DynamicResource Secondary}"
-                TextColor="{DynamicResource FontColor}"
-                IsEnabled="{Binding PlanSelected}"
-                FontFamily="P-Bold"
-                FontSize="20"
-                Padding="1"
-                HeightRequest="50"
-                WidthRequest="150"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                CornerRadius="12"
-                Command="{Binding PurchaseCommand}"
-                Grid.Row="2">
-            <Button.Triggers>
-                <DataTrigger Binding="{Binding PlanSelected}"
-                             TargetType="Button"
-                             Value="true">
-                    <Setter Property="BackgroundColor" Value="{DynamicResource DarkPrimary}" />
-                </DataTrigger>
-            </Button.Triggers>
-        </Button>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <Button Text="Purchase"
+                    BackgroundColor="{DynamicResource Secondary}"
+                    TextColor="{DynamicResource FontColor}"
+                    IsEnabled="{Binding PlanSelected}"
+                    FontFamily="P-Bold"
+                    FontSize="20"
+                    Padding="1"
+                    HeightRequest="50"
+                    WidthRequest="150"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    CornerRadius="12"
+                    Command="{Binding PurchaseCommand}"
+                    Grid.Row="4">
+                <Button.Triggers>
+                    <DataTrigger Binding="{Binding PlanSelected}"
+                          TargetType="Button"
+                          Value="true">
+                        <Setter Property="BackgroundColor" Value="{DynamicResource DarkPrimary}" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
 
-    </Grid>
+        </Grid>
+    </ScrollView>
+   
 </ContentPage>
