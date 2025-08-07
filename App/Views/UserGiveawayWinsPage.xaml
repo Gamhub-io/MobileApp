@@ -123,7 +123,9 @@
                                 </Label>
                                 <Entry IsVisible="{Binding Key, Converter={StaticResource NotNullOrEmptyStringConverter}}"
                                        Text="{Binding Key}"
-                                       WidthRequest="500"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center"
+                                       WidthRequest="300"
                                        IsReadOnly="True"/>
 
                             </StackLayout>
