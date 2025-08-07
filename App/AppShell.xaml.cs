@@ -18,31 +18,55 @@ public partial class AppShell : Shell
     protected override void OnNavigating(ShellNavigatingEventArgs args)
     {
         base.OnNavigating(args);
-        if (args.Current?.Location == args.Target.Location)
+        try
         {
+            if (args.Current?.Location == args?.Target?.Location)
+            {
             if (this.CurrentPage is NewsPage)
             {
                 // scroll the feed all the way to the top
                 (this.CurrentPage as NewsPage).ScrollFeed();
             }
+                return;
+            }
+
+        } 
+        catch (Exception ex)
+        {
+#if DEBUG
+            throw new Exception(ex.Message, ex);
+#else
+        SentrySdk.CaptureException(ex);
+#endif
         }
-        else
+
             Task.Run (async () =>
             { 
-                string target = args.Target.Location.OriginalString;
+            string target = args?.Target?.Location?.OriginalString;
+            string origin = args?.Current?.Location?.OriginalString;
+#if IOS
+            if (origin?.Contains(nameof(GemTopUpPage)) ?? false)
+                    await RefreshGems();
+#endif
+            if (string.IsNullOrEmpty(target) || string.IsNullOrEmpty(origin))
+                return;
                 if (_vm != null && target != "//MyDealsPage" && !target.Contains("ArticlePage"))
                     await _vm.UpdateDeals();
+
             });
     }
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-
+#if IOS
+        await _vm.UpdateGems();
+#endif
         _currentApp = (App.Current as App);
         Task partnersTask = _currentApp.LoadPartners();
         Task notifTask = _vm.NotificationSetup();
         await Task.WhenAll(partnersTask, notifTask);
         await _vm.UpdateDeals(); 
+        _vm.Appearing();
     }
 
     private void Auth_Tapped(object sender, TappedEventArgs e)
@@ -70,4 +94,11 @@ public partial class AppShell : Shell
     {
         _vm.UpdateDeals().GetAwaiter();
     }
+#if IOS
+    public async Task RefreshGems()
+    {
+        await _vm.UpdateGems();
+
+    }
+#endif
 }

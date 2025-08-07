@@ -23,13 +23,13 @@ public partial class ArticlePage : ContentPage
     private ArticleViewModel _vm;
     private uint _modalHeightStart = 0;
     private uint _modalWidthStart = 50;
-
+    private Article _article;
 
     public ArticlePage(Article article)
     {
         InitializeComponent();
 
-        BindingContext = _vm = new ArticleViewModel(article);
+        BindingContext = _vm = new ArticleViewModel(_article = article);
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
@@ -40,7 +40,12 @@ public partial class ArticlePage : ContentPage
 
         // Stop all text to speech
         _vm.StopTtS();
-        
+        _ = Task.Run(async () =>
+        {
+           await (App.Current as App).DataFetcher.RequestReward(_article);
+        });
+
+
         base.OnNavigatedFrom(args);
 
 
@@ -63,11 +68,11 @@ public partial class ArticlePage : ContentPage
         Preferences.Set(TimeSpentKey, timeSpentOnArticles);
 
         if (TimeSpan.FromMilliseconds(timeSpentOnArticles).TotalMinutes >= TimeMaxArticles
-             && !Preferences.Get(AppConstant.ReviewAsked, false))
+             && !Preferences.Get(PreferencesKeys.ReviewAsked, false))
             try
             {
                 await CrossStoreReview.Current.RequestReview(_isTest);
-                Preferences.Set(AppConstant.ReviewAsked, true);
+                Preferences.Set(PreferencesKeys.ReviewAsked, true);
             }
             catch (Exception ex)
             {

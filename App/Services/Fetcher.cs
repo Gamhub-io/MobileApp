@@ -5,7 +5,11 @@ using GamHubApp.Models.Http.Responses;
 using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using Plugin.FirebasePushNotifications;
 
+#if IOS
+using Maui.RevenueCat.InAppBilling.Services;
+#endif
 #if DEBUG
 using System.Diagnostics;
 #endif
@@ -35,11 +39,24 @@ public class Fetcher
     }
 
     public User UserData { get; set; }
+    public DeviceCultureInfo Culture { get; private set; }
     public List<Article> Bookmarks { get; private set; }
     public string NeID { get; private set; }
+    public List<Gem> Gems { get; private set; }
 
+    private INotificationPermissions _firebasePushPermissions;
 
-    public Fetcher(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
+#if IOS
+    private readonly IRevenueCatBilling _revenueCatBilling;
+#endif
+    public Fetcher(GeneralDataBase generalDataBase, 
+                   BackUpDataBase backUpDataBase,
+                   INotificationPermissions notificationPermissions
+#if IOS
+                   ,IRevenueCatBilling revenueCatBilling)
+#else
+        )
+#endif
     {
 #if DEBUG_LOCALHOST
         // Set webservice
@@ -53,8 +70,12 @@ public class Fetcher
 #endif
         _generalDB = generalDataBase;
         _backupDB = backUpDataBase;
-  
-        GetSources().GetAwaiter();
+        _firebasePushPermissions = notificationPermissions;
+
+        Task.WhenAll([
+            GetSources(),
+            SetCultureInfo()
+            ]).GetAwaiter();
     }
 
     /// <summary>
@@ -70,6 +91,7 @@ public class Fetcher
 
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
+                                                               singleUseHeaders: await GetHeaders(),
                                                                parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
@@ -135,6 +157,7 @@ public class Fetcher
 
             return await WebService.Get<Collection<Article>>(controller: "feeds",
                                                              action: needUpdate ? "update" : null,
+                                                             singleUseHeaders: await GetHeaders(),
                                                              parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
                                                              unSuccessCallback: (err) => _ = HandleHttpException(err));
         }
@@ -198,6 +221,7 @@ public class Fetcher
 
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
+                                                               singleUseHeaders: await GetHeaders(),
                                                                parameters: new string[] { dateUpdate },
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
@@ -224,14 +248,14 @@ public class Fetcher
             return null;
         try
         {
-            //dateFrom = new DateTime(dateFrom.Year, dateFrom.Month, dateFrom.Day, dateFrom.Hour, dateFrom.Minute, 0);
-            string[] parameters = new string[]
-            {
+            string[] parameters =
+            [
                dateFrom.AddHours(-length).ToString("dd-MM-yyy_HH:mm:ss"),
                dateFrom.AddMinutes(-1).ToString("dd-MM-yyy_HH:mm:ss"),
-            };
+            ];
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                parameters: parameters,
+                                                               singleUseHeaders: await GetHeaders(),
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
         }
@@ -281,7 +305,7 @@ public class Fetcher
             return null;
         try
         {
-            string filterCode = Preferences.Get(AppConstant.DealFilterCode, null);
+            string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
 
             _allDeals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
                                                                            unSuccessCallback: e => _ = HandleHttpException(e));
@@ -316,6 +340,7 @@ public class Fetcher
         {
             return await this.WebService.Get<Article>(controller: "article",
                                                       parameters: new string[] { articleId },
+                                                      singleUseHeaders: await GetHeaders(),
                                                       unSuccessCallback: e => _ = HandleHttpException(e));
         }
 
@@ -345,7 +370,7 @@ public class Fetcher
             {
                 rqHeaders = new();
                 if (UserData != null)
-                    rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                    rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             }
 #if DEBUG
@@ -387,9 +412,9 @@ public class Fetcher
             if (!Fetcher.CheckFeasability())
                 return false;
 
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             var res = await this.WebService.Get<SubStatusRes>(controller: "monitor",
                                                                action: "NE/feedstatus",
@@ -428,9 +453,9 @@ public class Fetcher
             if (string.IsNullOrEmpty(feedID) || string.IsNullOrEmpty(token))
                 return;
 
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             FeedSubPayload rqBody = new() 
             {
@@ -448,7 +473,7 @@ public class Fetcher
                                            unSuccessCallback: e => _ = HandleHttpException(e));
 #if DEBUG
             Debug.WriteLine($"NE/subscribe: {res}");
-#endif         
+#endif
             return;
         }
 
@@ -477,9 +502,9 @@ public class Fetcher
             string name = feed.Title;
             string keyword = feed.Keywords;
 
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
             var res = await this.WebService.Post<FeedResponse>(controller: "feeds",
@@ -495,7 +520,7 @@ public class Fetcher
             // Subscribe by default
             feed.MongoID = res.Data.MongoID;
             await _generalDB.UpdateFeed(feed);
-            string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+            string token = await SecureStorage.Default.GetAsync(AppConstant.NotificationToken);
 
             if (string.IsNullOrEmpty(token))
                 return feed;
@@ -534,9 +559,9 @@ public class Fetcher
             if (string.IsNullOrEmpty(id) || Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
                 return feed;
 
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
             var res = await this.WebService.Put<FeedResponse>(controller: "feeds",
@@ -577,9 +602,9 @@ public class Fetcher
             return ;
         try
         {
-            Dictionary<string, string> rqHeaders = new();
+            Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             FeedSubPayload rqBody = new() 
             {
@@ -625,7 +650,7 @@ public class Fetcher
         {
             Dictionary<string, string> rqHeaders = new();
             if (UserData != null)
-                rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
             NEupdateResponse res =await this.WebService.Put<NEupdateResponse>(controller: "monitor",
                                            action: "NE/update",
@@ -677,7 +702,7 @@ public class Fetcher
             SecureStorage.SetAsync(nameof(Session.TokenType), newSession.TokenType),
         ];
         
-        string token = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        string token = await SecureStorage.Default.GetAsync(AppConstant.NotificationToken);
         if (!string.IsNullOrEmpty(token))
             tasks.Add(UpdateNotificationEntity(token, token));
 
@@ -697,7 +722,7 @@ public class Fetcher
             return;
         // Save regular data about the session
         int exp = Preferences.Get(nameof(Session.ExpiresIn), Int16.MinValue);
-        string refreshToken = await SecureStorage.GetAsync(nameof(Session.RefreshToken)).ConfigureAwait(false);
+        string refreshToken = await SecureStorage.Default.GetAsync(nameof(Session.RefreshToken)).ConfigureAwait(false);
 
         // If there was no session just leave
         if (string.IsNullOrEmpty(refreshToken)) return;
@@ -716,8 +741,8 @@ public class Fetcher
         if (!EvaluateCurrentSession()) return;
 
         // Save sensitive data
-        var accessTask = SecureStorage.GetAsync(nameof(Session.AccessToken));
-        var tokenTypeTask = SecureStorage.GetAsync(nameof(Session.TokenType));
+        var accessTask = SecureStorage.Default.GetAsync(nameof(Session.AccessToken));
+        var tokenTypeTask = SecureStorage.Default.GetAsync(nameof(Session.TokenType));
 
         await Task.WhenAll(accessTask, tokenTypeTask);
 
@@ -750,6 +775,24 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Get common header
+    /// </summary>
+    /// <returns></returns>
+    private async Task<Dictionary<string,string>> GetHeaders()
+    {
+        var apiKey = Csign.GenerateApiKey();
+#if DEBUG
+        Debug.WriteLine($"ApiKey: {apiKey}");
+#endif
+        return new Dictionary<string, string>
+        {
+            { "x-api-key", apiKey},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
+        };
+
+    }
+
+    /// <summary>
     /// Adding a hook to an article
     /// </summary>
     /// <param name="article">article hooked</param>
@@ -760,11 +803,17 @@ public class Fetcher
         var headers = new Dictionary<string, string>
         {
             { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.GetAsync(AppConstant.InstanceIdKey)},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
         };
-        var paramss = new string[] { article.MongooseId };
+#if DEBUG
+        Debug.WriteLine($"Instance: {headers["instance"]}");
+#endif
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(article), article.MongooseId},
+        };
 
-       await WebService.Post(controller: "monitor",
+      await WebService.Post(controller: "monitor",
                               action: "register",
                               singleUseHeaders: headers,
                               parameters: paramss,
@@ -773,20 +822,277 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Adding a hook to a deal
+    /// </summary>
+    /// <param name="deal">deal to be hooked</param>
+    public async Task RegisterHook(Deal deal)
+    {
+        if (deal is null)
+            return;
+        if (!Fetcher.CheckFeasability())
+            return ;
+        var headers = new Dictionary<string, string>
+        {
+            { "x-api-key", AppConstant.MonitoringKey},
+            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
+        };
+#if DEBUG
+        Debug.WriteLine($"Instance: {headers["instance"]}");
+        Debug.WriteLine($"API Key: {headers["x-api-key"]}");
+#endif
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(deal), deal.Id},
+        };
+
+        await WebService.Post(controller: "monitor",
+                              action: "register",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+    }
+
+    /// <summary>
+    /// Request rewards from deal
+    /// </summary>
+    /// <remarks>
+    /// If the user made a purchase on this deal. they will be rewarded the gem amount if no
+    /// </remarks>
+    /// <param name="deal">deal where reward is requested</param>
+    public async Task<bool> RequestReward(Deal deal)
+    {
+        if (!Fetcher.CheckFeasability())
+            return false;
+        var headers = await GetHeaders();
+
+#if DEBUG
+        Debug.WriteLine($"Instance: {headers["instance"]}");
+        Debug.WriteLine($"API Key: {headers["x-api-key"]}");
+#endif
+
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(deal), deal.Id},
+        };
+
+#if DEBUG
+        Debug.WriteLine($"{nameof(deal)}: {paramss[nameof(deal)]}");
+#endif
+
+        return (await WebService.Get<GemsRewardResponse>(controller: "gems",
+                              action: "request/deal",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Rewarded;
+    }
+
+    /// <summary>
+    /// Adding a hook to an article
+    /// </summary>
+    /// <param name="article">article from which the reward is requested</param>
+    public async Task<bool> RequestReward(Article article)
+    {
+        if (!Fetcher.CheckFeasability())
+            return false;
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(article), article.MongooseId},
+        };
+
+       return (await WebService.Get<GemsRewardResponse>(controller: "gems",
+                              action: "request/article",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Rewarded;
+    }
+
+    /// <summary>
+    /// SYnc users and their gems
+    /// </summary>
+    /// <returns> true ➡️ user gems have been synced | false ➡️ either user not logged in or gems can't be synced</returns>
+    public async Task<bool> UserGemsSync()
+    {
+        if (!Fetcher.CheckFeasability() || UserData is null)
+            return false;
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        await WebService.Put<GemsRewardResponse>(controller: "gems",
+                              action: "sync",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+        return true;
+    }
+
+#if IOS
+    /// <summary>
+    /// Get the current Giveways
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+#if DEBUG
+        headers.Add("include_dummies", "true");
+#endif
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                              action: "all",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Data;
+    }
+
+    /// <summary>
+    /// Get the Giveways entered by the user
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetEnteredGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+#if DEBUG
+        headers.Add("include_dummies", "true");
+#endif
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                              action: "entries",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               )).Data;
+    }
+
+    /// <summary>
+    /// Get the Giveways the user won
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task<List<Giveaway>> GetWonGiveaways()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+                                                      action: "wins",
+                                                      singleUseHeaders: headers,
+                                                      unSuccessCallback: e => _ = HandleHttpException(e)
+                                                      )).Data;
+    }
+    /// <summary>
+    /// Get the key from a Giveway the user won
+    /// </summary>
+    /// <returns>The game key</returns>
+    public async Task<GivewayKeyResponse> GetGiveawayKey(Giveaway giveaway)
+    {
+        if (!Fetcher.CheckFeasability())
+            return null;
+
+        var headers = await GetHeaders();
+
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(giveaway), giveaway.Id},
+        };
+
+        return await WebService.Get<GivewayKeyResponse>(controller: "giveaway",
+                                                      action: "key",
+                                                      parameters: paramss,
+                                                      singleUseHeaders: headers,
+                                                      unSuccessCallback: e => _ = HandleHttpException(e)
+                                                      );
+    }
+
+    /// <summary>
+    /// Get the current Giveways
+    /// </summary>
+    /// <returns>Return the giveaways</returns>
+    public async Task EnterGiveaways(Giveaway giveaway)
+    {
+        if (!Fetcher.CheckFeasability() || giveaway.EntryCost > Gems.Count)
+            return;
+
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+        var paramss = new Dictionary<string, string>
+        {
+            { nameof(giveaway), giveaway.Id},
+        };
+        await WebService.Post(controller: "giveaway",
+                              action: "enter",
+                              singleUseHeaders: headers,
+                              parameters: paramss,
+                              payload: new GemPayload
+                              {
+                                  Gems= [..Gems.Take(giveaway.EntryCost).Select(g => g.Hash)]
+                              },
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               );
+        await GetGems();
+    }
+    /// <summary>
+    /// Get all the gems from the user
+    /// </summary>
+    public async Task<List<Gem>> GetGems()
+    {
+        if (!Fetcher.CheckFeasability())
+            return null ;
+        var headers = await GetHeaders();
+        if (UserData != null)
+            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
+
+
+        return Gems =  (await WebService.Get<UserGemsResponse>(controller: "gems",
+                              singleUseHeaders: headers,
+                              unSuccessCallback: e => _ = HandleHttpException(e)
+                               ))?.Data;
+    }
+#endif
+
+    /// <summary>
     /// Set a reminder for a deal
     /// </summary>
     /// <param name="deal"></param>
     /// <returns></returns>
     public async Task SetDealReminder(Deal deal)
     {
-        if (!Fetcher.CheckFeasability())
+        if (!Fetcher.CheckFeasability() || 
+            await _firebasePushPermissions.GetAuthorizationStatusAsync() is not Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted ||
+            !Preferences.Get(PreferencesKeys.DealReminderEnabled, true))
             return ;
+
         Dictionary<string, string> rqHeaders = new();
         if (UserData != null)
-            rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+            rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
         if (string.IsNullOrEmpty(NeID))
-            await SetupNotificationEntity(await SecureStorage.GetAsync(AppConstant.NotificationToken));
+            await SetupNotificationEntity(await SecureStorage.Default.GetAsync(AppConstant.NotificationToken));
 
 #if DEBUG
         var res =
@@ -815,22 +1121,32 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null;
-
-
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-        };
+ 
 
        return (await WebService.Get<NeResponse>(controller: "monitor",
                                                action: "NE",
-                                               singleUseHeaders: headers,
+                                               singleUseHeaders: await GetHeaders(),
                                                parameters: new Dictionary<string, string>
                                                {
                                                    { nameof(token), token },
                                                },
                                                unSuccessCallback: e => _ = HandleHttpException(e)
                                                 ))?.Data;
+    }
+
+    /// <summary>
+    /// Get the culture infor of the device
+    /// </summary>
+    public async Task<DeviceCultureInfo> GetCultureInfo()
+    {
+        if (!Fetcher.CheckFeasability())
+            return null;
+
+       return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
+                                               action: "culture",
+                                               singleUseHeaders: await GetHeaders(),
+                                               unSuccessCallback: e => _ = HandleHttpException(e)
+                                                );
     }
 
     /// <summary>
@@ -885,7 +1201,9 @@ public class Fetcher
     private async Task HandleHttpException(HttpResponseMessage err)
     {
         string errMsg = await err.Content.ReadAsStringAsync();
-
+#if DEBUG
+        Debug.WriteLine(errMsg);
+#endif
         if (errMsg.Contains("internet connection") || errMsg.Contains("Connection failure"))
             // If the error is being thrown because there is no internet: there is no point reporting it 
             return;
@@ -904,6 +1222,25 @@ public class Fetcher
     private static bool CheckFeasability()
     {
         return Connectivity.NetworkAccess == NetworkAccess.Internet;
+    }
+
+    /// <summary>
+    /// Set the culture info of the device. either fetching it from the server of from the storage
+    /// </summary>
+    private async Task SetCultureInfo()
+    {
+        string ciRaw = Preferences.Get(PreferencesKeys.CultureInfo, string.Empty);
+
+        if (string.IsNullOrEmpty(ciRaw))
+        {
+            if ((Culture = await GetCultureInfo()) is null)
+                return;
+
+            Preferences.Set(PreferencesKeys.CultureInfo, JsonConvert.SerializeObject(Culture));
+            return;
+        }
+
+        Culture = JsonConvert.DeserializeObject<DeviceCultureInfo>(ciRaw);
     }
 
     #region Local Actions
@@ -993,7 +1330,7 @@ public class Fetcher
         try 
         { 
 
-            NeID = await SecureStorage.GetAsync(nameof(NeID));
+            NeID = await SecureStorage.Default.GetAsync(nameof(NeID));
             if (!string.IsNullOrEmpty(NeID) || string.IsNullOrEmpty(token))
                 return;
 
@@ -1002,7 +1339,7 @@ public class Fetcher
             {
                 Dictionary<string, string> rqHeaders = new();
                 if (UserData != null)
-                    rqHeaders.Add("Authorization", $"{await SecureStorage.GetAsync(nameof(Session.TokenType))} {await SecureStorage.GetAsync(nameof(Session.AccessToken))}");
+                    rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
                 await RegisterNotificationEntity(token);

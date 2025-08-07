@@ -6,17 +6,18 @@ using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using GamHubApp.Views.PopUps;
+#if IOS
+using Maui.RevenueCat.InAppBilling.Services;
+#endif
 using Newtonsoft.Json;
 using Plugin.FirebasePushNotifications;
 using System.Collections.ObjectModel;
-
 
 #if DEBUG
 using System.Diagnostics;
 #endif
 #if ANDROID
 using static Android.Provider.Settings;
-using Android.Content;
 #endif
 
 namespace GamHubApp;
@@ -43,7 +44,9 @@ public partial class App : Application
     public DateTime DateFirstRun { get; set; }
     public static string GeneralDBpath { get; private set; }
     public static string PathDBBackUp { get; private set; }
-
+#if IOS
+    private readonly IRevenueCatBilling _revenueCat;
+#endif
     public enum PageType
     {
         about,
@@ -52,7 +55,15 @@ public partial class App : Application
         news,
         source
     }
-    public App(Fetcher fetc, AppShell shell, GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
+    public App(Fetcher fetc, 
+               AppShell shell, 
+               GeneralDataBase generalDataBase, 
+               BackUpDataBase backUpDataBase
+#if IOS
+                   ,IRevenueCatBilling revenueCat)
+#else
+        )
+#endif
     {
         _generalDb = generalDataBase;
         _backupDb = backUpDataBase;
@@ -60,13 +71,11 @@ public partial class App : Application
         DataFetcher = fetc;
         Shell = shell;
 
-#if ANDROID
-        SetupInstance();
-#elif IOS
-        SetupInstance().GetAwaiter();
-#endif
 
         InitializeComponent();
+#if IOS
+        _revenueCat = revenueCat;
+#endif
     }
 
     /// <summary>
@@ -107,7 +116,7 @@ public partial class App : Application
     private async Task RecoverFromOffline()
     {
         bool connectivity = Connectivity.NetworkAccess == NetworkAccess.Internet;
-        if (Preferences.Get(AppConstant.OfflineLastRun, false) &&
+        if (Preferences.Get(PreferencesKeys.OfflineLastRun, false) &&
             connectivity)
         {
             var feeds = new ObservableCollection<Feed>(await _generalDb.GetFeeds());
@@ -117,12 +126,18 @@ public partial class App : Application
 
             await Task.WhenAll(tasks);
         }
-        Preferences.Set(AppConstant.OfflineLastRun, !connectivity);
+        Preferences.Set(PreferencesKeys.OfflineLastRun, !connectivity);
     }
 
     protected override void OnStart()
     {
+#if ANDROID
+        SetupInstance();
+#elif IOS
+        SetupInstance().GetAwaiter();
+#endif
         Task.Run(RecoverFromOffline);
+
         // Register the date of the first run
         DateFirstRun = Preferences.Get(nameof(DateFirstRun), DateTime.MinValue);
         if (DateFirstRun == DateTime.MinValue)
@@ -146,6 +161,10 @@ public partial class App : Application
 
         // Reset notificaiton badges
         Badge.Default.SetCount(0);
+#if __IOS__
+        _revenueCat.Initialize(AppConstant.RevenueCatApiKey_iOS);
+#endif
+        base.OnStart();
     }
     protected override Window CreateWindow(IActivationState activationState)
     {
@@ -174,11 +193,9 @@ public partial class App : Application
     protected override void OnSleep()
      {
          base.OnSleep();
+         Page currentPage = Shell?.CurrentPage;
 
-         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-         Page currentPage = mainPage.CurrentPage;
-
-         if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
+         if (currentPage?.ToString() == "GamHubApp.Views.ArticlePage")
          {
 
              ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Stop();
@@ -188,11 +205,43 @@ public partial class App : Application
 
      protected override void OnResume()
      {
-         AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-         Page currentPage = mainPage.CurrentPage;
-         mainPage.Resume();
+         Page currentPage = Shell.CurrentPage;
+            Shell.Resume();
+#if IOS
+        // Check if user was on a deal before that
+        string lastDealViewed = Preferences.Get(PreferencesKeys.LastDealVisit, null);
 
-         if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
+        if (!string.IsNullOrEmpty(lastDealViewed))
+        {
+            try
+            {
+                Task.Run(async () => 
+                {
+                    Deal lastDeal = JsonConvert.DeserializeObject<Deal>(lastDealViewed);
+
+                    if (await DataFetcher.RequestReward(lastDeal) && 
+                        Convert.ToInt16(lastDeal.GemRewards) > 0)
+                    {
+                        OpenPopUp(new RewardPopUp(lastDeal.GemRewards), Shell.CurrentPage);
+                    }
+
+                });
+                Preferences.Clear(PreferencesKeys.LastDealVisit);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw new Exception($"Deal - RequestReward: {ex.Message}",ex);
+#else
+                SentrySdk.CaptureException(ex);
+#endif
+            }
+        }
+        _ = Shell.RefreshGems().ConfigureAwait(false);
+        
+#endif
+
+        if (currentPage.ToString() == "GamHubApp.Views.ArticlePage")
          {
 
              ((ArticleViewModel)((ArticlePage)currentPage).BindingContext).TimeSpent.Start();
@@ -227,7 +276,7 @@ public partial class App : Application
                  return;
 
              if (page == null)
-                 page = GetCurrentPage();
+                 page = Shell;
              if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp!.Id))
                  return;
          MainThread.BeginInvokeOnMainThread(() => page.ShowPopup(popUp));
@@ -244,15 +293,6 @@ public partial class App : Application
         }
 #endif
     }
-    /// <summary>
-    /// Get the current page from the shell
-    /// </summary>
-    /// <returns></returns>
-    private Page GetCurrentPage ()
-    {
-        AppShell mainPage = ((AppShell)Current.Windows[0].Page);
-        return mainPage;
-    }
 
 #if ANDROID
     private void SetupInstance()
@@ -262,11 +302,10 @@ public partial class App : Application
     {
 
 #if IOS
-        SecureStorage.Remove(AppConstant.InstanceIdKey);
-        string instanceID = await SecureStorage.GetAsync(AppConstant.InstanceIdKey);
+        string instanceID = await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey);
         if (string.IsNullOrEmpty(instanceID))
         {
-            await SecureStorage.SetAsync(AppConstant.InstanceIdKey, instanceID = Guid.NewGuid().ToString().ToLower().Replace("-", string.Empty));
+            await SecureStorage.Default.SetAsync(AppConstant.InstanceIdKey, instanceID = UIKit.UIDevice.CurrentDevice.IdentifierForVendor.ToString().ToLower().Replace("-", string.Empty).Substring(0,30));
 
         }
 #endif

@@ -5,6 +5,9 @@ using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using Plugin.FirebasePushNotifications;
 using Plugin.FirebasePushNotifications.Model.Queues;
+using Maui.RevenueCat.InAppBilling;
+using GamHubApp.Core;
+
 
 #if IOS
 using GamHubApp.Platforms.iOS.Renderers;
@@ -22,7 +25,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-#if Debug
+#if DEBUG
         EnvironementSetup.DebugSetup();
 #endif
         builder.UseMauiApp<App>()
@@ -80,6 +83,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<Fetcher>();
 
         builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
+        builder.Services.AddRevenueCatBilling(true);
         return builder.Build();
     }
 
@@ -92,6 +96,9 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
         mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
         mauiAppBuilder.Services.AddSingleton<DealsViewModel>();
+        mauiAppBuilder.Services.AddSingleton<GiveawayViewModel>();
+        mauiAppBuilder.Services.AddSingleton<GemTopUpViewModel>();
+        mauiAppBuilder.Services.AddSingleton<GiveawayWinsViewModel>();
 
         return mauiAppBuilder;
     }
@@ -119,6 +126,8 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<DealFilterPopUp>();
         mauiAppBuilder.Services.AddSingleton<SettingsPage>();
         mauiAppBuilder.Services.AddSingleton<GemTopUpPage>();
+        mauiAppBuilder.Services.AddSingleton<GiveawayPage>();
+        mauiAppBuilder.Services.AddSingleton<UserGiveawayWinsPage>();
 
         return mauiAppBuilder;
     }

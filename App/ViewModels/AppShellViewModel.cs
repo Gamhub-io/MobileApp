@@ -7,8 +7,15 @@ using GamHubApp.Services.UI;
 using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
+using System.Collections.ObjectModel;
+
 #if DEBUG
 using System.Diagnostics;
+#endif
+
+#if IOS
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services.ChangedMessages;
 #endif
 
 namespace GamHubApp.ViewModels;
@@ -38,6 +45,16 @@ public class AppShellViewModel : BaseViewModel
     public AppShell MainShell { get; }
     private bool _authenticated;
 
+    private bool _gemEnabled;
+    public bool GemEnabled { 
+        get=> _gemEnabled; 
+        private set 
+        {
+            _gemEnabled = value;
+            OnPropertyChanged(nameof(GemEnabled));
+        }
+    }
+
     public bool Authenticated
     {
         get { return _authenticated; }
@@ -45,6 +62,17 @@ public class AppShellViewModel : BaseViewModel
         {
             _authenticated = value;
             OnPropertyChanged(nameof(Authenticated));
+        }
+    }
+    private ObservableCollection<Gem> _gems;
+
+    public ObservableCollection<Gem> Gems
+    {
+        get { return _gems; }
+        set 
+        {
+            _gems = value;
+            OnPropertyChanged(nameof(Gems));
         }
     }
 
@@ -105,7 +133,6 @@ public class AppShellViewModel : BaseViewModel
 
         _firebasePushNotification = firebasePushNotification;
         _firebasePushPermissions = firebasePushPermission;
-        (_generalDB = generalDB).Init().GetAwaiter();
 
         Task.Run(async () =>
         {
@@ -115,6 +142,12 @@ public class AppShellViewModel : BaseViewModel
 
         TopUpGemsCommand = new Command(() => (App.Current as App).Windows[0].Page.Navigation.PushAsync(_gemTopUpPage));
         _gemTopUpPage = gemTopUpPage;
+#if IOS
+        WeakReferenceMessenger.Default.Register<GemsUpdatedMessage>(this, async (_, _) =>
+        {
+            await UpdateGems();
+        });
+#endif
     }
 
     /// <summary>
@@ -130,20 +163,32 @@ public class AppShellViewModel : BaseViewModel
             return;
         }
 
-        if (!(DealEnabled = Preferences.Get(AppConstant.DealPageEnable, true)))
+        if (!(DealEnabled = Preferences.Get(PreferencesKeys.DealPageEnable, true)))
             return;
 
 
         await dataFetcher.GetDeals();
 
-        int newDealsCount = Preferences.Get(AppConstant.NewDealCount,0) + await dataFetcher.UpdateDeals();
+        int newDealsCount = Preferences.Get(PreferencesKeys.NewDealCount,0) + await dataFetcher.UpdateDeals();
 
         // Store the new value
-        Preferences.Set(AppConstant.NewDealCount, newDealsCount);
+        Preferences.Set(PreferencesKeys.NewDealCount, newDealsCount);
 
         // Set the deal count
         BadgeCounterService.SetCount(newDealsCount);
     }
+
+#if IOS
+    /// <summary>
+    /// Update the gems
+    /// </summary>
+    /// <returns></returns>
+    public async Task UpdateGems()
+    {
+        Gems = new (await dataFetcher.GetGems());
+
+    }
+#endif
 
     const string _notificationKey = "Notification";
 
@@ -182,11 +227,11 @@ public class AppShellViewModel : BaseViewModel
 #if DEBUG
         Debug.WriteLine($"Current notification token: {_firebasePushNotification.Token}");
 #endif
-        await dataFetcher.SetupNotificationEntity((await SecureStorage.GetAsync(AppConstant.NotificationToken))?? _firebasePushNotification.Token);
+        await dataFetcher.SetupNotificationEntity((await SecureStorage.Default.GetAsync(AppConstant.NotificationToken))?? _firebasePushNotification.Token);
 
         // NOTE: this is mostly here for the devices that already have a token but don't have a notification entity
         // TODO: we may need to remove this at some point
-        if (await SecureStorage.GetAsync(AppConstant.NotificationToken) is null)
+        if (await SecureStorage.Default.GetAsync(AppConstant.NotificationToken) is null)
             await RegisterNotificationEntity(_firebasePushNotification.Token);
 
         _firebasePushNotification.SubscribeTopic("daily_catchup");
@@ -254,8 +299,8 @@ public class AppShellViewModel : BaseViewModel
             return;
         
         // Update notification count
-        int count = (Preferences.Get(AppConstant.NotificationCount, 0))+1;
-        Preferences.Set(AppConstant.NotificationCount, count);
+        int count = (Preferences.Get(PreferencesKeys.NotificationCount, 0))+1;
+        Preferences.Set(PreferencesKeys.NotificationCount, count);
         Badge.Default.SetCount((uint)count);
     }
 
@@ -284,10 +329,10 @@ public class AppShellViewModel : BaseViewModel
 
 
         }
-        int count = (Preferences.Get(AppConstant.NotificationCount, 1))-1;
+        int count = (Preferences.Get(PreferencesKeys.NotificationCount, 1))-1;
         if (count < 0)
             count = 0;
-        Preferences.Set(AppConstant.NotificationCount, count);
+        Preferences.Set(PreferencesKeys.NotificationCount, count);
         Badge.Default.SetCount((uint)count);
     }
 
@@ -329,10 +374,10 @@ public class AppShellViewModel : BaseViewModel
             });
 
             // Update notification count
-            int count = (Preferences.Get(AppConstant.NotificationCount, 1)) - 1;
+            int count = (Preferences.Get(PreferencesKeys.NotificationCount, 1)) - 1;
             if (count < 0)
                 count = 0;
-            Preferences.Set(AppConstant.NotificationCount, count);
+            Preferences.Set(PreferencesKeys.NotificationCount, count);
             Badge.Default.SetCount((uint)count);
 
         }
@@ -385,7 +430,7 @@ public class AppShellViewModel : BaseViewModel
         Debug.WriteLine($"New notification token: {e.Token}");
 #endif
         string newToken = e.Token;
-        string oldToken = await SecureStorage.GetAsync(AppConstant.NotificationToken);
+        string oldToken = await SecureStorage.Default.GetAsync(AppConstant.NotificationToken);
         if (string.IsNullOrEmpty(oldToken))
         {
             await RegisterNotificationEntity(newToken);
@@ -407,6 +452,20 @@ public class AppShellViewModel : BaseViewModel
 
         // Set user data
         UserProfile = res.UserData;
+
+        // Sync gems if any
+        _ = dataFetcher.UserGemsSync(); 
+    }
+
+    public void Appearing()
+    {
+#if IOS
+        GemEnabled = dataFetcher.Culture.RegionCode == "EU" ||
+                            dataFetcher.Culture.RegionCode == "NA";
+#else
+
+        GemEnabled = false;
+#endif
     }
 
 }

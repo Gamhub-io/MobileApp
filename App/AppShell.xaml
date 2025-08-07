@@ -122,10 +122,22 @@
     <Shell.FlyoutHeader >
         <Grid >
             <Grid BackgroundColor="{DynamicResource LightHeader}"
-                  RowDefinitions="*,auto"
-                  HeightRequest="90"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
                   x:Name="Header">
+                <Grid.Triggers>
+                    <DataTrigger Binding="{Binding GemEnabled}"
+                                 TargetType="Grid"
+                                 Value="true">
+                        <Setter Property="RowDefinitions" Value="*,auto" />
+                        <Setter Property="HeightRequest" Value="120" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding GemEnabled}"
+                                 TargetType="Grid"
+                                 Value="false">
+                        <Setter Property="RowDefinitions" Value="*,0" />
+                        <Setter Property="HeightRequest" Value="90" />
+                    </DataTrigger>
+                </Grid.Triggers>
                 <Image Source="ares.png"
                        Grid.Row="0"
                        HeightRequest="80"
@@ -138,11 +150,12 @@
                     </Image.GestureRecognizers>
 
                 </Image>
-                <!--<Border StrokeShape="RoundRectangle 8"
+                <Border StrokeShape="RoundRectangle 8"
                         Grid.Row="1"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
-                        BackgroundColor="{DynamicResource Dark}">
+                        BackgroundColor="{DynamicResource Dark}"
+                        IsVisible="{Binding GemEnabled}">
                     <Grid ColumnDefinitions="*,40">
                         <Label Grid.Column="0"
                                 Margin="5"
@@ -156,7 +169,7 @@
                                           FontFamily="FaSolid"
                                           TextColor="{DynamicResource DiscountColor}"/>
                                     <Span Text=" "/>
-                                    <Span Text="120"
+                                    <Span Text="{Binding Gems.Count}"
                                           FontFamily="P-SemiBold"
                                           TextColor="{DynamicResource FontColor}"/>
                                 </FormattedString>
@@ -168,8 +181,8 @@
                             <Label Grid.Column="0"
                                     Margin="5"
                                     FontSize="20"
-                                   Text="&#x2b;" 
-                                   TextColor="{DynamicResource LightDark}"
+                                   Text="&#x2b;"
+                                   TextColor="{DynamicResource FontColor}"
                                    FontFamily="FaSolid"
                                     HorizontalOptions="Center"
                                    VerticalOptions="Center"/>
@@ -179,7 +192,7 @@
                         </Border>
 
                     </Grid>
-                </Border>-->
+                </Border>
             </Grid>
             <Grid BackgroundColor="{DynamicResource BgBannerColor}"
                   IsVisible="{Binding Authenticated}"
@@ -247,13 +260,43 @@
         </ShellContent>
     </FlyoutItem>
     
+    <!-- Giveaway Page -->
+    <FlyoutItem Title="Giveaways"
+                IsVisible="{Binding GemEnabled}"
+             Icon="&#xf06b;"
+             >
+        <ShellContent FlyoutItemIsVisible="False"
+                   Route="GiveawayPage"
+                   Title="Giveaways"
+                   ContentTemplate="{DataTemplate views:GiveawayPage}">
+            <ShellContent.Icon Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,-30'}"
+                            >
+                <FontImageSource FontFamily="FaSolid" 
+                              Glyph="&#xf79c;" 
+                              Size="{OnPlatform Android='26', iOS='25'}"
+                              />
+            </ShellContent.Icon>
+        </ShellContent>
+        <ShellContent FlyoutItemIsVisible="False"
+                   Route="UserGiveawayWinsPage"
+                   Title="My Wins"
+                   ContentTemplate="{DataTemplate views:UserGiveawayWinsPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FaSolid" 
+                              Glyph="&#xf091;" 
+                              Size="{OnPlatform Android='26', iOS='25'}"/>
+            </ShellContent.Icon>
+
+        </ShellContent>
+    </FlyoutItem>
+
     <!-- About Page -->
     <FlyoutItem Title="About"
                 Icon="&#xf05a;">
         <ShellContent ContentTemplate="{DataTemplate views:AboutPage}"/>
     </FlyoutItem>
     
-    <!-- About Page -->
+    <!-- Settings Page -->
     <FlyoutItem Title="Settings"
                 Icon="&#xf1de;">
         <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>

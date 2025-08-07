@@ -17,10 +17,6 @@ public sealed class GeneralDataBase
     public List<Source> Sources { get; private set; }
     public async Task Init()
     {
-#if DEBUG
-        // Run the debug setup
-        EnvironementSetup.DebugSetup();
-#endif
         if (database is not null)
             return;
 

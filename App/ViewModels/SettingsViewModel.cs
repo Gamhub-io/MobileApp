@@ -12,7 +12,7 @@ public class SettingsViewModel : BaseViewModel
         set
         {
             if (_dealPageSett == value) return;
-            UpdateSettings(AppConstant.DealPageEnable, _dealPageSett = value);
+            UpdateSettings(PreferencesKeys.DealPageEnable, _dealPageSett = value);
 
             OnPropertyChanged(nameof(DealPageSett));
         }
@@ -25,7 +25,7 @@ public class SettingsViewModel : BaseViewModel
         set
         {
             if (_dealViewSett == value) return;
-            UpdateSettings(AppConstant.DealArticleEnable, _dealViewSett = value);
+            UpdateSettings(PreferencesKeys.DealArticleEnable, _dealViewSett = value);
             OnPropertyChanged(nameof(DealViewSett));
         }
     }
@@ -37,7 +37,7 @@ public class SettingsViewModel : BaseViewModel
         set
         {
             if (_dealReminderSett == value) return;
-            UpdateSettings(AppConstant.DealReminderEnabled, _dealReminderSett = value);
+            UpdateSettings(PreferencesKeys.DealReminderEnabled, _dealReminderSett = value);
             OnPropertyChanged(nameof(DealReminderSett));
         }
     }
@@ -48,9 +48,9 @@ public class SettingsViewModel : BaseViewModel
     }
     public SettingsViewModel ()
     {
-        _dealPageSett = Preferences.Get(AppConstant.DealPageEnable, true);
-        _dealViewSett = Preferences.Get(AppConstant.DealArticleEnable, true);
-        _dealReminderSett = Preferences.Get(AppConstant.DealReminderEnabled, true);
+        _dealPageSett = Preferences.Get(PreferencesKeys.DealPageEnable, true);
+        _dealViewSett = Preferences.Get(PreferencesKeys.DealArticleEnable, true);
+        _dealReminderSett = Preferences.Get(PreferencesKeys.DealReminderEnabled, true);
     }
 
     /// <summary>

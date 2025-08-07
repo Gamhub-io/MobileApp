@@ -113,6 +113,7 @@
     <PackageReference Include="CommunityToolkit.Maui.Core" Version="10.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Custard" Version="0.3.7" />
+    <PackageReference Include="Kebechet.Maui.RevenueCat.InAppBilling" Version="5.1.0" />
     <PackageReference Include="Plugin.FirebasePushNotifications" Version="3.0.28" />
     <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
@@ -124,19 +125,48 @@
 	  
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\PopUps\PurchaseGemsPopUp.xaml.cs">
+      <DependentUpon>PurchaseGemsPopUp.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PopUps\GiveawayEntryQuestionPopUp.xaml.cs">
+      <DependentUpon>GiveawayEntryQuestionPopUp.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PopUps\TwoChoiceQuestionPopUp.xaml.cs">
+      <DependentUpon>TwoChoiceQuestionPopUp.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <MauiXaml Update="Resources\Styles\Colors.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Resources\Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Views\GiveawayPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Views\PopUps\DealFilterPopUp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\PopUps\PurchaseGemsPopUp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\PopUps\GiveawayEntryQuestionPopUp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\PopUps\TwoChoiceQuestionPopUp.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\PopUps\RewardPopUp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\SettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\DealsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Views\UserGiveawayWinsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>

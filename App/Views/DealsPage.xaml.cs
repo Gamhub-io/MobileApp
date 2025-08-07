@@ -17,7 +17,7 @@ public partial class DealsPage : ContentPage
     protected override void OnAppearing()
 	{
         BadgeCounterService.SetCount(0);
-        Preferences.Set(AppConstant.NewDealCount, 0);
+        Preferences.Set(PreferencesKeys.NewDealCount, 0);
         (App.Current as App).ShowLoadingIndicator();
 
         Resume();

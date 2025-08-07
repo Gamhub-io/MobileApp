@@ -49,6 +49,8 @@ jobs:
       api_host: ${{ secrets.API_HOST }}
       monitoring_key: ${{ secrets.MONITORING_KEY }}
       google_services_plist: ${{ secrets.GOOGLE_SERVICES_PLIST }}
+      revenueCatApiKey_iOS: ${{ secrets.revenueCatApiKey_iOS }}
+      sha_salt: ${{ secrets.SHA_SALT }}
   build-android:
     needs: setup
     uses: ./.github/workflows/cd-android.yml
@@ -71,5 +73,6 @@ jobs:
       api_host: ${{ secrets.API_HOST }}
       monitoring_key: ${{ secrets.MONITORING_KEY }}
       google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
+      sha_salt: ${{ secrets.SHA_SALT }}
 # Inspired by https://thewissen.io/making-maui-cd-pipeline/
 
