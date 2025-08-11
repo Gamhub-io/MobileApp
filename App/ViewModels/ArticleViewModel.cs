@@ -205,10 +205,10 @@ public class ArticleViewModel : BaseViewModel
 
         _ttsIcon = "\uf028";
         _ttsColour = "#36383c";
-#if !DEBUG
+//#if !DEBUG
         // Register Hook
         _ =(App.Current as App).DataFetcher.RegisterHook(article);
-#endif
+//#endif
 
         _selectedArticle = article;
 
