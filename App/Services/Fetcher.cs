@@ -800,11 +800,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return ;
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
-        };
+        var headers = await GetHeaders();
 #if DEBUG
         Debug.WriteLine($"Instance: {headers["instance"]}");
 #endif
@@ -831,11 +827,7 @@ public class Fetcher
             return;
         if (!Fetcher.CheckFeasability())
             return ;
-        var headers = new Dictionary<string, string>
-        {
-            { "x-api-key", AppConstant.MonitoringKey},
-            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
-        };
+        var headers = await GetHeaders();
 #if DEBUG
         Debug.WriteLine($"Instance: {headers["instance"]}");
         Debug.WriteLine($"API Key: {headers["x-api-key"]}");
