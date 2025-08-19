@@ -781,13 +781,20 @@ public class Fetcher
     private async Task<Dictionary<string,string>> GetHeaders()
     {
         var apiKey = Csign.GenerateApiKey();
+
+        string instanceID = await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey);
+        if (string.IsNullOrEmpty(instanceID))
+        {
+            // Reissue an instanceID
+            instanceID = await (App.Current as App).SetupInstance();
+        }
 #if DEBUG
         Debug.WriteLine($"ApiKey: {apiKey}");
 #endif
         return new Dictionary<string, string>
         {
             { "x-api-key", apiKey},
-            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
+            { "instance", instanceID},
         };
 
     }
