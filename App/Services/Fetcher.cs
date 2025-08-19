@@ -1070,7 +1070,7 @@ public class Fetcher
         return Gems =  (await WebService.Get<UserGemsResponse>(controller: "gems",
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
-                               ))?.Data;
+                               ))?.Data ?? new List<Gem>();
     }
 #endif
 

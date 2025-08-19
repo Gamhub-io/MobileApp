@@ -185,7 +185,19 @@ public class AppShellViewModel : BaseViewModel
     /// <returns></returns>
     public async Task UpdateGems()
     {
-        Gems = new (await dataFetcher.GetGems());
+        try
+        {
+            Gems = new(await dataFetcher.GetGems());
+
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#elif RELEASE
+            SentrySdk.CaptureException(ex);
+#endif
+        }
 
     }
 #endif
