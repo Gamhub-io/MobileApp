@@ -781,13 +781,20 @@ public class Fetcher
     private async Task<Dictionary<string,string>> GetHeaders()
     {
         var apiKey = Csign.GenerateApiKey();
+
+        string instanceID = await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey);
+        if (string.IsNullOrEmpty(instanceID))
+        {
+            // Reissue an instanceID
+            instanceID = await (App.Current as App).SetupInstance();
+        }
 #if DEBUG
         Debug.WriteLine($"ApiKey: {apiKey}");
 #endif
         return new Dictionary<string, string>
         {
             { "x-api-key", apiKey},
-            { "instance", await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey)},
+            { "instance", instanceID},
         };
 
     }
@@ -1063,7 +1070,7 @@ public class Fetcher
         return Gems =  (await WebService.Get<UserGemsResponse>(controller: "gems",
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
-                               ))?.Data;
+                               ))?.Data ?? new List<Gem>();
     }
 #endif
 

@@ -294,11 +294,11 @@ public partial class App : Application
 #endif
     }
 
-#if ANDROID
-    private void SetupInstance()
-#elif IOS
-    private async Task SetupInstance()
-#endif
+    /// <summary>
+    /// Setup the instance for a device
+    /// </summary>
+    /// <returns>a task returning the id of the instance</returns>
+    public async Task<string> SetupInstance()
     {
 
 #if IOS
@@ -308,17 +308,24 @@ public partial class App : Application
             await SecureStorage.Default.SetAsync(AppConstant.InstanceIdKey, instanceID = UIKit.UIDevice.CurrentDevice.IdentifierForVendor.ToString().ToLower().Replace("-", string.Empty).Substring(0,30));
 
         }
-#endif
 
+#if DEBUG
+        Debug.WriteLine($"Instance: {instanceID}");
+#endif
+        return
+#endif
         InstanceID =
 #if ANDROID
             Secure.GetString(Android.App.Application.Context.ContentResolver, Secure.AndroidId);
-#elif IOS
-            instanceID;
-#endif
 #if DEBUG
         Debug.WriteLine($"Instance: {InstanceID}");
 #endif
+        await SecureStorage.Default.SetAsync(AppConstant.InstanceIdKey, InstanceID);
+        return InstanceID;
+#elif IOS
+            instanceID;
+#endif
+
     }
     /// <summary>
     /// Load all the partners

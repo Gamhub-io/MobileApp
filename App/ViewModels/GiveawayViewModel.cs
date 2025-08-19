@@ -2,6 +2,9 @@
 using GamHubApp.Services;
 using GamHubApp.Views;
 using System.Collections.ObjectModel;
+#if DEBUG
+using System.Diagnostics;
+#endif
 #if IOS
 using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Services.ChangedMessages;
@@ -76,7 +79,18 @@ public class GiveawayViewModel : BaseViewModel
     /// <returns></returns>
     public async Task UpdateGems()
     {
+        try
+        {
         Gems = new(await _fetcher.GetGems());
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#elif RELEASE
+            SentrySdk.CaptureException(ex);
+#endif
+        }
 
     }
 
