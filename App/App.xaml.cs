@@ -6,9 +6,7 @@ using GamHubApp.Services;
 using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using GamHubApp.Views.PopUps;
-#if IOS
 using Maui.RevenueCat.InAppBilling.Services;
-#endif
 using Newtonsoft.Json;
 using Plugin.FirebasePushNotifications;
 using System.Collections.ObjectModel;
@@ -44,9 +42,8 @@ public partial class App : Application
     public DateTime DateFirstRun { get; set; }
     public static string GeneralDBpath { get; private set; }
     public static string PathDBBackUp { get; private set; }
-#if IOS
     private readonly IRevenueCatBilling _revenueCat;
-#endif
+
     public enum PageType
     {
         about,
@@ -58,12 +55,8 @@ public partial class App : Application
     public App(Fetcher fetc, 
                AppShell shell, 
                GeneralDataBase generalDataBase, 
-               BackUpDataBase backUpDataBase
-#if IOS
-                   ,IRevenueCatBilling revenueCat)
-#else
-        )
-#endif
+               BackUpDataBase backUpDataBase,
+                IRevenueCatBilling revenueCat)
     {
         _generalDb = generalDataBase;
         _backupDb = backUpDataBase;
@@ -73,9 +66,7 @@ public partial class App : Application
 
 
         InitializeComponent();
-#if IOS
         _revenueCat = revenueCat;
-#endif
     }
 
     /// <summary>
@@ -163,6 +154,8 @@ public partial class App : Application
         Badge.Default.SetCount(0);
 #if __IOS__
         _revenueCat.Initialize(AppConstant.RevenueCatApiKey_iOS);
+#else
+        _revenueCat.Initialize(AppConstant.RevenueCatApiKey_Android);
 #endif
         base.OnStart();
     }
