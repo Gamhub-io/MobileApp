@@ -27,5 +27,8 @@
 		<intent>
 			<action android:name="android.intent.action.TTS_SERVICE" />
 		</intent>
+		<intent>
+			<action android:name="com.android.vending.BILLING" />
+		</intent>
 	</queries>
 </manifest>
