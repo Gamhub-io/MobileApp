@@ -2,12 +2,11 @@
 using GamHubApp.Services;
 using GamHubApp.Views;
 using System.Collections.ObjectModel;
-#if DEBUG
-using System.Diagnostics;
-#endif
-#if IOS
 using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Services.ChangedMessages;
+
+#if DEBUG
+using System.Diagnostics;
 #endif
 
 namespace GamHubApp.ViewModels;
@@ -60,19 +59,16 @@ public class GiveawayViewModel : BaseViewModel
                             GemTopUpPage gemTopUpPage)
     {
         _fetcher = fetch;
-#if IOS
         RefreshGiveawayList().GetAwaiter();
-#endif
         TopUpGemsCommand = new Command(() => (App.Current as App).Windows[0].Page.Navigation.PushAsync(gemTopUpPage));
-#if IOS
+
         WeakReferenceMessenger.Default.Register<GemsUpdatedMessage>(this, async(_, _) =>
         {
             await UpdateGems();
         });
-#endif
         
     }
-#if IOS
+
     /// <summary>
     /// Update the gems
     /// </summary>

@@ -15,9 +15,9 @@ public partial class GiveawayPage : ContentPage
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-#if IOS
+
         _vm.RefreshGiveawayList().GetAwaiter();
         _vm.UpdateGems().GetAwaiter();
-#endif
+
     }
 }
