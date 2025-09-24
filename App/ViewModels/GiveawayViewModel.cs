@@ -77,7 +77,7 @@ public class GiveawayViewModel : BaseViewModel
     {
         try
         {
-        Gems = new(await _fetcher.GetGems());
+            Gems = new(await _fetcher.GetGems());
         }
         catch (Exception ex)
         {
