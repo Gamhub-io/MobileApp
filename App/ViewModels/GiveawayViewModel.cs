@@ -110,5 +110,4 @@ public class GiveawayViewModel : BaseViewModel
                 Giveaways[_giveaways.IndexOf(giveaway)].IsEntered = true;
         }
     }
-#endif
 }
