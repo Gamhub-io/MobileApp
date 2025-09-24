@@ -58,9 +58,8 @@ public partial class AppShell : Shell
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-#if IOS
+
         await _vm.UpdateGems();
-#endif
         _currentApp = (App.Current as App);
         Task partnersTask = _currentApp.LoadPartners();
         Task notifTask = _vm.NotificationSetup();
@@ -94,11 +93,14 @@ public partial class AppShell : Shell
     {
         _vm.UpdateDeals().GetAwaiter();
     }
-#if IOS
+
+    /// <summary>
+    /// Refresh the gems balance of the user
+    /// </summary>
+    /// <returns></returns>
     public async Task RefreshGems()
     {
         await _vm.UpdateGems();
 
     }
-#endif
 }

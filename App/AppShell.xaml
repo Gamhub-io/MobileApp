@@ -123,21 +123,9 @@
         <Grid >
             <Grid BackgroundColor="{DynamicResource LightHeader}"
                   IsVisible="{Binding Authenticated, Converter={StaticResource BoolInverseConverter}}"
-                  x:Name="Header">
-                <Grid.Triggers>
-                    <DataTrigger Binding="{Binding GemEnabled}"
-                                 TargetType="Grid"
-                                 Value="true">
-                        <Setter Property="RowDefinitions" Value="*,auto" />
-                        <Setter Property="HeightRequest" Value="120" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding GemEnabled}"
-                                 TargetType="Grid"
-                                 Value="false">
-                        <Setter Property="RowDefinitions" Value="*,0" />
-                        <Setter Property="HeightRequest" Value="90" />
-                    </DataTrigger>
-                </Grid.Triggers>
+                  x:Name="Header"
+                  RowDefinitions="*,auto"
+                  HeightRequest="120">
                 <Image Source="ares.png"
                        Grid.Row="0"
                        HeightRequest="80"
@@ -154,8 +142,7 @@
                         Grid.Row="1"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
-                        BackgroundColor="{DynamicResource Dark}"
-                        IsVisible="{Binding GemEnabled}">
+                        BackgroundColor="{DynamicResource Dark}">
                     <Grid ColumnDefinitions="*,40">
                         <Label Grid.Column="0"
                                 Margin="5"
