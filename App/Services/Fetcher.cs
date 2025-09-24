@@ -936,7 +936,6 @@ public class Fetcher
         return true;
     }
 
-#if IOS
     /// <summary>
     /// Get the current Giveways
     /// </summary>
@@ -1072,7 +1071,6 @@ public class Fetcher
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                ))?.Data ?? new List<Gem>();
     }
-#endif
 
     /// <summary>
     /// Set a reminder for a deal

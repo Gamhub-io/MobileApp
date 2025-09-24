@@ -8,14 +8,11 @@ using GamHubApp.Views;
 using Microsoft.Extensions.Logging;
 using Plugin.FirebasePushNotifications;
 using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.Messaging;
+using GamHubApp.Services.ChangedMessages;
 
 #if DEBUG
 using System.Diagnostics;
-#endif
-
-#if IOS
-using CommunityToolkit.Mvvm.Messaging;
-using GamHubApp.Services.ChangedMessages;
 #endif
 
 namespace GamHubApp.ViewModels;
@@ -142,12 +139,11 @@ public class AppShellViewModel : BaseViewModel
 
         TopUpGemsCommand = new Command(() => (App.Current as App).Windows[0].Page.Navigation.PushAsync(_gemTopUpPage));
         _gemTopUpPage = gemTopUpPage;
-#if IOS
+
         WeakReferenceMessenger.Default.Register<GemsUpdatedMessage>(this, async (_, _) =>
         {
             await UpdateGems();
         });
-#endif
     }
 
     /// <summary>
@@ -178,7 +174,6 @@ public class AppShellViewModel : BaseViewModel
         BadgeCounterService.SetCount(newDealsCount);
     }
 
-#if IOS
     /// <summary>
     /// Update the gems
     /// </summary>
@@ -200,7 +195,6 @@ public class AppShellViewModel : BaseViewModel
         }
 
     }
-#endif
 
     const string _notificationKey = "Notification";
 
@@ -471,13 +465,9 @@ public class AppShellViewModel : BaseViewModel
 
     public void Appearing()
     {
-#if IOS
         GemEnabled = dataFetcher.Culture.RegionCode == "EU" ||
                             dataFetcher.Culture.RegionCode == "NA";
-#else
 
-        GemEnabled = false;
-#endif
     }
 
 }
