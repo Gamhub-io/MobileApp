@@ -315,6 +315,8 @@
             
             <!-- Support -->
             <Grid Grid.Row="1"
+                  VerticalOptions="End"
+                  ColumnDefinitions="60,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding MailTo}"
                                           CommandParameter="support@gamhub.io"/>
