@@ -27,6 +27,15 @@ public class AppShellViewModel : BaseViewModel
             return new Command<string>((address) => _ = Email.ComposeAsync(subject: "", body: "", to: new string[] { address }));
         }
     }
+
+    public Command BrowseTo
+    {
+        get
+        {
+            return new Command<string>((url) => _ = Browser.OpenAsync(url, BrowserLaunchMode.SystemPreferred));
+        }
+    }
+
     public Command TopUpGemsCommand
     {
         get;
