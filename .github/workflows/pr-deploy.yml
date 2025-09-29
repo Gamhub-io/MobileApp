@@ -74,7 +74,7 @@ jobs:
       api_host: ${{ secrets.API_HOST }}
       monitoring_key: ${{ secrets.MONITORING_KEY }}
       google_services_json: ${{ secrets.GOOGLE_SERVICES_JSON }}
-      revenueCatApiKey_Android: ${{ secrets.REVENUECATAPIKEY_ANDROID }}
+      revenueCatApiKey_Android: ${{ secrets.revenueCatApiKey_Android }}
       sha_salt: ${{ secrets.SHA_SALT }}
 # Inspired by https://thewissen.io/making-maui-cd-pipeline/
 
