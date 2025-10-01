@@ -14,7 +14,7 @@ env:
   PROJECT_FOLDER: App
 jobs:
   setup:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     outputs:
       buildVersion: ${{ env.BUILD_VERSION }}
       dotnetVersion: ${{ env.DOTNET_VERSION }}
