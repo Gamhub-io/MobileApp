@@ -47,6 +47,8 @@ on:
         required: true
       google_services_json:
         required: true
+      revenueCatApiKey_Android:
+        required: true
       sha_salt:
         required: true
 jobs:
@@ -83,6 +85,7 @@ jobs:
           api_host: ${{ secrets.api_host }}
           monitoring_key: ${{ secrets.monitoring_key }}
           sha_salt: ${{ secrets.sha_salt }}
+          revenueCatApiKey_Android: ${{ secrets.revenueCatApiKey_Android }}
           project_folder: '.'
       #
       # This step might be obsolete at some point as .NET MAUI workloads

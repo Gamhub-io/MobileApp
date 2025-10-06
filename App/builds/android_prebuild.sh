@@ -30,6 +30,8 @@ then
     sed -i '' 's#MonitoringKey = Environment.GetEnvironmentVariable("monitoring_key")#MonitoringKey = "'$monitoring_key'"#g' $APP_CONSTANT_FILE
     echo "ShaSalt = "$sha_salt
     sed -i '' 's#ShaSalt = Environment.GetEnvironmentVariable("shaSalt")#ShaSalt = "'$sha_salt'"#g' $APP_CONSTANT_FILE
+    echo "RevenueCatApiKey_Android = "$revenueCatApiKey_Android
+    sed -i '' 's#RevenueCatApiKey_Android { get => Environment.GetEnvironmentVariable("revenueCatApiKey_Android"); }#RevenueCatApiKey_Android = "'$revenueCatApiKey_Android'";#g' $APP_CONSTANT_FILE
     echo "File content:"
     cat $APP_CONSTANT_FILE
 else
