@@ -100,12 +100,12 @@ public class Fetcher
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
-            return null;
+            return [];
         }
 #else
         catch
         {
-            return null; 
+            return []; 
         }
 #endif
     }
@@ -131,7 +131,7 @@ public class Fetcher
     public async Task<List<GamePlatform>> GetDRMs()
     {
         if (!CheckFeasability())
-            return null;
+            return [];
         return (await WebService.Get<DrmResponse>(controller: "deals", 
                                                  action: "platforms",
                                                  unSuccessCallback: e => _ = HandleHttpException(e)))?.Data;
@@ -215,7 +215,7 @@ public class Fetcher
     public async Task<Collection<Article>> GetMainFeedUpdate(string dateUpdate)
     {
         if (!Fetcher.CheckFeasability())
-            return new Collection<Article>();
+            return [];
         try
         {
 
@@ -233,7 +233,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return new Collection<Article>();
+            return [];
         }
     }
     /// <summary>
@@ -245,7 +245,7 @@ public class Fetcher
     public async Task<Collection<Article>> GetFeedChunk(DateTime dateFrom, int length)
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return [];
         try
         {
             string[] parameters =
@@ -266,7 +266,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return [];
         }
     }
 
@@ -277,7 +277,7 @@ public class Fetcher
     public async Task<Collection<Partner>> GetPartners()
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return [];
         try
         {
             return await this.WebService.Get<Collection<Partner>>(controller: "partners",
@@ -291,7 +291,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return [];
         }
     }
 
@@ -302,7 +302,7 @@ public class Fetcher
     public async Task<Collection<Deal>> GetDeals()
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return [];
         try
         {
             string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
@@ -323,7 +323,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return [];
         }
     }
 
