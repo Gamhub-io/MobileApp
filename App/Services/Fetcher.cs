@@ -85,7 +85,7 @@ public class Fetcher
     public async Task<Collection<Article>> GetMainFeedUpdate()
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return [];
         try
         {
 
@@ -118,10 +118,11 @@ public class Fetcher
     public async Task<Collection<Source>> GetSources()
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return Fetcher.Sources = [];
         return Fetcher.Sources =  await WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
-                                                        unSuccessCallback: e => _ = HandleHttpException(e));
+                                                        unSuccessCallback: e => _ = HandleHttpException(e))
+                                  ?? [];
     }
 
     /// <summary>
@@ -1059,8 +1060,10 @@ public class Fetcher
     /// </summary>
     public async Task<List<Gem>> GetGems()
     {
+        try
+        {
         if (!Fetcher.CheckFeasability())
-            return null ;
+                return [] ;
         var headers = await GetHeaders();
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
@@ -1070,6 +1073,12 @@ public class Fetcher
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                ))?.Data ?? new List<Gem>();
+
+        }
+        catch
+        {
+            return [];
+        }
     }
 
     /// <summary>
