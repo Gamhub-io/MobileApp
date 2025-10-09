@@ -21,10 +21,8 @@ public class GiveawayWinsViewModel(Fetcher fetc) : BaseViewModel
             OnPropertyChanged(nameof(Wins));
         }
     }
-#if IOS
     public async Task GetWins()
     {
         Wins = new (await DataFetcher.GetWonGiveaways());
     }
-#endif
 }

@@ -15,8 +15,6 @@ public partial class UserGiveawayWinsPage : ContentPage
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
-#if IOS
         _vm.GetWins().GetAwaiter();
-#endif
     }
 }
