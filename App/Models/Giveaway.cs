@@ -1,11 +1,8 @@
-﻿#if IOS
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Models.Http.Responses;
 using GamHubApp.Services.ChangedMessages;
 using GamHubApp.Views;
-#endif
 using Newtonsoft.Json;
 
 namespace GamHubApp.Models;
@@ -38,7 +35,6 @@ public class Giveaway : SelectableModel
     public GamePlatform DRM { get; set; }
     public Command EnterCommand
     {
-#if IOS
         get => new(() =>
         {
             if (IsEntered)
@@ -57,13 +53,9 @@ public class Giveaway : SelectableModel
                 app.RemoveLoadingIndicator();
             }));
         });
-#else
-        get;
-#endif
     }
     public Command ClaimCommand
     {
-#if IOS
         get => new(() =>
         {
             if (IsEntered)
@@ -84,21 +76,14 @@ public class Giveaway : SelectableModel
 
             }));
         });
-#else
-        get;
-#endif
     }
     public Command CopyKeyCommand
     {
-#if IOS
         get => new(async () =>
         {
             await Clipboard.Default.SetTextAsync(Key);
             await Toast.Make("Key copied").Show();
         });
-#else
-        get;
-#endif
     }
 
     private bool _isEntered;
