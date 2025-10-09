@@ -192,11 +192,7 @@ public class Fetcher
                                                                                         jsonBody: JsonConvert.SerializeObject(payload),
                                                                                         unSuccessCallback: e => _ = HandleHttpException(e));
 
-            if (res == null)
-            {
-                return null;
-            }
-            return res.Session;
+            return res?.Session;
         }
         catch (Exception ex)
         {
