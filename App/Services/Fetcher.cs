@@ -85,7 +85,7 @@ public class Fetcher
     public async Task<Collection<Article>> GetMainFeedUpdate()
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return [];
         try
         {
 
@@ -100,12 +100,12 @@ public class Fetcher
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
-            return null;
+            return [];
         }
 #else
         catch
         {
-            return null; 
+            return []; 
         }
 #endif
     }
@@ -118,10 +118,11 @@ public class Fetcher
     public async Task<Collection<Source>> GetSources()
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return Fetcher.Sources = [];
         return Fetcher.Sources =  await WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
-                                                        unSuccessCallback: e => _ = HandleHttpException(e));
+                                                        unSuccessCallback: e => _ = HandleHttpException(e))
+                                  ?? [];
     }
 
     /// <summary>
@@ -131,7 +132,7 @@ public class Fetcher
     public async Task<List<GamePlatform>> GetDRMs()
     {
         if (!CheckFeasability())
-            return null;
+            return [];
         return (await WebService.Get<DrmResponse>(controller: "deals", 
                                                  action: "platforms",
                                                  unSuccessCallback: e => _ = HandleHttpException(e)))?.Data;
@@ -191,11 +192,7 @@ public class Fetcher
                                                                                         jsonBody: JsonConvert.SerializeObject(payload),
                                                                                         unSuccessCallback: e => _ = HandleHttpException(e));
 
-            if (res == null)
-            {
-                return null;
-            }
-            return res.Session;
+            return res?.Session;
         }
         catch (Exception ex)
         {
@@ -215,7 +212,7 @@ public class Fetcher
     public async Task<Collection<Article>> GetMainFeedUpdate(string dateUpdate)
     {
         if (!Fetcher.CheckFeasability())
-            return new Collection<Article>();
+            return [];
         try
         {
 
@@ -233,7 +230,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return new Collection<Article>();
+            return [];
         }
     }
     /// <summary>
@@ -245,7 +242,7 @@ public class Fetcher
     public async Task<Collection<Article>> GetFeedChunk(DateTime dateFrom, int length)
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return [];
         try
         {
             string[] parameters =
@@ -266,7 +263,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return [];
         }
     }
 
@@ -277,7 +274,7 @@ public class Fetcher
     public async Task<Collection<Partner>> GetPartners()
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return [];
         try
         {
             return await this.WebService.Get<Collection<Partner>>(controller: "partners",
@@ -291,7 +288,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return [];
         }
     }
 
@@ -302,7 +299,7 @@ public class Fetcher
     public async Task<Collection<Deal>> GetDeals()
     {
         if (!Fetcher.CheckFeasability())
-            return null;
+            return [];
         try
         {
             string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
@@ -323,7 +320,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return null;
+            return [];
         }
     }
 
@@ -1059,8 +1056,10 @@ public class Fetcher
     /// </summary>
     public async Task<List<Gem>> GetGems()
     {
+        try
+        {
         if (!Fetcher.CheckFeasability())
-            return null ;
+                return [] ;
         var headers = await GetHeaders();
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
@@ -1070,6 +1069,12 @@ public class Fetcher
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
                                ))?.Data ?? new List<Gem>();
+
+        }
+        catch
+        {
+            return [];
+        }
     }
 
     /// <summary>
