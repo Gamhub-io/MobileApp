@@ -86,6 +86,8 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return [];
+        ResetHandler();
+
         try
         {
 
@@ -119,6 +121,9 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return Fetcher.Sources = [];
+
+        ResetHandler();
+
         return Fetcher.Sources =  await WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
                                                         unSuccessCallback: e => _ = HandleHttpException(e))
@@ -133,6 +138,8 @@ public class Fetcher
     {
         if (!CheckFeasability())
             return [];
+        ResetHandler();
+
         return (await WebService.Get<DrmResponse>(controller: "deals", 
                                                  action: "platforms",
                                                  unSuccessCallback: e => _ = HandleHttpException(e)))?.Data;
@@ -149,6 +156,8 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return new Collection<Article>();
+        ResetHandler();
+
         try
         {
             if (string.IsNullOrEmpty(keywords))
@@ -181,6 +190,9 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null;
+
+        ResetHandler();
+
         try
         {
             RefreshDiscordPayload payload = new()
@@ -213,6 +225,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return [];
+        ResetHandler();
         try
         {
 
@@ -243,6 +256,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return [];
+        ResetHandler();
         try
         {
             string[] parameters =
@@ -275,6 +289,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return [];
+        ResetHandler();
         try
         {
             return await this.WebService.Get<Collection<Partner>>(controller: "partners",
@@ -300,6 +315,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return [];
+        ResetHandler();
         try
         {
             string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
@@ -333,6 +349,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null;
+        ResetHandler();
         try
         {
             return await this.WebService.Get<Article>(controller: "article",
@@ -361,6 +378,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return;
+        ResetHandler();
         try
         {
             if (rqHeaders is null)
@@ -408,6 +426,7 @@ public class Fetcher
         {
             if (!Fetcher.CheckFeasability())
                 return false;
+            ResetHandler();
 
             Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
@@ -449,6 +468,7 @@ public class Fetcher
         {
             if (string.IsNullOrEmpty(feedID) || string.IsNullOrEmpty(token))
                 return;
+            ResetHandler();
 
             Dictionary<string, string> rqHeaders = await GetHeaders();
             if (UserData != null)
@@ -546,6 +566,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null;
+        ResetHandler();
         try
         {
             string name = feed.Title;
@@ -597,6 +618,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return ;
+        ResetHandler();
         try
         {
             Dictionary<string, string> rqHeaders = await GetHeaders();
@@ -643,6 +665,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return;
+        ResetHandler();
         try
         {
             Dictionary<string, string> rqHeaders = new();
@@ -677,6 +700,18 @@ public class Fetcher
             SentrySdk.CaptureException(ex);
 #endif
         }
+    }
+
+    private void ResetHandler()
+    {
+#if ANDROID
+        if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.VanillaIceCream)
+            return;
+#endif
+        WebService.CustomHandler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (msg, cert, chain, errors) => true
+        };
     }
 
     /// <summary>
@@ -804,6 +839,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return ;
+        ResetHandler();
         var headers = await GetHeaders();
 #if DEBUG
         Debug.WriteLine($"Instance: {headers["instance"]}");
@@ -1004,6 +1040,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null;
+        ResetHandler();
 
         var headers = await GetHeaders();
 
@@ -1031,6 +1068,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability() || giveaway.EntryCost > Gems.Count)
             return;
+        ResetHandler();
 
         var headers = await GetHeaders();
         if (UserData != null)
@@ -1060,6 +1098,8 @@ public class Fetcher
         {
         if (!Fetcher.CheckFeasability())
                 return [] ;
+            ResetHandler();
+
         var headers = await GetHeaders();
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
@@ -1088,6 +1128,7 @@ public class Fetcher
             await _firebasePushPermissions.GetAuthorizationStatusAsync() is not Plugin.FirebasePushNotifications.Model.AuthorizationStatus.Granted ||
             !Preferences.Get(PreferencesKeys.DealReminderEnabled, true))
             return ;
+        ResetHandler();
 
         Dictionary<string, string> rqHeaders = new();
         if (UserData != null)
@@ -1123,6 +1164,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null;
+        ResetHandler();
  
 
        return (await WebService.Get<NeResponse>(controller: "monitor",
@@ -1143,6 +1185,7 @@ public class Fetcher
     {
         if (!Fetcher.CheckFeasability())
             return null;
+        ResetHandler();
 
        return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
                                                action: "culture",
