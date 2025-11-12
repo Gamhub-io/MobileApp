@@ -474,8 +474,26 @@ public class AppShellViewModel : BaseViewModel
 
     public void Appearing()
     {
+        try
+        {
+            if (dataFetcher.Culture is null)
+            {
+                dataFetcher.SetCultureInfo().Wait();
+                GemEnabled = dataFetcher.Culture?.RegionCode == "EU" ||
+                                dataFetcher.Culture?.RegionCode == "NA";
+            }
         GemEnabled = dataFetcher.Culture.RegionCode == "EU" ||
                             dataFetcher.Culture.RegionCode == "NA";
+
+    }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
 
     }
 
