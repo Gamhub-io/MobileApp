@@ -55,12 +55,12 @@ on:
         required: true
 jobs:
   publish-ios:
-    runs-on: macos-latest
+    runs-on: macos-15
     name: iOS Publish
 
     steps:
       # Setup
-      - uses: maxim-lobanov/setup-xcode@v1.5.1
+      - uses: maxim-lobanov/setup-xcode@v1.6.0
         name: Set XCode version
         with:
           xcode-version: ${{ inputs.xcode-version }}
