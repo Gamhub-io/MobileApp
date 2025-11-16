@@ -1272,7 +1272,7 @@ public class Fetcher
     /// <summary>
     /// Set the culture info of the device. either fetching it from the server of from the storage
     /// </summary>
-    private async Task SetCultureInfo()
+    public async Task SetCultureInfo()
     {
         string ciRaw = Preferences.Get(PreferencesKeys.CultureInfo, string.Empty);
 
