@@ -114,6 +114,9 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Custard" Version="0.4.0.4-rc" />
     <PackageReference Include="Kebechet.Maui.RevenueCat.InAppBilling" Version="5.3.2" />
+    <PackageReference Include="Microsoft.Maui.Controls.Core" Version="9.0.120" />
+    <PackageReference Include="Microsoft.Maui.Core" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.11" />
     <PackageReference Include="Plugin.FirebasePushNotifications" Version="3.0.28" />
     <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
@@ -172,7 +175,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.80" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.120" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
