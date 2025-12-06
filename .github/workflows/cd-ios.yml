@@ -121,8 +121,9 @@ jobs:
       - name: Install Provisioning Profiles
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp "${{ steps.provisioning.outputs.profiles }}" ~/Library/MobileDevice/Provisioning\ Profiles/
-
+          for profile in ${{ steps.provisioning.outputs.profile-paths }}; do
+            cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
+          done
       # Version app
       - name: Version the app
         uses: managedcode/MAUIAppVersion@v1
