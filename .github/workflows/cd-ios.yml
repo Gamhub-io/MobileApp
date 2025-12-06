@@ -120,12 +120,12 @@ jobs:
           issuer-id: ${{ secrets.appstore-issuer }}
           api-key-id: ${{ secrets.appstore-keyid }}
           api-private-key: ${{ secrets.appstore-private-key }}
-      - name: Install Provisioning Profiles
-        run: |
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          for profile in ${{ steps.provisioning.outputs.profile-paths }}; do
-            cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
-          done
+      # - name: Install Provisioning Profiles
+      #   run: |
+      #     mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+      #     for profile in ${{ steps.provisioning.outputs.profile-paths }}; do
+      #       cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
+      #     done
       
       # Version app
       - name: Version the app
@@ -136,12 +136,12 @@ jobs:
           displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}
           printFile: true # optional
       
-      - name: Extract Provisioning UUID
-        id: prov
-        run: |
-          uuid=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | \
-                /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
-          echo "uuid=$uuid" >> $GITHUB_OUTPUT
+      # - name: Extract Provisioning UUID
+      #   id: prov
+      #   run: |
+      #     uuid=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | \
+      #           /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
+      #     echo "uuid=$uuid" >> $GITHUB_OUTPUT
       # Compile the app
       - name: Compile the iOS app
         run: dotnet publish ${{ inputs.project-file }} \
@@ -150,7 +150,7 @@ jobs:
                     -p:RuntimeIdentifier=ios-arm64 \
                     -p:ArchiveOnBuild=true \
                     -p:EnableAssemblyILStripping=false \
-                    -p:CodesignProvision=${{ steps.prov.outputs.uuid }}
+                    # -p:CodesignProvision=${{ steps.prov.outputs.uuid }}
 
       - name: List packages
         run: ls ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/
