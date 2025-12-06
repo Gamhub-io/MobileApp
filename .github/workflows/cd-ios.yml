@@ -113,15 +113,33 @@ jobs:
         run: |
           # The apple-actions/import-codesign-certs action creates signing_temp.keychain-db
           KEYCHAIN_PATH="$HOME/Library/Keychains/signing_temp.keychain-db"
-          echo "Using keychain: $KEYCHAIN_PATH"
-          # Ensure keychain is unlocked (action already unlocks it, but ensure it stays unlocked)
-          security unlock-keychain -p "" "$KEYCHAIN_PATH"
+          LOGIN_KEYCHAIN="$HOME/Library/Keychains/login.keychain-db"
+          echo "Using signing keychain: $KEYCHAIN_PATH"
+          
+          # Ensure signing keychain is unlocked (action already unlocks it, but ensure it stays unlocked)
+          security unlock-keychain -p "" "$KEYCHAIN_PATH" || true
+          
           # Set keychain settings: don't lock when sleeping, timeout of 1 hour
           security set-keychain-settings -t 3600 -u "$KEYCHAIN_PATH"
-          # Add to search list so build tools can find certificates
-          security list-keychains -d user -s "$KEYCHAIN_PATH"
-          # Set as default keychain
+          
+          # Set partition list for certificates to allow access from codesign and security tools
+          # This is critical for build tools to access the certificates without password prompts
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "" "$KEYCHAIN_PATH" || true
+          
+          # Add both keychains to search list (signing keychain first, then login)
+          # This ensures build tools can find certificates in either keychain
+          if [ -f "$LOGIN_KEYCHAIN" ]; then
+            security list-keychains -d user -s "$KEYCHAIN_PATH" "$LOGIN_KEYCHAIN"
+          else
+            security list-keychains -d user -s "$KEYCHAIN_PATH"
+          fi
+          
+          # Set signing keychain as default
           security default-keychain -s "$KEYCHAIN_PATH"
+          
+          # Verify keychain search list
+          echo "Keychain search list:"
+          security list-keychains -d user
 
       - name: Verify code signing certificate
         run: |
