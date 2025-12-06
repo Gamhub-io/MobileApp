@@ -143,9 +143,13 @@ jobs:
       #           /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
       #     echo "uuid=$uuid" >> $GITHUB_OUTPUT
       # Compile the app
+      - name: Get first provisioning profile
+        id: first_profile
+        run: |
+          first=$(echo "${{ steps.provisioning.outputs.profile-paths }}" | awk '{print $1}')
+          echo "first_profile=$first" >> $GITHUB_OUTPUT
       - name: Compile the iOS app
-        run: dotnet publish ${{ inputs.project-file }} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableAssemblyILStripping=false \
-                    # -p:CodesignProvision=${{ steps.prov.outputs.uuid }}
+        run: dotnet publish ${{ inputs.project-file }} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableAssemblyILStripping=false -p:CodesignProvision=${{ steps.first_profile.outputs.first_profile }}
 
       - name: List packages
         run: ls ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/
