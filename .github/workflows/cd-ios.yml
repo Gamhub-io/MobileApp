@@ -138,9 +138,17 @@ jobs:
           version: ${{ github.run_number }} # to keep value unique
           displayVersion: ${{ inputs.build-version }}.${{ github.run_number }}
           printFile: true # optional
+      - name: Debug dotnet version
+        run: echo ${{ inputs.dotnet-version-target }}-ios
       # Compile the app
       - name: Compile the iOS app
-        run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios -p:RuntimeIdentifier=ios-arm64 /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false
+        run: dotnet publish ${{inputs.project-file}} \
+            -c ${{ inputs.build-config }} \
+            -f:${{ inputs.dotnet-version-target }}-ios \
+            -p:RuntimeIdentifier=ios-arm64 \
+            /p:ArchiveOnBuild=true \
+            /p:EnableAssemblyILStripping=false \
+            /p:CodesignProvision=${{ steps.provisioning.outputs.uuid }}
       - name: List packages
         run: ls ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/
       # Uploading to TestFlight
