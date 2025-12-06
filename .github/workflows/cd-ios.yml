@@ -144,12 +144,7 @@ jobs:
       #     echo "uuid=$uuid" >> $GITHUB_OUTPUT
       # Compile the app
       - name: Compile the iOS app
-        run: dotnet publish ${{ inputs.project-file }} \
-                    -c ${{ inputs.build-config }} \
-                    -f:${{ inputs.dotnet-version-target }}-ios \
-                    -p:RuntimeIdentifier=ios-arm64 \
-                    -p:ArchiveOnBuild=true \
-                    -p:EnableAssemblyILStripping=false \
+        run: dotnet publish ${{ inputs.project-file }} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableAssemblyILStripping=false \
                     # -p:CodesignProvision=${{ steps.prov.outputs.uuid }}
 
       - name: List packages
