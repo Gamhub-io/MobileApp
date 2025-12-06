@@ -126,8 +126,10 @@ jobs:
           for profile in ${{ steps.provisioning.outputs.profile-paths }}; do
             cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
           done
-      - name: Verify signing identities
-        run: security find-identity -v -p codesigning
+      - name: List provisioning profiles
+        run: ls ~/Library/MobileDevice/Provisioning\ Profiles
+
+      
 
       # Version app
       - name: Version the app
