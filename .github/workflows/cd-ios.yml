@@ -123,13 +123,10 @@ jobs:
       - name: Install Provisioning Profiles
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          for profile in ${{ steps.provisioning.outputs.profile-paths }}; do
+          for profile in ${{ steps.provisioning.outputs.profiles }}; do
             cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
           done
-      - name: Inspect provisioning profile
-        run: security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/8c21126f-de12-4506-8c0d-f3ba3ced65e6.mobileprovision
-
-
+      
       # Version app
       - name: Version the app
         uses: managedcode/MAUIAppVersion@v1
@@ -140,15 +137,21 @@ jobs:
           printFile: true # optional
       - name: Debug prov
         run: echo ${{ steps.provisioning.outputs }}
+      - name: Extract Provisioning UUID
+        id: prov
+        run: |
+          uuid=$(security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | \
+                /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
+          echo "uuid=$uuid" >> $GITHUB_OUTPUT
       # Compile the app
       - name: Compile the iOS app
         run: dotnet publish ${{ inputs.project-file }} \
-              -c ${{ inputs.build-config }} \
-              -f:${{ inputs.dotnet-version-target }}-ios \
-              -p:RuntimeIdentifier=ios-arm64 \
-              -p:ArchiveOnBuild=true \
-              -p:EnableAssemblyILStripping=false \
-              -p:CodesignProvision=${{ steps.provisioning.outputs.profile-paths }}
+                    -c ${{ inputs.build-config }} \
+                    -f:${{ inputs.dotnet-version-target }}-ios \
+                    -p:RuntimeIdentifier=ios-arm64 \
+                    -p:ArchiveOnBuild=true \
+                    -p:EnableAssemblyILStripping=false \
+                    -p:CodesignProvision=${{ steps.prov.outputs.uuid }}
 
       - name: List packages
         run: ls ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/
