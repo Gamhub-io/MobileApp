@@ -50,7 +50,7 @@
 	<ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
 		<BundleResource Include="Platforms\iOS\GoogleService-Info.plist" Link="GoogleService-Info.plist" />
 	</ItemGroup>
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' And '$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios' And '$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 	  <ProvisioningType>manual</ProvisioningType>
 	  <CodesignKey>iPhone Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>		
 	<UseInterpreter>true</UseInterpreter>
