@@ -109,6 +109,25 @@ jobs:
           p12-file-base64: ${{ secrets.p12-cert }}
           p12-password: ${{ secrets.p12-cert-password }}
 
+      - name: Configure keychain for code signing
+        run: |
+          # The apple-actions/import-codesign-certs action creates signing_temp.keychain-db
+          KEYCHAIN_PATH="$HOME/Library/Keychains/signing_temp.keychain-db"
+          echo "Using keychain: $KEYCHAIN_PATH"
+          # Ensure keychain is unlocked (action already unlocks it, but ensure it stays unlocked)
+          security unlock-keychain -p "" "$KEYCHAIN_PATH"
+          # Set keychain settings: don't lock when sleeping, timeout of 1 hour
+          security set-keychain-settings -t 3600 -u "$KEYCHAIN_PATH"
+          # Add to search list so build tools can find certificates
+          security list-keychains -d user -s "$KEYCHAIN_PATH"
+          # Set as default keychain
+          security default-keychain -s "$KEYCHAIN_PATH"
+
+      - name: Verify code signing certificate
+        run: |
+          # List all code signing identities in the signing keychain
+          security find-identity -v -p codesigning "$HOME/Library/Keychains/signing_temp.keychain-db"
+
       - name: Download Provisioning Profiles
         id: provisioning
         uses: apple-actions/download-provisioning-profiles@v1
@@ -129,7 +148,7 @@ jobs:
           printFile: true # optional
       # Compile the app
       - name: Compile the iOS app
-        run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios -p:RuntimeIdentifier=ios-arm64 /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false
+        run: dotnet publish ${{ inputs.project-file }} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableAssemblyILStripping=false
       - name: List packages
         run: ls ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/
       # Uploading to TestFlight
