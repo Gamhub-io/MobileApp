@@ -109,44 +109,6 @@ jobs:
           p12-file-base64: ${{ secrets.p12-cert }}
           p12-password: ${{ secrets.p12-cert-password }}
 
-      - name: Configure keychain for code signing
-        run: |
-          # The apple-actions/import-codesign-certs action creates signing_temp.keychain-db
-          # The action already sets the partition list, so we just need to ensure it's accessible
-          KEYCHAIN_PATH="$HOME/Library/Keychains/signing_temp.keychain-db"
-          LOGIN_KEYCHAIN="$HOME/Library/Keychains/login.keychain-db"
-          echo "Using signing keychain: $KEYCHAIN_PATH"
-          
-          # Ensure signing keychain is unlocked (action already unlocks it)
-          security unlock-keychain -p "" "$KEYCHAIN_PATH" 2>/dev/null || true
-          
-          # Set keychain settings: don't lock when sleeping, timeout of 1 hour
-          security set-keychain-settings -t 3600 -u "$KEYCHAIN_PATH"
-          
-          # Add both keychains to search list (signing keychain first, then login)
-          # This ensures build tools can find certificates in either keychain
-          if [ -f "$LOGIN_KEYCHAIN" ]; then
-            security list-keychains -d user -s "$KEYCHAIN_PATH" "$LOGIN_KEYCHAIN"
-          else
-            security list-keychains -d user -s "$KEYCHAIN_PATH"
-          fi
-          
-          # Set signing keychain as default
-          security default-keychain -s "$KEYCHAIN_PATH"
-          
-          # Verify keychain search list
-          echo "Keychain search list:"
-          security list-keychains -d user
-          
-          # Verify certificates are accessible (searches all keychains in search list)
-          echo "Available code signing identities:"
-          security find-identity -v -p codesigning
-
-      - name: Verify code signing certificate
-        run: |
-          # List all code signing identities in the signing keychain
-          security find-identity -v -p codesigning "$HOME/Library/Keychains/signing_temp.keychain-db"
-
       - name: Download Provisioning Profiles
         id: provisioning
         uses: apple-actions/download-provisioning-profiles@v1
@@ -167,14 +129,7 @@ jobs:
           printFile: true # optional
       # Compile the app
       - name: Compile the iOS app
-        run: |
-          dotnet publish ${{ inputs.project-file }} \
-            -c ${{ inputs.build-config }} \
-            -f:${{ inputs.dotnet-version-target }}-ios \
-            -p:RuntimeIdentifier=ios-arm64 \
-            -p:ArchiveOnBuild=true \
-            -p:EnableAssemblyILStripping=false \
-            -p:CodesignKey="iPhone Distribution: Brice Friha (2J7ZRPFMY9)"
+        run: dotnet publish ${{inputs.project-file}} -c ${{ inputs.build-config }} -f:${{ inputs.dotnet-version-target }}-ios -p:RuntimeIdentifier=ios-arm64 /p:ArchiveOnBuild=true /p:EnableAssemblyILStripping=false
       - name: List packages
         run: ls ${{ github.workspace }}/${{ inputs.project-folder }}/bin/${{ inputs.build-config }}/${{ inputs.dotnet-version-target }}-ios/ios-arm64/publish/
       # Uploading to TestFlight
