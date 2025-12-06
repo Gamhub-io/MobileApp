@@ -126,10 +126,9 @@ jobs:
           for profile in ${{ steps.provisioning.outputs.profile-paths }}; do
             cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
           done
-      - name: List provisioning profiles
-        run: ls ~/Library/MobileDevice/Provisioning\ Profiles
+      - name: Inspect provisioning profile
+        run: security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/8c21126f-de12-4506-8c0d-f3ba3ced65e6.mobileprovision
 
-      
 
       # Version app
       - name: Version the app
