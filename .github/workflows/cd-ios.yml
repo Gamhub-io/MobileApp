@@ -109,6 +109,8 @@ jobs:
           p12-file-base64: ${{ secrets.p12-cert }}
           p12-password: ${{ secrets.p12-cert-password }}
 
+      - name: Unlock keychain
+        run: security unlock-keychain -p "" ~/Library/Keychains/login.keychain-db
       - name: Download Provisioning Profiles
         id: provisioning
         uses: apple-actions/download-provisioning-profiles@v1
@@ -124,6 +126,9 @@ jobs:
           for profile in ${{ steps.provisioning.outputs.profile-paths }}; do
             cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
           done
+      - name: Verify signing identities
+        run: security find-identity -v -p codesigning
+
       # Version app
       - name: Version the app
         uses: managedcode/MAUIAppVersion@v1
