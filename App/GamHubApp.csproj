@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
+		<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
 		<OutputType Condition="'$(TargetFramework)' != 'net8.0'">Exe</OutputType>
@@ -50,7 +50,7 @@
 	<ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
 		<BundleResource Include="Platforms\iOS\GoogleService-Info.plist" Link="GoogleService-Info.plist" />
 	</ItemGroup>
-	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0-ios' And '$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios' And '$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 	  <ProvisioningType>manual</ProvisioningType>
 	  <CodesignKey>iPhone Distribution: Brice Friha (2J7ZRPFMY9)</CodesignKey>		
 	<UseInterpreter>true</UseInterpreter>
@@ -109,11 +109,14 @@
 	  <MauiImage Include="Platforms\Android\Resources\drawable\notification_icon.png" />
 	</ItemGroup>
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui" Version="10.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
     <PackageReference Include="CommunityToolkit.Maui.Core" Version="10.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Custard" Version="0.4.0.4-rc" />
     <PackageReference Include="Kebechet.Maui.RevenueCat.InAppBilling" Version="5.3.2" />
+    <PackageReference Include="Microsoft.Maui.Controls.Core" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Maui.Core" Version="10.0.11" />
+    <PackageReference Include="Microsoft.Maui.Essentials" Version="10.0.11" />
     <PackageReference Include="Plugin.FirebasePushNotifications" Version="3.0.28" />
     <PackageReference Include="Plugin.StoreReview" Version="6.2.0" />
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
@@ -172,7 +175,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.80" />
+    <PackageReference Update="Microsoft.Maui.Controls" Version="9.0.120" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
