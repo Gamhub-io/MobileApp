@@ -120,12 +120,12 @@ jobs:
           issuer-id: ${{ secrets.appstore-issuer }}
           api-key-id: ${{ secrets.appstore-keyid }}
           api-private-key: ${{ secrets.appstore-private-key }}
-      # - name: Install Provisioning Profiles
-      #   run: |
-      #     mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-      #     for profile in ${{ steps.provisioning.outputs.profiles }}; do
-      #       cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
-      #     done
+      - name: Install Provisioning Profiles
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          for profile in ${{ steps.provisioning.outputs.profile-paths }}; do
+            cp "$profile" ~/Library/MobileDevice/Provisioning\ Profiles/
+          done
       
       # Version app
       - name: Version the app
