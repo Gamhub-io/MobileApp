@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.ApplicationModel;
 using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
@@ -8,6 +9,7 @@ using GamHubApp.ViewModels;
 using GamHubApp.Views;
 using GamHubApp.Views.PopUps;
 using Maui.RevenueCat.InAppBilling.Services;
+using Microsoft.Maui.Controls.Shapes;
 using Newtonsoft.Json;
 using Plugin.FirebasePushNotifications;
 using System.Collections.ObjectModel;
@@ -270,7 +272,13 @@ public partial class App : Application
                  page = Shell;
              if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp!.Id))
                  return;
-         MainThread.BeginInvokeOnMainThread(async () => await page.ShowPopupAsync(popUp));
+         MainThread.BeginInvokeOnMainThread(async () => await page.ShowPopupAsync(popUp, options: new PopupOptions()
+         {
+             Shape = new RoundRectangle
+             {
+                 StrokeThickness = 0
+             }
+         }));
         }
 #if DEBUG
             catch (Exception ex)
