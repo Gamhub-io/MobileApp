@@ -7,7 +7,7 @@
     xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
     x:DataType="viewmodels:DealsViewModel"
     x:Class="GamHubApp.Views.DealFilterPopUp"
-    Color="Transparent">
+    BackgroundColor="Transparent">
     <Border
            VerticalOptions="Center" 
            HorizontalOptions="Center"
