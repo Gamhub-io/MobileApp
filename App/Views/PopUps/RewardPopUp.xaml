@@ -6,7 +6,7 @@
     xmlns:popups="clr-namespace:GamHubApp.Views" 
     x:DataType="popups:RewardPopUp"
     x:Class="GamHubApp.Views.RewardPopUp"
-    Color="Transparent">
+    BackgroundColor="Transparent">
     <Border
            VerticalOptions="Center" 
            HorizontalOptions="Center"

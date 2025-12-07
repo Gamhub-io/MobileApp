@@ -6,7 +6,7 @@
     xmlns:popups="clr-namespace:GamHubApp.ViewModels.PopUps" 
     x:DataType="popups:DeleteFeedPopUpViewModel"
     x:Class="GamHubApp.Views.DeleteFeedPopUp"
-    Color="Transparent">
+    BackgroundColor="Transparent">
     <Border VerticalOptions="Center" 
            HorizontalOptions="Center"
            HeightRequest="250"

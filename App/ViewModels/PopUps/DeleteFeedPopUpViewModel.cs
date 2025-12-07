@@ -56,13 +56,13 @@ namespace GamHubApp.ViewModels.PopUps
             _context.RemoveFeedByIndex(index);
 
             // Close the popup
-            _page.Close();
+            await _page.CloseAsync();
         });
 
-        public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(() =>
+        public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(async () =>
         {
             // Close the popup
-            _page.Close();
+            await _page.CloseAsync();
         });
 
         public DeleteFeedPopUpViewModel(DeleteFeedPopUp page, Feed feed, FeedsViewModel ctx, GeneralDataBase generalDataBase )

@@ -6,7 +6,7 @@
     xmlns:popups="clr-namespace:GamHubApp.Views" 
     x:DataType="popups:TwoChoiceQuestionPopUp"
     x:Class="GamHubApp.Views.TwoChoiceQuestionPopUp"
-    Color="Transparent">
+    BackgroundColor="Transparent">
     <Border
            VerticalOptions="Center" 
            HorizontalOptions="Center"

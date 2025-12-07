@@ -7,7 +7,7 @@
     xmlns:vm="clr-namespace:GamHubApp.ViewModels" 
     x:DataType="vm:GemTopUpViewModel"
     x:Class="GamHubApp.Views.PurchaseGemsPopUp"
-    Color="Transparent">
+    BackgroundColor="Transparent">
     <Border
            VerticalOptions="Center" 
            HorizontalOptions="Center"
@@ -30,9 +30,9 @@
                     VerticalOptions="Center">
 
             <Image Source="gemstone.gif"
-       HeightRequest="100" 
-       HorizontalOptions="Center" 
-       IsAnimationPlaying="True" />
+                   HeightRequest="100" 
+                   HorizontalOptions="Center" 
+                   IsAnimationPlaying="True" />
 
             <Label Text="Thanks for your purchase"
                    FontSize="25"
