@@ -28,7 +28,6 @@ public partial class AuthPopUp : Popup
         await App.Current.Windows[0].Page.Navigation.PushAsync(discordAuthPortal);
 
         // Close this popup
-        //CurrentApp.ClosePopUp(this);
-        this.Close();
+        await this.CloseAsync();
     }
 }

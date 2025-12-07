@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.ApplicationModel;
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using GamHubApp.Core;
 using GamHubApp.Models;
@@ -93,11 +94,11 @@ public partial class App : Application
 
 
        IsLoading = false;
-       
-       // Close the popup
-        MainThread.BeginInvokeOnMainThread(() =>
+
+        // Close the popup
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-           this.LoadingIndicator.Close();
+            await this.LoadingIndicator.CloseAsync();
         });
     }
 
@@ -269,7 +270,7 @@ public partial class App : Application
                  page = Shell;
              if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp!.Id))
                  return;
-         MainThread.BeginInvokeOnMainThread(() => page.ShowPopup(popUp));
+         MainThread.BeginInvokeOnMainThread(async () => await page.ShowPopupAsync(popUp));
         }
 #if DEBUG
             catch (Exception ex)
@@ -392,7 +393,7 @@ public partial class App : Application
             await Task.Delay(10);
 
         // in any case close the pop up after receiving a response
-        popUp.Close();
+        await popUp.CloseAsync();
 
         return popUp.ResponseResult ?? false;
     }

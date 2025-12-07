@@ -6,7 +6,7 @@
     xmlns:popups="clr-namespace:GamHubApp.ViewModels.PopUps" 
     x:DataType="popups:RenameFeedPopUpViewModel"
     x:Class="GamHubApp.Views.AuthPopUp"
-    Color="Transparent">
+    BackgroundColor="Transparent">
     <Border
            VerticalOptions="Center" 
            HorizontalOptions="Center"
