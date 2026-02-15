@@ -50,13 +50,13 @@ public class RenameFeedPopUpViewModel : BaseViewModel
         await _generalDB.UpdateFeed(_feed);
 
         // Close the popup
-        _popUp.Close();
+        await _popUp.CloseAsync();
     });
 
-    public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(() =>
+    public Microsoft.Maui.Controls.Command Cancel => new Microsoft.Maui.Controls.Command(async() =>
     {
         // Close the popup
-        _popUp.Close();
+        await _popUp.CloseAsync();
     });
     public RenameFeedPopUpViewModel(RenameFeedPopUp page, Feed feed, FeedsViewModel vm, GeneralDataBase generalDataBase)
     {
