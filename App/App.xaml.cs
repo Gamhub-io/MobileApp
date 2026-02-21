@@ -100,7 +100,21 @@ public partial class App : Application
         // Close the popup
         MainThread.BeginInvokeOnMainThread(async () =>
         {
-            await this.LoadingIndicator.CloseAsync();
+            try
+            {
+                await this.LoadingIndicator.CloseAsync();
+
+            }
+            catch (Exception
+#if DEBUG
+            ex
+#endif
+            )
+            {
+#if DEBUG
+                Debug.WriteLine(ex);
+#endif
+            }
         });
     }
 
