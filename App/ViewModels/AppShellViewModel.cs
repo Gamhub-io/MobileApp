@@ -482,8 +482,6 @@ public class AppShellViewModel : BaseViewModel
                 GemEnabled = dataFetcher.Culture?.RegionCode == "EU" ||
                                 dataFetcher.Culture?.RegionCode == "NA";
             }
-        GemEnabled = dataFetcher.Culture.RegionCode == "EU" ||
-                            dataFetcher.Culture.RegionCode == "NA";
 
     }
         catch (Exception ex)
