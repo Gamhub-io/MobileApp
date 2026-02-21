@@ -120,6 +120,26 @@ public partial class NewsPage : ContentPage
         // Close the keyboard 
         entrySearch.Unfocus();
     }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Note: this is a workaround for a MAUI 10 bug that prevents the tabbar colours to set proper
+        Dispatcher.Dispatch(() =>
+        {
+            Shell.SetTabBarBackgroundColor(this,
+                (Color)Application.Current.Resources["LightDark"]);
+
+            Shell.SetTabBarForegroundColor(this,
+                (Color)Application.Current.Resources["Primary"]);
+
+            Shell.SetTabBarTitleColor(this,
+                (Color)Application.Current.Resources["Primary"]);
+
+            Shell.SetTabBarUnselectedColor(this,
+                (Color)Application.Current.Resources["UnselectedTabFont"]);
+        });
+    }
 
     /// <summary>
     /// Scroll the feed
