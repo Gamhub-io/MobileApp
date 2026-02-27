@@ -28,12 +28,12 @@ public partial class FeedsPage : ContentPage
 
     private void RegisterMessaging()
     {
-        WeakReferenceMessenger.Default.Register<UnnoticedArticlesChangedMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<UnnoticedArticlesChangedMessage>(this, async (r, m) =>
         {
             if (m.Count > 0)
-                ShowRefreshButton();
+                await ShowRefreshButton();
             else
-                RemoveRefreshButton();
+                await RemoveRefreshButton();
         });
 
         WeakReferenceMessenger.Default.Register<ScrollFeedPageChangedMessage>(this, (r, m) =>
@@ -130,17 +130,17 @@ public partial class FeedsPage : ContentPage
     /// <summary>
     /// Method to display the refresh button
     /// </summary>
-    public void ShowRefreshButton()
+    public async Task ShowRefreshButton()
     {
-        refreshButton.TranslateTo(refreshButton.X, _refreshButtonYPos, easing: Easing.BounceOut);
+        await refreshButton.TranslateToAsync(refreshButton.X, _refreshButtonYPos, easing: Easing.BounceOut);
     }
 
     /// <summary>
     /// Method to remove the refresh button
     /// </summary>
-    public void RemoveRefreshButton()
+    public async Task RemoveRefreshButton()
     {
-        refreshButton.TranslateTo(refreshButton.X, rButtonYStart);
+        await refreshButton.TranslateToAsync(refreshButton.X, rButtonYStart);
     }
 
     private void newsCollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
