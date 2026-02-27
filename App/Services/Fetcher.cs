@@ -1249,7 +1249,9 @@ public class Fetcher
 #if DEBUG
         Debug.WriteLine(errMsg);
 #endif
-        if (errMsg.Contains("internet connection") || errMsg.Contains("Connection failure"))
+        if (errMsg.Contains("internet connection") || 
+            errMsg.Contains("Connection failure") || 
+            errMsg.Contains("An SSL error has occurred and a secure connection"))
             // If the error is being thrown because there is no internet: there is no point reporting it 
             return;
 #if DEBUG
@@ -1276,18 +1278,18 @@ public class Fetcher
     {
         try
         {
-        string ciRaw = Preferences.Get(PreferencesKeys.CultureInfo, string.Empty);
+            string ciRaw = Preferences.Get(PreferencesKeys.CultureInfo, string.Empty);
 
-        if (string.IsNullOrEmpty(ciRaw))
-        {
-            if ((Culture = await GetCultureInfo()) is null)
+            if (string.IsNullOrEmpty(ciRaw))
+            {
+                if ((Culture = await GetCultureInfo()) is null)
+                    return;
+
+                Preferences.Set(PreferencesKeys.CultureInfo, JsonConvert.SerializeObject(Culture));
                 return;
+            }
 
-            Preferences.Set(PreferencesKeys.CultureInfo, JsonConvert.SerializeObject(Culture));
-            return;
-        }
-
-        Culture = JsonConvert.DeserializeObject<DeviceCultureInfo>(ciRaw);
+            Culture = JsonConvert.DeserializeObject<DeviceCultureInfo>(ciRaw);
 
         }
         catch (Exception ex)
