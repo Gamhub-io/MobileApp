@@ -12,7 +12,6 @@ public partial class NewsPage : ContentPage
     private NewsViewModel _vm;
     private const int rButtonYStart = -10;
     private const int _searchbarEndingWidth = 270;
-    private double refreshButtonYPos;
     
     public NewsPage(NewsViewModel vm)
     {
