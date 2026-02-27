@@ -43,6 +43,7 @@ public class AppShellViewModel : BaseViewModel
 
     public App CurrentApp { get; private set; }
     private Fetcher dataFetcher;
+    private readonly ILogger<AppShellViewModel> _logger;
     private IFirebasePushNotification _firebasePushNotification;
     private INotificationPermissions _firebasePushPermissions;
     private GemTopUpPage _gemTopUpPage;
