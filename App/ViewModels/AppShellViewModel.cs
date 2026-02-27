@@ -479,9 +479,13 @@ public class AppShellViewModel : BaseViewModel
             if (dataFetcher.Culture is null)
             {
                 dataFetcher.SetCultureInfo().Wait();
+                if (dataFetcher.Culture is not null)
                 GemEnabled = dataFetcher.Culture?.RegionCode == "EU" ||
                                 dataFetcher.Culture?.RegionCode == "NA";
+                return;
             }
+            GemEnabled = dataFetcher.Culture?.RegionCode == "EU" ||
+                            dataFetcher.Culture?.RegionCode == "NA";
 
     }
         catch (Exception ex)
