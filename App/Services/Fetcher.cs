@@ -814,8 +814,10 @@ public class Fetcher
     /// Get common header
     /// </summary>
     /// <returns></returns>
-    private async Task<Dictionary<string,string>> GetHeaders()
+    private static async Task<Dictionary<string,string>> GetHeaders()
     {
+        try
+        {
         var apiKey = Csign.GenerateApiKey();
 
         string instanceID = await SecureStorage.Default.GetAsync(AppConstant.InstanceIdKey);
@@ -832,6 +834,17 @@ public class Fetcher
             { "x-api-key", apiKey},
             { "instance", instanceID},
         };
+
+    }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return [];
+        }
 
     }
 
