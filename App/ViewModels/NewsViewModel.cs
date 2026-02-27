@@ -471,9 +471,12 @@ public class NewsViewModel : BaseViewModel
 
             return;
         }
-        
+
         // Load the artcles of the last 24hrs
-        Articles = new ObservableRangeCollection<Article>((await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive));
+        IEnumerable<Article> fetchedArticles = (await CurrentApp.DataFetcher.GetMainFeedUpdate(DateTime.UtcNow.AddHours(-_refreshInterval).ToString("dd-MM-yyy_HH:mm:ss")).ConfigureAwait(false)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive);
+
+        if (fetchedArticles.Any())
+            Articles = new ObservableRangeCollection<Article>(fetchedArticles);
 
         // Refresh the db
         await RefreshDB().ConfigureAwait(false);
