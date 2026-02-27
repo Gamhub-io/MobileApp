@@ -1274,6 +1274,8 @@ public class Fetcher
     /// </summary>
     public async Task SetCultureInfo()
     {
+        try
+        {
         string ciRaw = Preferences.Get(PreferencesKeys.CultureInfo, string.Empty);
 
         if (string.IsNullOrEmpty(ciRaw))
@@ -1286,6 +1288,17 @@ public class Fetcher
         }
 
         Culture = JsonConvert.DeserializeObject<DeviceCultureInfo>(ciRaw);
+
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+
+        }
     }
 
     #region Local Actions
