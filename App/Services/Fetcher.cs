@@ -43,6 +43,7 @@ public class Fetcher
     public List<Article> Bookmarks { get; private set; }
     public string NeID { get; private set; }
     public List<Gem> Gems { get; private set; }
+    public Dictionary<string, string> Headers { get; private set; }
 
     private INotificationPermissions _firebasePushPermissions;
 
@@ -93,7 +94,7 @@ public class Fetcher
 
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
-                                                               singleUseHeaders: await GetHeaders(),
+                                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
                                                                parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
@@ -167,7 +168,7 @@ public class Fetcher
 
             return await WebService.Get<Collection<Article>>(controller: "feeds",
                                                              action: needUpdate ? "update" : null,
-                                                             singleUseHeaders: await GetHeaders(),
+                                                             singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
                                                              parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
                                                              unSuccessCallback: (err) => _ = HandleHttpException(err));
         }
@@ -235,7 +236,7 @@ public class Fetcher
 
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
-                                                               singleUseHeaders: await GetHeaders(),
+                                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
                                                                parameters: new string[] { dateUpdate },
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
@@ -270,7 +271,7 @@ public class Fetcher
             ];
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                parameters: parameters,
-                                                               singleUseHeaders: await GetHeaders(),
+                                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
         }
@@ -356,9 +357,10 @@ public class Fetcher
         ResetHandler();
         try
         {
+
             return await this.WebService.Get<Article>(controller: "article",
                                                       parameters: new string[] { articleId },
-                                                      singleUseHeaders: await GetHeaders(),
+                                                      singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
                                                       unSuccessCallback: e => _ = HandleHttpException(e));
         }
 
@@ -814,7 +816,7 @@ public class Fetcher
     /// Get common header
     /// </summary>
     /// <returns></returns>
-    private static async Task<Dictionary<string,string>> GetHeaders()
+    private async Task<Dictionary<string,string>> GetHeaders()
     {
         try
         {
@@ -829,7 +831,7 @@ public class Fetcher
     #if DEBUG
             Debug.WriteLine($"ApiKey: {apiKey}");
     #endif
-            return new Dictionary<string, string>
+            return Headers = new Dictionary<string, string>
             {
                 { "x-api-key", apiKey},
                 { "instance", instanceID},
@@ -1186,7 +1188,7 @@ public class Fetcher
 
        return (await WebService.Get<NeResponse>(controller: "monitor",
                                                action: "NE",
-                                               singleUseHeaders: await GetHeaders(),
+                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
                                                parameters: new Dictionary<string, string>
                                                {
                                                    { nameof(token), token },
@@ -1206,7 +1208,7 @@ public class Fetcher
 
        return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
                                                action: "culture",
-                                               singleUseHeaders: await GetHeaders(),
+                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
                                                unSuccessCallback: e => _ = HandleHttpException(e)
                                                 );
     }
