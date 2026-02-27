@@ -71,7 +71,6 @@ public partial class FeedsPage : ContentPage
     {
         double height = 70;
         double width = 180;
-        //_vm.ModalClose = false;
         // Animation
         void callbackH(double inputH) => dropdownMenu.HeightRequest = inputH;
         void callbackW(double inputW) => dropdownMenu.WidthRequest = inputW;
