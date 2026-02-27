@@ -228,6 +228,10 @@ public class Fetcher
         ResetHandler();
         try
         {
+            if (string.IsNullOrEmpty(dateUpdate))
+            {
+                return await GetMainFeedUpdate();
+            }
 
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
