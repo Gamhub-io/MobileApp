@@ -12,8 +12,9 @@ public partial class NewsPage : ContentPage
     private NewsViewModel _vm;
     private const int rButtonYStart = -10;
     private const int _searchbarEndingWidth = 270;
-    private double refreshButtonYPos;
-    
+    private double _refreshButtonYPos;
+
+
     public NewsPage(NewsViewModel vm)
     {
         InitializeComponent();
@@ -22,12 +23,12 @@ public partial class NewsPage : ContentPage
 
         refreshButton.TranslationY = rButtonYStart;
 
-        WeakReferenceMessenger.Default.Register<UnnoticedArticlesChangedMessage>(this, (r, m) =>
+        WeakReferenceMessenger.Default.Register<UnnoticedArticlesChangedMessage>(this, async (r, m) =>
         {
             if (m.Count > 0)
-                ShowRefreshButton();
+                await ShowRefreshButton();
             else
-                RemoveRefreshButton();
+                await RemoveRefreshButton();
         });
 
         WeakReferenceMessenger.Default.Register<ScrollMainPageChangedMessage>(this, (r, m) =>
@@ -120,6 +121,26 @@ public partial class NewsPage : ContentPage
         // Close the keyboard 
         entrySearch.Unfocus();
     }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        // Note: this is a workaround for a MAUI 10 bug that prevents the tabbar colours to set proper
+        Dispatcher.Dispatch(() =>
+        {
+            Shell.SetTabBarBackgroundColor(this,
+                (Color)Application.Current.Resources["LightDark"]);
+
+            Shell.SetTabBarForegroundColor(this,
+                (Color)Application.Current.Resources["Primary"]);
+
+            Shell.SetTabBarTitleColor(this,
+                (Color)Application.Current.Resources["Primary"]);
+
+            Shell.SetTabBarUnselectedColor(this,
+                (Color)Application.Current.Resources["UnselectedTabFont"]);
+        });
+    }
 
     /// <summary>
     /// Scroll the feed
@@ -149,16 +170,16 @@ public partial class NewsPage : ContentPage
     /// <summary>
     /// Method to display the refresh button
     /// </summary>
-    public void ShowRefreshButton()
+    public async Task ShowRefreshButton()
     {
-        refreshButton.TranslateTo(0, refreshButtonYPos, easing: Easing.BounceOut);
+        await refreshButton.TranslateToAsync(0, _refreshButtonYPos, easing: Easing.BounceOut);
     }
 
     /// <summary>
     /// Method to remove the refresh button
     /// </summary>
-    public void RemoveRefreshButton()
+    public async Task RemoveRefreshButton()
     {
-        refreshButton.TranslateTo(0, refreshButtonYPos);
+        await refreshButton.TranslateToAsync(0, _refreshButtonYPos);
     }
 }

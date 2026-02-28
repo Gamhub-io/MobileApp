@@ -43,10 +43,9 @@ public class AppShellViewModel : BaseViewModel
 
     public App CurrentApp { get; private set; }
     private Fetcher dataFetcher;
-    private ILogger<AppShellViewModel> _logger;
+    private readonly ILogger<AppShellViewModel> _logger;
     private IFirebasePushNotification _firebasePushNotification;
     private INotificationPermissions _firebasePushPermissions;
-    private GeneralDataBase _generalDB;
     private GemTopUpPage _gemTopUpPage;
     public AppShell MainShell { get; }
     private bool _authenticated;
@@ -479,11 +478,13 @@ public class AppShellViewModel : BaseViewModel
             if (dataFetcher.Culture is null)
             {
                 dataFetcher.SetCultureInfo().Wait();
+                if (dataFetcher.Culture is not null)
                 GemEnabled = dataFetcher.Culture?.RegionCode == "EU" ||
                                 dataFetcher.Culture?.RegionCode == "NA";
+                return;
             }
-        GemEnabled = dataFetcher.Culture.RegionCode == "EU" ||
-                            dataFetcher.Culture.RegionCode == "NA";
+            GemEnabled = dataFetcher.Culture?.RegionCode == "EU" ||
+                            dataFetcher.Culture?.RegionCode == "NA";
 
     }
         catch (Exception ex)
