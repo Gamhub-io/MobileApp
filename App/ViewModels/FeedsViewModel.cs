@@ -139,7 +139,6 @@ public class FeedsViewModel : BaseViewModel
     {
         if (IsBusy)
             return;
-        //IsRefreshing = true;
 
         CurrentApp.ShowLoadingIndicator();
         _ = SwitchFeedAsync(feed);
@@ -644,7 +643,7 @@ public class FeedsViewModel : BaseViewModel
     {
         if (_feeds?.Count <= 0)
             return;
-            SelectedFeed = _feeds[0];
+        SelectedFeed = _feeds[0];
 
         _dataLoaded = true;
     }

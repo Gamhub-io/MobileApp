@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using GamHubApp.Services;
-using GamHubApp.Services.ChangedMessages;
 using GamHubApp.ViewModels;
 
 namespace GamHubApp.Views;
