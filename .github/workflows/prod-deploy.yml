@@ -3,7 +3,7 @@ name: Prod Deployment Build
 on:
   workflow_dispatch:
   push:
-    branches: ['main']
+    branches: ['main', 'compat/android-14']
 env:
   BUILD_VERSION: '1.6'
   DOTNET_VERSION: 10.0.100
