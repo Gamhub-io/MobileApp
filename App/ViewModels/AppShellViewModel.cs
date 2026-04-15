@@ -430,9 +430,11 @@ public class AppShellViewModel : BaseViewModel
                 return;
             }
 
-            var articlePage = new ArticlePage(article);
+            // To make sure the navigation stack isn't empty
+            await Shell.Current.GoToAsync("///NewsPage");
 
-            await App.Current.Windows[0].Page.Navigation.PushAsync(articlePage);
+
+            await App.Current.Windows[0].Page.Navigation.PushAsync(new ArticlePage(article));
             (App.Current as App).RemoveLoadingIndicator();
 
         });
