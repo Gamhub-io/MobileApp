@@ -420,7 +420,7 @@ public class NewsViewModel : BaseViewModel
     /// <returns></returns>
     public async Task FetchNewerArticles()
     {
-        if (_articles.Count <= 0)
+        if (_articles?.Count <= 0)
             return;
 
         // Get time of the last article in date
