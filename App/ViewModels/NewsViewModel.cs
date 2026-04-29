@@ -462,6 +462,8 @@ public class NewsViewModel : BaseViewModel
     /// </summary>
     public async Task FetchExistingArticles()
     {
+        try
+        {
         // Check internet
         if (Connectivity.NetworkAccess != NetworkAccess.Internet)
         {
@@ -480,6 +482,16 @@ public class NewsViewModel : BaseViewModel
 
         // Refresh the db
         await RefreshDB().ConfigureAwait(false);
+
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex.Message);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
     }
     /// <summary>
     /// Load the next chunk of articles
