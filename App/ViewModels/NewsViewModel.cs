@@ -467,9 +467,14 @@ public class NewsViewModel : BaseViewModel
         // Check internet
         if (Connectivity.NetworkAccess != NetworkAccess.Internet)
         {
+                _ =Task.Run(static async () =>
+                {
+                    await Task.Delay(2000);
+                    if (Shell.Current?.CurrentPage is NewsPage page)
+                        await page.DisplayMessage($"You're offline, please make sure you're connected to the internet")
+                             .ConfigureAwait(false);
 
-            var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
-            _ = page.DisplayMessage($"You're offline, please make sure you're connected to the internet");
+                });
 
             return;
         }
