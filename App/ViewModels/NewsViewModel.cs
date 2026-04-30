@@ -420,7 +420,7 @@ public class NewsViewModel : BaseViewModel
     /// <returns></returns>
     public async Task FetchNewerArticles()
     {
-        if (_articles.Count <= 0)
+        if (_articles?.Count <= 0)
             return;
 
         // Get time of the last article in date
@@ -462,12 +462,19 @@ public class NewsViewModel : BaseViewModel
     /// </summary>
     public async Task FetchExistingArticles()
     {
+        try
+        {
         // Check internet
         if (Connectivity.NetworkAccess != NetworkAccess.Internet)
         {
+                _ =Task.Run(static async () =>
+                {
+                    await Task.Delay(2000);
+                    if (Shell.Current?.CurrentPage is NewsPage page)
+                        await page.DisplayMessage($"You're offline, please make sure you're connected to the internet")
+                             .ConfigureAwait(false);
 
-            var page = (NewsPage)((IShellSectionController)Shell.Current?.CurrentItem?.CurrentItem).PresentedPage;
-            _ = page.DisplayMessage($"You're offline, please make sure you're connected to the internet");
+                });
 
             return;
         }
@@ -480,6 +487,16 @@ public class NewsViewModel : BaseViewModel
 
         // Refresh the db
         await RefreshDB().ConfigureAwait(false);
+
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex.Message);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
     }
     /// <summary>
     /// Load the next chunk of articles

@@ -37,18 +37,25 @@ public partial class ArticlePage : ContentPage
         // Stop the timer
         StopTimer();
 
-
         // Stop all text to speech
         _vm.StopTtS();
-        _ = Task.Run(async () =>
-        {
-           await (App.Current as App).DataFetcher.RequestReward(_article);
-        });
 
+        try
+        {
+            _ = (App.Current as App).DataFetcher
+                .RequestReward(_article)
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex) 
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+        }
 
         base.OnNavigatedFrom(args);
-
-
     }
     /// <summary>
     /// Stop the timer that count the time spent on reading article pages
