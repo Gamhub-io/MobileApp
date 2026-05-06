@@ -36,7 +36,7 @@ public static class MauiProgram
             options.Dsn = "";
 #else 
             // The DSN is the only required setting.
-            options.Dsn = "https://6a618edd553c62a09273c0899febf030@o4508638278844416.ingest.de.sentry.io/4508638282580048";
+            options.Dsn = "https://8bdaf62fe935ecafea2bcfa78f46c029@o4510108346941440.ingest.de.sentry.io/4510108353364048";
 #endif
 
 #if DEBUG
