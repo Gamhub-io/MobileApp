@@ -88,29 +88,14 @@ jobs:
           revenueCatApiKey_Android: ${{ secrets.revenueCatApiKey_Android }}
           project_folder: '.'
       
-      - name: Install Android SDK + NDK
+      - name: Install Android SDK components
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget unzip
-
-          # Install Android command-line tools
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
-          unzip tools.zip -d latest
-          rm tools.zip
-
-          export ANDROID_HOME=$HOME/android-sdk
+          export ANDROID_HOME=/Users/runner/Library/Android/sdk
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
 
           yes | sdkmanager --licenses
 
-          # Install required components
           sdkmanager "platforms;android-35" "build-tools;35.0.0" "ndk;26.1.10909125"
-
-        env:
-          ANDROID_HOME: $HOME/android-sdk
-          PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$HOME/android-sdk/platform-tools:$PATH
 
 
       - name: Install MAUI Workload
