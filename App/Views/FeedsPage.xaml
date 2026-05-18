@@ -38,7 +38,7 @@
                 <!-- edit button -->
                 <Button Text="&#xf044;" 
                         FontFamily="FaSolid"
-                        TextColor="{StaticResource Primary}"
+                        TextColor="{StaticResource PrimaryAccent}"
                         BackgroundColor="{StaticResource LightDark}"
                         Clicked="Menu_Clicked"
                         Grid.Column="1"
