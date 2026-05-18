@@ -220,7 +220,7 @@
                                                                      x:DataType=Border}"/>
                             </Border.Behaviors>
                             <Label Style="{StaticResource LabelButtonStyle}"
-                                   TextColor="{StaticResource Primary }"
+                                   TextColor="{StaticResource VeryLightDark }"
                                    Text="&#xf14d;"
                                />
                         </Border>

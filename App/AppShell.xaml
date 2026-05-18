@@ -6,10 +6,10 @@
        xmlns:control="clr-namespace:GamHubApp.Controls"
        Shell.TabBarBackgroundColor="{DynamicResource LightDark}"
        Shell.TabBarUnselectedColor="{DynamicResource UnselectedTabFont}"
-       Shell.TabBarTitleColor="{DynamicResource Primary}"
+       Shell.TabBarTitleColor="{DynamicResource PrimaryAccent}"
        Shell.BackgroundColor="{DynamicResource LightDark}"
        FlyoutBackgroundColor="{DynamicResource LightDark}"
-       Shell.ForegroundColor="{DynamicResource Primary}"
+       Shell.ForegroundColor="{DynamicResource PrimaryAccent}"
        FlyoutWidth="270"
        xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
        xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
@@ -26,7 +26,7 @@
             <Setter Property="HorizontalTextAlignment" Value="Center" />
             <Setter Property="HorizontalOptions" Value="Center" />
             <Setter Property="FontSize" Value="23" />
-            <Setter Property="TextColor" Value="{DynamicResource Primary}" />
+            <Setter Property="TextColor" Value="{DynamicResource VeryLightDark}" />
             <Setter Property="Grid.Column" Value="0" />
         </Style>
         <Style TargetType="Label"
@@ -108,7 +108,7 @@
                         Text="{Binding Icon}" 
                         FontFamily="FaSolid" 
                         FontSize="23"
-                        TextColor="{DynamicResource Primary}"/>
+                        TextColor="{DynamicResource PrimaryAccent}"/>
                 <!-- Title -->
                 <Label Grid.Column="1" 
                        Text="{Binding Title}" 
@@ -164,7 +164,7 @@
                         </Label>
                         <Border StrokeShape="RoundRectangle 0,8,8,8"
                                 Grid.Column="1"
-                                BackgroundColor="{DynamicResource PrimaryAccent}">
+                                BackgroundColor="{DynamicResource Primary}">
                             <Label Grid.Column="0"
                                     Margin="5"
                                     FontSize="20"
@@ -354,7 +354,7 @@
                    />
             </Grid>
             
-            <Label Text="© 2025 Brice Friha"
+            <Label Text="© 2026 Brice Friha"
                    FontSize="12"
                    Grid.Row="3"
                    Margin="0,10,0,0"
