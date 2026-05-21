@@ -22,7 +22,7 @@
                     <Setter Property="FontFamily"
                             Value="FaSolid" />
                     <Setter Property="TextColor" 
-                                    Value="{StaticResource Primary}" />
+                                    Value="{StaticResource PrimaryAccent}" />
                 </DataTrigger>
                 <DataTrigger TargetType="Button"
                              Binding="{Binding IsSaved, Source={x:Reference thy}}"
@@ -30,7 +30,7 @@
                     <Setter Property="FontFamily"
                             Value="FaRegular" />
                     <Setter Property="TextColor" 
-                            Value="{StaticResource Light}" />
+                            Value="{StaticResource VeryLightDark}" />
                 </DataTrigger>
             </Button.Triggers>
         </Button>

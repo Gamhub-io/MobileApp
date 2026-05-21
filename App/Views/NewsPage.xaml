@@ -128,10 +128,8 @@
                         <DataTrigger Binding="{Binding IsCurrentSearchSaved, Mode=TwoWay}"
                                      TargetType="Button"
                                      Value="True">
-                            <!--<Setter Property="FontFamily" 
-                                    Value="FaSolid" />-->
                             <Setter Property="TextColor" 
-                                    Value="{StaticResource Primary}" />
+                                    Value="{StaticResource PrimaryAccent}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsCurrentSearchSaved, Mode=TwoWay}"
                                      TargetType="Button"
@@ -165,7 +163,7 @@
                      Command="{Binding RefreshFeed, Mode=OneWay}"
                      CommandParameter="{Binding IsSearching, Converter={StaticResource BoolInverseConverter}}"
                      x:Name="newsRefreshView"
-                     RefreshColor="{StaticResource PrimaryAccent}">
+                     RefreshColor="{StaticResource Primary}">
             
             <RefreshView.BackgroundColor>
                 <OnPlatform x:TypeArguments="Color">
