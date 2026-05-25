@@ -121,8 +121,8 @@
     <PackageReference Include="Refractored.MvvmHelpers" Version="1.6.2" />
     <PackageReference Include="Sentry.Maui" Version="5.16.0" />
     <PackageReference Include="SharpCompress" Version="0.48.0" />
-	  <PackageReference Include="sqlite-net-e" Version="1.11.0" />
-	  <PackageReference Include="SourceGear.sqlite3" Version="3.50.4.2" />
+	<PackageReference Include="sqlite-net-e" Version="1.11.0" />
+	<PackageReference Include="SourceGear.sqlite3" Version="3.50.4.2" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
 	<PackageReference Include="Microsoft.Maui.Controls" Version="9.0.0" />	  
 	<PackageReference Include="Vapolia.StrokedLabel" Version="1.0.2" />	  
