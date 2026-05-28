@@ -1,9 +1,6 @@
 
-<!-- <p align="center" class="container" >
-  <img width="200px" src="https://user-images.githubusercontent.com/37577669/168440018-94d3e00b-5ddf-485a-94b7-c6488addface.png" />
-</p> -->
 <p align="center" class="container" >
-  <img src="https://user-images.githubusercontent.com/37577669/185776799-6e32c7f7-c45e-4181-91aa-313d24a38689.png" />
+  <img src="https://github.com/user-attachments/assets/5e897bca-0887-4567-a101-d6968fca6a9f" />
 </p>
 <p align="center">
   <a href="https://apps.apple.com/us/app/aresgaming/id1595571591">
