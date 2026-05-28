@@ -39,6 +39,8 @@
 	<string>en-IE</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>UIDesignRequiresCompatibility</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
