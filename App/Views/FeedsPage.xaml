@@ -97,7 +97,6 @@
                 </StackLayout>
             </ContentView>
             <!---->
-            
             <!-- Current feed - list of article of the selected feed -->
             <RefreshView IsRefreshing="{Binding IsRefreshing}"
                          Command="{Binding Path=RefreshArticles}"
@@ -110,6 +109,7 @@
                 <RefreshView.BackgroundColor>
                     <OnPlatform x:TypeArguments="Color">
                         <On Platform="Android" Value="{StaticResource LightDark}"/>
+                        <On Platform="Android" Value="Transparent"/>
                     </OnPlatform>
                 </RefreshView.BackgroundColor>
                 <Grid>
