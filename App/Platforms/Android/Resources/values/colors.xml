@@ -3,5 +3,5 @@
     <color name="colorPrimary">#191414</color>
     <color name="colorPrimaryDark">#333333</color>
     <color name="colorAccent">#FF5733</color>
-    <color name="notification_color">#4AC776</color>
+    <color name="notification_color">#FFB400</color>
 </resources>

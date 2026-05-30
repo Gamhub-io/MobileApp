@@ -47,7 +47,7 @@
                 <!-- Sub Menu button -->
                 <Button Text="&#xf141;" 
                         FontFamily="FaSolid"
-                        TextColor="{StaticResource Primary}"
+                        TextColor="{StaticResource PrimaryAccent}"
                         BackgroundColor="{StaticResource LightDark}"
                         Grid.Column="1"
                         FontSize="30"
@@ -184,7 +184,7 @@
                                                                                 x:DataType=ContentPage}"/>
                                 </Border.Behaviors>
 
-                            <Label TextColor="{StaticResource Primary}"
+                                <Label TextColor="{StaticResource VeryLightDark}"
                                    Text="{Binding TtsIcon}"
                                    FontFamily="FaSolid"
                                    HorizontalOptions="Center"
@@ -220,7 +220,7 @@
                     <!-- Button to open to the default Browser -->
                 <Button Text="Read more"
                         BackgroundColor="{StaticResource LightDark}"
-                        TextColor="{StaticResource Primary}"
+                        TextColor="{StaticResource PrimaryAccent}"
                         FontFamily="P-Bold"
                         FontSize="12"
                         Command="{Binding Browse}"
