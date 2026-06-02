@@ -103,7 +103,7 @@ public class DealsViewModel : BaseViewModel
             var deal = newDeals[i].Deal;
             if (filterCode != null && !filterCode.Split('_').Contains(deal.DRM))
                 continue;
-            _deals.Insert(newDeals[i].Index, deal);
+            Deals.Insert(newDeals[i].Index, deal);
         }
 
         CurrentApp.RemoveLoadingIndicator();
