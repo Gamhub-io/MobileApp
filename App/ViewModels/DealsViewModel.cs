@@ -105,6 +105,13 @@ public class DealsViewModel : BaseViewModel
                 continue;
             Deals.Insert(newDeals[i].Index, deal);
         }
+        long nbExpires = _deals.LongCount(deal => deal.Expires < DateTime.UtcNow);
+
+        for (int i = 0; i < nbExpires; i++)
+        {
+            _deals.RemoveAt(i);
+        }
+
 
         CurrentApp.RemoveLoadingIndicator();
     }
