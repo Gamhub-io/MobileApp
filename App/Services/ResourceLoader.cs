@@ -10,6 +10,7 @@ public class ResourceLoader
     public Color VeryLightDarkColor { get; private set; }
     public Color BackgroundColor { get; private set; }
     public Color DarkSecondaryColor { get; private set; }
+    public Color LightDarkColor { get; private set; }
     public static ResourceLoader Instance { get; } = new ResourceLoader();
 
     public ResourceLoader()
@@ -33,6 +34,10 @@ public class ResourceLoader
         if (Application.Current.Resources.TryGetValue("DarkSecondary", out var valueDarkSecondary))
         {
             DarkSecondaryColor = (Color)valueDarkSecondary;
+        }
+        if (Application.Current.Resources.TryGetValue("LightDark", out var valueLightDark))
+        {
+            LightDarkColor = (Color)valueLightDark;
         }
     }
 }
