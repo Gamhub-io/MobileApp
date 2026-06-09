@@ -44,31 +44,6 @@ public class ItemAnimation : BaseAnimation
                 await Task.Delay(pause, token);
             }
         }
-        //while (!token.IsCancellationRequested)
-        //{
-        //    if (_resourceLoader.DarkColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.BackgroundColor, Rate);
-
-        //    if (_resourceLoader.DarkColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.DarkColor, Rate);
-
-        //    if (_resourceLoader.DarkSecondaryColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.DarkSecondaryColor, Rate);
-        //    if (_resourceLoader.DarkColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.BackgroundColor, Rate);
-        //    if (_resourceLoader.DarkColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.DarkColor, Rate);
-
-        //    if (_resourceLoader.DarkSecondaryColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.DarkSecondaryColor, Rate);
-        //    if (_resourceLoader.DarkColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.BackgroundColor, Rate);
-        //    if (_resourceLoader.DarkColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.DarkColor, Rate);
-
-        //    if (_resourceLoader.DarkSecondaryColor != null)
-        //        await view.BackgroundColorTo(_resourceLoader.DarkSecondaryColor, Rate);
-        //}
 
     }
     private Task ColorTransition(
