@@ -129,6 +129,9 @@ public static class MauiProgram
         mauiAppBuilder.Services.AddSingleton<GiveawayPage>();
         mauiAppBuilder.Services.AddSingleton<UserGiveawayWinsPage>();
 
+        // Resources
+        mauiAppBuilder.Services.AddSingleton<ResourceLoader>();
+
         return mauiAppBuilder;
     }
 }

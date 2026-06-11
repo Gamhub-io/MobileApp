@@ -386,13 +386,11 @@ public class NewsViewModel : BaseViewModel
         {
             if (IsSearchLoading || string.IsNullOrEmpty(SearchText))
                 return;
-            CurrentApp.ShowLoadingIndicator();
             IsSearchProcessed = true;
             IsSearchLoading = true;
 
-            await SearchArticles().ContinueWith((res) =>
+            await SearchArticles().ContinueWith((_) =>
             {
-                CurrentApp.RemoveLoadingIndicator();
                 IsSearchLoading = false;
             });
         });
@@ -673,10 +671,8 @@ public class NewsViewModel : BaseViewModel
         if (IsFirstLoad)
         {
 
-            CurrentApp.ShowLoadingIndicator();
-            _ = FetchExistingArticles().ContinueWith(res =>
+            _ = FetchExistingArticles().ContinueWith(_ =>
             {
-                CurrentApp.RemoveLoadingIndicator();
                 IsFirstLoad = false;
             });
         }

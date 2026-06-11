@@ -198,6 +198,17 @@
                             <controls:ArticlePreview Article="{Binding .}"/>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <StackLayout>
+                            <controls:ArticlePreview/>
+                            <controls:ArticlePreview/>
+                            <controls:ArticlePreview/>
+                            <controls:ArticlePreview/>
+                            <controls:ArticlePreview/>
+                            <controls:ArticlePreview/>
+                            
+                        </StackLayout>
+                    </CollectionView.EmptyView>
                 </CollectionView>
                 
                 <Button Text="{Binding UnnoticedArticles.Count, StringFormat='{0} new articles'}"

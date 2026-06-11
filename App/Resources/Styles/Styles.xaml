@@ -22,6 +22,8 @@
     <helpers:TimeUntilColourConverter x:Key="TimeUntilColourConverter"/>
     <helpers:NotNullOrEmptyStringConverter x:Key="NotNullOrEmptyStringConverter"/>
     <helpers:NullOrEmptyStringConverter x:Key="NullOrEmptyStringConverter"/>
+    <helpers:ArticleNullToBoolConverter x:Key="ArticleNullToBoolConverter"/>
+    <helpers:ArticleNotNullToBoolConverter x:Key="ArticleNotNullToBoolConverter"/>
 
     <ResourceDictionary>
         <OnPlatform x:Key="TitleRightMargin" x:TypeArguments="x:Double">
