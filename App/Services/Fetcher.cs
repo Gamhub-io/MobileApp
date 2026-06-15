@@ -287,6 +287,41 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Get the trending articles from the past 5 hours
+    /// </summary>
+    /// <returns>Articles trending</returns>
+    public async Task<Collection<Article>> GetTrendingArticles()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+        ResetHandler();
+        try
+        {
+            Dictionary<string,string> parameters = new ()
+            {
+                { "period", "5h"},
+                { "limit", "5"},
+            };
+            
+            return new ([.. (await this.WebService.Get<TrendResponse>(controller: "monitor/trends",
+                                                               parameters: parameters,
+                                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                                               jsonBody: null,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e))).Data.
+                                                               Select(at => at.Article)]);
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            return [];
+        }
+    }
+
+    /// <summary>
     /// Get all the partners
     /// </summary>
     /// <returns>partners</returns>
