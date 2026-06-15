@@ -196,6 +196,20 @@ public class NewsViewModel : BaseViewModel
             SetProperty(ref _articles, value);
         }
     }
+    private ObservableCollection<Article> _trendingArticles;
+
+    public ObservableCollection<Article> TrendingArticles
+    {
+        get { return _trendingArticles; }
+        set
+        {
+            _trendingArticles = value;
+
+            OnPropertyChanged(nameof(TrendingArticles));
+        }
+    }
+
+    // Property list of articles
     private ObservableCollection<Article> _unnoticedArticles;
 
     public ObservableCollection<Article> UnnoticedArticles
@@ -378,8 +392,11 @@ public class NewsViewModel : BaseViewModel
             // Refresh the time displayed
             RefreshArticlesTime();
 
-            // Fetch the article
-            await FetchNewerArticles().ContinueWith(res => IsRefreshing = false );
+            await Task.WhenAll(
+                FetchTrendingArticles(),
+                FetchNewerArticles().ContinueWith(res => IsRefreshing = false)
+                );
+
         });
 
         LoadSearch = new Command(async () =>
@@ -412,6 +429,15 @@ public class NewsViewModel : BaseViewModel
 
 
     }
+
+    /// <summary>
+    ///  Fetch the trending articles
+    /// </summary>
+    public async Task FetchTrendingArticles()
+    {
+        TrendingArticles = new (await CurrentApp.DataFetcher.GetTrendingArticles());
+    }
+
     /// <summary>
     /// Fetch the newest articles
     /// </summary>
@@ -691,7 +717,8 @@ public class NewsViewModel : BaseViewModel
                 RefreshFeed.Execute(_isSearching);
 #endif
         }
-
+        
+        await FetchTrendingArticles();
 
         ObservableCollection <Feed> curFeeds = [.. await _generalDB.GetFeeds()];
 
