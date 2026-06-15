@@ -435,7 +435,10 @@ public class NewsViewModel : BaseViewModel
     /// </summary>
     public async Task FetchTrendingArticles()
     {
-        TrendingArticles = new (await CurrentApp.DataFetcher.GetTrendingArticles());
+        var newTrandingArticles = await CurrentApp.DataFetcher.GetTrendingArticles();
+
+        if (newTrandingArticles?.Count > 0)
+            TrendingArticles = new (newTrandingArticles);
     }
 
     /// <summary>
