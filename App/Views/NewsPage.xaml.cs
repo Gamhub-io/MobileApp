@@ -49,6 +49,7 @@ public partial class NewsPage : ContentPage
         _vm.Resume().GetAwaiter();
     }
 
+
     public async void DisplayOfflineMessage(string msg = null)
     {
         var current = Connectivity.NetworkAccess;
@@ -125,6 +126,8 @@ public partial class NewsPage : ContentPage
     {
         base.OnAppearing();
 
+        OnResume();
+
         // Note: this is a workaround for a MAUI 10 bug that prevents the tabbar colours to set proper
         Dispatcher.Dispatch(() =>
         {
@@ -140,6 +143,7 @@ public partial class NewsPage : ContentPage
             Shell.SetTabBarUnselectedColor(this,
                 (Color)Application.Current.Resources["UnselectedTabFont"]);
         });
+
     }
 
     /// <summary>
