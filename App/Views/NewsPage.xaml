@@ -165,7 +165,7 @@
                      x:Name="newsRefreshView"
                      RefreshColor="{StaticResource Primary}"
                      IsClippedToBounds="True"
-             Padding="0"
+                     Padding="0"
                      >
             
             <RefreshView.BackgroundColor>
@@ -185,43 +185,62 @@
                                 Margin="0"
                                 >
                     <CollectionView.Header>
-                        <Grid RowDefinitions="auto,auto,25,2"
-                              RowSpacing="10"
-                              IsVisible="{Binding TrendingArticles.Count, Converter={StaticResource ZeroToFalseConverter}}">
-                            <BoxView Grid.Row="0"
-                                     Grid.RowSpan="2"
-                                     BackgroundColor="{StaticResource LightDark}"
-                                     Opacity="0.8"/>
-                            <Label Text="🔥 Trending"
-                                   Grid.Row="0"
-                                   VerticalOptions="Center"
-                                   FontFamily="P-Medium"
-                                   Margin="8,8,8,0"
-                                   TextColor="{StaticResource FontColor}"
-                                   FontSize="18"
-                                   />
-                            <CollectionView Grid.Row="1"
-                                            ItemsSource="{Binding TrendingArticles}"
-                                            ItemsLayout="HorizontalList"
-                                            >
-                                <CollectionView.ItemTemplate>
-                                    <DataTemplate x:DataType="models:Article">
-                                        <controls:ArticlePreview Article="{Binding .}"
-                                                                 WidthRequest="300"
-                                                                 Margin="20,5,0,15"/>
-                                    </DataTemplate>
+                        <StackLayout>
+                            <ActivityIndicator IsVisible="{Binding IsSearchLoading}"
+                                               Color="{StaticResource Primary}"
+                                               IsRunning="True"/>
+                            <Label Text="Results"
+                                    Grid.Row="0"
+                                    VerticalOptions="Center"
+                                    FontFamily="P-Medium"
+                                    Margin="8,8,8,0"
+                                    TextColor="{StaticResource FontColor}"
+                                    IsVisible="{Binding IsSearchProcessed}"
+                                    FontSize="18"
+                                    />
+                            <Grid IsVisible="{Binding IsSearchProcessed, Converter={StaticResource BoolInverseConverter}}">
+                                <Grid RowDefinitions="auto,auto,25,2"
+                                      RowSpacing="10"
+                                      IsVisible="{Binding TrendingArticles.Count, 
+                                                       Converter={StaticResource ZeroToFalseConverter}}">
+                                    <BoxView Grid.Row="0"
+                                         Grid.RowSpan="2"
+                                         BackgroundColor="{StaticResource LightDark}"
+                                         Opacity="0.8"/>
+                                    <Label Text="🔥 Trending"
+                                           Grid.Row="0"
+                                           VerticalOptions="Center"
+                                           FontFamily="P-Medium"
+                                           Margin="8,8,8,0"
+                                           TextColor="{StaticResource FontColor}"
+                                           FontSize="18"
+                                           />
+                                    <CollectionView Grid.Row="1"
+                                                ItemsSource="{Binding TrendingArticles}"
+                                                ItemsLayout="HorizontalList"
+                                                >
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:Article">
+                                                <controls:ArticlePreview Article="{Binding .}"
+                                                                     WidthRequest="300"
+                                                                     Margin="20,5,0,15"/>
+                                            </DataTemplate>
 
-                                </CollectionView.ItemTemplate>
-                            </CollectionView>
-                            <Label Text="Latest"
-                                   VerticalOptions="Center"
-                                   Grid.Row="2"
-                                   Margin="8,0"
-                                   TextColor="{StaticResource FontColor}"
-                                   FontFamily="P-Medium"
-                                   FontSize="18"/>
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                    <Label Text="Latest"
+                                           VerticalOptions="Center"
+                                           Grid.Row="2"
+                                           Margin="8,0"
+                                           TextColor="{StaticResource FontColor}"
+                                           FontFamily="P-Medium"
+                                           FontSize="18"/>
 
-                        </Grid>
+                                </Grid>
+                                
+                            </Grid>
+
+                        </StackLayout>
                     </CollectionView.Header>
                     
                     <CollectionView.Footer>
