@@ -291,7 +291,16 @@ public class NewsViewModel : BaseViewModel
     }
 
     public bool IsFirstLoad { get; private set; } = true;
-    public bool IsSearchLoading { get; private set; }
+    private bool _isSearchLoading;
+    public bool IsSearchLoading
+    {
+        get { return _isSearchLoading; }
+        set 
+        {
+            _isSearchLoading = value;
+            OnPropertyChanged(nameof(IsSearchLoading));
+        }
+    }
     public bool IsLoadingChunks { get; private set; }
 
     public NewsViewModel(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
@@ -403,12 +412,12 @@ public class NewsViewModel : BaseViewModel
         {
             if (IsSearchLoading || string.IsNullOrEmpty(SearchText))
                 return;
-            IsSearchProcessed = true;
             IsSearchLoading = true;
 
             await SearchArticles().ContinueWith((_) =>
             {
                 IsSearchLoading = false;
+                IsSearchProcessed = true;
             });
         });
 
