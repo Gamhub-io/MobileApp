@@ -28,6 +28,8 @@ public class NewsViewModel : BaseViewModel
         set
         {
             _isSearching = value;
+            if (!_isSearching)
+                IsSearchLoading = false;
             OnPropertyChanged(nameof(IsSearching));
         }
     }
