@@ -86,7 +86,32 @@ public class DealsViewModel : BaseViewModel
 
     public async Task UpdateDeals()
     {
-        Deals = new ((await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires));
+        if (!(_deals?.Count > 0))
+        {
+            Deals = new((await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires));
+
+            CurrentApp.RemoveLoadingIndicator();
+            return;
+        }
+        var newDeals = (await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires)
+                        .Select((deal, index) => new { Deal = deal, Index = index })
+                        .Where((d) => _deals.FirstOrDefault(ogD => ogD.Id == d.Deal.Id) == null)
+                        .ToList();
+
+        for (int i = 0; i < newDeals.Count; i++)
+        {
+            var deal = newDeals[i].Deal;
+            if (filterCode != null && !filterCode.Split('_').Contains(deal.DRM))
+                continue;
+            Deals.Insert(newDeals[i].Index, deal);
+        }
+        long nbExpires = _deals.LongCount(deal => deal.Expires < DateTime.UtcNow);
+
+        for (int i = 0; i < nbExpires; i++)
+        {
+            _deals.RemoveAt(i);
+        }
+
 
         CurrentApp.RemoveLoadingIndicator();
     }

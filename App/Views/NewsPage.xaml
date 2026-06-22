@@ -163,14 +163,17 @@
                      Command="{Binding RefreshFeed, Mode=OneWay}"
                      CommandParameter="{Binding IsSearching, Converter={StaticResource BoolInverseConverter}}"
                      x:Name="newsRefreshView"
-                     RefreshColor="{StaticResource Primary}">
+                     RefreshColor="{StaticResource Primary}"
+                     IsClippedToBounds="True"
+                     Padding="0"
+                     >
             
             <RefreshView.BackgroundColor>
                 <OnPlatform x:TypeArguments="Color">
                     <On Platform="Android" Value="{StaticResource LightDark}"/>
                 </OnPlatform>
             </RefreshView.BackgroundColor>
-            <Grid>
+            <Grid >
                 <CollectionView ItemsSource="{Binding Articles, Mode=OneWay}"
                                 VerticalScrollBarVisibility="Never"
                                 x:Name="newsCollectionView"
@@ -179,8 +182,66 @@
                                 Scrolled="newsCollectionView_Scrolled"
                                 RemainingItemsThreshold="20"
                                 RemainingItemsThresholdReachedCommand="{Binding RefreshBottomCommand}"
-                                Margin="8,0"
+                                Margin="0"
                                 >
+                    <CollectionView.Header>
+                        <StackLayout>
+                            <ActivityIndicator IsVisible="{Binding IsSearchLoading}"
+                                               Color="{StaticResource Primary}"
+                                               IsRunning="True"/>
+                            <Label Text="Results"
+                                    Grid.Row="0"
+                                    VerticalOptions="Center"
+                                    FontFamily="P-Medium"
+                                    Margin="8,8,8,0"
+                                    TextColor="{StaticResource FontColor}"
+                                    IsVisible="{Binding IsSearchProcessed}"
+                                    FontSize="18"
+                                    />
+                            <Grid IsVisible="{Binding IsSearchProcessed, Converter={StaticResource BoolInverseConverter}}">
+                                <Grid RowDefinitions="auto,auto,25,2"
+                                      RowSpacing="10"
+                                      IsVisible="{Binding TrendingArticles.Count, 
+                                                       Converter={StaticResource ZeroToFalseConverter}}">
+                                    <BoxView Grid.Row="0"
+                                         Grid.RowSpan="2"
+                                         BackgroundColor="{StaticResource LightDark}"
+                                         Opacity="0.8"/>
+                                    <Label Text="🔥 Trending"
+                                           Grid.Row="0"
+                                           VerticalOptions="Center"
+                                           FontFamily="P-Medium"
+                                           Margin="8,8,8,0"
+                                           TextColor="{StaticResource FontColor}"
+                                           FontSize="18"
+                                           />
+                                    <CollectionView Grid.Row="1"
+                                                ItemsSource="{Binding TrendingArticles}"
+                                                ItemsLayout="HorizontalList"
+                                                >
+                                        <CollectionView.ItemTemplate>
+                                            <DataTemplate x:DataType="models:Article">
+                                                <controls:ArticlePreview Article="{Binding .}"
+                                                                     WidthRequest="300"
+                                                                     Margin="20,5,0,15"/>
+                                            </DataTemplate>
+
+                                        </CollectionView.ItemTemplate>
+                                    </CollectionView>
+                                    <Label Text="Latest"
+                                           VerticalOptions="Center"
+                                           Grid.Row="2"
+                                           Margin="8,0"
+                                           TextColor="{StaticResource FontColor}"
+                                           FontFamily="P-Medium"
+                                           FontSize="18"/>
+
+                                </Grid>
+                                
+                            </Grid>
+
+                        </StackLayout>
+                    </CollectionView.Header>
                     
                     <CollectionView.Footer>
                         <Grid>
@@ -191,13 +252,25 @@
                         </Grid>
                     </CollectionView.Footer>
                     <CollectionView.ItemsLayout>
-                        <LinearItemsLayout Orientation="Vertical"  />
+                        <LinearItemsLayout Orientation="Vertical"/>
                     </CollectionView.ItemsLayout>
-                    <CollectionView.ItemTemplate>
+                    <CollectionView.ItemTemplate >
                         <DataTemplate x:DataType="models:Article">
-                            <controls:ArticlePreview Article="{Binding .}"/>
+                            <controls:ArticlePreview Article="{Binding .}"
+                                                     Margin="8,5,0,0"/>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <StackLayout>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            
+                        </StackLayout>
+                    </CollectionView.EmptyView>
                 </CollectionView>
                 
                 <Button Text="{Binding UnnoticedArticles.Count, StringFormat='{0} new articles'}"

@@ -49,6 +49,7 @@ public partial class NewsPage : ContentPage
         _vm.Resume().GetAwaiter();
     }
 
+
     public async void DisplayOfflineMessage(string msg = null)
     {
         var current = Connectivity.NetworkAccess;
@@ -71,20 +72,36 @@ public partial class NewsPage : ContentPage
     /// <summary>
     /// Method allowing the search bar animation
     /// </summary>
-    /// <param name="startingWidth">Start size</param>
-    /// <param name="endingWidth">End size</param>
-    public void AnimateWidthSearchBar(double startingWidth, double endingWidth)
+    /// <param name="toOpen">Wether or not the goal is to open or close the search</param>
+    public void AnimateWidthSearchBar(bool toOpen)
     {
+        double startingWidth = _searchbarEndingWidth;
+        double endingWidth = 0;
+
+        if (toOpen)
+        {
+            startingWidth = 0;
+            endingWidth = _searchbarEndingWidth;
+        }
         MainThread.BeginInvokeOnMainThread(() =>
         {
             // update the height of the layout with this call-back
-            Action<double> callback = input => { searchBar.WidthRequest = input; };
+            Action<double> callback = input => 
+            { 
+                searchBar.WidthRequest = input;
+                if (toOpen)
+                    entrySearch.Focus();
+                else
+                    entrySearch.Unfocus();
+
+                entrySearch.IsEnabled = toOpen;
+            };
 
             // pace at which animation proceeds
             uint rate = 30;
 
             // one second animation
-            const uint length = 700;
+            const uint length = 200;
             Easing easing = Easing.Linear;
 
             searchBar.Animate("invis", callback, startingWidth, endingWidth, rate, length, easing);
@@ -100,17 +117,14 @@ public partial class NewsPage : ContentPage
     /// </summary>
     private void OpenSearch()
     {
-        AnimateWidthSearchBar(0, _searchbarEndingWidth);
-
-        // Focus on the entry 
-        entrySearch.Focus();
+        AnimateWidthSearchBar(true);
     }
     /// <summary>
     /// Close the search header
     /// </summary>
     private void CloseSearch()
     {
-        AnimateWidthSearchBar(_searchbarEndingWidth, 0);
+        AnimateWidthSearchBar(false);
         _vm.IsSearching = false;
     }
 
@@ -124,6 +138,8 @@ public partial class NewsPage : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
+        OnResume();
 
         // Note: this is a workaround for a MAUI 10 bug that prevents the tabbar colours to set proper
         Dispatcher.Dispatch(() =>
@@ -140,6 +156,7 @@ public partial class NewsPage : ContentPage
             Shell.SetTabBarUnselectedColor(this,
                 (Color)Application.Current.Resources["UnselectedTabFont"]);
         });
+
     }
 
     /// <summary>

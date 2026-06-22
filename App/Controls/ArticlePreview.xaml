@@ -2,13 +2,15 @@
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:helpers="clr-namespace:GamHubApp.Helpers"
+             xmlns:local="clr-namespace:GamHubApp.Models.Animations"
              xmlns:ctrs="clr-namespace:GamHubApp.Controls"
              x:Class="GamHubApp.Controls.ArticlePreview"
              xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels" 
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              x:DataType="ctrs:ArticlePreview"
              x:Name="preview"
-             Margin="2,5">
+             Margin="2,5"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
     <Border StrokeShape="RoundRectangle 15" 
             StrokeThickness="0"
             HeightRequest="221"
@@ -16,12 +18,21 @@
         <Grid >
 
             <!-- Backgournd -->
-            <Grid BackgroundColor="{StaticResource Dark}">
+            <Grid IsVisible="{Binding Article, Converter={StaticResource ArticleNullToBoolConverter}}">
+                <Grid.Behaviors>
+                    <toolkit:AnimationBehavior EventName="Loaded">
+                        <toolkit:AnimationBehavior.AnimationType>
+                            <local:ItemAnimation Length="1000" />
+                        </toolkit:AnimationBehavior.AnimationType>
+                    </toolkit:AnimationBehavior>
+                </Grid.Behaviors>
+            </Grid>
+            <Grid BackgroundColor="{StaticResource Dark}"
+                  IsVisible="{Binding Article, Converter={StaticResource ArticleNotNullToBoolConverter}}">
                 <!-- Image -->
                 <Image Source="{Binding Article.Image, Source={x:Reference preview}}"
                    Opacity="0.60"
-                   Aspect="AspectFill" >
-                </Image>
+                   Aspect="AspectFill" />
             </Grid>
             <!-- Foreground -->
             <Grid RowDefinitions="*,auto"

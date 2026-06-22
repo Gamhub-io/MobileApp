@@ -28,6 +28,8 @@ public class NewsViewModel : BaseViewModel
         set
         {
             _isSearching = value;
+            if (!_isSearching)
+                IsSearchLoading = false;
             OnPropertyChanged(nameof(IsSearching));
         }
     }
@@ -196,6 +198,20 @@ public class NewsViewModel : BaseViewModel
             SetProperty(ref _articles, value);
         }
     }
+    private ObservableCollection<Article> _trendingArticles;
+
+    public ObservableCollection<Article> TrendingArticles
+    {
+        get { return _trendingArticles; }
+        set
+        {
+            _trendingArticles = value;
+
+            OnPropertyChanged(nameof(TrendingArticles));
+        }
+    }
+
+    // Property list of articles
     private ObservableCollection<Article> _unnoticedArticles;
 
     public ObservableCollection<Article> UnnoticedArticles
@@ -277,7 +293,16 @@ public class NewsViewModel : BaseViewModel
     }
 
     public bool IsFirstLoad { get; private set; } = true;
-    public bool IsSearchLoading { get; private set; }
+    private bool _isSearchLoading;
+    public bool IsSearchLoading
+    {
+        get { return _isSearchLoading; }
+        set 
+        {
+            _isSearchLoading = value;
+            OnPropertyChanged(nameof(IsSearchLoading));
+        }
+    }
     public bool IsLoadingChunks { get; private set; }
 
     public NewsViewModel(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
@@ -378,22 +403,23 @@ public class NewsViewModel : BaseViewModel
             // Refresh the time displayed
             RefreshArticlesTime();
 
-            // Fetch the article
-            await FetchNewerArticles().ContinueWith(res => IsRefreshing = false );
+            await Task.WhenAll(
+                FetchTrendingArticles(),
+                FetchNewerArticles().ContinueWith(res => IsRefreshing = false)
+                );
+
         });
 
         LoadSearch = new Command(async () =>
         {
             if (IsSearchLoading || string.IsNullOrEmpty(SearchText))
                 return;
-            CurrentApp.ShowLoadingIndicator();
-            IsSearchProcessed = true;
             IsSearchLoading = true;
 
-            await SearchArticles().ContinueWith((res) =>
+            await SearchArticles().ContinueWith((_) =>
             {
-                CurrentApp.RemoveLoadingIndicator();
                 IsSearchLoading = false;
+                IsSearchProcessed = true;
             });
         });
 
@@ -414,13 +440,25 @@ public class NewsViewModel : BaseViewModel
 
 
     }
+
+    /// <summary>
+    ///  Fetch the trending articles
+    /// </summary>
+    public async Task FetchTrendingArticles()
+    {
+        var newTrandingArticles = await CurrentApp.DataFetcher.GetTrendingArticles();
+
+        if (newTrandingArticles?.Count > 0)
+            TrendingArticles = new (newTrandingArticles);
+    }
+
     /// <summary>
     /// Fetch the newest articles
     /// </summary>
     /// <returns></returns>
     public async Task FetchNewerArticles()
     {
-        if (_articles?.Count <= 0)
+        if (_articles?.Count < 0)
             return;
 
         // Get time of the last article in date
@@ -673,10 +711,8 @@ public class NewsViewModel : BaseViewModel
         if (IsFirstLoad)
         {
 
-            CurrentApp.ShowLoadingIndicator();
-            _ = FetchExistingArticles().ContinueWith(res =>
+            _ = FetchExistingArticles().ContinueWith(_ =>
             {
-                CurrentApp.RemoveLoadingIndicator();
                 IsFirstLoad = false;
             });
         }
@@ -695,7 +731,8 @@ public class NewsViewModel : BaseViewModel
                 RefreshFeed.Execute(_isSearching);
 #endif
         }
-
+        
+        await FetchTrendingArticles();
 
         ObservableCollection <Feed> curFeeds = [.. await _generalDB.GetFeeds()];
 

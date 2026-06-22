@@ -59,12 +59,12 @@ public partial class AppShell : Shell
     {
         base.OnAppearing();
 
-        await _vm.UpdateGems();
         _currentApp = (App.Current as App);
+        Task gemTask = _vm.UpdateGems();
+        Task dealTask = _vm.UpdateDeals(); 
         Task partnersTask = _currentApp.LoadPartners();
         Task notifTask = _vm.NotificationSetup();
-        await Task.WhenAll(partnersTask, notifTask);
-        await _vm.UpdateDeals(); 
+        await Task.WhenAll(dealTask, gemTask, partnersTask, notifTask);
         _vm.Appearing();
     }
 

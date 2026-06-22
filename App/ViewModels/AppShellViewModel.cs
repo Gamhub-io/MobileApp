@@ -220,12 +220,12 @@ public class AppShellViewModel : BaseViewModel
             // For android we need to make sure it runs on the main thread
             MainThread.BeginInvokeOnMainThread(async () =>
 #endif
-        {
-            bool newStatus = await _firebasePushPermissions.RequestPermissionAsync();
-            Preferences.Set(_notificationKey, newStatus);
-            if (!newStatus) return;
-            await Task.Delay(1000);
-            await _firebasePushNotification.RegisterForPushNotificationsAsync();
+            {
+                bool newStatus = await _firebasePushPermissions.RequestPermissionAsync();
+                Preferences.Set(_notificationKey, newStatus);
+                if (!newStatus) return;
+                await Task.Delay(1000);
+                await _firebasePushNotification.RegisterForPushNotificationsAsync();
 #if ANDROID
             });
 #else

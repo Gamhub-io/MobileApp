@@ -1,12 +1,15 @@
+﻿using System;
 using System.Globalization;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui;
 
 namespace GamHubApp.Helpers
 {
-    public class ZeroToFalseConverter : IValueConverter
+    public class ArticleNullToBoolConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ((int)value) > 0;
+            return value == null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
