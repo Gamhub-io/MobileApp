@@ -90,7 +90,6 @@ public class DealsViewModel : BaseViewModel
         {
             Deals = new((await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires));
 
-            CurrentApp.RemoveLoadingIndicator();
             return;
         }
         var newDeals = (await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires)
@@ -112,7 +111,5 @@ public class DealsViewModel : BaseViewModel
             _deals.RemoveAt(i);
         }
 
-
-        CurrentApp.RemoveLoadingIndicator();
-    }
+}
 }
