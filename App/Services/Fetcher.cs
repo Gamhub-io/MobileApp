@@ -94,7 +94,7 @@ public class Fetcher
 
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
-                                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                                parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
@@ -168,7 +168,7 @@ public class Fetcher
 
             return await WebService.Get<Collection<Article>>(controller: "feeds",
                                                              action: needUpdate ? "update" : null,
-                                                             singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                                             singleUseHeaders: (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                              parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
                                                              unSuccessCallback: (err) => _ = HandleHttpException(err));
         }
@@ -234,19 +234,21 @@ public class Fetcher
                 return await GetMainFeedUpdate();
             }
 
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
-                                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                                parameters: new string[] { dateUpdate },
                                                                jsonBody: null,
+                                                               cancellationToken: cts.Token,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
         }
         catch (Exception ex)
         {
 #if DEBUG
             Debug.WriteLine(ex);
-#else
-            SentrySdk.CaptureException(ex);
 #endif
             return [];
         }
@@ -271,7 +273,7 @@ public class Fetcher
             ];
             return await this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                parameters: parameters,
-                                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e));
         }
@@ -297,6 +299,9 @@ public class Fetcher
         ResetHandler();
         try
         {
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+            
             Dictionary<string,string> parameters = new ()
             {
                 { "period", "5h"},
@@ -305,8 +310,9 @@ public class Fetcher
             
             return new ([.. (await this.WebService.Get<TrendResponse>(controller: "monitor/trends",
                                                                parameters: parameters,
-                                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                                jsonBody: null,
+                                                               cancellationToken: cts.Token,
                                                                unSuccessCallback: e => _ = HandleHttpException(e))).Data.
                                                                Select(at => at.Article)]);
         }
@@ -314,8 +320,6 @@ public class Fetcher
         {
 #if DEBUG
             Debug.WriteLine(ex);
-#else
-            SentrySdk.CaptureException(ex);
 #endif
             return [];
         }
@@ -395,7 +399,7 @@ public class Fetcher
 
             return await this.WebService.Get<Article>(controller: "article",
                                                       parameters: new string[] { articleId },
-                                                      singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                                      singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                       unSuccessCallback: e => _ = HandleHttpException(e));
         }
 
@@ -1223,7 +1227,7 @@ public class Fetcher
 
        return (await WebService.Get<NeResponse>(controller: "monitor",
                                                action: "NE",
-                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                parameters: new Dictionary<string, string>
                                                {
                                                    { nameof(token), token },
@@ -1243,7 +1247,7 @@ public class Fetcher
 
        return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
                                                action: "culture",
-                                               singleUseHeaders: (Headers?.Count ?? 0) <= 0 ? Headers : await GetHeaders(),
+                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                unSuccessCallback: e => _ = HandleHttpException(e)
                                                 );
     }
