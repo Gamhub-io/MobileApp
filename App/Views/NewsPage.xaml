@@ -199,7 +199,7 @@
                                     FontSize="18"
                                     />
                             <Grid IsVisible="{Binding IsSearchProcessed, Converter={StaticResource BoolInverseConverter}}">
-                                <Grid RowDefinitions="auto,auto,25,2"
+                                <Grid RowDefinitions="30,250,25,2"
                                       RowSpacing="10"
                                       IsVisible="{Binding TrendingArticles.Count, 
                                                        Converter={StaticResource ZeroToFalseConverter}}">
@@ -207,6 +207,7 @@
                                          Grid.RowSpan="2"
                                          BackgroundColor="{StaticResource LightDark}"
                                          Opacity="0.8"/>
+                                    
                                     <Label Text="🔥 Trending"
                                            Grid.Row="0"
                                            VerticalOptions="Center"
