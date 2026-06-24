@@ -5,6 +5,9 @@ using Plugin.StoreReview;
 #if DEBUG
 using System.Diagnostics;
 #endif
+#if ANDROID
+using Android.Views;
+#endif
 
 namespace GamHubApp.Views;
 
@@ -28,12 +31,21 @@ public partial class ArticlePage : ContentPage
     public ArticlePage(Article article)
     {
         InitializeComponent();
-
+#if ANDROID
+Microsoft.Maui.Handlers.WebViewHandler.Mapper.AppendToMapping("DisableHWAccel", (handler, view) =>
+{
+    if (Android.OS.Build.Manufacturer.Contains("samsung", StringComparison.CurrentCultureIgnoreCase))
+    {
+        handler.PlatformView.SetLayerType(LayerType.Software, null);
+    }
+});
+#endif
         BindingContext = _vm = new ArticleViewModel(_article = article);
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
     {
+        Debug.WriteLine("Navigation stated");
         // Stop the timer
         StopTimer();
 
@@ -56,6 +68,7 @@ public partial class ArticlePage : ContentPage
         }
 
         base.OnNavigatedFrom(args);
+        Debug.WriteLine("Navigation done");
     }
     /// <summary>
     /// Stop the timer that count the time spent on reading article pages
