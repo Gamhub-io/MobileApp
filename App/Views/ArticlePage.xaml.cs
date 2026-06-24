@@ -45,7 +45,6 @@ Microsoft.Maui.Handlers.WebViewHandler.Mapper.AppendToMapping("DisableHWAccel", 
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
     {
-        Debug.WriteLine("Navigation stated");
         // Stop the timer
         StopTimer();
 
@@ -68,7 +67,6 @@ Microsoft.Maui.Handlers.WebViewHandler.Mapper.AppendToMapping("DisableHWAccel", 
         }
 
         base.OnNavigatedFrom(args);
-        Debug.WriteLine("Navigation done");
     }
     /// <summary>
     /// Stop the timer that count the time spent on reading article pages
