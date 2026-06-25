@@ -289,6 +289,43 @@ public class Fetcher
     }
 
     /// <summary>
+    /// Get the settings
+    /// </summary>
+    /// <returns>Global synamic settings</returns>
+    public async Task<DynamicSetting> GetGlobalSettings()
+    {
+        if (!Fetcher.CheckFeasability())
+            return new DynamicSetting() ;
+        ResetHandler();
+        try
+        {
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+            
+            Dictionary<string,string> parameters = new ()
+            {
+#if ANDROID
+                { "os", "android"},
+#endif
+#if IOS
+                { "os", "iOS"},
+#endif
+            };
+            
+            return (await this.WebService.Get<DynamicSetting>(controller: "monitor/settings",
+                                                               parameters: parameters,jsonBody: null,
+                                                               cancellationToken: cts.Token,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e)));
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#endif
+            return new DynamicSetting();
+        }
+    }
+    /// <summary>
     /// Get the trending articles from the past 5 hours
     /// </summary>
     /// <returns>Articles trending</returns>
