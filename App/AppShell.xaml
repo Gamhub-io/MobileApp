@@ -297,7 +297,8 @@
             <!-- Donate -->
             <Grid Grid.Row="0"
                   VerticalOptions="End" 
-                  ColumnDefinitions="60,*">
+                  ColumnDefinitions="60,*"
+                  IsVisible="{Binding DonationEnabled}">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding BrowseTo}"
                                           CommandParameter="https://buymeacoffee.com/gamhub_io"/>
