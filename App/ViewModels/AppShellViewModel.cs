@@ -95,6 +95,20 @@ public class AppShellViewModel : BaseViewModel
         }
     }
 
+    private bool _donationEnabled;
+    public bool DonationEnabled
+    {
+        get
+        {
+            return _donationEnabled;
+        }
+        set
+        {
+            _donationEnabled = value;
+            OnPropertyChanged(nameof(DonationEnabled));
+        }
+    }
+
     private User _userProfile;
     public User UserProfile
     {
@@ -141,7 +155,12 @@ public class AppShellViewModel : BaseViewModel
 
         Task.Run(async () =>
         {
-            await fetc.RestoreSession();
+            await Task.WhenAll(
+                Task.Run(async () => 
+                { 
+                    DonationEnabled = (await fetc.GetGlobalSettings()).DonationEnabled; 
+                }), 
+                fetc.RestoreSession());
             UserProfile = fetc.UserData;
         });
 
