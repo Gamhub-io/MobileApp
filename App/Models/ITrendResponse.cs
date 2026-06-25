@@ -2,7 +2,7 @@
 
 namespace GamHubApp.Models;
 
-public class TrendResponse
+public interface ITrendResponse
 {
     public Collection<ArticleTrend> Data { get; set; }
 }
