@@ -1,16 +1,17 @@
 ﻿using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Views;
+using MvvmHelpers;
 using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels;
 
 public class DealsViewModel : BaseViewModel
 {
-    private ObservableCollection<Deal> _deals;
     public App CurrentApp { get; }
+    private ObservableRangeCollection<Deal> _deals;
 
-    public ObservableCollection<Deal> Deals 
+    public ObservableRangeCollection<Deal> Deals 
     { 
         get
         {
@@ -88,9 +89,13 @@ public class DealsViewModel : BaseViewModel
     {
         if (!(_deals?.Count > 0))
         {
-            Deals = new((await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires));
+            var tasks = await Task.WhenAll(CurrentApp.DataFetcher.GetTrendingDeals(), 
+                CurrentApp.DataFetcher.GetDeals());
+            Deals = new((tasks[0]).OrderBy(d => d.Expires));
 
-            CurrentApp.RemoveLoadingIndicator();
+            Deals.AddRange(new ObservableRangeCollection<Deal>((
+                tasks[1]).OrderBy(d => d.Expires)));
+
             return;
         }
         var newDeals = (await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires)
@@ -112,7 +117,5 @@ public class DealsViewModel : BaseViewModel
             _deals.RemoveAt(i);
         }
 
-
-        CurrentApp.RemoveLoadingIndicator();
-    }
+}
 }

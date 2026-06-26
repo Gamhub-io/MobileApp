@@ -345,13 +345,56 @@ public class Fetcher
                 { "limit", "5"},
             };
             
-            return new ([.. (await this.WebService.Get<TrendResponse>(controller: "monitor/trends",
+            return new ([.. (await this.WebService.Get<ArticleTrendResponse>(controller: "monitor/trends",
                                                                parameters: parameters,
                                                                singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
                                                                jsonBody: null,
                                                                cancellationToken: cts.Token,
                                                                unSuccessCallback: e => _ = HandleHttpException(e))).Data.
                                                                Select(at => at.Article)]);
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#endif
+            return [];
+        }
+    }
+
+    /// <summary>
+    /// Get the trending articles from the past 5 hours
+    /// </summary>
+    /// <returns>Articles trending</returns>
+    public async Task<Collection<Deal>> GetTrendingDeals()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+        ResetHandler();
+        try
+        {
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+            
+            Dictionary<string,string> parameters = new ()
+            {
+                { "period", "15d"},
+                { "limit", "10"},
+                { "timecons", "0"},
+            };
+            
+            return new ([.. (await this.WebService.Get<DealTrendResponse>(controller: "monitor/deal/trends",
+                                                               parameters: parameters,
+                                                               //singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
+                                                               jsonBody: null,
+                                                               cancellationToken: cts.Token,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e))).Data.
+                                                               Select(dt => 
+                                                               {
+                                                                   if (dt.Deal.Expires < DateTime.Now)
+                                                                       return null;
+                                                                   return dt.Deal;
+                                                               })]);
         }
         catch (Exception ex)
         {

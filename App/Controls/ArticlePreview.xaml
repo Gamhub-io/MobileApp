@@ -9,8 +9,7 @@
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              x:DataType="ctrs:ArticlePreview"
              x:Name="preview"
-             Margin="2,5"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+             Margin="2,5">
     <Border StrokeShape="RoundRectangle 15" 
             StrokeThickness="0"
             HeightRequest="221"
@@ -20,11 +19,11 @@
             <!-- Backgournd -->
             <Grid IsVisible="{Binding Article, Converter={StaticResource ArticleNullToBoolConverter}}">
                 <Grid.Behaviors>
-                    <toolkit:AnimationBehavior EventName="Loaded">
-                        <toolkit:AnimationBehavior.AnimationType>
+                    <mct:AnimationBehavior EventName="Loaded">
+                        <mct:AnimationBehavior.AnimationType>
                             <local:ItemAnimation Length="1000" />
-                        </toolkit:AnimationBehavior.AnimationType>
-                    </toolkit:AnimationBehavior>
+                        </mct:AnimationBehavior.AnimationType>
+                    </mct:AnimationBehavior>
                 </Grid.Behaviors>
             </Grid>
             <Grid BackgroundColor="{StaticResource Dark}"
