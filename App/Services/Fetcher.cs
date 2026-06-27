@@ -52,23 +52,17 @@ public class Fetcher
 #endif
     public Fetcher(GeneralDataBase generalDataBase, 
                    BackUpDataBase backUpDataBase,
-                   INotificationPermissions notificationPermissions
+                   INotificationPermissions notificationPermissions,
+                   Service wService
 #if IOS
                    ,IRevenueCatBilling revenueCatBilling)
 #else
         )
 #endif
     {
-#if DEBUG_LOCALHOST
         // Set webservice
-        WebService = new Service(host: AppConstant.Localhost,
-                                port: 255,
-                               sslCertificate: false);
-#else
-        // Set webservice
-        WebService = new Service(host: ProdHost,
-                               sslCertificate: true);
-#endif
+        WebService = wService;
+
         _generalDB = generalDataBase;
         _backupDB = backUpDataBase;
         _firebasePushPermissions = notificationPermissions;
