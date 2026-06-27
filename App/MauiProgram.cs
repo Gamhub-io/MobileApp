@@ -7,6 +7,7 @@ using Plugin.FirebasePushNotifications;
 using Plugin.FirebasePushNotifications.Model.Queues;
 using Maui.RevenueCat.InAppBilling;
 using GamHubApp.Core;
+using CustardApi.Objects;
 
 
 #if IOS
@@ -79,7 +80,14 @@ public static class MauiProgram
                {
                    handlers.AddHandler<Shell, TabbarBadgeRenderer>();
                });
-
+#if DEBUG_LOCALHOST
+builder.Services.AddCustard(host: AppConstant.Localhost,
+                                port: 255,
+                               sslCertificate: false);
+#else
+        builder.Services.AddCustard(host: "api.gamhub.io",
+                               sslCertificate: true);
+#endif
         builder.Services.AddSingleton<Fetcher>();
 
         builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
