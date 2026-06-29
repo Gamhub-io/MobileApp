@@ -89,7 +89,8 @@ public class Fetcher
             {
                 return await action();
             }
-            catch (HttpRequestException ex) when (
+            catch (HttpRequestException ex) 
+            when (
                 ex.InnerException is SocketException ||
                 ex.Message.Contains("hostname nor servname provided", StringComparison.OrdinalIgnoreCase) ||
                 ex.Message.Contains("NameResolutionFailure", StringComparison.OrdinalIgnoreCase))
@@ -99,6 +100,16 @@ public class Fetcher
                     return default; 
 
                 await Task.Delay(300 * attempt); 
+            }
+
+            catch (Exception ex) 
+            when (ex.Message.Contains("The operation was canceled."))
+            {
+                // Snail retry 🐌
+                if (attempt == retries)
+                    return default;
+
+                await Task.Delay(300 * attempt);
             }
             catch (Exception ex)
             {
@@ -276,7 +287,7 @@ public class Fetcher
             }
 
             using var cts = new CancellationTokenSource();
-            cts.CancelAfter(TimeSpan.FromSeconds(5));
+            cts.CancelAfter(TimeSpan.FromSeconds(10));
 
             Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
 
@@ -394,14 +405,18 @@ public class Fetcher
 
             Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
 
-            return new ([.. (await WithRetryAsync(() =>
+            var articleTrends = (await WithRetryAsync(() =>
                  this.WebService.Get<ArticleTrendResponse>(controller: "monitor/trends",
                                                                parameters: parameters,
                                                                singleUseHeaders: headers,
                                                                jsonBody: null,
                                                                cancellationToken: cts.Token,
                                                                unSuccessCallback: e => _ = HandleHttpException(e))))?.Data.
-                                                               Select(at => at.Article)]);
+                                                               Select(at => at.Article);
+
+            if (articleTrends == null)
+                return [];
+            return new ([.. articleTrends]);
         }
         catch (Exception ex)
         {
@@ -432,19 +447,23 @@ public class Fetcher
                 { "limit", "10"},
                 { "timecons", "0"},
             };
-            
-            return new ([.. (await WithRetryAsync(() =>
+
+            var dealTrends = (await WithRetryAsync(() =>
                 this.WebService.Get<DealTrendResponse>(controller: "monitor/deal/trends",
                                                                parameters: parameters,
                                                                jsonBody: null,
                                                                cancellationToken: cts.Token,
                                                                unSuccessCallback: e => _ = HandleHttpException(e))))?.Data.
-                                                               Select(dt => 
+                                                               Select(dt =>
                                                                {
                                                                    if (dt.Deal.Expires < DateTime.Now)
                                                                        return null;
                                                                    return dt.Deal;
-                                                               })]);
+                                                               });
+
+            if (dealTrends == null)
+                return [];
+            return new ([.. dealTrends]);
         }
         catch (Exception ex)
         {
