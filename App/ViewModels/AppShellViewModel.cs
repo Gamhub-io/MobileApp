@@ -158,7 +158,7 @@ public class AppShellViewModel : BaseViewModel
             await Task.WhenAll(
                 Task.Run(async () => 
                 { 
-                    DonationEnabled = (await fetc.GetGlobalSettings()).DonationEnabled; 
+                    DonationEnabled = (await fetc.GetGlobalSettings())?.DonationEnabled ?? false; 
                 }), 
                 fetc.RestoreSession());
             UserProfile = fetc.UserData;
