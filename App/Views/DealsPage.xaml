@@ -13,7 +13,7 @@
              x:Name="page">
     <ContentPage.Resources>
         <Style TargetType="Border"
-               x:Name="EmptyCard">
+               x:Key="EmptyCard">
             <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
             <Setter Property="StrokeShape" Value="RoundRectangle 8" />
             <Setter Property="HeightRequest" Value="220" />
