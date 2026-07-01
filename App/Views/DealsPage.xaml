@@ -82,7 +82,7 @@
                                     </mct:AnimationBehavior>
                                 </Border.Behaviors>
                             </Border>
-                            <Border Style="{StaticResource AnimatedCard}"
+                            <Border Style="{StaticResource EmptyCard}"
                                     Margin="10">
                                 <Border.Behaviors>
                                     <mct:AnimationBehavior EventName="Loaded">
