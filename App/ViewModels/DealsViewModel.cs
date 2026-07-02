@@ -9,10 +9,10 @@ namespace GamHubApp.ViewModels;
 public class DealsViewModel : BaseViewModel
 {
     public App CurrentApp { get; }
-    private ObservableRangeCollection<Deal> _deals;
+    private ObservableRangeCollection<Deal> _deals = new ();
 
-    public ObservableRangeCollection<Deal> Deals 
-    { 
+    public ObservableRangeCollection<Deal> Deals
+    {
         get
         {
             return _deals;
@@ -51,8 +51,11 @@ public class DealsViewModel : BaseViewModel
             }
             Preferences.Set(PreferencesKeys.DealFilterCode, filterCode = filterCode.TrimEnd());
 
-            Deals = new (CurrentApp.DataFetcher.AllDeals.Where(deal => filterCode.Split('_').Contains(deal.DRM)).OrderBy(d => d.Expires));
+            var filteredDeals = new ObservableRangeCollection<Deal>(
+                CurrentApp.DataFetcher.AllDeals.Where(deal => filterCode.Split('_').Contains(deal.DRM)).OrderBy(d => d.Expires));
 
+            if (filteredDeals.Any())
+                Deals = filteredDeals;
 
             await _lastFilterPopUp?.CloseAsync();
         });
@@ -68,7 +71,7 @@ public class DealsViewModel : BaseViewModel
             {
                 Platforms[i].IsSelected = filterCode.Split('_').Contains(_platforms[i].Id);
             }
-        });
+        }).GetAwaiter();
     }
     
     private DealFilterPopUp _lastFilterPopUp;
@@ -87,14 +90,40 @@ public class DealsViewModel : BaseViewModel
 
     public async Task UpdateDeals()
     {
-        if (!(_deals?.Count > 0))
+        if (!(Deals?.Count > 0))
         {
-            var tasks = await Task.WhenAll(CurrentApp.DataFetcher.GetTrendingDeals(), 
-                CurrentApp.DataFetcher.GetDeals());
-            Deals = new((tasks[0]).OrderBy(d => d.Expires));
+            var getTendingTask = CurrentApp.DataFetcher.GetTrendingDeals();
+            var getDealTask = CurrentApp.DataFetcher.GetDeals();
 
-            Deals.AddRange(new ObservableRangeCollection<Deal>((
-                tasks[1]).OrderBy(d => d.Expires)));
+            await foreach (var task in Task.WhenEach(getTendingTask,
+                getDealTask)) 
+            {
+
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (task == getTendingTask && Deals.Count > 0) 
+                    {
+                        if (Deals.Count > 0)
+                        {
+                            var tendingDeals = new ObservableRangeCollection<Deal>(getTendingTask.Result.OrderBy(d => d.Expires));
+                            for (int i = 0; i < tendingDeals.Count(); i++)
+                            {
+
+                                Deals.Insert(i, tendingDeals[i]);
+                            }
+
+                        }
+                        else
+                        {
+                            Deals.AddRange(new ObservableRangeCollection<Deal>(getTendingTask.Result.OrderBy(d => d.Expires)));
+                        }
+                    }
+                    if (task == getDealTask)
+                        Deals.AddRange(new ObservableRangeCollection<Deal>(getDealTask.Result.OrderBy(d => d.Expires)));
+
+                });
+            }
+
 
             return;
         }
@@ -114,7 +143,7 @@ public class DealsViewModel : BaseViewModel
 
         for (int i = 0; i < nbExpires; i++)
         {
-            _deals.RemoveAt(i);
+            Deals.RemoveAt(i);
         }
 
 }
