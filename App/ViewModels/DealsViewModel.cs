@@ -51,8 +51,9 @@ public class DealsViewModel : BaseViewModel
             }
             Preferences.Set(PreferencesKeys.DealFilterCode, filterCode = filterCode.TrimEnd());
 
+                var allowedDrms = filterCode.Split('_');
             var filteredDeals = new ObservableRangeCollection<Deal>(
-                CurrentApp.DataFetcher.AllDeals.Where(deal => filterCode.Split('_').Contains(deal.DRM)).OrderBy(d => d.Expires));
+                    CurrentApp.DataFetcher.AllDeals.Where(deal => deal?.DRM != null && allowedDrms.Contains(deal.DRM)).OrderBy(d => d.Expires));
 
             if (filteredDeals.Any())
                 Deals = filteredDeals;
