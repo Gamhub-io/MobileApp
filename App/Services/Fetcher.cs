@@ -531,7 +531,7 @@ public class Fetcher
             if (filterCode == null || filterCode == _platformsStr)
                 return _deals = _allDeals;
 
-            return _deals = [.. _allDeals.Where((
+            return _deals = [.. (_allDeals ?? []).Where((
                 deal => 
                 filterCode.Split('_').Contains(deal.DRM))).ToList()];
         }
