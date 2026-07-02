@@ -514,8 +514,11 @@ public class Fetcher
         {
             string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
 
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
             _allDeals = await WithRetryAsync(() =>
                 this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                      cancellationToken: cts.Token,
                                                       unSuccessCallback: e => _ = HandleHttpException(e)));
             //TODO: update this entire thing once we can just pass filtercode to the API
             if (filterCode == null)
