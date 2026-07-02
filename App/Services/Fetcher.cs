@@ -48,6 +48,7 @@ public class Fetcher
 
     private INotificationPermissions _firebasePushPermissions;
     private List<GamePlatform> _platforms = new();
+    private string _platformsStr;
 
 #if IOS
     private readonly IRevenueCatBilling _revenueCatBilling;
@@ -71,7 +72,8 @@ public class Fetcher
 
         Task.WhenAll([
             GetSources(),
-            SetCultureInfo()
+            SetCultureInfo(),
+            GetDRMs()
             ]).GetAwaiter();
     }
 
@@ -191,6 +193,7 @@ public class Fetcher
 
         if (_platforms.Count > 0)
             return _platforms;
+        _platformsStr = string.Join('_', _platforms);
 
         return _platforms = (await WithRetryAsync(() =>
                 (WebService.Get<DrmResponse>(controller: "deals", 
@@ -525,10 +528,12 @@ public class Fetcher
                                                       cancellationToken: cts.Token,
                                                       unSuccessCallback: e => _ = HandleHttpException(e)));
             //TODO: update this entire thing once we can just pass filtercode to the API
-            if (filterCode == null)
+            if (filterCode == null || filterCode == _platformsStr)
                 return _deals = _allDeals;
 
-            return _deals = [.. _allDeals.Where((deal => filterCode.Split('_').Contains(deal.DRM))).ToList()];
+            return _deals = [.. _allDeals.Where((
+                deal => 
+                filterCode.Split('_').Contains(deal.DRM))).ToList()];
         }
 
         catch (Exception ex)
