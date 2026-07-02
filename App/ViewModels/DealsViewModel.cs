@@ -101,12 +101,12 @@ public class DealsViewModel : BaseViewModel
 
                 await MainThread.InvokeOnMainThreadAsync(() =>
                 {
-                    if (task == getTendingTask && Deals.Count > 0) 
+                    if (task == getTendingTask ) 
                     {
                         if (Deals.Count > 0)
                         {
                             var tendingDeals = new ObservableRangeCollection<Deal>(getTendingTask.Result.OrderBy(d => d.Expires));
-                            for (int i = 0; i < tendingDeals.Count(); i++)
+                            for (int i = 0; i < tendingDeals.Count; i++)
                             {
 
                                 Deals.Insert(i, tendingDeals[i]);
