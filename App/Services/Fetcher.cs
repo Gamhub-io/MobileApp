@@ -47,6 +47,7 @@ public class Fetcher
     public Dictionary<string, string> Headers { get; private set; }
 
     private INotificationPermissions _firebasePushPermissions;
+    private List<GamePlatform> _platforms = new();
 
 #if IOS
     private readonly IRevenueCatBilling _revenueCatBilling;
@@ -188,7 +189,10 @@ public class Fetcher
             return [];
         ResetHandler();
 
-        return (await WithRetryAsync(() =>
+        if (_platforms.Count > 0)
+            return _platforms;
+
+        return _platforms = (await WithRetryAsync(() =>
                 (WebService.Get<DrmResponse>(controller: "deals", 
                                                  action: "platforms",
                                                  unSuccessCallback: e => _ = HandleHttpException(e)))))?.Data;
