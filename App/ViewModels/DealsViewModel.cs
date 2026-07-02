@@ -103,9 +103,11 @@ public class DealsViewModel : BaseViewModel
                 {
                     if (task == getTendingTask ) 
                     {
+                        var res = getTendingTask.Result
+                                    .OrderBy(d => d?.Expires).ToList();
                         if (Deals.Count > 0)
                         {
-                            var tendingDeals = new ObservableRangeCollection<Deal>(getTendingTask.Result.OrderBy(d => d.Expires));
+                            var tendingDeals = new ObservableRangeCollection<Deal>(res);
                             for (int i = 0; i < tendingDeals.Count; i++)
                             {
 
@@ -115,7 +117,7 @@ public class DealsViewModel : BaseViewModel
                         }
                         else
                         {
-                            Deals.AddRange(new ObservableRangeCollection<Deal>(getTendingTask.Result.OrderBy(d => d.Expires)));
+                            Deals.AddRange(new ObservableRangeCollection<Deal>(res));
                         }
                     }
                     if (task == getDealTask)
