@@ -34,6 +34,7 @@ public class DealsViewModel : BaseViewModel
         filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, filterCode);
         DealFilterCommand = new Command(() =>
         {
+            if (_filterOpened) return;
             CurrentApp.OpenPopUp(_lastFilterPopUp = new DealFilterPopUp(this));
         });
 
@@ -59,11 +60,13 @@ public class DealsViewModel : BaseViewModel
                 Deals = filteredDeals;
 
             await _lastFilterPopUp?.CloseAsync();
+            _filterOpened = false;
         });
 
         CancelFilter = new Command(async() =>
         {
             await _lastFilterPopUp?.CloseAsync();
+            _filterOpened = false;
         });
 
         Task.Run(async () => {
