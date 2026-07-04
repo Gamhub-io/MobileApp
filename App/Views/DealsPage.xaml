@@ -61,38 +61,65 @@
                     Margin="1,0"
                     >
                     <CollectionView.EmptyView>
-                        <StackLayout>
-                            <Border Style="{StaticResource EmptyCard}"
-                                    Margin="10">
-                                <Border.Behaviors>
-                                    <mct:AnimationBehavior EventName="Loaded">
-                                        <mct:AnimationBehavior.AnimationType>
-                                            <local:ItemAnimation Length="1000" />
-                                        </mct:AnimationBehavior.AnimationType>
-                                    </mct:AnimationBehavior>
-                                </Border.Behaviors>
-                            </Border>
-                            <Border Style="{StaticResource EmptyCard}"
-                                    Margin="10">
-                                <Border.Behaviors>
-                                    <mct:AnimationBehavior EventName="Loaded">
-                                        <mct:AnimationBehavior.AnimationType>
-                                            <local:ItemAnimation Length="1000" />
-                                        </mct:AnimationBehavior.AnimationType>
-                                    </mct:AnimationBehavior>
-                                </Border.Behaviors>
-                            </Border>
-                            <Border Style="{StaticResource EmptyCard}"
-                                    Margin="10">
-                                <Border.Behaviors>
-                                    <mct:AnimationBehavior EventName="Loaded">
-                                        <mct:AnimationBehavior.AnimationType>
-                                            <local:ItemAnimation Length="1000" />
-                                        </mct:AnimationBehavior.AnimationType>
-                                    </mct:AnimationBehavior>
-                                </Border.Behaviors>
-                            </Border>
-                        </StackLayout>
+                        <Grid >
+                            <StackLayout IsVisible="{Binding IsLoading}">
+                                <Border Style="{StaticResource EmptyCard}"
+                                        Margin="10">
+                                    <Border.Behaviors>
+                                        <mct:AnimationBehavior EventName="Loaded">
+                                            <mct:AnimationBehavior.AnimationType>
+                                                <local:ItemAnimation Length="1000" />
+                                            </mct:AnimationBehavior.AnimationType>
+                                        </mct:AnimationBehavior>
+                                    </Border.Behaviors>
+                                </Border>
+                                <Border Style="{StaticResource EmptyCard}"
+                                        Margin="10">
+                                    <Border.Behaviors>
+                                        <mct:AnimationBehavior EventName="Loaded">
+                                            <mct:AnimationBehavior.AnimationType>
+                                                <local:ItemAnimation Length="1000" />
+                                            </mct:AnimationBehavior.AnimationType>
+                                        </mct:AnimationBehavior>
+                                    </Border.Behaviors>
+                                </Border>
+                                <Border Style="{StaticResource EmptyCard}"
+                                        Margin="10">
+                                    <Border.Behaviors>
+                                        <mct:AnimationBehavior EventName="Loaded">
+                                            <mct:AnimationBehavior.AnimationType>
+                                                <local:ItemAnimation Length="1000" />
+                                            </mct:AnimationBehavior.AnimationType>
+                                        </mct:AnimationBehavior>
+                                    </Border.Behaviors>
+                                </Border>
+                            </StackLayout>
+                            
+                            <StackLayout VerticalOptions="Center"
+                                             HorizontalOptions="Center"
+                                             IsVisible="{Binding IsLoading, Converter={StaticResource BoolInverseConverter}}">
+                                <Label Text="&#xf02c;"
+                                           FontFamily="FaSolid"
+                                           TextColor="{StaticResource Primary}"
+                                           FontSize="50"
+                                           HorizontalOptions="Center"
+                                       />
+                                <Label Text="No deals found"
+                                           FontFamily="P-Bold"
+                                           HorizontalOptions="Center"
+                                           FontSize="Title"
+                                           TextColor="{StaticResource FontColor}"
+                                           />
+                                <Label Text="At least from the filters you applied."
+                                           IsVisible="{Binding FiltersApplied}"
+                                           FontFamily="P-Regular"
+                                           HorizontalTextAlignment="Center"
+                                           FontSize="Subtitle"
+                                           TextColor="{StaticResource FontColor}"
+                                           />
+                            </StackLayout>
+
+                        </Grid>
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Deal">

@@ -47,6 +47,8 @@ public class Fetcher
     public Dictionary<string, string> Headers { get; private set; }
 
     private INotificationPermissions _firebasePushPermissions;
+    private List<GamePlatform> _platforms = new();
+    public string PlatformsStr { get; private set; }
 
 #if IOS
     private readonly IRevenueCatBilling _revenueCatBilling;
@@ -70,7 +72,8 @@ public class Fetcher
 
         Task.WhenAll([
             GetSources(),
-            SetCultureInfo()
+            SetCultureInfo(),
+            GetDRMs()
             ]).GetAwaiter();
     }
 
@@ -188,10 +191,16 @@ public class Fetcher
             return [];
         ResetHandler();
 
-        return (await WithRetryAsync(() =>
+        if (_platforms.Count > 0)
+            return _platforms;
+
+        _platforms = (await WithRetryAsync(() =>
                 (WebService.Get<DrmResponse>(controller: "deals", 
                                                  action: "platforms",
                                                  unSuccessCallback: e => _ = HandleHttpException(e)))))?.Data;
+        
+        PlatformsStr = string.Join('_', _platforms.Select(p => p.Id));
+        return _platforms;
     }
 
     /// <summary>
@@ -514,14 +523,24 @@ public class Fetcher
         {
             string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
 
-            _allDeals = await WithRetryAsync(() =>
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+            var dealResults = await WithRetryAsync(() =>
                 this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                      cancellationToken: cts.Token,
                                                       unSuccessCallback: e => _ = HandleHttpException(e)));
+
+            if (dealResults == null)
+                return null;
+
+            _allDeals = dealResults;
             //TODO: update this entire thing once we can just pass filtercode to the API
-            if (filterCode == null)
+            if (filterCode == null || filterCode == PlatformsStr)
                 return _deals = _allDeals;
 
-            return _deals = [.. _allDeals.Where((deal => filterCode.Split('_').Contains(deal.DRM))).ToList()];
+            return _deals = [.. (_allDeals ?? []).Where((
+                deal => 
+                filterCode.Split('_').Contains(deal.DRM))).ToList()];
         }
 
         catch (Exception ex)
@@ -531,7 +550,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return [];
+            return null;
         }
     }
 
