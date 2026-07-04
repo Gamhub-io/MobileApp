@@ -51,6 +51,11 @@ public class DealsViewModel : BaseViewModel
                 }
             }
             Preferences.Set(PreferencesKeys.DealFilterCode, filterCode = filterCode.TrimEnd());
+                if (CurrentApp.DataFetcher.AllDeals == null)
+                {
+                    await App.DisplaySoftError("Sorry, the filters cannot be applied");
+                    return;
+                }
 
                 var allowedDrms = filterCode.Split('_');
             var filteredDeals = new ObservableRangeCollection<Deal>(
