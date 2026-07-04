@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.ApplicationModel;
 using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
@@ -305,6 +306,21 @@ public partial class App : Application
             SentrySdk.CaptureException(ex);
         }
 #endif
+    }
+
+    /// <summary>
+    /// Display an error message as snack bar with a link to support email
+    /// </summary>
+    /// <param name="message">error message to be displayed</param>
+    public static async Task DisplaySoftError(string message)
+    {
+
+        await Snackbar.Make(message,
+            () =>
+            {
+                Email.ComposeAsync(subject: "", body: "", to: new string[] { "support@gamhub.io" });
+            },
+            actionButtonText: "contact support").Show();
     }
 
     /// <summary>
