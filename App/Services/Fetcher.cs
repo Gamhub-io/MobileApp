@@ -193,7 +193,6 @@ public class Fetcher
 
         if (_platforms.Count > 0)
             return _platforms;
-        _platformsStr = string.Join('_', _platforms);
 
         _platforms = (await WithRetryAsync(() =>
                 (WebService.Get<DrmResponse>(controller: "deals", 
