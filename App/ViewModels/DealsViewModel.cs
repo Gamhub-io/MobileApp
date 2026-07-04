@@ -36,6 +36,7 @@ public class DealsViewModel : BaseViewModel
         {
             if (_filterOpened) return;
             CurrentApp.OpenPopUp(_lastFilterPopUp = new DealFilterPopUp(this));
+            _filterOpened = true;
         });
 
         SaveFilter = new Command(async () =>
@@ -50,19 +51,29 @@ public class DealsViewModel : BaseViewModel
                     drmIDs.Add(drm.Id);
                 }
             }
-            Preferences.Set(PreferencesKeys.DealFilterCode, filterCode = filterCode.TrimEnd());
+            filterCode = string.Join('_', drmIDs);
+            filterCode = filterCode?.TrimEnd('_').TrimEnd();
+            if (CurrentApp.DataFetcher.PlatformsStr != filterCode)
+            {
                 if (CurrentApp.DataFetcher.AllDeals == null)
                 {
                     await App.DisplaySoftError("Sorry, the filters cannot be applied");
                     return;
                 }
-
+                Preferences.Set(PreferencesKeys.DealFilterCode, filterCode);
+               
                 var allowedDrms = filterCode.Split('_');
-            var filteredDeals = new ObservableRangeCollection<Deal>(
-                    CurrentApp.DataFetcher.AllDeals.Where(deal => deal?.DRM != null && allowedDrms.Contains(deal.DRM)).OrderBy(d => d.Expires));
+                IOrderedEnumerable<Deal> filtersList = 
+                CurrentApp.DataFetcher.AllDeals.Where(deal => 
+                deal?.DRM != null && allowedDrms.Contains(deal.DRM)
+                ).OrderBy(d => d.Expires);
+                var filteredDeals = new ObservableRangeCollection<Deal>(
+                    filtersList);
 
-            if (filteredDeals.Any())
-                Deals = filteredDeals;
+                if (filteredDeals.Any())
+                    Deals = filteredDeals;
+
+            }
 
             await _lastFilterPopUp?.CloseAsync();
             _filterOpened = false;
@@ -85,6 +96,7 @@ public class DealsViewModel : BaseViewModel
     
     private DealFilterPopUp _lastFilterPopUp;
     private ObservableCollection<GamePlatform> _platforms;
+    private bool _filterOpened;
 
     public ObservableCollection<GamePlatform> Platforms
     {
@@ -113,6 +125,7 @@ public class DealsViewModel : BaseViewModel
                     if (task == getTendingTask ) 
                     {
                         var res = getTendingTask.Result
+                                    .Where(d => d != null)
                                     .OrderBy(d => d?.Expires).ToList();
                         if (Deals.Count > 0)
                         {
