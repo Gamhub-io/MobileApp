@@ -23,6 +23,7 @@ public class DealsViewModel : BaseViewModel
             OnPropertyChanged(nameof(Deals));
         }
     }
+    private bool _setup = false;
     private bool _isLoading = true;
 
     public bool IsLoading
@@ -64,7 +65,7 @@ public class DealsViewModel : BaseViewModel
         {
             if (_filterOpened) return;
             IsLoading = true;
-            CurrentApp.OpenPopUp(_lastFilterPopUp = new DealFilterPopUp(this));
+            CurrentApp.OpenPopUp(_lastFilterPopUp = new DealFilterPopUp(this), bgTapToClose: false);
             _filterOpened = true;
         });
 
@@ -104,7 +105,8 @@ public class DealsViewModel : BaseViewModel
 
             await _lastFilterPopUp?.CloseAsync();
             _filterOpened = false;
-            IsLoading = false;
+            if (_setup == true)
+                IsLoading = false;
         });
 
         CancelFilter = new Command(async() =>
@@ -149,6 +151,7 @@ public class DealsViewModel : BaseViewModel
                     .OrderBy(d => d.Expires)));
                 IsLoading = false;
                 FiltersApplied = true;
+                _setup = true;
                 return;
             }
 
@@ -192,6 +195,7 @@ public class DealsViewModel : BaseViewModel
             }
 
             IsLoading = false;
+            _setup = true;
             return;
         }
         IsLoading = false;

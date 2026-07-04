@@ -275,7 +275,7 @@ public partial class App : Application
      /// </summary>
      /// <param name="popUp">pop up to open</param>
      /// <param name="page">parent page</param>
-     public void OpenPopUp(Popup popUp, Page page = null)
+     public void OpenPopUp(Popup popUp, Page page = null, bool bgTapToClose = true)
      {
          try
          {
@@ -287,14 +287,15 @@ public partial class App : Application
                  page = Shell;
              if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp!.Id))
                  return;
-         MainThread.BeginInvokeOnMainThread(async () => await page.ShowPopupAsync(popUp, options: new PopupOptions()
-         {
-             Shape = new RoundRectangle
+             MainThread.BeginInvokeOnMainThread(async () => await page.ShowPopupAsync(popUp, options: new PopupOptions()
              {
-                 StrokeThickness = 0
-             }
-         }));
-        }
+                 CanBeDismissedByTappingOutsideOfPopup = bgTapToClose,
+                 Shape = new RoundRectangle
+                 {
+                     StrokeThickness = 0
+                 }
+             }));
+            }
 #if DEBUG
             catch (Exception ex)
             {
