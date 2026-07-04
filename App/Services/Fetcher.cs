@@ -531,7 +531,7 @@ public class Fetcher
                                                       unSuccessCallback: e => _ = HandleHttpException(e)));
 
             if (dealResults == null)
-                return [];
+                return null;
 
             _allDeals = dealResults;
             //TODO: update this entire thing once we can just pass filtercode to the API
@@ -550,7 +550,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return [];
+            return null;
         }
     }
 
