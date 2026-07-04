@@ -48,7 +48,7 @@ public class Fetcher
 
     private INotificationPermissions _firebasePushPermissions;
     private List<GamePlatform> _platforms = new();
-    private string _platformsStr;
+    public string PlatformsStr { get; private set; }
 
 #if IOS
     private readonly IRevenueCatBilling _revenueCatBilling;
@@ -195,10 +195,13 @@ public class Fetcher
             return _platforms;
         _platformsStr = string.Join('_', _platforms);
 
-        return _platforms = (await WithRetryAsync(() =>
+        _platforms = (await WithRetryAsync(() =>
                 (WebService.Get<DrmResponse>(controller: "deals", 
                                                  action: "platforms",
                                                  unSuccessCallback: e => _ = HandleHttpException(e)))))?.Data;
+        
+        PlatformsStr = string.Join('_', _platforms.Select(p => p.Id));
+        return _platforms;
     }
 
     /// <summary>
@@ -523,12 +526,17 @@ public class Fetcher
 
             using var cts = new CancellationTokenSource();
             cts.CancelAfter(TimeSpan.FromSeconds(5));
-            _allDeals = await WithRetryAsync(() =>
+            var dealResults = await WithRetryAsync(() =>
                 this.WebService.Get<Collection<Deal>>(controller: "deals",
                                                       cancellationToken: cts.Token,
                                                       unSuccessCallback: e => _ = HandleHttpException(e)));
+
+            if (dealResults == null)
+                return [];
+
+            _allDeals = dealResults;
             //TODO: update this entire thing once we can just pass filtercode to the API
-            if (filterCode == null || filterCode == _platformsStr)
+            if (filterCode == null || filterCode == PlatformsStr)
                 return _deals = _allDeals;
 
             return _deals = [.. (_allDeals ?? []).Where((
