@@ -198,7 +198,7 @@ public class NewsViewModel : BaseViewModel
             SetProperty(ref _articles, value);
         }
     }
-    private ObservableCollection<Article> _trendingArticles;
+    private ObservableCollection<Article> _trendingArticles = new();
 
     public ObservableCollection<Article> TrendingArticles
     {
@@ -448,8 +448,7 @@ public class NewsViewModel : BaseViewModel
     {
         var newTrandingArticles = await CurrentApp.DataFetcher.GetTrendingArticles();
 
-        if (newTrandingArticles?.Count > 0)
-            TrendingArticles = new (newTrandingArticles);
+        TrendingArticles = new (newTrandingArticles);
     }
 
     /// <summary>
