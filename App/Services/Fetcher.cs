@@ -139,7 +139,6 @@ public class Fetcher
 
         try
         {
-<<<<<<< develop
             var header = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
             return await WithRetryAsync(() =>
                 this.WebService.Get<Collection<Article>>(controller: "feeds",
@@ -148,15 +147,6 @@ public class Fetcher
                                                          parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
                                                          jsonBody: null,
                                                          unSuccessCallback: e => _ = HandleHttpException(e)));
-=======
-
-            return await this.WebService.Get<Collection<Article>>(controller: "feeds",
-                                                               action: "update",
-                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
-                                                               parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
-                                                               jsonBody: null,
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
->>>>>>> main
         }
 #if DEBUG
         catch (Exception ex)
@@ -237,11 +227,7 @@ public class Fetcher
             return await WithRetryAsync(() =>
                 WebService.Get<Collection<Article>>(controller: "feeds",
                                                              action: needUpdate ? "update" : null,
-<<<<<<< develop
                                                              singleUseHeaders: haeders,
-=======
-                                                             singleUseHeaders: (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
->>>>>>> main
                                                              parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
                                                              unSuccessCallback: (err) => _ = HandleHttpException(err)));
         }
@@ -310,7 +296,6 @@ public class Fetcher
             }
 
             using var cts = new CancellationTokenSource();
-<<<<<<< develop
             cts.CancelAfter(TimeSpan.FromSeconds(10));
 
             Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
@@ -323,17 +308,6 @@ public class Fetcher
                                                                jsonBody: null,
                                                                cancellationToken: cts.Token,
                                                                unSuccessCallback: e => _ = HandleHttpException(e)));
-=======
-            cts.CancelAfter(TimeSpan.FromSeconds(5));
-
-            return await this.WebService.Get<Collection<Article>>(controller: "feeds",
-                                                               action: "update",
-                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
-                                                               parameters: new string[] { dateUpdate },
-                                                               jsonBody: null,
-                                                               cancellationToken: cts.Token,
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
->>>>>>> main
         }
         catch (Exception ex)
         {
@@ -367,11 +341,7 @@ public class Fetcher
             return await WithRetryAsync(() =>
                 this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                parameters: parameters,
-<<<<<<< develop
                                                                singleUseHeaders: headers,
-=======
-                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
->>>>>>> main
                                                                jsonBody: null,
                                                                unSuccessCallback: e => _ = HandleHttpException(e)));
         }
@@ -490,7 +460,6 @@ public class Fetcher
             var dealTrends = (await WithRetryAsync(() =>
                 this.WebService.Get<DealTrendResponse>(controller: "monitor/deal/trends",
                                                                parameters: parameters,
-<<<<<<< develop
                                                                jsonBody: null,
                                                                cancellationToken: cts.Token,
                                                                unSuccessCallback: e => _ = HandleHttpException(e))))?.Data.
@@ -504,13 +473,7 @@ public class Fetcher
             if (dealTrends == null)
                 return [];
             return new ([.. dealTrends]);
-=======
-                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
-                                                               jsonBody: null,
-                                                               cancellationToken: cts.Token,
-                                                               unSuccessCallback: e => _ = HandleHttpException(e))).Data.
-                                                               Select(at => at.Article)]);
->>>>>>> main
+
         }
         catch (Exception ex)
         {
@@ -605,7 +568,6 @@ public class Fetcher
         try
         {
 
-<<<<<<< develop
             Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(); 
 
             return await WithRetryAsync(() =>
@@ -613,12 +575,6 @@ public class Fetcher
                                                       parameters: [articleId],
                                                       singleUseHeaders: headers,
                                                       unSuccessCallback: e => _ = HandleHttpException(e)));
-=======
-            return await this.WebService.Get<Article>(controller: "article",
-                                                      parameters: new string[] { articleId },
-                                                      singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
-                                                      unSuccessCallback: e => _ = HandleHttpException(e));
->>>>>>> main
         }
 
         catch (Exception ex)
@@ -1458,11 +1414,7 @@ public class Fetcher
         return (await WithRetryAsync(() =>
                  WebService.Get<NeResponse>(controller: "monitor",
                                                action: "NE",
-<<<<<<< develop
                                                singleUseHeaders: headers,
-=======
-                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
->>>>>>> main
                                                parameters: new Dictionary<string, string>
                                                {
                                                    { nameof(token), token },
@@ -1480,7 +1432,6 @@ public class Fetcher
             return null;
         ResetHandler();
 
-<<<<<<< develop
         Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
 
         return await WithRetryAsync(() =>
@@ -1489,13 +1440,6 @@ public class Fetcher
                                                    singleUseHeaders: headers,
                                                    unSuccessCallback: e => _ = HandleHttpException(e)
                                                     ));
-=======
-       return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
-                                               action: "culture",
-                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
-                                               unSuccessCallback: e => _ = HandleHttpException(e)
-                                                );
->>>>>>> main
     }
 
     /// <summary>
