@@ -6,7 +6,8 @@
              xmlns:controls="clr-namespace:GamHubApp.Controls"
              xmlns:vm="clr-namespace:GamHubApp.ViewModels"
              xmlns:models="clr-namespace:GamHubApp.Models"
-             xmlns:xct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:local="clr-namespace:GamHubApp.Models.Animations"
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:DataType="vm:NewsViewModel">
     <!-- TODO: I keep that it will help us later... 
                it's like the mickey mouse meme shit you know
@@ -21,7 +22,7 @@
     </ContentPage.ToolbarItems>-->
     <ContentPage.Resources>
         <helpers:BoolToBookmarkConveter x:Key="BoolToBookmarkConveter"/>
-        <xct:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+        <mct:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
 
     </ContentPage.Resources>
 
@@ -183,14 +184,35 @@
                                 RemainingItemsThreshold="20"
                                 RemainingItemsThresholdReachedCommand="{Binding RefreshBottomCommand}"
                                 Margin="0"
+                                IsEnabled="{Binding TrendingArticles.Count,
+                                                                    Converter={StaticResource ZeroToFalseConverter}}"
+                                VerticalOptions="Fill"
                                 >
                     <CollectionView.Header>
-                        <StackLayout>
+                        <StackLayout >
+                            <BoxView BackgroundColor="{StaticResource LightDark}"
+                                     Opacity="0.8"
+                                     HeightRequest="0">
+                                <BoxView.Triggers>
+                                    <DataTrigger TargetType="BoxView"
+                                                 Binding="{Binding Articles.Count}"
+                                                 Value="0">
+                                        <Setter Property="IsVisible" Value="True" />
+
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="BoxView"
+                                                 Binding="{Binding TrendingArticles.Count}"
+                                                 Value="0">
+                                        <Setter Property="IsVisible" Value="True" />
+                                        <Setter Property="HeightRequest" Value="307" />
+
+                                    </DataTrigger>
+                                </BoxView.Triggers>
+                            </BoxView>
                             <ActivityIndicator IsVisible="{Binding IsSearchLoading}"
                                                Color="{StaticResource Primary}"
                                                IsRunning="True"/>
                             <Label Text="Results"
-                                    Grid.Row="0"
                                     VerticalOptions="Center"
                                     FontFamily="P-Medium"
                                     Margin="8,8,8,0"
@@ -198,8 +220,9 @@
                                     IsVisible="{Binding IsSearchProcessed}"
                                     FontSize="18"
                                     />
+                            
                             <Grid IsVisible="{Binding IsSearchProcessed, Converter={StaticResource BoolInverseConverter}}">
-                                <Grid RowDefinitions="30,250,25,2"
+                                <Grid RowDefinitions="auto,auto,auto,auto"
                                       RowSpacing="10"
                                       IsVisible="{Binding TrendingArticles.Count, 
                                                        Converter={StaticResource ZeroToFalseConverter}}">
@@ -243,6 +266,17 @@
 
                         </StackLayout>
                     </CollectionView.Header>
+                    <CollectionView.EmptyView>
+                        <StackLayout VerticalOptions="Fill">
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+                            <controls:ArticlePreview Margin="8,5,0,0"/>
+
+                        </StackLayout>
+                    </CollectionView.EmptyView>
                     
                     <CollectionView.Footer>
                         <Grid>
@@ -261,17 +295,6 @@
                                                      Margin="8,5,0,0"/>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
-                    <CollectionView.EmptyView>
-                        <StackLayout>
-                            <controls:ArticlePreview Margin="8,5,0,0"/>
-                            <controls:ArticlePreview Margin="8,5,0,0"/>
-                            <controls:ArticlePreview Margin="8,5,0,0"/>
-                            <controls:ArticlePreview Margin="8,5,0,0"/>
-                            <controls:ArticlePreview Margin="8,5,0,0"/>
-                            <controls:ArticlePreview Margin="8,5,0,0"/>
-                            
-                        </StackLayout>
-                    </CollectionView.EmptyView>
                 </CollectionView>
                 
                 <Button Text="{Binding UnnoticedArticles.Count, StringFormat='{0} new articles'}"

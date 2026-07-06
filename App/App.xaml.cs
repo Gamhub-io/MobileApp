@@ -156,15 +156,6 @@ public partial class App : Application
 
         }
 
-        IFirebasePushNotification.Current.RegisterNotificationCategories(new[]
-        {
-            new NotificationCategory("daily_catchup", new[]
-            {
-                new NotificationAction("open_in_app", "Open in the app", NotificationActionType.Foreground),
-                new NotificationAction("open_in_browser", "Open in the browser", NotificationActionType.Foreground),
-            })
-        });
-
         // Reset notificaiton badges
         Badge.Default.SetCount(0);
 #if __IOS__
