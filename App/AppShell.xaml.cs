@@ -1,5 +1,6 @@
 ﻿using GamHubApp.ViewModels;
 using GamHubApp.Views;
+using Plugin.FirebasePushNotifications;
 
 namespace GamHubApp;
 
@@ -58,6 +59,15 @@ public partial class AppShell : Shell
     protected override async void OnAppearing()
     {
         base.OnAppearing();
+
+       IFirebasePushNotification.Current.RegisterNotificationCategories(new[]
+       {
+            new NotificationCategory("daily_catchup", new[]
+            {
+                new NotificationAction("open_in_app", "Open in the app", NotificationActionType.Foreground),
+                new NotificationAction("open_in_browser", "Open in the browser", NotificationActionType.Foreground),
+            })
+        });
 
         _currentApp = (App.Current as App);
         Task gemTask = _vm.UpdateGems();

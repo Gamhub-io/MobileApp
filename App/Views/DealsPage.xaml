@@ -4,12 +4,22 @@
              x:Class="GamHubApp.Views.DealsPage"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
              xmlns:models="clr-namespace:GamHubApp.Models"
+             xmlns:local="clr-namespace:GamHubApp.Models.Animations"
              xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
              x:DataType="viewmodels:DealsViewModel"
              xmlns:stroked="https://vapolia.eu/Vapolia.StrokedLabel"
              Shell.ForegroundColor="{DynamicResource PrimaryAccent}"
              Shell.BackgroundColor="{DynamicResource LightDark}"
              x:Name="page">
+    <ContentPage.Resources>
+        <Style TargetType="Border"
+               x:Key="EmptyCard">
+            <Setter Property="BackgroundColor" Value="{StaticResource BackgroundColor}" />
+            <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+            <Setter Property="HeightRequest" Value="220" />
+        </Style>
+
+    </ContentPage.Resources>
     <Shell.TitleView>
         <Grid ColumnDefinitions="4*,60,2">
             <Label Text="My Deals"
@@ -50,6 +60,67 @@
                     ItemsSource="{Binding Deals}"
                     Margin="1,0"
                     >
+                    <CollectionView.EmptyView>
+                        <Grid >
+                            <StackLayout IsVisible="{Binding IsLoading}">
+                                <Border Style="{StaticResource EmptyCard}"
+                                        Margin="10">
+                                    <Border.Behaviors>
+                                        <mct:AnimationBehavior EventName="Loaded">
+                                            <mct:AnimationBehavior.AnimationType>
+                                                <local:ItemAnimation Length="1000" />
+                                            </mct:AnimationBehavior.AnimationType>
+                                        </mct:AnimationBehavior>
+                                    </Border.Behaviors>
+                                </Border>
+                                <Border Style="{StaticResource EmptyCard}"
+                                        Margin="10">
+                                    <Border.Behaviors>
+                                        <mct:AnimationBehavior EventName="Loaded">
+                                            <mct:AnimationBehavior.AnimationType>
+                                                <local:ItemAnimation Length="1000" />
+                                            </mct:AnimationBehavior.AnimationType>
+                                        </mct:AnimationBehavior>
+                                    </Border.Behaviors>
+                                </Border>
+                                <Border Style="{StaticResource EmptyCard}"
+                                        Margin="10">
+                                    <Border.Behaviors>
+                                        <mct:AnimationBehavior EventName="Loaded">
+                                            <mct:AnimationBehavior.AnimationType>
+                                                <local:ItemAnimation Length="1000" />
+                                            </mct:AnimationBehavior.AnimationType>
+                                        </mct:AnimationBehavior>
+                                    </Border.Behaviors>
+                                </Border>
+                            </StackLayout>
+                            
+                            <StackLayout VerticalOptions="Center"
+                                             HorizontalOptions="Center"
+                                             IsVisible="{Binding IsLoading, Converter={StaticResource BoolInverseConverter}}">
+                                <Label Text="&#xf02c;"
+                                           FontFamily="FaSolid"
+                                           TextColor="{StaticResource Primary}"
+                                           FontSize="50"
+                                           HorizontalOptions="Center"
+                                       />
+                                <Label Text="No deals found"
+                                           FontFamily="P-Bold"
+                                           HorizontalOptions="Center"
+                                           FontSize="Title"
+                                           TextColor="{StaticResource FontColor}"
+                                           />
+                                <Label Text="At least from the filters you applied."
+                                           IsVisible="{Binding FiltersApplied}"
+                                           FontFamily="P-Regular"
+                                           HorizontalTextAlignment="Center"
+                                           FontSize="Subtitle"
+                                           TextColor="{StaticResource FontColor}"
+                                           />
+                            </StackLayout>
+
+                        </Grid>
+                    </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="models:Deal">
                             <Grid RowDefinitions="220,50"

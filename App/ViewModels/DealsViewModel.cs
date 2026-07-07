@@ -1,17 +1,18 @@
 ﻿using GamHubApp.Core;
 using GamHubApp.Models;
 using GamHubApp.Views;
+using MvvmHelpers;
 using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels;
 
 public class DealsViewModel : BaseViewModel
 {
-    private ObservableCollection<Deal> _deals;
     public App CurrentApp { get; }
+    private ObservableRangeCollection<Deal> _deals = new ();
 
-    public ObservableCollection<Deal> Deals 
-    { 
+    public ObservableRangeCollection<Deal> Deals
+    {
         get
         {
             return _deals;
@@ -20,6 +21,35 @@ public class DealsViewModel : BaseViewModel
         {
             _deals = value;
             OnPropertyChanged(nameof(Deals));
+        }
+    }
+    private bool _setup = false;
+    private bool _isLoading = true;
+
+    public bool IsLoading
+    {
+        get
+        {
+            return _isLoading;
+        }
+        set
+        {
+            _isLoading = value;
+            OnPropertyChanged(nameof(IsLoading));
+        }
+    }
+
+    private bool _filtersApplied = false;
+    public bool FiltersApplied
+    {
+        get
+        {
+            return _filtersApplied;
+        }
+        set
+        {
+            _filtersApplied = value;
+            OnPropertyChanged(nameof(FiltersApplied));
         }
     }
     public Command DealFilterCommand { get; }
@@ -33,7 +63,10 @@ public class DealsViewModel : BaseViewModel
         filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, filterCode);
         DealFilterCommand = new Command(() =>
         {
-            CurrentApp.OpenPopUp(_lastFilterPopUp = new DealFilterPopUp(this));
+            if (_filterOpened) return;
+            IsLoading = true;
+            CurrentApp.OpenPopUp(_lastFilterPopUp = new DealFilterPopUp(this), bgTapToClose: false);
+            _filterOpened = true;
         });
 
         SaveFilter = new Command(async () =>
@@ -48,17 +81,39 @@ public class DealsViewModel : BaseViewModel
                     drmIDs.Add(drm.Id);
                 }
             }
-            Preferences.Set(PreferencesKeys.DealFilterCode, filterCode = filterCode.TrimEnd());
+            filterCode = string.Join('_', drmIDs);
+            filterCode = filterCode?.TrimEnd('_').TrimEnd();
+            if (CurrentApp.DataFetcher.PlatformsStr != filterCode)
+            {
+                if (CurrentApp.DataFetcher.AllDeals == null)
+                {
+                    await App.DisplaySoftError("Sorry, the filters cannot be applied");
+                    return;
+                }
+                Preferences.Set(PreferencesKeys.DealFilterCode, filterCode);
+               
+                var allowedDrms = filterCode.Split('_');
+                IOrderedEnumerable<Deal> filtersList = 
+                CurrentApp.DataFetcher.AllDeals.Where(deal => 
+                deal?.DRM != null && allowedDrms.Contains(deal.DRM)
+                ).OrderBy(d => d.Expires);
+                Deals = new ObservableRangeCollection<Deal>(
+                    filtersList);
 
-            Deals = new (CurrentApp.DataFetcher.AllDeals.Where(deal => filterCode.Split('_').Contains(deal.DRM)).OrderBy(d => d.Expires));
-
+                FiltersApplied = true;
+            }
 
             await _lastFilterPopUp?.CloseAsync();
+            _filterOpened = false;
+            if (_setup == true)
+                IsLoading = false;
         });
 
         CancelFilter = new Command(async() =>
         {
             await _lastFilterPopUp?.CloseAsync();
+            _filterOpened = false;
+            IsLoading = false;
         });
 
         Task.Run(async () => {
@@ -67,11 +122,12 @@ public class DealsViewModel : BaseViewModel
             {
                 Platforms[i].IsSelected = filterCode.Split('_').Contains(_platforms[i].Id);
             }
-        });
+        }).GetAwaiter();
     }
     
     private DealFilterPopUp _lastFilterPopUp;
     private ObservableCollection<GamePlatform> _platforms;
+    private bool _filterOpened;
 
     public ObservableCollection<GamePlatform> Platforms
     {
@@ -86,19 +142,71 @@ public class DealsViewModel : BaseViewModel
 
     public async Task UpdateDeals()
     {
-        if (!(_deals?.Count > 0))
+        if (!(Deals?.Count > 0))
         {
-            Deals = new((await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires));
+            if (Preferences.Get(PreferencesKeys.DealFilterCode, null) != null)
+            {
+                Deals.AddRange(new ObservableRangeCollection<Deal>(
+                    (await CurrentApp.DataFetcher.GetDeals())
+                    .OrderBy(d => d.Expires)));
+                IsLoading = false;
+                FiltersApplied = true;
+                _setup = true;
+                return;
+            }
 
-            CurrentApp.RemoveLoadingIndicator();
+            var getTendingTask = CurrentApp.DataFetcher.GetTrendingDeals();
+            var getDealTask = CurrentApp.DataFetcher.GetDeals();
+
+            await foreach (var task in Task.WhenEach(getTendingTask,
+                getDealTask)) 
+            {
+
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    if (task == getTendingTask ) 
+                    {
+                        var res = getTendingTask.Result
+                                    .Where(d => d != null)
+                                    .OrderBy(d => d?.Expires).ToList();
+                        if (Deals.Count > 0)
+                        {
+                            var tendingDeals = new ObservableRangeCollection<Deal>(res);
+                            for (int i = 0; i < tendingDeals.Count; i++)
+                            {
+
+                                Deals.Insert(i, tendingDeals[i]);
+                            }
+
+                        }
+                        else
+                        {
+                            Deals.AddRange(new ObservableRangeCollection<Deal>(res));
+                        }
+                    }
+                    if (task == getDealTask)
+                    {
+                        var res = getDealTask.Result;
+                        if (res != null)
+                            Deals.AddRange(new ObservableRangeCollection<Deal>(getDealTask.Result.OrderBy(d => d.Expires)));
+                    }
+
+                });
+            }
+
+            IsLoading = false;
+            _setup = true;
             return;
         }
-        var newDeals = (await CurrentApp.DataFetcher.GetDeals()).OrderBy(d => d.Expires)
+        IsLoading = false;
+        var newDeals = (await CurrentApp.DataFetcher.GetDeals())?.OrderBy(d => d.Expires)
                         .Select((deal, index) => new { Deal = deal, Index = index })
                         .Where((d) => _deals.FirstOrDefault(ogD => ogD.Id == d.Deal.Id) == null)
                         .ToList();
+        if (newDeals == null)
+            return;
 
-        for (int i = 0; i < newDeals.Count; i++)
+        for (int i = 0; i < newDeals!.Count; i++)
         {
             var deal = newDeals[i].Deal;
             if (filterCode != null && !filterCode.Split('_').Contains(deal.DRM))
@@ -109,10 +217,8 @@ public class DealsViewModel : BaseViewModel
 
         for (int i = 0; i < nbExpires; i++)
         {
-            _deals.RemoveAt(i);
+            Deals.RemoveAt(i);
         }
 
-
-        CurrentApp.RemoveLoadingIndicator();
-    }
+}
 }

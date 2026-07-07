@@ -6,6 +6,7 @@ using CustardApi.Objects;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using Plugin.FirebasePushNotifications;
+using System.Net.Sockets;
 
 #if IOS
 using Maui.RevenueCat.InAppBilling.Services;
@@ -46,37 +47,84 @@ public class Fetcher
     public Dictionary<string, string> Headers { get; private set; }
 
     private INotificationPermissions _firebasePushPermissions;
+    private List<GamePlatform> _platforms = new();
+    public string PlatformsStr { get; private set; }
 
 #if IOS
     private readonly IRevenueCatBilling _revenueCatBilling;
 #endif
     public Fetcher(GeneralDataBase generalDataBase, 
                    BackUpDataBase backUpDataBase,
-                   INotificationPermissions notificationPermissions
+                   INotificationPermissions notificationPermissions,
+                   Service wService
 #if IOS
                    ,IRevenueCatBilling revenueCatBilling)
 #else
         )
 #endif
     {
-#if DEBUG_LOCALHOST
         // Set webservice
-        WebService = new Service(host: AppConstant.Localhost,
-                                port: 255,
-                               sslCertificate: false);
-#else
-        // Set webservice
-        WebService = new Service(host: ProdHost,
-                               sslCertificate: true);
-#endif
+        WebService = wService;
+
         _generalDB = generalDataBase;
         _backupDB = backUpDataBase;
         _firebasePushPermissions = notificationPermissions;
 
         Task.WhenAll([
             GetSources(),
-            SetCultureInfo()
+            SetCultureInfo(),
+            GetDRMs()
             ]).GetAwaiter();
+    }
+
+    /// <summary>
+    /// Executes the specified asynchronous action with retry logic.
+    /// Retries the action up to the specified number of times if it fails.
+    /// </summary>
+    /// <typeparam name="T">The type of the result returned by the action.</typeparam>
+    /// <param name="action">The asynchronous action to execute.</param>
+    /// <param name="retries">The number of retry attempts (default is 3).</param>
+    private static async Task<T> WithRetryAsync<T>(Func<Task<T>> action, int retries = 3)
+    {
+        for (int attempt = 1; attempt <= retries; attempt++)
+        {
+            try
+            {
+                return await action();
+            }
+            catch (HttpRequestException ex) 
+            when (
+                ex.InnerException is SocketException ||
+                ex.Message.Contains("hostname nor servname provided", StringComparison.OrdinalIgnoreCase) ||
+                ex.Message.Contains("NameResolutionFailure", StringComparison.OrdinalIgnoreCase))
+            {
+                // DNS failure — retry
+                if (attempt == retries)
+                    return default; 
+
+                await Task.Delay(300 * attempt); 
+            }
+
+            catch (Exception ex) 
+            when (ex.Message.Contains("The operation was canceled."))
+            {
+                // Snail retry 🐌
+                if (attempt == retries)
+                    return default;
+
+                await Task.Delay(300 * attempt);
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.WriteLine(ex);
+#else
+            SentrySdk.CaptureException(ex);
+#endif
+            }
+        }
+
+        return default;
     }
 
     /// <summary>
@@ -91,13 +139,14 @@ public class Fetcher
 
         try
         {
-
-            return await this.WebService.Get<Collection<Article>>(controller: "feeds",
-                                                               action: "update",
-                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
-                                                               parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
-                                                               jsonBody: null,
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+            var header = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
+            return await WithRetryAsync(() =>
+                this.WebService.Get<Collection<Article>>(controller: "feeds",
+                                                         action: "update",
+                                                         singleUseHeaders: header,
+                                                         parameters: [DateTime.Now.AddMonths(-2).ToString(_dateFormat)],
+                                                         jsonBody: null,
+                                                         unSuccessCallback: e => _ = HandleHttpException(e)));
         }
 #if DEBUG
         catch (Exception ex)
@@ -125,9 +174,10 @@ public class Fetcher
 
         ResetHandler();
 
-        return Fetcher.Sources =  await WebService.Get<Collection<Source>>(controller: "sources", 
+        return Fetcher.Sources = await WithRetryAsync(() =>
+                this.WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
-                                                        unSuccessCallback: e => _ = HandleHttpException(e))
+                                                        unSuccessCallback: e => _ = HandleHttpException(e)))
                                   ?? [];
     }
 
@@ -141,9 +191,16 @@ public class Fetcher
             return [];
         ResetHandler();
 
-        return (await WebService.Get<DrmResponse>(controller: "deals", 
+        if (_platforms.Count > 0)
+            return _platforms;
+
+        _platforms = (await WithRetryAsync(() =>
+                (WebService.Get<DrmResponse>(controller: "deals", 
                                                  action: "platforms",
-                                                 unSuccessCallback: e => _ = HandleHttpException(e)))?.Data;
+                                                 unSuccessCallback: e => _ = HandleHttpException(e)))))?.Data;
+        
+        PlatformsStr = string.Join('_', _platforms.Select(p => p.Id));
+        return _platforms;
     }
 
     /// <summary>
@@ -166,11 +223,13 @@ public class Fetcher
             // Convert the spaces to make it url friendly
             keywords = keywords.Trim().Replace(' ', '+');
 
-            return await WebService.Get<Collection<Article>>(controller: "feeds",
+            var haeders = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
+            return await WithRetryAsync(() =>
+                WebService.Get<Collection<Article>>(controller: "feeds",
                                                              action: needUpdate ? "update" : null,
-                                                             singleUseHeaders: (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
+                                                             singleUseHeaders: haeders,
                                                              parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
-                                                             unSuccessCallback: (err) => _ = HandleHttpException(err));
+                                                             unSuccessCallback: (err) => _ = HandleHttpException(err)));
         }
         catch (Exception ex)
         {
@@ -182,6 +241,7 @@ public class Fetcher
             return new Collection<Article>();
         }
     }
+
     /// <summary>
     /// Get a brand new discord session from a resfresh token
     /// </summary>
@@ -200,10 +260,11 @@ public class Fetcher
             {
                 RefreshToken = refreshToken
             };
-            RefreshSessionResponse res = await WebService.Post<RefreshSessionResponse>(controller: "auth",
-                                                                                        action: "discord/refresh_token",
-                                                                                        jsonBody: JsonConvert.SerializeObject(payload),
-                                                                                        unSuccessCallback: e => _ = HandleHttpException(e));
+            RefreshSessionResponse res = await WithRetryAsync(() =>
+                WebService.Post<RefreshSessionResponse>(controller: "auth",
+                                                        action: "discord/refresh_token",
+                                                        jsonBody: JsonConvert.SerializeObject(payload),
+                                                        unSuccessCallback: e => _ = HandleHttpException(e)));
 
             return res?.Session;
         }
@@ -235,15 +296,18 @@ public class Fetcher
             }
 
             using var cts = new CancellationTokenSource();
-            cts.CancelAfter(TimeSpan.FromSeconds(5));
+            cts.CancelAfter(TimeSpan.FromSeconds(10));
 
-            return await this.WebService.Get<Collection<Article>>(controller: "feeds",
+            Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
+
+            return await WithRetryAsync(() =>
+                 this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                action: "update",
-                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
+                                                               singleUseHeaders: headers,
                                                                parameters: new string[] { dateUpdate },
                                                                jsonBody: null,
                                                                cancellationToken: cts.Token,
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+                                                               unSuccessCallback: e => _ = HandleHttpException(e)));
         }
         catch (Exception ex)
         {
@@ -253,6 +317,7 @@ public class Fetcher
             return [];
         }
     }
+
     /// <summary>
     /// Get the chunk articles from given date
     /// </summary>
@@ -271,11 +336,14 @@ public class Fetcher
                dateFrom.AddHours(-length).ToString("dd-MM-yyy_HH:mm:ss"),
                dateFrom.AddMinutes(-1).ToString("dd-MM-yyy_HH:mm:ss"),
             ];
-            return await this.WebService.Get<Collection<Article>>(controller: "feeds",
+
+            Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
+            return await WithRetryAsync(() =>
+                this.WebService.Get<Collection<Article>>(controller: "feeds",
                                                                parameters: parameters,
-                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
+                                                               singleUseHeaders: headers,
                                                                jsonBody: null,
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+                                                               unSuccessCallback: e => _ = HandleHttpException(e)));
         }
         catch (Exception ex)
         {
@@ -288,6 +356,42 @@ public class Fetcher
         }
     }
 
+    /// <summary>
+    /// Get the settings
+    /// </summary>
+    /// <returns>Global synamic settings</returns>
+    public async Task<DynamicSetting> GetGlobalSettings()
+    {
+        if (!Fetcher.CheckFeasability())
+            return new DynamicSetting() ;
+        ResetHandler();
+        try
+        {
+            using var cts = new CancellationTokenSource();
+            
+            Dictionary<string,string> parameters = new ()
+            {
+#if ANDROID
+                { "os", "android"},
+#endif
+#if IOS
+                { "os", "iOS"},
+#endif
+            };
+            
+            return (await WithRetryAsync(() =>
+                this.WebService.Get<DynamicSetting>(controller: "monitor/settings",
+                                                               parameters: parameters,jsonBody: null,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e))));
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#endif
+            return new DynamicSetting();
+        }
+    }
     /// <summary>
     /// Get the trending articles from the past 5 hours
     /// </summary>
@@ -307,14 +411,69 @@ public class Fetcher
                 { "period", "5h"},
                 { "limit", "5"},
             };
-            
-            return new ([.. (await this.WebService.Get<TrendResponse>(controller: "monitor/trends",
+
+            Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
+
+            var articleTrends = (await WithRetryAsync(() =>
+                 this.WebService.Get<ArticleTrendResponse>(controller: "monitor/trends",
                                                                parameters: parameters,
-                                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
+                                                               singleUseHeaders: headers,
                                                                jsonBody: null,
                                                                cancellationToken: cts.Token,
-                                                               unSuccessCallback: e => _ = HandleHttpException(e))).Data.
-                                                               Select(at => at.Article)]);
+                                                               unSuccessCallback: e => _ = HandleHttpException(e))))?.Data.
+                                                               Select(at => at.Article);
+
+            if (articleTrends == null)
+                return [];
+            return new ([.. articleTrends]);
+        }
+        catch (Exception ex)
+        {
+#if DEBUG
+            Debug.WriteLine(ex);
+#endif
+            return [];
+        }
+    }
+
+    /// <summary>
+    /// Get the trending articles from the past 5 hours
+    /// </summary>
+    /// <returns>Articles trending</returns>
+    public async Task<Collection<Deal>> GetTrendingDeals()
+    {
+        if (!Fetcher.CheckFeasability())
+            return [];
+        ResetHandler();
+        try
+        {
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+            
+            Dictionary<string,string> parameters = new ()
+            {
+                { "period", "15d"},
+                { "limit", "10"},
+                { "timecons", "0"},
+            };
+
+            var dealTrends = (await WithRetryAsync(() =>
+                this.WebService.Get<DealTrendResponse>(controller: "monitor/deal/trends",
+                                                               parameters: parameters,
+                                                               jsonBody: null,
+                                                               cancellationToken: cts.Token,
+                                                               unSuccessCallback: e => _ = HandleHttpException(e))))?.Data.
+                                                               Select(dt =>
+                                                               {
+                                                                   if (dt.Deal.Expires < DateTime.Now)
+                                                                       return null;
+                                                                   return dt.Deal;
+                                                               });
+
+            if (dealTrends == null)
+                return [];
+            return new ([.. dealTrends]);
+
         }
         catch (Exception ex)
         {
@@ -336,8 +495,9 @@ public class Fetcher
         ResetHandler();
         try
         {
-            return await this.WebService.Get<Collection<Partner>>(controller: "partners",
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+            return await WithRetryAsync(() =>
+                this.WebService.Get<Collection<Partner>>(controller: "partners",
+                                                         unSuccessCallback: e => _ = HandleHttpException(e)));
         }
 
         catch (Exception ex)
@@ -364,13 +524,24 @@ public class Fetcher
         {
             string filterCode = Preferences.Get(PreferencesKeys.DealFilterCode, null);
 
-            _allDeals = await this.WebService.Get<Collection<Deal>>(controller: "deals",
-                                                                           unSuccessCallback: e => _ = HandleHttpException(e));
+            using var cts = new CancellationTokenSource();
+            cts.CancelAfter(TimeSpan.FromSeconds(5));
+            var dealResults = await WithRetryAsync(() =>
+                this.WebService.Get<Collection<Deal>>(controller: "deals",
+                                                      cancellationToken: cts.Token,
+                                                      unSuccessCallback: e => _ = HandleHttpException(e)));
+
+            if (dealResults == null)
+                return null;
+
+            _allDeals = dealResults;
             //TODO: update this entire thing once we can just pass filtercode to the API
-            if (filterCode == null)
+            if (filterCode == null || filterCode == PlatformsStr)
                 return _deals = _allDeals;
 
-            return _deals = [.. _allDeals.Where((deal => filterCode.Split('_').Contains(deal.DRM))).ToList()];
+            return _deals = [.. (_allDeals ?? []).Where((
+                deal => 
+                filterCode.Split('_').Contains(deal.DRM))).ToList()];
         }
 
         catch (Exception ex)
@@ -380,7 +551,7 @@ public class Fetcher
 #else
             SentrySdk.CaptureException(ex);
 #endif
-            return [];
+            return null;
         }
     }
 
@@ -397,10 +568,13 @@ public class Fetcher
         try
         {
 
-            return await this.WebService.Get<Article>(controller: "article",
-                                                      parameters: new string[] { articleId },
-                                                      singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
-                                                      unSuccessCallback: e => _ = HandleHttpException(e));
+            Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(); 
+
+            return await WithRetryAsync(() =>
+                this.WebService.Get<Article>(controller: "article",
+                                                      parameters: [articleId],
+                                                      singleUseHeaders: headers,
+                                                      unSuccessCallback: e => _ = HandleHttpException(e)));
         }
 
         catch (Exception ex)
@@ -477,7 +651,8 @@ public class Fetcher
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
-            var res = await this.WebService.Get<SubStatusRes>(controller: "monitor",
+            var res = await WithRetryAsync(() =>
+                 this.WebService.Get<SubStatusRes>(controller: "monitor",
                                                                action: "NE/feedstatus",
                                                                parameters: new Dictionary<string, string>
                                                                {
@@ -485,7 +660,7 @@ public class Fetcher
                                                                    { nameof(feed), feed }
                                                                },
                                                                singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
-                                                               unSuccessCallback: e => _ = HandleHttpException(e));
+                                                               unSuccessCallback: e => _ = HandleHttpException(e)));
             if (res is not null)
                 return res.Enabled;
             return false;
@@ -569,15 +744,16 @@ public class Fetcher
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
-            var res = await this.WebService.Post<FeedResponse>(controller: "feeds",
-                                           action: "custom/create",
-                                           parameters: new Dictionary<string, string>
-                                           {
-                                                { nameof(name), name },
-                                                { nameof(keyword), keyword },
-                                            },
-                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
-                                           unSuccessCallback: e => _ = HandleHttpException(e));
+            var res = await WithRetryAsync(() =>
+                             this.WebService.Post<FeedResponse>(controller: "feeds",
+                                                       action: "custom/create",
+                                                       parameters: new Dictionary<string, string>
+                                                       {
+                                                            { nameof(name), name },
+                                                            { nameof(keyword), keyword },
+                                                        },
+                                                       singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
+                                                       unSuccessCallback: e => _ = HandleHttpException(e)));
 
             // Subscribe by default
             feed.MongoID = res.Data.MongoID;
@@ -627,7 +803,8 @@ public class Fetcher
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
-            var res = await this.WebService.Put<FeedResponse>(controller: "feeds",
+            return (await WithRetryAsync(() =>
+                            this.WebService.Put<FeedResponse>(controller: "feeds",
                                            action: "custom/update",
                                            parameters: new Dictionary<string, string>
                                            {
@@ -635,11 +812,8 @@ public class Fetcher
                                                 { nameof(keyword), keyword },
                                                 { nameof(id), id },
                                             },
-                                           singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
-                                           unSuccessCallback: e => _ = HandleHttpException(e));
-
-
-            return res.Data;
+                                           singleUseHeaders: rqHeaders.Count > 0 ? rqHeaders : null,
+                                           unSuccessCallback: e => _ = HandleHttpException(e)))).Data;
         }
 
         catch (Exception ex)
@@ -678,11 +852,12 @@ public class Fetcher
 #if DEBUG
             string res =
 #endif
-            await this.WebService.Delete(controller: "monitor",
+            await WithRetryAsync(() =>
+                 this.WebService.Delete(controller: "monitor",
                                          action: "NE/unsubscribe",
                                          payload: rqBody,
                                          singleUseHeaders: rqHeaders.Count > 0? rqHeaders: null,
-                                         unSuccessCallback: e => _ = HandleHttpException(e));
+                                         unSuccessCallback: e => _ = HandleHttpException(e)));
 #if DEBUG
             Debug.WriteLine($"NE/unsubscribe: {res}");
 #endif
@@ -717,7 +892,8 @@ public class Fetcher
             if (UserData != null)
                 rqHeaders.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
-            NEupdateResponse res =await this.WebService.Put<NEupdateResponse>(controller: "monitor",
+            NEupdateResponse res = await WithRetryAsync(() =>
+                                        this.WebService.Put<NEupdateResponse>(controller: "monitor",
                                            action: "NE/update",
                                            parameters: new Dictionary<string, string>
                                            {
@@ -725,7 +901,7 @@ public class Fetcher
                                                { nameof(newToken), newToken }
                                            },
                                            singleUseHeaders: rqHeaders,
-                                           unSuccessCallback: e => _ = HandleHttpException(e));
+                                           unSuccessCallback: e => _ = HandleHttpException(e)));
 
 #if DEBUG
             Debug.WriteLine($"NE/update: {res.Msg}");
@@ -998,11 +1174,12 @@ public class Fetcher
             { nameof(article), article.MongooseId},
         };
 
-       return (await WebService.Get<GemsRewardResponse>(controller: "gems",
+       return (await WithRetryAsync(() =>
+                 WebService.Get<GemsRewardResponse>(controller: "gems",
                               action: "request/article",
                               singleUseHeaders: headers,
                               parameters: paramss,
-                              unSuccessCallback: e => _ = HandleHttpException(e)
+                              unSuccessCallback: e => _ = HandleHttpException(e))
                                )).Rewarded;
     }
 
@@ -1019,11 +1196,12 @@ public class Fetcher
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
-        await WebService.Put<GemsRewardResponse>(controller: "gems",
+        await WithRetryAsync(() =>
+                 WebService.Put<GemsRewardResponse>(controller: "gems",
                               action: "sync",
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
-                               );
+                               ));
         return true;
     }
 
@@ -1042,11 +1220,12 @@ public class Fetcher
 #if DEBUG
         headers.Add("include_dummies", "true");
 #endif
-        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+        return (await WithRetryAsync(() =>
+                 WebService.Get<GivewayResponse>(controller: "giveaway",
                               action: "all",
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
-                               )).Data;
+                               )))?.Data;
     }
 
     /// <summary>
@@ -1064,11 +1243,12 @@ public class Fetcher
 #if DEBUG
         headers.Add("include_dummies", "true");
 #endif
-        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+        return (await WithRetryAsync(() =>
+                 WebService.Get<GivewayResponse>(controller: "giveaway",
                               action: "entries",
                               singleUseHeaders: headers,
                               unSuccessCallback: e => _ = HandleHttpException(e)
-                               )).Data;
+                               )))?.Data;
     }
 
     /// <summary>
@@ -1084,11 +1264,12 @@ public class Fetcher
         if (UserData != null)
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
-        return (await WebService.Get<GivewayResponse>(controller: "giveaway",
+        return (await WithRetryAsync(() =>
+                 WebService.Get<GivewayResponse>(controller: "giveaway",
                                                       action: "wins",
                                                       singleUseHeaders: headers,
                                                       unSuccessCallback: e => _ = HandleHttpException(e)
-                                                      )).Data;
+                                                      )))?.Data;
     }
     /// <summary>
     /// Get the key from a Giveway the user won
@@ -1110,12 +1291,13 @@ public class Fetcher
             { nameof(giveaway), giveaway.Id},
         };
 
-        return await WebService.Get<GivewayKeyResponse>(controller: "giveaway",
+        return await WithRetryAsync(() =>
+                 WebService.Get<GivewayKeyResponse>(controller: "giveaway",
                                                       action: "key",
                                                       parameters: paramss,
                                                       singleUseHeaders: headers,
                                                       unSuccessCallback: e => _ = HandleHttpException(e)
-                                                      );
+                                                      ));
     }
 
     /// <summary>
@@ -1163,10 +1345,11 @@ public class Fetcher
             headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
 
 
-        return Gems =  (await WebService.Get<UserGemsResponse>(controller: "gems",
-                              singleUseHeaders: headers,
-                              unSuccessCallback: e => _ = HandleHttpException(e)
-                               ))?.Data ?? new List<Gem>();
+        return Gems =  (await WithRetryAsync(() =>
+                                 WebService.Get<UserGemsResponse>(controller: "gems",
+                                              singleUseHeaders: headers,
+                                              unSuccessCallback: e => _ = HandleHttpException(e)
+                                               )))?.Data ?? [];
 
         }
         catch
@@ -1198,7 +1381,8 @@ public class Fetcher
 #if DEBUG
         var res =
 #endif
-        await WebService.Post<ReminderResponse>(controller: "deals",
+        await WithRetryAsync(() =>
+                 WebService.Post<ReminderResponse>(controller: "deals",
                                                action: "reminder/set",
                                                singleUseHeaders: rqHeaders,
                                                parameters: new Dictionary<string, string>
@@ -1207,7 +1391,7 @@ public class Fetcher
                                                    { "ne", NeID }
                                                },
                                                unSuccessCallback: e => _ = HandleHttpException(e)
-                                                );
+                                                ));
 #if DEBUG
         Debug.WriteLine($"Reminder set: {res.Response}");
 #endif
@@ -1223,17 +1407,20 @@ public class Fetcher
         if (!Fetcher.CheckFeasability())
             return null;
         ResetHandler();
- 
 
-       return (await WebService.Get<NeResponse>(controller: "monitor",
+
+        Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
+
+        return (await WithRetryAsync(() =>
+                 WebService.Get<NeResponse>(controller: "monitor",
                                                action: "NE",
-                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
+                                               singleUseHeaders: headers,
                                                parameters: new Dictionary<string, string>
                                                {
                                                    { nameof(token), token },
                                                },
                                                unSuccessCallback: e => _ = HandleHttpException(e)
-                                                ))?.Data;
+                                                )))?.Data;
     }
 
     /// <summary>
@@ -1245,11 +1432,14 @@ public class Fetcher
             return null;
         ResetHandler();
 
-       return await WebService.Get<DeviceCultureInfo>(controller: "monitor",
-                                               action: "culture",
-                                               singleUseHeaders:(Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders(),
-                                               unSuccessCallback: e => _ = HandleHttpException(e)
-                                                );
+        Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
+
+        return await WithRetryAsync(() =>
+                     WebService.Get<DeviceCultureInfo>(controller: "monitor",
+                                                   action: "culture",
+                                                   singleUseHeaders: headers,
+                                                   unSuccessCallback: e => _ = HandleHttpException(e)
+                                                    ));
     }
 
     /// <summary>

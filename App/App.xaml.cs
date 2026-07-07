@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.ApplicationModel;
 using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
@@ -155,15 +156,6 @@ public partial class App : Application
 
         }
 
-        IFirebasePushNotification.Current.RegisterNotificationCategories(new[]
-        {
-            new NotificationCategory("daily_catchup", new[]
-            {
-                new NotificationAction("open_in_app", "Open in the app", NotificationActionType.Foreground),
-                new NotificationAction("open_in_browser", "Open in the browser", NotificationActionType.Foreground),
-            })
-        });
-
         // Reset notificaiton badges
         Badge.Default.SetCount(0);
 #if __IOS__
@@ -274,7 +266,7 @@ public partial class App : Application
      /// </summary>
      /// <param name="popUp">pop up to open</param>
      /// <param name="page">parent page</param>
-     public void OpenPopUp(Popup popUp, Page page = null)
+     public void OpenPopUp(Popup popUp, Page page = null, bool bgTapToClose = true)
      {
          try
          {
@@ -286,14 +278,15 @@ public partial class App : Application
                  page = Shell;
              if (page.Navigation.NavigationStack.Any(p => p?.Id == popUp!.Id))
                  return;
-         MainThread.BeginInvokeOnMainThread(async () => await page.ShowPopupAsync(popUp, options: new PopupOptions()
-         {
-             Shape = new RoundRectangle
+             MainThread.BeginInvokeOnMainThread(async () => await page.ShowPopupAsync(popUp, options: new PopupOptions()
              {
-                 StrokeThickness = 0
-             }
-         }));
-        }
+                 CanBeDismissedByTappingOutsideOfPopup = bgTapToClose,
+                 Shape = new RoundRectangle
+                 {
+                     StrokeThickness = 0
+                 }
+             }));
+            }
 #if DEBUG
             catch (Exception ex)
             {
@@ -305,6 +298,21 @@ public partial class App : Application
             SentrySdk.CaptureException(ex);
         }
 #endif
+    }
+
+    /// <summary>
+    /// Display an error message as snack bar with a link to support email
+    /// </summary>
+    /// <param name="message">error message to be displayed</param>
+    public static async Task DisplaySoftError(string message)
+    {
+
+        await Snackbar.Make(message,
+            () =>
+            {
+                Email.ComposeAsync(subject: "", body: "", to: new string[] { "support@gamhub.io" });
+            },
+            actionButtonText: "contact support").Show();
     }
 
     /// <summary>

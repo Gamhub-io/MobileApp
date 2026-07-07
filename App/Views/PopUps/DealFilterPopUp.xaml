@@ -52,8 +52,8 @@
                                    Margin="5,0"
                                    Grid.Column="1"
                                    TextColor="{StaticResource FontColor}"/>
-                            <Switch OnColor="{StaticResource Light}"
-                                    ThumbColor="{StaticResource Primary}"
+                            <Switch OnColor="{StaticResource Primary}"
+                                    ThumbColor="{StaticResource Light}"
                                     HorizontalOptions="End"
                                     VerticalOptions="Center"
                                     WidthRequest="80"

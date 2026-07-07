@@ -18,8 +18,6 @@ public partial class DealsPage : ContentPage
 	{
         BadgeCounterService.SetCount(0);
         Preferences.Set(PreferencesKeys.NewDealCount, 0);
-        (App.Current as App).ShowLoadingIndicator();
-
         // Note: this is a workaround for a MAUI 10 bug that prevents the tabbar colours to set proper
         Dispatcher.Dispatch(() =>
         {
