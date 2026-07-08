@@ -88,6 +88,8 @@ public class Fetcher
     {
         for (int attempt = 1; attempt <= retries; attempt++)
         {
+            if (!Fetcher.CheckFeasability())
+                return default;
             try
             {
                 return await action();
