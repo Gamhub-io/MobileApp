@@ -447,7 +447,8 @@ public class NewsViewModel : BaseViewModel
     public async Task FetchTrendingArticles()
     {
         var newTrandingArticles = await CurrentApp.DataFetcher.GetTrendingArticles();
-
+        if (_trendingArticles?.Count > 0 && newTrandingArticles.Count <= 0)
+            return;
         TrendingArticles = new (newTrandingArticles);
     }
 
