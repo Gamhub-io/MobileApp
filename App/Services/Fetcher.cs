@@ -1499,7 +1499,9 @@ public class Fetcher
 #endif
         if (errMsg.Contains("internet connection") || 
             errMsg.Contains("Connection failure") || 
-            errMsg.Contains("An SSL error has occurred and a secure connection"))
+            errMsg.Contains("An SSL error has occurred and a secure connection") ||
+            errMsg.Contains("OperationCanceled")
+            )
             // If the error is being thrown because there is no internet: there is no point reporting it 
             return;
 #if DEBUG
