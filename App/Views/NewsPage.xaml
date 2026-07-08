@@ -184,8 +184,8 @@
                                 RemainingItemsThreshold="20"
                                 RemainingItemsThresholdReachedCommand="{Binding RefreshBottomCommand}"
                                 Margin="0"
-                                IsEnabled="{Binding TrendingArticles.Count,
-                                                                    Converter={StaticResource ZeroToFalseConverter}}"
+                                IsEnabled="{Binding Articles.Count,
+                                                    Converter={StaticResource ZeroToFalseConverter}}"
                                 VerticalOptions="Fill"
                                 >
                     <CollectionView.Header>
