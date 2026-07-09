@@ -28,7 +28,6 @@ public class HtmlLabelHandler : ViewHandler<HtmlLabel, TextView>
 #pragma warning disable CA1422 // Validate platform compatibility
             ISpanned formattedText = Html.FromHtml(
                 view.SanitizedHtmlText,
-                //FromHtmlFlags.ModeLegacy,
                 imageGetter,
                 null
             );
