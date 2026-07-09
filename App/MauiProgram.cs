@@ -74,6 +74,9 @@ public static class MauiProgram
                .ConfigureMauiHandlers(handlers =>
                {
                    handlers.AddHandler<Shell, TabbarBadgeRenderer>();
+#if ANDROID
+                   handlers.AddHandler(typeof(HtmlLabel), typeof(HtmlLabelHandler));
+#endif
                });
 #if DEBUG_LOCALHOST
 builder.Services.AddCustard(host: AppConstant.Localhost,

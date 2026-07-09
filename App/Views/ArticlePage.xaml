@@ -7,6 +7,7 @@
              xmlns:viewmodels="clr-namespace:GamHubApp.ViewModels"
              x:DataType="viewmodels:ArticleViewModel"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit" 
+             xmlns:android="clr-namespace:GamHubApp.Platforms.Android.Renderers"
              xmlns:models="clr-namespace:GamHubApp.Models"
              Shell.TabBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled"
@@ -197,24 +198,25 @@
                 <!-- content -->
                     <!-- NOTE: a bug prevent use from using WebView on iOS. see: https://github.com/dotnet/maui/issues/21604-->
                 
-               <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
-                      FontFamily="P-Regular"
-                      IsVisible="{OnPlatform Android='false',
-                                             iOS='true'}"
-                      TextColor="{StaticResource FontColor}"
-                      Margin="10"
-                      TextType="Html"
-                      Grid.Row="3"
-                      />
-               <WebView Grid.Row="3"
-                       IsVisible="{OnPlatform Android='true',
-                                       iOS='false'}"
-                       x:Name="contentView"
-                       BackgroundColor="Transparent">
-                   <WebView.Source>
-                       <HtmlWebViewSource Html="{Binding SelectedArticle.HTMLContent, Mode=OneWay}"/>
-                   </WebView.Source>
-               </WebView>
+               
+               <OnPlatform x:TypeArguments="View">
+                   <On Platform="Android">
+                       <android:HtmlLabel HtmlText="{Binding SelectedArticle.HTMLContent, Mode=OneWay}"
+                                           Grid.Row="3"
+                                          Margin="8,0"/>
+                   </On>
+                   <On Platform="iOS">
+                            <Label Text="{Binding SelectedArticle.Content, Mode=OneWay}"
+                                   FontFamily="P-Regular"
+                                   IsVisible="{OnPlatform Android='false',
+                                                          iOS='true'}"
+                                   TextColor="{StaticResource FontColor}"
+                                   Margin="10"
+                                   TextType="Html"
+                                   Grid.Row="3"
+                                   />
+                        </On>
+               </OnPlatform>
 
                     <!-- Button to open to the default Browser -->
                 <Button Text="Read more"
