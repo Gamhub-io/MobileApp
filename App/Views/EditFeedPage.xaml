@@ -58,7 +58,7 @@
                             Grid.Column="1"
                            VerticalOptions="Center"
                            FontFamily="P-Bold"/>
-                    <Switch OnColor="{StaticResource PrimaryAccent}"
+                    <Switch OnColor="{StaticResource Primary}"
                             ThumbColor="{StaticResource Primary}"
                             HorizontalOptions="End"
                             VerticalOptions="Center"

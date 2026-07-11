@@ -114,7 +114,7 @@
                                 Clicked="CloseSearchButton_Clicked"/>
                     </Grid>
                 </Border>
-                <Button Text="&#xf005;"
+                <Button Text="&#xf004;"
                         FontSize="28"
                          IsVisible="{Binding IsSearching}"
                         CornerRadius="20"
@@ -135,8 +135,6 @@
                         <DataTrigger Binding="{Binding IsCurrentSearchSaved, Mode=TwoWay}"
                                      TargetType="Button"
                                      Value="False">
-                            <!--<Setter Property="FontFamily" 
-                                    Value="FaRegular" />-->
                             <Setter Property="TextColor" 
                                     Value="{StaticResource FontColor}" />
                         </DataTrigger>

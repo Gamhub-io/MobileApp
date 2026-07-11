@@ -213,22 +213,12 @@
             </ShellContent.Icon>
         </ShellContent>
         <ShellContent FlyoutItemIsVisible="False"
-                      Route="BookmarkPage"
-                      Title="Bookmarks"
-                      ContentTemplate="{DataTemplate views:BookmarkPage}">
-            <ShellContent.Icon>
-                <FontImageSource FontFamily="FaSolid" 
-                                 Glyph="&#xf5fd;" 
-                                 Size="{OnPlatform Android='26', iOS='25'}"/>
-            </ShellContent.Icon>
-        </ShellContent>
-        <ShellContent FlyoutItemIsVisible="False"
                       Route="MyFeedsPage"
                       Title="My Feeds"
                       ContentTemplate="{DataTemplate views:FeedsPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
-                                 Glyph="&#xf005;" 
+                                 Glyph="&#xf004;" 
                                  Size="{OnPlatform Android='26', iOS='25'}"/>
             </ShellContent.Icon>
             
@@ -247,11 +237,27 @@
         </ShellContent>
     </FlyoutItem>
     
+    <!-- Bookmark Page -->
+    <FlyoutItem Title="Bookmarks"
+                Icon="&#xf5fd;">
+        <ShellContent FlyoutItemIsVisible="False"
+                  Route="BookmarkPage"
+                  Title="Bookmarks"
+                  ContentTemplate="{DataTemplate views:BookmarkPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="FaSolid" 
+                             Glyph="&#xf5fd;" 
+                             Size="{OnPlatform Android='26', iOS='25'}"/>
+            </ShellContent.Icon>
+        </ShellContent>
+        
+    </FlyoutItem>
+    
     <!-- Giveaway Page -->
     <FlyoutItem Title="Giveaways"
                 IsVisible="{Binding GemEnabled}"
-             Icon="&#xf06b;"
-             >
+                Icon="&#xf06b;"
+                >
         <ShellContent FlyoutItemIsVisible="False"
                    Route="GiveawayPage"
                    Title="Giveaways"
