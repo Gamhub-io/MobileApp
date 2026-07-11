@@ -72,8 +72,8 @@
                        TextColor="{StaticResource FontColor}"/>
                 <Switch Grid.Column="1"
                         Grid.Row="2"
-                        OnColor="{StaticResource PrimaryAccent}"
-                        ThumbColor="{StaticResource Primary}"
+                        OnColor="{StaticResource Primary}"
+                        ThumbColor="{StaticResource Light}"
                         HorizontalOptions="End"
                         VerticalOptions="Center"
                         WidthRequest="50"
@@ -110,7 +110,7 @@
                        Grid.Column="0"
                        TextColor="{StaticResource FontColor}"/>
                 <Switch Grid.Column="1"
-                        OnColor="{StaticResource PrimaryAccent}"
+                        OnColor="{StaticResource Primary}"
                         ThumbColor="{StaticResource Primary}"
                         HorizontalOptions="End"
                         VerticalOptions="Center"
@@ -137,7 +137,7 @@
                        Grid.Row="2"
                        Grid.Column="0"
                        TextColor="{StaticResource FontColor}"/>
-                <Switch OnColor="{StaticResource PrimaryAccent}"
+                <Switch OnColor="{StaticResource Primary}"
                         ThumbColor="{StaticResource Primary}"
                         HorizontalOptions="End"
                         VerticalOptions="Center"
