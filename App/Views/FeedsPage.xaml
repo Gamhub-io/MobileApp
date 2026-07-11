@@ -75,7 +75,7 @@
                 </ContentView.Triggers>
                 <StackLayout VerticalOptions="Center"
                              HorizontalOptions="Center">
-                    <Label Text="&#xf005;"
+                    <Label Text="&#xf004;"
                                FontFamily="FaSolid"
                                TextColor="{StaticResource Primary}"
                                FontSize="50"
@@ -252,7 +252,7 @@
 
                     <StackLayout 
                  VerticalOptions="Center">
-                        <Label Text="&#xf005;"
+                        <Label Text="&#xf004;"
                                FontFamily="FaSolid"
                                TextColor="{StaticResource Primary}"
                                FontSize="50"

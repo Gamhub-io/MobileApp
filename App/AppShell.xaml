@@ -218,7 +218,7 @@
                       ContentTemplate="{DataTemplate views:FeedsPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
-                                 Glyph="&#xf005;" 
+                                 Glyph="&#xf004;" 
                                  Size="{OnPlatform Android='26', iOS='25'}"/>
             </ShellContent.Icon>
             
