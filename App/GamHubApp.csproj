@@ -135,9 +135,6 @@
     <Compile Update="Views\PopUps\PurchaseGemsPopUp.xaml.cs">
       <DependentUpon>PurchaseGemsPopUp.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\PopUps\GiveawayEntryQuestionPopUp.xaml.cs">
-      <DependentUpon>GiveawayEntryQuestionPopUp.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\PopUps\TwoChoiceQuestionPopUp.xaml.cs">
       <DependentUpon>TwoChoiceQuestionPopUp.xaml</DependentUpon>
     </Compile>
@@ -149,16 +146,10 @@
     <MauiXaml Update="Resources\Styles\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Views\GiveawayPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
     <MauiXaml Update="Views\PopUps\DealFilterPopUp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\PopUps\PurchaseGemsPopUp.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\PopUps\GiveawayEntryQuestionPopUp.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\PopUps\TwoChoiceQuestionPopUp.xaml">
@@ -171,9 +162,6 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Views\DealsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\UserGiveawayWinsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
   </ItemGroup>
