@@ -87,7 +87,7 @@ public class SettingsViewModel : BaseViewModel
     /// </summary>
     /// <param name="settingsKey">Key of settings</param>
     /// <param name="value">the new bool value</param>
-    private void UpdateSettings(string settingsKey, bool value)
+    private static void UpdateSettings(string settingsKey, bool value)
     {
         Preferences.Set(settingsKey, value);
 
