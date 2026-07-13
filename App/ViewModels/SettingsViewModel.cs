@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using GamHubApp.Core;
+using GamHubApp.Models;
+using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels;
 
@@ -42,6 +44,17 @@ public class SettingsViewModel : BaseViewModel
         }
     }
 
+    private ObservableCollection<Source> _outlets;
+    public ObservableCollection<Source> Outlets 
+    { 
+        get => _outlets; 
+        set
+        {
+            _outlets = value;
+            OnPropertyChanged(nameof(Outlets));
+        }
+    }
+
     public Command OpenSettingsCommand
     {
         get => new Command(() => AppInfo.Current.ShowSettingsUI());
@@ -51,6 +64,12 @@ public class SettingsViewModel : BaseViewModel
         _dealPageSett = Preferences.Get(PreferencesKeys.DealPageEnable, true);
         _dealViewSett = Preferences.Get(PreferencesKeys.DealArticleEnable, true);
         _dealReminderSett = Preferences.Get(PreferencesKeys.DealReminderEnabled, true);
+
+        _ = Task.Run(async () =>
+        {
+            Outlets = new (await (App.Current as App).DataFetcher.GetSources());
+
+        });
     }
 
     /// <summary>

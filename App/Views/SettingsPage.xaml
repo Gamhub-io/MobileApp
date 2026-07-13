@@ -5,6 +5,7 @@
              Title="Settings"
              BackgroundColor="{StaticResource BackgroundColor}"
              xmlns:vm="clr-namespace:GamHubApp.ViewModels"
+             xmlns:models="clr-namespace:GamHubApp.Models"
              x:DataType="vm:SettingsViewModel">
     <Shell.TitleView>
         <Grid>
@@ -28,6 +29,8 @@
         </Grid>
 
     </Shell.TitleView>
+    <ScrollView>
+        
     <VerticalStackLayout Margin="5"
                          Spacing="10">
         <Label 
@@ -111,7 +114,7 @@
                        TextColor="{StaticResource FontColor}"/>
                 <Switch Grid.Column="1"
                         OnColor="{StaticResource Primary}"
-                        ThumbColor="{StaticResource Primary}"
+                        ThumbColor="{StaticResource Light}"
                         HorizontalOptions="End"
                         VerticalOptions="Center"
                         WidthRequest="50"
@@ -138,7 +141,7 @@
                        Grid.Column="0"
                        TextColor="{StaticResource FontColor}"/>
                 <Switch OnColor="{StaticResource Primary}"
-                        ThumbColor="{StaticResource Primary}"
+                        ThumbColor="{StaticResource Light}"
                         HorizontalOptions="End"
                         VerticalOptions="Center"
                         WidthRequest="50"
@@ -157,5 +160,64 @@
 
             </Grid>
         </Border>
-    </VerticalStackLayout>
+        <Label Text="Outlets"
+               FontFamily="P-Medium"
+               FontSize="15"
+               TextColor="{StaticResource FontColor}"
+               VerticalOptions="Center" 
+               HorizontalOptions="Start" />
+        <Border StrokeShape="RoundRectangle 20"
+                BackgroundColor="{DynamicResource LightDark}">
+            <StackLayout BindableLayout.ItemsSource="{Binding Outlets}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:Source">
+                            <Grid ColumnDefinitions="*,50"
+                          Padding="10,5"
+                              IsVisible="{Binding IsActive}">
+                                <Border Grid.Column="0"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Start"
+                                        StrokeShape="RoundRectangle 8"
+                                        HeightRequest="25"
+                                        Padding="4,0"
+                                        BackgroundColor="{Binding PrimaryColour, Mode=OneWay}">
+                                    <Grid>
+
+                                        <Label FontSize="13"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center"
+                                               Text="{Binding Name}"
+                                               FontFamily="P-Bold"
+                                               IsVisible="{Binding Logo, Converter={StaticResource NullOrEmptyStringConverter}}"
+                                               TextColor="{Binding SecondaryColour, Mode=OneWay}"
+   
+                                              />
+                                        <Image HorizontalOptions="Fill"
+                                               MaximumWidthRequest="90"
+                                               MaximumHeightRequest="25"
+                                               Source="{Binding Logo}"/>
+                                    </Grid>
+                                </Border>
+                                <Switch OnColor="{StaticResource Primary}"
+                                    ThumbColor="{StaticResource Light}"
+                                    HorizontalOptions="End"
+                                    VerticalOptions="Center"
+                                    WidthRequest="50"
+                                    Grid.Column="1"
+                                    Background="Transparent">
+                                <!--<Switch.Triggers>
+                            <DataTrigger TargetType="Switch"
+                                         Binding="{Binding DealViewSett}"
+                                         Value="false">
+                                                    <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
+                                                </DataTrigger>
+                                            </Switch.Triggers>-->
+                            </Switch>
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </Border>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
