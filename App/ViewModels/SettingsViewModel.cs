@@ -8,6 +8,7 @@ namespace GamHubApp.ViewModels;
 
 public class SettingsViewModel : BaseViewModel
 {
+    private readonly GeneralDataBase _generalDb;
     private bool _dealPageSett;
     public bool DealPageSett
     {
@@ -60,24 +61,37 @@ public class SettingsViewModel : BaseViewModel
     {
         get => new Command(() => AppInfo.Current.ShowSettingsUI());
     }
-    public SettingsViewModel ()
+    public Command SelectCommand
     {
+        get
+        {
+            return new Command<string>(async (id) =>
+            {
+                var source = _outlets.FirstOrDefault( ot => ot.MongoId == id);
+                await _generalDb.UpdateSourceById(source);
+            }); ;
+        }
+    }
+    public SettingsViewModel (GeneralDataBase generalDataBase)
+    {
+        _generalDb = generalDataBase;
         _dealPageSett = Preferences.Get(PreferencesKeys.DealPageEnable, true);
         _dealViewSett = Preferences.Get(PreferencesKeys.DealArticleEnable, true);
         _dealReminderSett = Preferences.Get(PreferencesKeys.DealReminderEnabled, true);
         var fetcher = (App.Current as App).DataFetcher;
         _ = Task.Run(async () =>
         {
-            string selection = Preferences.Get(PreferencesKeys.SourceSelection, string.Empty);
-            Outlets = new (Fetcher.Sources?.Count <=0 ? await fetcher.GetSources() : Fetcher.Sources);
+            //string selection = Preferences.Get(PreferencesKeys.SourceSelection, string.Empty);
+            //Outlets = new (Fetcher.Sources?.Count <=0 ? await fetcher.GetSources() : Fetcher.Sources);
+            Outlets = new (await _generalDb.GetSources());
 
-            if (string.IsNullOrEmpty(selection))
-                return;
+            //if (string.IsNullOrEmpty(selection))
+            //    return;
 
-            for (int i = 0; i < _outlets.Count; i++)
-            {
-                Outlets[i].IsSelected = selection.Contains(_outlets[i].MongoId);
-            }
+            //for (int i = 0; i < _outlets.Count; i++)
+            //{
+            //    Outlets[i].IsSelected = selection.Contains(_outlets[i].MongoId);
+            //}
 
         });
     }

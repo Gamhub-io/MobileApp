@@ -6,7 +6,9 @@
              BackgroundColor="{StaticResource BackgroundColor}"
              xmlns:vm="clr-namespace:GamHubApp.ViewModels"
              xmlns:models="clr-namespace:GamHubApp.Models"
-             x:DataType="vm:SettingsViewModel">
+             xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="vm:SettingsViewModel"
+             x:Name="thy">
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -205,14 +207,22 @@
                                         WidthRequest="50"
                                         Grid.Column="1"
                                         IsToggled="{Binding IsSelected}"
-                                        Background="Transparent">
-                                <Switch.Triggers>
-                                    <DataTrigger TargetType="Switch"
-                                                 Binding="{Binding IsSelected}"
-                                                 Value="false">
-                                        <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
-                                    </DataTrigger>
-                                 </Switch.Triggers>
+                                        Background="Transparent"
+                                        x:Name="ItemSwitch">
+                                    <Switch.Behaviors>
+                                        <mct:EventToCommandBehavior 
+                                            EventName="Toggled"
+                                            CommandParameter="{Binding MongoId}"
+                                            Command="{Binding BindingContext.SelectCommand, Source={x:Reference thy},
+                                                                x:DataType=ContentPage}" />
+                                    </Switch.Behaviors>
+                                    <Switch.Triggers>
+                                            <DataTrigger TargetType="Switch"
+                                                     Binding="{Binding IsSelected}"
+                                                     Value="false">
+                                            <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
+                                        </DataTrigger>
+                                     </Switch.Triggers>
                             </Switch>
                         </Grid>
                     </DataTemplate>

@@ -177,16 +177,26 @@ public class Fetcher
 
         ResetHandler();
 
+        var savedSources = await _generalDB.GetSources();
+
         Fetcher.Sources = await WithRetryAsync(() =>
                 this.WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
                                                         unSuccessCallback: e => _ = HandleHttpException(e)))
                                   ?? [];
 
-        if (string.IsNullOrEmpty(Preferences.Get(PreferencesKeys.SourceSelection, string.Empty)))
+        var newSources = Fetcher.Sources
+                .ExceptBy(savedSources.Select(s => s.MongoId), f => f.MongoId)
+                .ToList();
+        List<Task> sourcesTasks = [];
+        for (int i = 0; i < newSources.Count; i++)
         {
-            Preferences.Set(PreferencesKeys.SourceSelection, string.Join('_', Sources.Select(source => source.MongoId)));
+            var newSource = newSources[i];
+            newSource.IsSelected = true;
+            sourcesTasks.Add( _generalDB.InsertSources(newSource));
+            
         }
+        await Task.WhenAll(sourcesTasks);
         return Fetcher.Sources;
     }
 

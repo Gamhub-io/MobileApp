@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace GamHubApp.Models;
 
-public class Source
+public class Source : SelectableModel
 {
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
@@ -29,61 +29,11 @@ public class Source
     public string Logo { get; set; }
     [JsonProperty("isActive")]
     public bool IsActive { get; set; }
-    private bool _iselected = true;
-    public bool IsSelected
-    {
-        get
-        {
-            return _iselected;
-        }
-        set 
-        {
-            bool prev = _iselected;
-            _iselected = value;
-
-            if (prev == _iselected)
-                return;
-
-            string selection = Preferences.Get(PreferencesKeys.SourceSelection, string.Empty);
-            string idTag = $"_{MongoId}";
-            if (selection.Contains(MongoId))
-            {
-                selection = selection.Replace(idTag, string.Empty);
-            }
-            else
-            {
-                selection += idTag;
-            }
-            Preferences.Set(PreferencesKeys.SourceSelection, selection);
-
-        }
-    }
     [JsonIgnore]
     //public bool IsSelected { get; set; }
     [OneToMany(CascadeOperations = CascadeOperation.All)]
     public Collection<Article> RelatedArticles { get; set; }
 
-    [Ignore]
-    public Command SelectCommand
-    {
-        get
-        {
-            return new Command(async () =>
-            {
-                string selection = Preferences.Get(PreferencesKeys.SourceSelection, string.Empty);
-                string idTag = $"_{MongoId}";
-                if (selection.Contains(MongoId))
-                {
-                    selection.Replace(idTag, string.Empty);
-                }
-                else
-                {
-                    selection += idTag;
-                }
-
-            }); ;
-        }
-    }
     public Source()
     {
     }
