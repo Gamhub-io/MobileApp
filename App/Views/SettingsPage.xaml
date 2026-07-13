@@ -199,19 +199,20 @@
                                     </Grid>
                                 </Border>
                                 <Switch OnColor="{StaticResource Primary}"
-                                    ThumbColor="{StaticResource Light}"
-                                    HorizontalOptions="End"
-                                    VerticalOptions="Center"
-                                    WidthRequest="50"
-                                    Grid.Column="1"
-                                    Background="Transparent">
-                                <!--<Switch.Triggers>
-                            <DataTrigger TargetType="Switch"
-                                         Binding="{Binding DealViewSett}"
-                                         Value="false">
-                                                    <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
-                                                </DataTrigger>
-                                            </Switch.Triggers>-->
+                                        ThumbColor="{StaticResource Light}"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center"
+                                        WidthRequest="50"
+                                        Grid.Column="1"
+                                        IsToggled="{Binding IsSelected}"
+                                        Background="Transparent">
+                                <Switch.Triggers>
+                                    <DataTrigger TargetType="Switch"
+                                                 Binding="{Binding IsSelected}"
+                                                 Value="false">
+                                        <Setter Property="ThumbColor" Value="{StaticResource FontColor}" />
+                                    </DataTrigger>
+                                 </Switch.Triggers>
                             </Switch>
                         </Grid>
                     </DataTemplate>

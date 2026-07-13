@@ -177,11 +177,17 @@ public class Fetcher
 
         ResetHandler();
 
-        return Fetcher.Sources = await WithRetryAsync(() =>
+        Fetcher.Sources = await WithRetryAsync(() =>
                 this.WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
                                                         unSuccessCallback: e => _ = HandleHttpException(e)))
                                   ?? [];
+
+        if (string.IsNullOrEmpty(Preferences.Get(PreferencesKeys.SourceSelection, string.Empty)))
+        {
+            Preferences.Set(PreferencesKeys.SourceSelection, string.Join('_', Sources.Select(source => source.MongoId)));
+        }
+        return Fetcher.Sources;
     }
 
     /// <summary>

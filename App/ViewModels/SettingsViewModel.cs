@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using GamHubApp.Core;
 using GamHubApp.Models;
+using GamHubApp.Services;
 using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels;
@@ -64,10 +65,19 @@ public class SettingsViewModel : BaseViewModel
         _dealPageSett = Preferences.Get(PreferencesKeys.DealPageEnable, true);
         _dealViewSett = Preferences.Get(PreferencesKeys.DealArticleEnable, true);
         _dealReminderSett = Preferences.Get(PreferencesKeys.DealReminderEnabled, true);
-
+        var fetcher = (App.Current as App).DataFetcher;
         _ = Task.Run(async () =>
         {
-            Outlets = new (await (App.Current as App).DataFetcher.GetSources());
+            string selection = Preferences.Get(PreferencesKeys.SourceSelection, string.Empty);
+            Outlets = new (Fetcher.Sources?.Count <=0 ? await fetcher.GetSources() : Fetcher.Sources);
+
+            if (string.IsNullOrEmpty(selection))
+                return;
+
+            for (int i = 0; i < _outlets.Count; i++)
+            {
+                Outlets[i].IsSelected = selection.Contains(_outlets[i].MongoId);
+            }
 
         });
     }
