@@ -72,7 +72,7 @@ public class SettingsViewModel : BaseViewModel
                 if (!_isInitialised || source == null)
                     return;
                 await _generalDb.UpdateSourceById(source);
-                DisplayUpdateToadt();
+                DisplayUpdateToast();
             }); ;
         }
     }
@@ -96,10 +96,10 @@ public class SettingsViewModel : BaseViewModel
 
         // Notify the user we are updating the preferences
         // - Making sure we do it on the main thread
-        DisplayUpdateToadt();
+        DisplayUpdateToast();
     }
 
-    private static void DisplayUpdateToadt()
+    private static void DisplayUpdateToast()
     {
         MainThread.BeginInvokeOnMainThread(async () =>
                            await (Toast.Make("Settings changes saved")).Show());
