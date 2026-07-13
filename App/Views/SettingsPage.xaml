@@ -171,10 +171,15 @@
         <Border StrokeShape="RoundRectangle 20"
                 BackgroundColor="{DynamicResource LightDark}">
             <StackLayout BindableLayout.ItemsSource="{Binding Outlets}">
+                 <BindableLayout.EmptyView>
+                        <ActivityIndicator Color="{StaticResource Primary}"
+                                            IsRunning="True"/>
+                    </BindableLayout.EmptyView>
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="models:Source">
                             <Grid ColumnDefinitions="*,50"
                           Padding="10,5"
+                                        x:Name="ItemRow"
                               IsVisible="{Binding IsActive}">
                                 <Border Grid.Column="0"
                                         HorizontalOptions="Start"
@@ -207,14 +212,15 @@
                                         WidthRequest="50"
                                         Grid.Column="1"
                                         IsToggled="{Binding IsSelected}"
-                                        Background="Transparent"
-                                        x:Name="ItemSwitch">
+                                        Background="Transparent">
                                     <Switch.Behaviors>
                                         <mct:EventToCommandBehavior 
                                             EventName="Toggled"
-                                            CommandParameter="{Binding MongoId}"
-                                            Command="{Binding BindingContext.SelectCommand, Source={x:Reference thy},
-                                                                x:DataType=ContentPage}" />
+                                            Command="{Binding BindingContext.SelectCommand, 
+                                                              Mode=OneWay,
+                                                                Source={x:Reference thy},
+                                                                x:DataType=ContentPage}"
+                                            CommandParameter="{Binding BindingContext, Source={x:Reference ItemRow}}" />
                                     </Switch.Behaviors>
                                     <Switch.Triggers>
                                             <DataTrigger TargetType="Switch"

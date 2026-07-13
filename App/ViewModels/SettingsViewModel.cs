@@ -57,6 +57,8 @@ public class SettingsViewModel : BaseViewModel
         }
     }
 
+    private bool _isInitialised;
+
     public Command OpenSettingsCommand
     {
         get => new Command(() => AppInfo.Current.ShowSettingsUI());
@@ -65,10 +67,12 @@ public class SettingsViewModel : BaseViewModel
     {
         get
         {
-            return new Command<string>(async (id) =>
+            return new Command<Source>(async (source) =>
             {
-                var source = _outlets.FirstOrDefault( ot => ot.MongoId == id);
+                if (!_isInitialised || source == null)
+                    return;
                 await _generalDb.UpdateSourceById(source);
+                DisplayUpdateToadt();
             }); ;
         }
     }
@@ -78,22 +82,7 @@ public class SettingsViewModel : BaseViewModel
         _dealPageSett = Preferences.Get(PreferencesKeys.DealPageEnable, true);
         _dealViewSett = Preferences.Get(PreferencesKeys.DealArticleEnable, true);
         _dealReminderSett = Preferences.Get(PreferencesKeys.DealReminderEnabled, true);
-        var fetcher = (App.Current as App).DataFetcher;
-        _ = Task.Run(async () =>
-        {
-            //string selection = Preferences.Get(PreferencesKeys.SourceSelection, string.Empty);
-            //Outlets = new (Fetcher.Sources?.Count <=0 ? await fetcher.GetSources() : Fetcher.Sources);
-            Outlets = new (await _generalDb.GetSources());
-
-            //if (string.IsNullOrEmpty(selection))
-            //    return;
-
-            //for (int i = 0; i < _outlets.Count; i++)
-            //{
-            //    Outlets[i].IsSelected = selection.Contains(_outlets[i].MongoId);
-            //}
-
-        });
+       
     }
 
     /// <summary>
@@ -107,8 +96,19 @@ public class SettingsViewModel : BaseViewModel
 
         // Notify the user we are updating the preferences
         // - Making sure we do it on the main thread
+        DisplayUpdateToadt();
+    }
+
+    private static void DisplayUpdateToadt()
+    {
         MainThread.BeginInvokeOnMainThread(async () =>
-                   await (Toast.Make("Settings changes saved")).Show());
+                           await (Toast.Make("Settings changes saved")).Show());
+    }
+
+    public async Task InitialiseAsync()
+    {
+        Outlets = new(await _generalDb.GetSources());
+        _isInitialised = true;
     }
 
 }
