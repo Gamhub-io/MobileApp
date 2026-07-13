@@ -82,7 +82,7 @@ public class FeedsViewModel : BaseViewModel
 		get { return _articles; }
 		set 
 		{
-        _articles = value; 
+            _articles = value; 
 			OnPropertyChanged(nameof(Articles));
 		}
 	}
@@ -140,11 +140,11 @@ public class FeedsViewModel : BaseViewModel
         if (IsBusy)
             return;
 
-        CurrentApp.ShowLoadingIndicator();
+        //CurrentApp.ShowLoadingIndicator();
         _ = SwitchFeedAsync(feed);
 
         RefreshArticles.Execute(null);
-        CurrentApp.RemoveLoadingIndicator();
+        //CurrentApp.RemoveLoadingIndicator();
 
     });
 
@@ -162,6 +162,8 @@ public class FeedsViewModel : BaseViewModel
     public App CurrentApp { get; }
 
     private GeneralDataBase _generalDB;
+
+    private CancellationTokenSource _articlesCancelationToken =new ();
 
     public Command UncoverNewArticles { get; private set; }
 
@@ -260,7 +262,7 @@ public class FeedsViewModel : BaseViewModel
             if (UnnoticedArticles.Count <= 0)
                 return;
 
-            CurrentApp.ShowLoadingIndicator();
+            //CurrentApp.ShowLoadingIndicator();
             int indexFeed = _feeds.IndexOf(_feeds.FirstOrDefault(f => f.Id == SelectedFeed.Id));
             _ = Task.Run(() =>
             {
@@ -272,7 +274,7 @@ public class FeedsViewModel : BaseViewModel
 
                 UnnoticedArticles.Clear();
 
-            }).ContinueWith(res => CurrentApp.RemoveLoadingIndicator());
+            });
 
         });
 
@@ -341,11 +343,6 @@ public class FeedsViewModel : BaseViewModel
     /// <param name="force">Whether we refresh the feed from scratch or not</param>
     public void Refresh(Feed feed, bool force = false)
 	{
-        if (IsBusy)
-            return;
-
-        IsBusy = true;
-        CurrentApp.ShowLoadingIndicator();
 
         _= Task.Run(async () =>
         {
@@ -355,11 +352,7 @@ public class FeedsViewModel : BaseViewModel
 
             try
             {
-                await AggregateFeed(feed, isFirstLoad || force).ContinueWith(res =>
-                {
-                    CurrentApp.RemoveLoadingIndicator();
-
-                });
+                await AggregateFeed(feed, isFirstLoad || force);
             }
             finally
             {
@@ -381,24 +374,28 @@ public class FeedsViewModel : BaseViewModel
 
         List<Article> articles = new ();
 
-            // Figure out if the feed deserve an update
-            string timeUpdate = string.Empty;
-            if (force)
-            {
-                Articles.Clear();
-                UnnoticedArticles.Clear();
-            }
+        // Figure out if the feed deserve an update
+        string timeUpdate = string.Empty;
+        if (force)
+        {
+            Articles.Clear();
+            UnnoticedArticles.Clear();
+        }
 
-            if (Articles?.Count != 0)
-                timeUpdate = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
+        if (Articles?.Count != 0)
+            timeUpdate = Articles?.First().FullPublishDate.ToUniversalTime().ToString("dd-MM-yyy_HH:mm:ss");
 
-            bool needUpdate = feed.IsLoaded && !string.IsNullOrEmpty(timeUpdate);
+        bool needUpdate = feed.IsLoaded && !string.IsNullOrEmpty(timeUpdate);
 
-            // Make sure we have internet connection
-            if (Connectivity.NetworkAccess == NetworkAccess.Internet)
+
+        _articlesCancelationToken.Cancel();
+        _articlesCancelationToken = new CancellationTokenSource();
+        // Make sure we have internet connection
+        if (Connectivity.NetworkAccess == NetworkAccess.Internet)
                 articles = (await CurrentApp.DataFetcher.GetFeedArticles(feed.Keywords,
                                                                          timeUpdate,
-                                                                         needUpdate)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive).ToList();
+                                                                         needUpdate,
+                                                                         _articlesCancelationToken)).Where(article => (article.Blocked == null || article.Blocked == false) && article.Source.IsActive).ToList();
 
             // Offline search
             else
@@ -446,17 +443,17 @@ public class FeedsViewModel : BaseViewModel
     private void InsertArticles(IEnumerable<Article> articles, bool force = false)
     {
         ObservableRangeCollection<Article> articlesOld = new (_articles);
-            if (force)
-            {
-                Articles = new ObservableRangeCollection<Article>(articles);
-                return;
-            }
+        if (force)
+        {
+            Articles = new ObservableRangeCollection<Article>(articles);
+            return;
+        }
 
-            Articles = new ObservableRangeCollection<Article>();
+        Articles = new ObservableRangeCollection<Article>();
 
         Articles.AddRange(articles);
         if (articlesOld.Any())
-                Articles.AddRange(articlesOld);
+           Articles.AddRange(articlesOld);
             
     }
 
@@ -575,12 +572,7 @@ public class FeedsViewModel : BaseViewModel
         .ContinueWith((Action<Task>)((e) =>
         {
             // Load selected feed
-            _ = SwitchFeedAsync(feedInView).ContinueWith((res) =>
-            {
-
-                CurrentApp.RemoveLoadingIndicator();
-
-            });
+            _ = SwitchFeedAsync(feedInView);
         }));
     }
 

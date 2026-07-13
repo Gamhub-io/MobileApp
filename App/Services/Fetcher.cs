@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using Plugin.FirebasePushNotifications;
 using System.Net.Sockets;
 
+
 #if IOS
 using Maui.RevenueCat.InAppBilling.Services;
 #endif
@@ -212,7 +213,7 @@ public class Fetcher
     /// <param name="timeUpdate">time of the last update (if applicable)</param>
     /// <param name="needUpdate">does the feed need an update</param>
     /// <returns></returns>
-    public async Task<Collection<Article>> GetFeedArticles(string keywords, string timeUpdate = null, bool needUpdate = false)
+    public async Task<Collection<Article>> GetFeedArticles(string keywords, string timeUpdate = null, bool needUpdate = false, CancellationTokenSource cancellationTokenSource = null)
     {
         if (!Fetcher.CheckFeasability())
             return new Collection<Article>();
@@ -222,16 +223,18 @@ public class Fetcher
         {
             if (string.IsNullOrEmpty(keywords))
                 return new Collection<Article>();
+            //using (cancellationTokenSource) ;
             // Convert the spaces to make it url friendly
             keywords = keywords.Trim().Replace(' ', '+');
 
             var haeders = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
             return await WithRetryAsync(() =>
                 WebService.Get<Collection<Article>>(controller: "feeds",
-                                                             action: needUpdate ? "update" : null,
-                                                             singleUseHeaders: haeders,
-                                                             parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
-                                                             unSuccessCallback: (err) => _ = HandleHttpException(err)));
+                                                    action: needUpdate ? "update" : null,
+                                                    singleUseHeaders: haeders,
+                                                    cancellationToken: cancellationTokenSource.Token,
+                                                    parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
+                                                    unSuccessCallback: (err) => _ = HandleHttpException(err)));
         }
         catch (Exception ex)
         {
