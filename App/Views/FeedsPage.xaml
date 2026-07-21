@@ -75,7 +75,7 @@
                 </ContentView.Triggers>
                 <StackLayout VerticalOptions="Center"
                              HorizontalOptions="Center">
-                    <Label Text="&#xf005;"
+                    <Label Text="&#xf004;"
                                FontFamily="FaSolid"
                                TextColor="{StaticResource Primary}"
                                FontSize="50"
@@ -114,6 +114,8 @@
                 </RefreshView.BackgroundColor>
                 <Grid>
                     <CollectionView ItemsSource="{Binding Articles}"
+                                    IsEnabled="{Binding Articles.Count,
+                                                        Converter={StaticResource ZeroToFalseConverter}}"
                                     VerticalScrollBarVisibility="Never"
                                     x:Name="newsCollectionView"
                                     Scrolled="newsCollectionView_Scrolled"
@@ -130,6 +132,17 @@
                                 </BoxView.HeightRequest>
                             </BoxView>
                         </CollectionView.Header>
+                        <CollectionView.EmptyView>
+                            <StackLayout VerticalOptions="Fill">
+                                <controls:ArticlePreview Margin="8,5,0,0"/>
+                                <controls:ArticlePreview Margin="8,5,0,0"/>
+                                <controls:ArticlePreview Margin="8,5,0,0"/>
+                                <controls:ArticlePreview Margin="8,5,0,0"/>
+                                <controls:ArticlePreview Margin="8,5,0,0"/>
+                                <controls:ArticlePreview Margin="8,5,0,0"/>
+
+                            </StackLayout>
+                        </CollectionView.EmptyView>
                         <CollectionView.ItemsLayout>
                             <LinearItemsLayout Orientation="Vertical"/>
                         </CollectionView.ItemsLayout>
@@ -252,7 +265,7 @@
 
                     <StackLayout 
                  VerticalOptions="Center">
-                        <Label Text="&#xf005;"
+                        <Label Text="&#xf004;"
                                FontFamily="FaSolid"
                                TextColor="{StaticResource Primary}"
                                FontSize="50"

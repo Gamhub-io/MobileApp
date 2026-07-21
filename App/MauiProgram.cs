@@ -74,6 +74,9 @@ public static class MauiProgram
                .ConfigureMauiHandlers(handlers =>
                {
                    handlers.AddHandler<Shell, TabbarBadgeRenderer>();
+#if ANDROID
+                   handlers.AddHandler(typeof(HtmlLabel), typeof(HtmlLabelHandler));
+#endif
                });
 #if DEBUG_LOCALHOST
 builder.Services.AddCustard(host: AppConstant.Localhost,
@@ -99,9 +102,7 @@ builder.Services.AddCustard(host: AppConstant.Localhost,
         mauiAppBuilder.Services.AddSingleton<NewsViewModel>();
         mauiAppBuilder.Services.AddSingleton<SettingsViewModel>();
         mauiAppBuilder.Services.AddSingleton<DealsViewModel>();
-        mauiAppBuilder.Services.AddSingleton<GiveawayViewModel>();
         mauiAppBuilder.Services.AddSingleton<GemTopUpViewModel>();
-        mauiAppBuilder.Services.AddSingleton<GiveawayWinsViewModel>();
 
         return mauiAppBuilder;
     }
@@ -129,8 +130,6 @@ builder.Services.AddCustard(host: AppConstant.Localhost,
         mauiAppBuilder.Services.AddSingleton<DealFilterPopUp>();
         mauiAppBuilder.Services.AddSingleton<SettingsPage>();
         mauiAppBuilder.Services.AddSingleton<GemTopUpPage>();
-        mauiAppBuilder.Services.AddSingleton<GiveawayPage>();
-        mauiAppBuilder.Services.AddSingleton<UserGiveawayWinsPage>();
 
         // Resources
         mauiAppBuilder.Services.AddSingleton<ResourceLoader>();

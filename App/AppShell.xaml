@@ -213,25 +213,15 @@
             </ShellContent.Icon>
         </ShellContent>
         <ShellContent FlyoutItemIsVisible="False"
-                      Route="BookmarkPage"
-                      Title="Bookmarks"
-                      ContentTemplate="{DataTemplate views:BookmarkPage}">
-            <ShellContent.Icon>
-                <FontImageSource FontFamily="FaSolid" 
-                                 Glyph="&#xf5fd;" 
-                                 Size="{OnPlatform Android='26', iOS='25'}"/>
-            </ShellContent.Icon>
-        </ShellContent>
-        <ShellContent FlyoutItemIsVisible="False"
                       Route="MyFeedsPage"
                       Title="My Feeds"
                       ContentTemplate="{DataTemplate views:FeedsPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
-                                 Glyph="&#xf005;" 
+                                 Glyph="&#xf004;" 
                                  Size="{OnPlatform Android='26', iOS='25'}"/>
             </ShellContent.Icon>
-            
+
         </ShellContent>
         <ShellContent FlyoutItemIsVisible="False"
                       IsVisible="{Binding DealEnabled}"
@@ -247,34 +237,20 @@
         </ShellContent>
     </FlyoutItem>
     
-    <!-- Giveaway Page -->
-    <FlyoutItem Title="Giveaways"
-                IsVisible="{Binding GemEnabled}"
-             Icon="&#xf06b;"
-             >
+    <!-- Bookmark Page -->
+    <FlyoutItem Title="Bookmarks"
+                Icon="&#xf5fd;">
         <ShellContent FlyoutItemIsVisible="False"
-                   Route="GiveawayPage"
-                   Title="Giveaways"
-                   ContentTemplate="{DataTemplate views:GiveawayPage}">
-            <ShellContent.Icon Margin="{OnPlatform Android='0,0,0,0', iOS='0,0,0,-30'}"
-                            >
-                <FontImageSource FontFamily="FaSolid" 
-                              Glyph="&#xf79c;" 
-                              Size="{OnPlatform Android='26', iOS='25'}"
-                              />
-            </ShellContent.Icon>
-        </ShellContent>
-        <ShellContent FlyoutItemIsVisible="False"
-                   Route="UserGiveawayWinsPage"
-                   Title="My Wins"
-                   ContentTemplate="{DataTemplate views:UserGiveawayWinsPage}">
+                  Route="BookmarkPage"
+                  Title="Bookmarks"
+                  ContentTemplate="{DataTemplate views:BookmarkPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="FaSolid" 
-                              Glyph="&#xf091;" 
-                              Size="{OnPlatform Android='26', iOS='25'}"/>
+                             Glyph="&#xf5fd;" 
+                             Size="{OnPlatform Android='26', iOS='25'}"/>
             </ShellContent.Icon>
-
         </ShellContent>
+        
     </FlyoutItem>
 
     <!-- About Page -->

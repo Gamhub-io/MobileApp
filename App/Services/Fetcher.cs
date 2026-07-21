@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using Plugin.FirebasePushNotifications;
 using System.Net.Sockets;
 
+
 #if IOS
 using Maui.RevenueCat.InAppBilling.Services;
 #endif
@@ -212,7 +213,7 @@ public class Fetcher
     /// <param name="timeUpdate">time of the last update (if applicable)</param>
     /// <param name="needUpdate">does the feed need an update</param>
     /// <returns></returns>
-    public async Task<Collection<Article>> GetFeedArticles(string keywords, string timeUpdate = null, bool needUpdate = false)
+    public async Task<Collection<Article>> GetFeedArticles(string keywords, string timeUpdate = null, bool needUpdate = false, CancellationTokenSource cancellationTokenSource = null)
     {
         if (!Fetcher.CheckFeasability())
             return new Collection<Article>();
@@ -222,16 +223,18 @@ public class Fetcher
         {
             if (string.IsNullOrEmpty(keywords))
                 return new Collection<Article>();
+            //using (cancellationTokenSource) ;
             // Convert the spaces to make it url friendly
             keywords = keywords.Trim().Replace(' ', '+');
 
             var haeders = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
             return await WithRetryAsync(() =>
                 WebService.Get<Collection<Article>>(controller: "feeds",
-                                                             action: needUpdate ? "update" : null,
-                                                             singleUseHeaders: haeders,
-                                                             parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
-                                                             unSuccessCallback: (err) => _ = HandleHttpException(err)));
+                                                    action: needUpdate ? "update" : null,
+                                                    singleUseHeaders: haeders,
+                                                    cancellationToken: cancellationTokenSource.Token,
+                                                    parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
+                                                    unSuccessCallback: (err) => _ = HandleHttpException(err)));
         }
         catch (Exception ex)
         {
@@ -1207,130 +1210,6 @@ public class Fetcher
         return true;
     }
 
-    /// <summary>
-    /// Get the current Giveways
-    /// </summary>
-    /// <returns>Return the giveaways</returns>
-    public async Task<List<Giveaway>> GetGiveaways()
-    {
-        if (!Fetcher.CheckFeasability())
-            return [];
-
-        var headers = await GetHeaders();
-        if (UserData != null)
-            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
-#if DEBUG
-        headers.Add("include_dummies", "true");
-#endif
-        return (await WithRetryAsync(() =>
-                 WebService.Get<GivewayResponse>(controller: "giveaway",
-                              action: "all",
-                              singleUseHeaders: headers,
-                              unSuccessCallback: e => _ = HandleHttpException(e)
-                               )))?.Data;
-    }
-
-    /// <summary>
-    /// Get the Giveways entered by the user
-    /// </summary>
-    /// <returns>Return the giveaways</returns>
-    public async Task<List<Giveaway>> GetEnteredGiveaways()
-    {
-        if (!Fetcher.CheckFeasability())
-            return [];
-
-        var headers = await GetHeaders();
-        if (UserData != null)
-            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
-#if DEBUG
-        headers.Add("include_dummies", "true");
-#endif
-        return (await WithRetryAsync(() =>
-                 WebService.Get<GivewayResponse>(controller: "giveaway",
-                              action: "entries",
-                              singleUseHeaders: headers,
-                              unSuccessCallback: e => _ = HandleHttpException(e)
-                               )))?.Data;
-    }
-
-    /// <summary>
-    /// Get the Giveways the user won
-    /// </summary>
-    /// <returns>Return the giveaways</returns>
-    public async Task<List<Giveaway>> GetWonGiveaways()
-    {
-        if (!Fetcher.CheckFeasability())
-            return [];
-
-        var headers = await GetHeaders();
-        if (UserData != null)
-            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
-
-        return (await WithRetryAsync(() =>
-                 WebService.Get<GivewayResponse>(controller: "giveaway",
-                                                      action: "wins",
-                                                      singleUseHeaders: headers,
-                                                      unSuccessCallback: e => _ = HandleHttpException(e)
-                                                      )))?.Data;
-    }
-    /// <summary>
-    /// Get the key from a Giveway the user won
-    /// </summary>
-    /// <returns>The game key</returns>
-    public async Task<GivewayKeyResponse> GetGiveawayKey(Giveaway giveaway)
-    {
-        if (!Fetcher.CheckFeasability())
-            return null;
-        ResetHandler();
-
-        var headers = await GetHeaders();
-
-        if (UserData != null)
-            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
-
-        var paramss = new Dictionary<string, string>
-        {
-            { nameof(giveaway), giveaway.Id},
-        };
-
-        return await WithRetryAsync(() =>
-                 WebService.Get<GivewayKeyResponse>(controller: "giveaway",
-                                                      action: "key",
-                                                      parameters: paramss,
-                                                      singleUseHeaders: headers,
-                                                      unSuccessCallback: e => _ = HandleHttpException(e)
-                                                      ));
-    }
-
-    /// <summary>
-    /// Get the current Giveways
-    /// </summary>
-    /// <returns>Return the giveaways</returns>
-    public async Task EnterGiveaways(Giveaway giveaway)
-    {
-        if (!Fetcher.CheckFeasability() || giveaway.EntryCost > Gems.Count)
-            return;
-        ResetHandler();
-
-        var headers = await GetHeaders();
-        if (UserData != null)
-            headers.Add("Authorization", $"{await SecureStorage.Default.GetAsync(nameof(Session.TokenType))} {await SecureStorage.Default.GetAsync(nameof(Session.AccessToken))}");
-        var paramss = new Dictionary<string, string>
-        {
-            { nameof(giveaway), giveaway.Id},
-        };
-        await WebService.Post(controller: "giveaway",
-                              action: "enter",
-                              singleUseHeaders: headers,
-                              parameters: paramss,
-                              payload: new GemPayload
-                              {
-                                  Gems= [..Gems.Take(giveaway.EntryCost).Select(g => g.Hash)]
-                              },
-                              unSuccessCallback: e => _ = HandleHttpException(e)
-                               );
-        await GetGems();
-    }
     /// <summary>
     /// Get all the gems from the user
     /// </summary>
