@@ -67,6 +67,7 @@ public partial class App : Application
 
         DataFetcher = fetc;
         Shell = shell;
+        Application.Current.UserAppTheme = AppTheme.Dark;
 
 
         InitializeComponent();
