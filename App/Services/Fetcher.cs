@@ -177,11 +177,27 @@ public class Fetcher
 
         ResetHandler();
 
-        return Fetcher.Sources = await WithRetryAsync(() =>
+        var savedSources = await _generalDB.GetSources();
+
+        Fetcher.Sources = await WithRetryAsync(() =>
                 this.WebService.Get<Collection<Source>>(controller: "sources", 
                                                         action: "getAll",
                                                         unSuccessCallback: e => _ = HandleHttpException(e)))
                                   ?? [];
+
+        var newSources = Fetcher.Sources
+                .ExceptBy(savedSources.Select(s => s.MongoId), f => f.MongoId)
+                .ToList();
+        List<Task> sourcesTasks = [];
+        for (int i = 0; i < newSources.Count; i++)
+        {
+            var newSource = newSources[i];
+            newSource.IsSelected = true;
+            sourcesTasks.Add( _generalDB.InsertSources(newSource));
+            
+        }
+        await Task.WhenAll(sourcesTasks);
+        return Fetcher.Sources;
     }
 
     /// <summary>

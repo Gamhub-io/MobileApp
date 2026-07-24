@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
+using Sentry.Protocol;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System.Collections.ObjectModel;
 
 namespace GamHubApp.Models;
 
-public class Source
+public class Source : SelectableModel
 {
     [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
@@ -25,8 +26,11 @@ public class Source
     public string Logo { get; set; }
     [JsonProperty("isActive")]
     public bool IsActive { get; set; }
+    [JsonIgnore]
+    //public bool IsSelected { get; set; }
     [OneToMany(CascadeOperations = CascadeOperation.All)]
     public Collection<Article> RelatedArticles { get; set; }
+
     public Source()
     {
     }
