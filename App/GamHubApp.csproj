@@ -10,7 +10,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>GamHub - Gaming News</ApplicationTitle>
+		<ApplicationTitle>GameSpur - Gaming News (fka GamHub)</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.bricefriha.aresgaming</ApplicationId>
