@@ -1,6 +1,6 @@
 
 <p align="center" class="container" >
-  <img src="https://github.com/user-attachments/assets/5e897bca-0887-4567-a101-d6968fca6a9f" />
+  <img src="https://github.com/user-attachments/assets/a9958653-c649-4806-b8fa-6999ec52202a" />
 </p>
 <p align="center">
   <a href="https://apps.apple.com/us/app/aresgaming/id1595571591">
