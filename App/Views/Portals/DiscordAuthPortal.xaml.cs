@@ -31,8 +31,6 @@ public partial class DiscordAuthPortal : ContentPage
     private async void DiscordPortal_Navigated(object sender, WebNavigatedEventArgs e)
     {
 
-        
-
         // Remove loding indicator
         if (e.Url.Contains("discord.com/oauth2/authorize"))
         {
@@ -54,12 +52,17 @@ public partial class DiscordAuthPortal : ContentPage
             Result = true;
             CallBack(res);
 
-            // Navigate back
-            CurrentApp.Windows[0].Page.Navigation.RemovePage(this);
-
-            CurrentApp.RemoveLoadingIndicator();
+            await NavigateBack();
             return;
         }
+    }
+
+    private static async Task NavigateBack()
+    {
+        await Shell.Current.Navigation.PopModalAsync();
+        await CurrentApp.Windows[0].Navigation.PopModalAsync();
+
+        CurrentApp.RemoveLoadingIndicator();
     }
 
     private void DiscordPortal_Navigating(object sender, WebNavigatingEventArgs e)
@@ -72,5 +75,10 @@ public partial class DiscordAuthPortal : ContentPage
                 CurrentApp.ShowLoadingIndicator();
             DiscordPortal.IsVisible = false;
         }
+    }
+
+    private void Close_Clicked(object sender, EventArgs e)
+    {
+        NavigateBack().GetAwaiter();
     }
 }

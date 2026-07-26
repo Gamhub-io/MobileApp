@@ -5,16 +5,37 @@
              xmlns:Core="GamHubApp.Core"
              xmlns:local="clr-namespace:GamHubApp.Views.Portals"
                  BackgroundColor="{StaticResource BgBannerColor}"
-             x:DataType="local:DiscordAuthPortal">
+             x:DataType="local:DiscordAuthPortal"
+             Shell.NavBarIsVisible="True">
     <ContentPage.Content>
-        <WebView Source="{Binding Url}"
-                 VerticalOptions="Fill"
-                 HorizontalOptions="Fill"
-                 Navigated="DiscordPortal_Navigated"
-                 Navigating="DiscordPortal_Navigating"
-                 x:Name="DiscordPortal"
-                 BackgroundColor="{StaticResource BgBannerColor}"
-                 />
+        <Grid RowDefinitions="50,*" >
+            <Grid ColumnDefinitions="*,20"
+                  BackgroundColor="{DynamicResource LightDark}">
+                <Button Text="&#xf00d;"
+                        FontFamily="FaSolid"
+                        FontSize="27"
+                        CornerRadius="20"
+                        WidthRequest="80"
+                        TextColor="{DynamicResource FontColor}"
+                        BackgroundColor="{DynamicResource LightDark}"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
+                        Clicked="Close_Clicked"
+                        Grid.Column="1"/>
+            </Grid>
+            <WebView Source="{Binding Url}"
+                     VerticalOptions="Fill"
+                     HorizontalOptions="Fill"
+                     Navigated="DiscordPortal_Navigated"
+                     Navigating="DiscordPortal_Navigating"
+                     x:Name="DiscordPortal"
+                     BackgroundColor="{StaticResource BgBannerColor}"
+                     Grid.Row="1"
+                     />
+            
+        </Grid>
+
+
     </ContentPage.Content>
 </ContentPage>
     
