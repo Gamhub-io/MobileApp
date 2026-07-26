@@ -25,10 +25,8 @@ public partial class AuthPopUp : Popup
         await this.CloseAsync();
 
         CurrentApp.ShowLoadingIndicator();
-        DiscordAuthPortal discordAuthPortal = new(CallBack);
 
-
-        await App.Current.Windows[0].Page.Navigation.PushAsync(discordAuthPortal);
+        await App.Current.Windows[0].Page.Navigation.PushAsync(new DiscordAuthPortal(CallBack));
 
     }
 }
