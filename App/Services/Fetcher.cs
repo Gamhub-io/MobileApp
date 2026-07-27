@@ -223,6 +223,7 @@ public class Fetcher
         {
             if (string.IsNullOrEmpty(keywords))
                 return new Collection<Article>();
+            //using (cancellationTokenSource) ;
             // Convert the spaces to make it url friendly
             keywords = keywords.Trim().Replace(' ', '+');
 
