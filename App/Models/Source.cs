@@ -1,5 +1,4 @@
-using Newtonsoft.Json;
-using Sentry.Protocol;
+﻿using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System.Collections.ObjectModel;
