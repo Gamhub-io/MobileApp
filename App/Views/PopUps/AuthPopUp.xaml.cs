@@ -21,13 +21,12 @@ public partial class AuthPopUp : Popup
     public App CurrentApp { get; private set; }
     private async void Discord_Clicked(object sender, System.EventArgs e)
     {
-        CurrentApp.ShowLoadingIndicator();
-        DiscordAuthPortal discordAuthPortal = new(CallBack);
-
-
-        await App.Current.Windows[0].Page.Navigation.PushAsync(discordAuthPortal);
-
         // Close this popup
         await this.CloseAsync();
+
+        CurrentApp.ShowLoadingIndicator();
+
+        await Shell.Current.Navigation.PushAsync(new DiscordAuthPortal(CallBack));
+
     }
 }

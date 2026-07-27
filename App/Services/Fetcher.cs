@@ -232,7 +232,7 @@ public class Fetcher
                 WebService.Get<Collection<Article>>(controller: "feeds",
                                                     action: needUpdate ? "update" : null,
                                                     singleUseHeaders: haeders,
-                                                    cancellationToken: cancellationTokenSource.Token,
+                                                    cancellationToken: cancellationTokenSource?.Token ?? default,
                                                     parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
                                                     unSuccessCallback: (err) => _ = HandleHttpException(err)));
         }
