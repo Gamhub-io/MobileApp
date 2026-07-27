@@ -223,7 +223,6 @@ public class Fetcher
         {
             if (string.IsNullOrEmpty(keywords))
                 return new Collection<Article>();
-            //using (cancellationTokenSource) ;
             // Convert the spaces to make it url friendly
             keywords = keywords.Trim().Replace(' ', '+');
 
@@ -232,7 +231,7 @@ public class Fetcher
                 WebService.Get<Collection<Article>>(controller: "feeds",
                                                     action: needUpdate ? "update" : null,
                                                     singleUseHeaders: haeders,
-                                                    cancellationToken: cancellationTokenSource.Token,
+                                                    cancellationToken: cancellationTokenSource?.Token ?? default,
                                                     parameters: needUpdate ? [timeUpdate, keywords] : [keywords],
                                                     unSuccessCallback: (err) => _ = HandleHttpException(err)));
         }
