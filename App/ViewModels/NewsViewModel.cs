@@ -187,10 +187,23 @@ public class NewsViewModel : BaseViewModel
 
     public ObservableRangeCollection<Article> Articles
     {
-        get { return _articles; }
+        get
+        {
+            ObservableRangeCollection<Article> upArticles = new();
+            for (int i = 0; i < _articles.Count; i++)
+            {
+                var article = _articles[i];
+                article.Source = _sources.SingleOrDefault(src => src.MongoId == article.SourceId);
+
+                if (article.Source?.IsSelected ?? true)
+                    upArticles.Add(article);
+            }
+            return upArticles;
+        }
         set
         {
             _articles = value;
+
             if (IsSearching != true)
                 _feedMemory = new (_articles);
 
@@ -202,7 +215,19 @@ public class NewsViewModel : BaseViewModel
 
     public ObservableCollection<Article> TrendingArticles
     {
-        get { return _trendingArticles; }
+        get
+        {
+            ObservableRangeCollection<Article> upArticles = new();
+            for (int i = 0; i < _trendingArticles.Count; i++)
+            {
+                var article = _trendingArticles[i];
+                article.Source = _sources.SingleOrDefault(src => src.MongoId == article.SourceId);
+
+                if (article.Source?.IsSelected ?? true)
+                    upArticles.Add(article);
+            }
+            return upArticles;
+        }
         set
         {
             _trendingArticles = value;
@@ -242,6 +267,7 @@ public class NewsViewModel : BaseViewModel
 
     private GeneralDataBase _generalDB;
     private BackUpDataBase _backUpDataBase;
+    private SourceService _sourceService;
 
     // Command to refresh the news feed
     private readonly Command _refreshFeed;
@@ -305,16 +331,33 @@ public class NewsViewModel : BaseViewModel
     }
     public bool IsLoadingChunks { get; private set; }
 
-    public NewsViewModel(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase)
+    private List<Source> _sources;
+
+    public List<Source> Sources
+    {
+        get { return _sources; }
+        set 
+        {
+            _sources = value; 
+        }
+    }
+
+
+    public NewsViewModel(GeneralDataBase generalDataBase, BackUpDataBase backUpDataBase, SourceService sourceService)
     {
         CurrentApp = App.Current as App;
         _generalDB = generalDataBase;
         _backUpDataBase = backUpDataBase;
+        _sourceService = sourceService;
+
+        // Listen for updates from Settings
+        _sourceService.SourcesChanged += OnSourcesChanged;
 
         UnnoticedArticles = new();
         Task.Run(async () =>
         {
-            Articles = new ((await GetBackupFromDb()).OrderBy(a => a.Time).ToList());
+            Articles = new([.. (await GetBackupFromDb()).OrderBy(a => a.Time)]);
+            Sources = await generalDataBase.GetSources();
         });
         
         RefreshBottomCommand = new(() =>
@@ -439,6 +482,22 @@ public class NewsViewModel : BaseViewModel
         });
 
 
+    }
+
+    private void OnSourcesChanged(object sender, Source source)
+    {
+        _ = Task.Run(async () =>
+        {
+            int index = _sources.IndexOf(_sources.SingleOrDefault(s => s.MongoId == source.MongoId));
+            if (index < 0)
+                return;
+            _sources[index] = source;
+
+            OnPropertyChanged(nameof(Articles));
+            OnPropertyChanged(nameof(TrendingArticles));
+
+
+        }).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -730,6 +789,7 @@ public class NewsViewModel : BaseViewModel
             else
                 RefreshFeed.Execute(_isSearching);
 #endif
+            Sources = await _generalDB.GetSources();
         }
         
         await FetchTrendingArticles();

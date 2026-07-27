@@ -89,6 +89,7 @@ builder.Services.AddCustard(host: AppConstant.Localhost,
         builder.Services.AddSingleton<Fetcher>();
 
         builder.Services.AddSingleton<CommunityToolkit.Maui.Behaviors.TouchBehavior>();
+        builder.Services.AddSingleton<SourceService>();
         builder.Services.AddRevenueCatBilling(true);
         return builder.Build();
     }

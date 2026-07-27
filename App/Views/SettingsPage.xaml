@@ -183,7 +183,7 @@
                               IsVisible="{Binding IsActive}">
                                 <Border Grid.Column="0"
                                         HorizontalOptions="Start"
-                                        VerticalOptions="Start"
+                                        VerticalOptions="Center"
                                         StrokeShape="RoundRectangle 8"
                                         HeightRequest="25"
                                         Padding="4,0"

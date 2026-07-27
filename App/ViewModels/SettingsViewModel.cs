@@ -6,9 +6,10 @@ using System.Collections.ObjectModel;
 
 namespace GamHubApp.ViewModels;
 
-public class SettingsViewModel : BaseViewModel
+public partial class SettingsViewModel : BaseViewModel
 {
     private readonly GeneralDataBase _generalDb;
+    private readonly SourceService _sourceService;
     private bool _dealPageSett;
     public bool DealPageSett
     {
@@ -73,12 +74,14 @@ public class SettingsViewModel : BaseViewModel
                     return;
                 await _generalDb.UpdateSourceById(source);
                 DisplayUpdateToast();
+                _sourceService.NotifySourcesChanged(source);
             }); ;
         }
     }
-    public SettingsViewModel (GeneralDataBase generalDataBase)
+    public SettingsViewModel (GeneralDataBase generalDataBase, SourceService sourceService)
     {
         _generalDb = generalDataBase;
+        _sourceService = sourceService;
         _dealPageSett = Preferences.Get(PreferencesKeys.DealPageEnable, true);
         _dealViewSett = Preferences.Get(PreferencesKeys.DealArticleEnable, true);
         _dealReminderSett = Preferences.Get(PreferencesKeys.DealReminderEnabled, true);
