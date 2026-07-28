@@ -181,6 +181,13 @@
                           Padding="10,5"
                                         x:Name="ItemRow"
                               IsVisible="{Binding IsActive}">
+                                <Grid.Behaviors>
+
+                                    <mct:EventToCommandBehavior Command="{Binding BindingContext.AppearingCommand, 
+                                                                                      Source={x:Reference thy},
+                                                                                      x:DataType=ContentPage}" 
+                                                                    EventName="SizeChanged" />
+                                </Grid.Behaviors>
                                 <Border Grid.Column="0"
                                         HorizontalOptions="Start"
                                         VerticalOptions="Center"
@@ -217,7 +224,6 @@
                                         <mct:EventToCommandBehavior 
                                             EventName="Toggled"
                                             Command="{Binding BindingContext.SelectCommand, 
-                                                              Mode=OneWay,
                                                                 Source={x:Reference thy},
                                                                 x:DataType=ContentPage}"
                                             CommandParameter="{Binding BindingContext, Source={x:Reference ItemRow}}" />

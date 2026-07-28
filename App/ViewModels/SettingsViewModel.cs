@@ -36,6 +36,7 @@ public partial class SettingsViewModel : BaseViewModel
     }
 
     private bool _dealReminderSett;
+
     public bool DealReminderSett
     {
         get => _dealReminderSett;
@@ -58,24 +59,30 @@ public partial class SettingsViewModel : BaseViewModel
         }
     }
 
-    private bool _isInitialised;
+    public bool SourcesAreInitialised { get; set; } = false;
 
     public Command OpenSettingsCommand
     {
         get => new Command(() => AppInfo.Current.ShowSettingsUI());
     }
-    public Command SelectCommand
+    private Command<Source> _selectCommmand;
+    public Command<Source> SelectCommand
     {
         get
         {
-            return new Command<Source>(async (source) =>
+            return _selectCommmand;
+        }
+    }
+    public Command AppearingCommand
             {
-                if (!_isInitialised || source == null)
-                    return;
-                await _generalDb.UpdateSourceById(source);
-                DisplayUpdateToast();
-                _sourceService.NotifySourcesChanged(source);
-            }); ;
+        get
+        {
+            return new(() =>
+            {
+
+                SourcesAreInitialised = true;
+
+            });
         }
     }
     public SettingsViewModel (GeneralDataBase generalDataBase, SourceService sourceService)
@@ -85,6 +92,14 @@ public partial class SettingsViewModel : BaseViewModel
         _dealPageSett = Preferences.Get(PreferencesKeys.DealPageEnable, true);
         _dealViewSett = Preferences.Get(PreferencesKeys.DealArticleEnable, true);
         _dealReminderSett = Preferences.Get(PreferencesKeys.DealReminderEnabled, true);
+        _selectCommmand = new Command<Source>(async (source) =>
+        {
+            if (!SourcesAreInitialised || source == null)
+                return;
+            await _generalDb.UpdateSourceById(source);
+            DisplayUpdateToast();
+            _sourceService.NotifySourcesChanged(source);
+        }); ;
        
     }
 
@@ -111,7 +126,5 @@ public partial class SettingsViewModel : BaseViewModel
     public async Task InitialiseAsync()
     {
         Outlets = new(await _generalDb.GetSources());
-        _isInitialised = true;
     }
-
 }
