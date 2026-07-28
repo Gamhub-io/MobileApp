@@ -221,7 +221,10 @@ public class NewsViewModel : BaseViewModel
             for (int i = 0; i < _trendingArticles.Count; i++)
             {
                 var article = _trendingArticles[i];
-                article.Source = _sources.SingleOrDefault(src => src.MongoId == article.SourceId);
+                var source = _sources.SingleOrDefault(src => src.MongoId == article.Source.MongoId);
+
+                if (source != null)
+                    article.Source = source;
 
                 if (article.Source?.IsSelected ?? true)
                     upArticles.Add(article);
