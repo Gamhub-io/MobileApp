@@ -286,7 +286,7 @@
                        Style="{DynamicResource MenuIcon}"/>
 
                 <!-- label -->
-                <Label Text="Donate"
+                <Label Text="Tip Jar"
                        Style="{DynamicResource MenuLabel}"/>
             </Grid>
             
