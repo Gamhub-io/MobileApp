@@ -162,7 +162,7 @@
 
             </Grid>
         </Border>
-        <Label Text="Outlets"
+        <Label Text="Publications"
                FontFamily="P-Medium"
                FontSize="15"
                TextColor="{StaticResource FontColor}"
