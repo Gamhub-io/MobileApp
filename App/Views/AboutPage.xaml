@@ -149,7 +149,7 @@
                                             BindingContext="{Binding Path=BindingContext, 
                                                                      Source={x:Reference twitterBtn},
                                                                      x:DataType=Border}"
-                                            CommandParameter="gamhub_io"
+                                            CommandParameter="GameSpur_App"
                                             />
                         </Border.Behaviors>
                         <StackLayout Orientation="Horizontal"
@@ -176,7 +176,7 @@
                    Style="{StaticResource TitleStyle}" />
             <BoxView Grid.Row="3"
                      Style="{StaticResource SeparatorStyle}"/>
-            <Label Text="The purpose of GamHubApp is to keep gamers 
+            <Label Text="The purpose of GameSpur is to keep gamers 
 up-to-date on everything game-related, for free, 
 with no ads or any other type of annoyance. &#10; &#10;
 
