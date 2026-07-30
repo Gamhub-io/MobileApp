@@ -296,7 +296,7 @@
                   ColumnDefinitions="60,*">
                 <Grid.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding MailTo}"
-                                          CommandParameter="support@gamhub.io"/>
+                                          CommandParameter="support@gamespur.games"/>
                 </Grid.GestureRecognizers>
 
 

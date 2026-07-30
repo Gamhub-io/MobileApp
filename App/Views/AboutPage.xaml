@@ -205,7 +205,7 @@ its community's skills, knowledges and opinions.  "
                       HorizontalOptions="Center"
                       RowDefinitions="*,*">
 
-                    <Button Text="Support: support@gamhub.io"
+                    <Button Text="Support: support@gamespur.games"
                             Grid.Row="0"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
@@ -216,7 +216,7 @@ its community's skills, knowledges and opinions.  "
                             HeightRequest="30"
                             FontFamily="P-Bold"
                             Command="{Binding MailTo}"
-                            CommandParameter="support@gamhub.io"/>
+                            CommandParameter="support@gamespur.games"/>
 
                     <Button Text="General: contact@gamhub.io"
                             BackgroundColor="{StaticResource LightDark}"
