@@ -218,7 +218,7 @@ its community's skills, knowledges and opinions.  "
                             Command="{Binding MailTo}"
                             CommandParameter="support@gamespur.games"/>
 
-                    <Button Text="General: contact@gamhub.io"
+                    <Button Text="General: contact@gamespur.games"
                             BackgroundColor="{StaticResource LightDark}"
                             TextColor="{StaticResource FontColor}"
                             HorizontalOptions="Center"
@@ -228,7 +228,7 @@ its community's skills, knowledges and opinions.  "
                             HeightRequest="30"
                             FontFamily="P-Bold"
                             Command="{Binding MailTo}"
-                            CommandParameter="contact@gamhub.io"
+                            CommandParameter="contact@gamespur.games"
                             Grid.Row="1"/>
                 </Grid>
 
