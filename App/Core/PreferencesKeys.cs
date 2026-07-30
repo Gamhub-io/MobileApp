@@ -13,5 +13,4 @@ public class PreferencesKeys
     public const string DealFilterCode = "DEAL_FILTER_CODE";
     public const string LastDealVisit = "LAST_DEAL_VISIT";
     public const string CultureInfo = "CULTURE_INFO";
-    public const string SourceSelection = "SOURCE_SELECTION";
 }
