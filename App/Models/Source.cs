@@ -26,7 +26,6 @@ public class Source : SelectableModel
     [JsonProperty("isActive")]
     public bool IsActive { get; set; }
     [JsonIgnore]
-    //public bool IsSelected { get; set; }
     [OneToMany(CascadeOperations = CascadeOperation.All)]
     public Collection<Article> RelatedArticles { get; set; }
 
