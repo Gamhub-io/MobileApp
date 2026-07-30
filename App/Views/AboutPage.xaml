@@ -1,4 +1,4 @@
-    <?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
@@ -233,85 +233,139 @@ its community's skills, knowledges and opinions.  "
                 </Grid>
 
             <!-- Creator -->
-            <Label Text="Founder"
+            <Label Text="Founders"
                    Grid.Row="11"
                    Style="{StaticResource TitleStyle}" 
                    />
 
             <BoxView Grid.Row="12"
                      Style="{StaticResource SeparatorStyle}"/>
+                <ScrollView Grid.Row="13"
+                            Orientation="Horizontal">
+                    <StackLayout Orientation="Horizontal"
+                                 Spacing="5">
+                    <!-- Card creator -->
+                    <Border Grid.Row="13"
+                            BackgroundColor="{StaticResource LightDark}"
+                            StrokeShape="RoundRectangle 15"
+                            WidthRequest="220"
+                            HeightRequest="108"
+                            Margin="0,20"
+                            HorizontalOptions="Center"
+                            Padding="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Profile pic -->
+                            <mct:AvatarView Grid.Column="0" 
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center"
+                                 BackgroundColor="{DynamicResource Dark}"
+                                 TextColor="{DynamicResource Dark}"
+                                 Text=""
+                                 StrokeThickness="0"
+                                 HeightRequest="70"
+                                 WidthRequest="70"
+                                 ImageSource="https://avatars.githubusercontent.com/u/37577669?v=4" />
+
+                            <Grid Grid.Column="1"
+                                  Margin="0,20,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Name -->
+                                <Label Text="Brice Friha"
+                                        FontSize="18"
+                                        Grid.Row="0"
+                                        FontFamily="P-Bold"
+                                        TextColor="{StaticResource FontColor}"
+                                        VerticalOptions="Center"/>
+
+                                <!-- Twitter -->
+                                <StackLayout Orientation="Horizontal"
+                                              Grid.Row="1"
+                                              Spacing="5">
+                                    <!-- Twitter logo -->
+                                    <Label Text="&#xe61a;"
+                                            FontSize="15"
+                                            FontFamily="FaBrand"
+                                            TextColor="#e4e5e7"
+                                            VerticalOptions="Center"/>
+
+                                    <!-- Name -->
+                                    <Label Text="@BriceFriha"
+                                            FontSize="14"
+                                            FontFamily="P-Bold"
+                                            VerticalOptions="Center"
+                                             x:Name="BriceTwitterBtn"
+                                            TextColor="{StaticResource FontColor}">
+                                        <Label.Behaviors>
+                                            <mct:TouchBehavior CommandParameter="bricefriha"
+                                            BindingContext="{Binding Source={x:Reference thy},Path=BindingContext, x:DataType=ContentPage}"
+                                            Command="{Binding ViewTwitter}"/>
+                                        </Label.Behaviors>
+                                    </Label>
+                                </StackLayout>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+                    <!-- Card creator -->
+                    <Border Grid.Row="13"
+                            BackgroundColor="{StaticResource LightDark}"
+                            StrokeShape="RoundRectangle 15"
+                            WidthRequest="220"
+                            HeightRequest="108"
+                            Margin="0,20"
+                            HorizontalOptions="Center"
+                            Padding="0">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Profile pic -->
+                            <mct:AvatarView Grid.Column="0" 
+                                             HorizontalOptions="Center"
+                                             VerticalOptions="Center"
+                                             BackgroundColor="{DynamicResource Dark}"
+                                             TextColor="{DynamicResource Dark}"
+                                             Text=""
+                                             StrokeThickness="0"
+                                             HeightRequest="70"
+                                             WidthRequest="70"
+                                             ImageSource="https://avatars.githubusercontent.com/u/122379473?v=4" />
+
+                            <Grid Grid.Column="1"
+                                    Margin="0,20,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="auto"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Name -->
+                                <Label Text="Emma Boyle"
+                                        FontSize="18"
+                                        Grid.Row="0"
+                                        FontFamily="P-Bold"
+                                        TextColor="{StaticResource FontColor}"
+                                            VerticalOptions="Center"/>
+                            </Grid>
+
+                        </Grid>
+                    </Border>
+
+                </StackLayout>
+                </ScrollView>
+                
             
-            <!-- Card creator -->
-            <Border Grid.Row="13"
-                   BackgroundColor="{StaticResource LightDark}"
-                   StrokeShape="RoundRectangle 15"
-                   WidthRequest="265"
-                   HeightRequest="108"
-                   Margin="0,20"
-                   HorizontalOptions="Center"
-                   Padding="0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    
-                    <!-- Profile pic -->
-                    <mct:AvatarView Grid.Column="0" 
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    BackgroundColor="{DynamicResource Dark}"
-                                    TextColor="{DynamicResource Dark}"
-                                    Text=""
-                                    StrokeThickness="0"
-                                    HeightRequest="70"
-                                    WidthRequest="70"
-                                    ImageSource="https://avatars.githubusercontent.com/u/37577669?v=4" />
-
-                    <Grid Grid.Column="1"
-                          Margin="0,20,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="auto"/>
-                        </Grid.RowDefinitions>
-                        
-                        <!-- Name -->
-                        <Label Text="Brice Friha"
-                               FontSize="18"
-                               Grid.Row="0"
-                               FontFamily="P-Bold"
-                               TextColor="{StaticResource FontColor}"
-                               VerticalOptions="Center"/>
-
-                        <!-- Twitter -->
-                        <StackLayout Orientation="Horizontal"
-                                     Grid.Row="1"
-                                     Spacing="5">
-                            <!-- Twitter logo -->
-                            <Label Text="&#xe61a;"
-                                   FontSize="15"
-                                   FontFamily="FaBrand"
-                                   TextColor="#e4e5e7"
-                                   VerticalOptions="Center"/>
-                            
-                            <!-- Name -->
-                            <Label Text="@BriceFriha"
-                                   FontSize="14"
-                                   FontFamily="P-Bold"
-                                   VerticalOptions="Center"
-                                    x:Name="BriceTwitterBtn"
-                                   TextColor="{StaticResource FontColor}">
-                                <Label.Behaviors>
-                                    <mct:TouchBehavior CommandParameter="bricefriha"
-                                                       BindingContext="{Binding Source={x:Reference thy},Path=BindingContext, x:DataType=ContentPage}"
-                                                       Command="{Binding ViewTwitter}"/>
-                                </Label.Behaviors>
-                            </Label>
-                        </StackLayout>
-                    </Grid>
-                    
-                </Grid>
-            </Border>
+           
 
             <!-- Partners -->
             <Label Text="Partners"
