@@ -435,14 +435,14 @@ public class Fetcher
 
             Dictionary<string, string> headers = (Headers?.Count ?? 0) > 0 ? Headers : await GetHeaders();
 
-            var articleTrends = (await WithRetryAsync(() =>
-                 this.WebService.Get<ArticleTrendResponse>(controller: "monitor/trends",
+            var articleTrends = (await WithRetryAsync(async () =>
+                 await this.WebService.Get<ArticleTrendResponse>(controller: "monitor/trends",
                                                                parameters: parameters,
                                                                singleUseHeaders: headers,
                                                                jsonBody: null,
                                                                cancellationToken: cts.Token,
                                                                unSuccessCallback: e => _ = HandleHttpException(e))))?.Data.
-                                                               Select(at => at.Article);
+                                                               Select(at => at.Article).ToList();
 
             if (articleTrends == null)
                 return [];
