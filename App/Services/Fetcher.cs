@@ -429,7 +429,7 @@ public class Fetcher
             
             Dictionary<string,string> parameters = new ()
             {
-                { "period", "5h"},
+                { "period", "18h"},
                 { "limit", "5"},
             };
 
