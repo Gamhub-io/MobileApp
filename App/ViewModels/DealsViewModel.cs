@@ -10,6 +10,7 @@ public class DealsViewModel : BaseViewModel
 {
     public App CurrentApp { get; }
     private ObservableRangeCollection<Deal> _deals = new ();
+    private ObservableRangeCollection<Deal> _presearchDeals;
 
     public ObservableRangeCollection<Deal> Deals
     {
@@ -97,7 +98,7 @@ public class DealsViewModel : BaseViewModel
                 CurrentApp.DataFetcher.AllDeals.Where(deal => 
                 deal?.DRM != null && allowedDrms.Contains(deal.DRM)
                 ).OrderBy(d => d.Expires);
-                Deals = new ObservableRangeCollection<Deal>(
+                _presearchDeals = Deals = new ObservableRangeCollection<Deal>(
                     filtersList);
 
                 FiltersApplied = true;
@@ -138,6 +139,26 @@ public class DealsViewModel : BaseViewModel
             OnPropertyChanged(nameof(Platforms));
         }
 
+    }
+
+    public void DealsSearch(string textSearch)
+    {
+        if (string.IsNullOrEmpty(textSearch))
+        {
+
+            Deals = _presearchDeals;
+            return;
+        }
+
+        var filteredDeals = _presearchDeals.Where(deal => deal.Title.ToLower().Contains(textSearch.ToLower()))?.ToList();
+
+        if (filteredDeals is null)
+        {
+            Deals = _presearchDeals;
+            return;
+        }
+
+        Deals = new(filteredDeals);
     }
 
     public async Task UpdateDeals()
@@ -196,6 +217,8 @@ public class DealsViewModel : BaseViewModel
 
             IsLoading = false;
             _setup = true;
+
+            _presearchDeals = _deals;
             return;
         }
         IsLoading = false;
@@ -220,5 +243,6 @@ public class DealsViewModel : BaseViewModel
             Deals.RemoveAt(i);
         }
 
+        _presearchDeals = _deals;
 }
 }

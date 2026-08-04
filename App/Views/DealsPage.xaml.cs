@@ -40,4 +40,11 @@ public partial class DealsPage : ContentPage
     {
         _vm.UpdateDeals().GetAwaiter();
     }
+
+    private void search_SearchButtonPressed(object sender, EventArgs e)
+    {
+        _vm.DealsSearch(search.Text);
+        search.Unfocus();
+
+    }
 }

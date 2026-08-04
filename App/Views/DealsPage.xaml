@@ -62,7 +62,13 @@
                     >
                     <CollectionView.Header>
                         <Grid>
-                            <SearchBar Placeholder="Search deals..." />
+                            <SearchBar Placeholder="Search deals..."
+                                       x:Name="search"
+                                       TextChanged="search_TextChanged"
+                                       IsTextPredictionEnabled="false"
+                                       IsSpellCheckEnabled="False"
+                                       SearchButtonPressed="search_SearchButtonPressed"
+                                       />
                         </Grid>
                     </CollectionView.Header>
                     <CollectionView.EmptyView>
