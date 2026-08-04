@@ -60,6 +60,11 @@
                     ItemsSource="{Binding Deals}"
                     Margin="1,0"
                     >
+                    <CollectionView.Header>
+                        <Grid>
+                            <SearchBar Placeholder="Search deals..." />
+                        </Grid>
+                    </CollectionView.Header>
                     <CollectionView.EmptyView>
                         <Grid >
                             <StackLayout IsVisible="{Binding IsLoading}">
