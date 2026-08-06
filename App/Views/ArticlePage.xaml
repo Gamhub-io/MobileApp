@@ -405,8 +405,8 @@
                         <Grid.Behaviors>
                             <mct:TouchBehavior Command="{Binding ReportCommand}"
                                                BindingContext="{Binding BindingContext, 
-                                                                 Source={x:Reference thy},
-                                                                 x:DataType=ContentPage}"/>
+                                                                         Source={x:Reference thy},
+                                                                         x:DataType=ContentPage}"/>
                         </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MenuItem_Tapped"/>
