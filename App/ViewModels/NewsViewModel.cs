@@ -190,7 +190,8 @@ public class NewsViewModel : BaseViewModel
         get
         {
             ObservableRangeCollection<Article> upArticles = new();
-            for (int i = 0; i < _articles.Count; i++)
+            
+            for (int i = 0; i < _articles?.Count; i++)
             {
                 var article = _articles[i];
                 article.Source = _sources.SingleOrDefault(src => src.MongoId == article.SourceId);
@@ -218,7 +219,7 @@ public class NewsViewModel : BaseViewModel
         get
         {
             ObservableRangeCollection<Article> upArticles = new();
-            for (int i = 0; i < _trendingArticles.Count; i++)
+            for (int i = 0; i < _trendingArticles?.Count; i++)
             {
                 var article = _trendingArticles[i];
                 var source = _sources.SingleOrDefault(src => src.MongoId == article.Source.MongoId);
